@@ -1,14 +1,12 @@
 package com.pepe.albarapp.persistance;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Getter
-@Setter
+@Data
 public class CustomerProductPrice {
 
     @Id @GeneratedValue(strategy=GenerationType.IDENTITY)
