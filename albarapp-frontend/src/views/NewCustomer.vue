@@ -2,6 +2,9 @@
   <v-content>
     <v-container class="pl-10 pr-10">
       <v-form ref="form" v-model="valid">
+        <v-subheader class="title ml-1">Datos de cliente</v-subheader>
+        <v-divider></v-divider>
+
         <v-text-field
           v-model="code"
           type="number"
@@ -33,9 +36,8 @@
 
         <div class="mb-3"></div>
 
-        <v-divider></v-divider>
-
         <v-subheader class="title ml-1">Precios de productos</v-subheader>
+        <v-divider></v-divider>
         <v-row class="ml-5" justify="center">
           <v-alert
             v-if="sameProduct()"
@@ -68,12 +70,20 @@
                   <tr>
                     <th class="text-left">Producto</th>
                     <th class="text-left">Precio</th>
+                    <th class="text-left"></th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr v-for="item in productPrices" :key="item.productId">
                     <td>{{ item.product.name }}</td>
                     <td>{{ item.price }} €</td>
+                    <td justify="center">
+                      <div class="text-xs-center">
+                        <v-btn class="ma-2" justify="center" color="red" dark @click="removePrice(item)">
+                          <v-icon dark>mdi-delete</v-icon>
+                        </v-btn>
+                      </div>
+                    </td>
                   </tr>
                 </tbody>
               </template>
@@ -153,24 +163,24 @@ export default {
       if (this.$refs.form.validate()) {
         // Rest call to create new customer
         var customer = {
-          "fiscalId": this.idn,
-          "code": this.code,
-          "name": this.name,
-          "alias": this.alias,
-          "phoneNumber": this.telephone,
-          "email": this.email,
-          "address": this.address,
-          "province": this.province,
-        }
+          fiscalId: this.idn,
+          code: this.code,
+          name: this.name,
+          alias: this.alias,
+          phoneNumber: this.telephone,
+          email: this.email,
+          address: this.address,
+          province: this.province
+        };
         this.$axios
-        .post('/customers', customer)
-        .then(response => {
-          alert('Se ha creado el cliente correctamente')
-          this.reset()
-        })
-        .catch(function (error) {
-          alert('Ha ocurrido un error creando el cliente')
-        })
+          .post("/customers", customer)
+          .then(response => {
+            alert("Se ha creado el cliente correctamente");
+            this.reset();
+          })
+          .catch(function(error) {
+            alert("Ha ocurrido un error creando el cliente");
+          });
       }
     },
     reset() {
@@ -180,13 +190,13 @@ export default {
     listProducts() {
       // Rest call to list products
       this.$axios
-      .get('/products')
-      .then(response => {
-        this.products = response.data._embedded.products 
-      })
-      .catch(function (error) {
-        alert('Ha ocurrido un error recuperando los productos')
-      })
+        .get("/products")
+        .then(response => {
+          this.products = response.data._embedded.products;
+        })
+        .catch(function(error) {
+          alert("Ha ocurrido un error recuperando los productos");
+        });
     },
     addPrice() {
       var vm = this;
@@ -201,9 +211,15 @@ export default {
     },
     sameProduct() {
       var vm = this;
-      return vm.product && vm.productPrices.some(
-        product => product.product.id === vm.product.id
+      return (
+        vm.product &&
+        vm.productPrices.some(product => product.product.code === vm.product.code)
       );
+    },
+    removePrice(price) {
+      this.productPrices = this.productPrices.filter(function(item){
+        return item != price;
+      })
     }
   }
 };
