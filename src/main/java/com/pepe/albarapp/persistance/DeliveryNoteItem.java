@@ -1,6 +1,7 @@
 package com.pepe.albarapp.persistance;
 
 import lombok.Data;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -9,8 +10,10 @@ import java.util.Objects;
 @Data
 public class DeliveryNoteItem {
 
-    @Id @GeneratedValue(strategy=GenerationType.IDENTITY)
-    private long id;
+    @Id
+    @GeneratedValue(generator = "uuid")
+    @GenericGenerator(name = "uuid", strategy = "uuid2")
+    private String id;
 
     @Column(nullable = false)
     private long quantity;
@@ -19,11 +22,11 @@ public class DeliveryNoteItem {
     private double price;
 
     @ManyToOne
-    @JoinColumn(name = "product-id", nullable = false)
+    @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
     @ManyToOne
-    @JoinColumn(name = "delivery-note-id", nullable = false)
+    @JoinColumn(name = "delivery_note_id", nullable = false)
     private DeliveryNote deliveryNote;
 
     @Override
