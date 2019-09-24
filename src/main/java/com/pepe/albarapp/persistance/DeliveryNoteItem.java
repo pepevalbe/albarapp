@@ -19,11 +19,11 @@ public class DeliveryNoteItem {
     private double price;
 
     @ManyToOne
-    @JoinColumn(name = "product-id", nullable = false)
+    @JoinColumn(name = "productId", nullable = false)
     private Product product;
 
     @ManyToOne
-    @JoinColumn(name = "delivery-note-id", nullable = false)
+    @JoinColumn(name = "deliveryNoteId", nullable = false)
     private DeliveryNote deliveryNote;
 
     @Override

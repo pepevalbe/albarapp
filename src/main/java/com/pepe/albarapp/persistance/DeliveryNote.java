@@ -17,11 +17,11 @@ public class DeliveryNote {
     private long issuedTimestamp;
 
     @ManyToOne
-    @JoinColumn(name = "customer-id", nullable = false)
+    @JoinColumn(name = "customerId", nullable = false)
     private Customer customer;
 
     @ManyToOne
-    @JoinColumn(name = "invoice-id")
+    @JoinColumn(name = "invoiceId")
     private Invoice invoice;
 
     @OneToMany(mappedBy = "deliveryNote")

@@ -16,11 +16,11 @@ public class CustomerProductPrice {
     private double offeredPrice;
 
     @ManyToOne
-    @JoinColumn(name = "customer-id")
+    @JoinColumn(name = "customerId")
     private Customer customer;
 
     @ManyToOne
-    @JoinColumn(name = "product-id")
+    @JoinColumn(name = "productId")
     private Product product;
 
     @Override
