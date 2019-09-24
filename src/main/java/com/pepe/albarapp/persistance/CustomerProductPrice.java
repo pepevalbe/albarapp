@@ -1,28 +1,29 @@
 package com.pepe.albarapp.persistance;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Getter
-@Setter
+@Data
 public class CustomerProductPrice {
 
     @Id
-    private long id;
+    @GeneratedValue(generator = "uuid")
+    @GenericGenerator(name = "uuid", strategy = "uuid2")
+    private String id;
 
     @Column(nullable = false)
     private double offeredPrice;
 
     @ManyToOne
-    @JoinColumn(name = "customer-id")
+    @JoinColumn(name = "customer_id")
     private Customer customer;
 
     @ManyToOne
-    @JoinColumn(name = "product-id")
+    @JoinColumn(name = "product_id")
     private Product product;
 
     @Override
