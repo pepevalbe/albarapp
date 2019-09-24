@@ -79,7 +79,13 @@
                     <td>{{ item.price }} €</td>
                     <td justify="center">
                       <div class="text-xs-center">
-                        <v-btn class="ma-2" justify="center" color="red" dark @click="removePrice(item)">
+                        <v-btn
+                          class="ma-2"
+                          justify="center"
+                          color="red"
+                          dark
+                          @click="removePrice(item)"
+                        >
                           <v-icon dark>mdi-delete</v-icon>
                         </v-btn>
                       </div>
@@ -160,6 +166,7 @@ export default {
   },
   methods: {
     validate() {
+      var vm = this;
       if (this.$refs.form.validate()) {
         // Rest call to create new customer
         var customer = {
@@ -175,6 +182,22 @@ export default {
         this.$axios
           .post("/customers", customer)
           .then(response => {
+            for (var i=0; i< vm.productPrices.length; i++) {
+              var item = vm.productPrices[i];
+              var customerProductPrice = {
+                offeredPrice: item.price,
+                customer: response.data._links.self.href,
+                product: item.product._links.self.href
+              };
+              this.$axios
+              .post("/customerProductPrices", customerProductPrice)
+              .then(response => {
+                alert("Se ha creado el precio correctamente");
+              })
+              .catch(function(error){
+                alert("Ha ocurrido un error creando los precios");
+              })
+            }
             alert("Se ha creado el cliente correctamente");
             this.reset();
           })
@@ -213,13 +236,15 @@ export default {
       var vm = this;
       return (
         vm.product &&
-        vm.productPrices.some(product => product.product.code === vm.product.code)
+        vm.productPrices.some(
+          product => product.product.code === vm.product.code
+        )
       );
     },
     removePrice(price) {
-      this.productPrices = this.productPrices.filter(function(item){
+      this.productPrices = this.productPrices.filter(function(item) {
         return item != price;
-      })
+      });
     }
   }
 };
