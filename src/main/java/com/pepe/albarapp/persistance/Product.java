@@ -25,6 +25,9 @@ public class Product {
     @Column(nullable = false)
     private double factoryPrice;
 
+    @Column(nullable = false)
+    private double tax;
+
     @OneToMany(mappedBy = "product")
     private Set<CustomerProductPrice> customerProductPrices;
 
