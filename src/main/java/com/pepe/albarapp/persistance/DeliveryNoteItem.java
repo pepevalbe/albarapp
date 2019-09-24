@@ -9,7 +9,7 @@ import java.util.Objects;
 @Data
 public class DeliveryNoteItem {
 
-    @Id
+    @Id @GeneratedValue(strategy=GenerationType.IDENTITY)
     private long id;
 
     @Column(nullable = false)

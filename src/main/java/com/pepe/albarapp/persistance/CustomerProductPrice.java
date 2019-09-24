@@ -11,7 +11,7 @@ import java.util.Objects;
 @Setter
 public class CustomerProductPrice {
 
-    @Id
+    @Id @GeneratedValue(strategy=GenerationType.IDENTITY)
     private long id;
 
     @Column(nullable = false)

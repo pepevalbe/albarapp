@@ -10,7 +10,7 @@ import java.util.Set;
 @Data
 public class DeliveryNote {
 
-    @Id
+    @Id @GeneratedValue(strategy=GenerationType.IDENTITY)
     private long id;
 
     @Column(nullable = false)
