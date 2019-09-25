@@ -15,22 +15,23 @@
         <v-text-field v-model="name" :counter="40" :rules="nameRules" label="Nombre *" required></v-text-field>
         <v-text-field
           v-model="factoryPrice"
+          type="number"
           :rules="factoryPriceRules"
-          label="Precio estándar *"
+          label="Precio estándar (€) *"
           required
         ></v-text-field>
         <v-text-field
           v-model="tax"
-          :counter="200"
+          type="number"
           :rules="taxRules"
-          label="Tipo impositivo *"
+          label="Tipo impositivo (%) *"
           required
         ></v-text-field>
         <div class="mb-3"></div>
         <div class="mb-10"></div>
         <v-btn :disabled="!valid" color="success" class="mr-4" @click="validate">Crear</v-btn>
         <v-btn color="error" class="mr-4" @click="reset">Cancelar</v-btn>
-        <v-btn to="/products/">Volver</v-btn>
+        <v-btn to="/product-list/">Volver</v-btn>
       </v-form>
     </v-container>
   </v-content>
@@ -43,7 +44,7 @@ export default {
     code: "",
     codeRules: [
       v => !!v || "El código es obligatorio",
-      v => (v && v.length <= 5) || "El nombre debe tener un máximo de 5 dígitos"
+      v => (v && v.length <= 5) || "El código debe tener un máximo de 5 dígitos"
     ],
     name: "",
     nameRules: [
@@ -51,100 +52,44 @@ export default {
       v =>
         (v && v.length <= 40) || "El nombre debe tener menos de 40 caracteres"
     ],
-    factoryPrice: 0,
+    factoryPrice: null,
     factoryPriceRules: [
       v => !!v || "El precio es obligatorio",
-      v => (v && v.length <= 20) || "El precio debe tener menos de 20 caracteres"
+      v => (v && v > 0) || "El precio debe ser mayor que 0"
     ],
-    tax: 0,
-    taxRules: [v => !v || /.+@.+\..+/.test(v) || "Tipo impositivo no válido"],
+    tax: null,
+    taxRules: [
+      v => !!v || "El tipo impositivo es obligatorio",
+      v =>
+        (v && v >= 0 && v <= 100) ||
+        "El tipo impositivo debe ser menor que 100%, podemita"
+    ],
     products: [],
     product: undefined
   }),
-  created() {
-    this.listProducts();
-  },
   methods: {
     validate() {
-      var vm = this;
       if (this.$refs.form.validate()) {
         // Rest call to create new customer
-        var customer = {
-          fiscalId: this.idn,
+        var product = {
           code: this.code,
           name: this.name,
-          alias: this.alias,
-          phoneNumber: this.telephone,
-          email: this.email,
-          address: this.address,
-          province: this.province
+          factoryPrice: this.factoryPrice,
+          tax: this.tax
         };
         this.$axios
-          .post("/customers", customer)
+          .post("/products", product)
           .then(response => {
-            for (var i = 0; i < vm.productPrices.length; i++) {
-              var item = vm.productPrices[i];
-              var customerProductPrice = {
-                offeredPrice: item.price,
-                customer: response.data._links.self.href,
-                product: item.product._links.self.href
-              };
-              this.$axios
-                .post("/customerProductPrices", customerProductPrice)
-                .then(response => {
-                  alert("Se ha creado el precio correctamente");
-                })
-                .catch(function(error) {
-                  alert("Ha ocurrido un error creando los precios");
-                });
-            }
-            alert("Se ha creado el cliente correctamente");
+            alert("Se ha creado el producto correctamente");
             this.reset();
           })
           .catch(function(error) {
-            alert("Ha ocurrido un error creando el cliente");
+            alert("Ha ocurrido un error creando el producto");
           });
       }
     },
     reset() {
       this.$refs.form.reset();
-      this.productPrices = [];
-    },
-    listProducts() {
-      // Rest call to list products
-      this.$axios
-        .get("/products")
-        .then(response => {
-          this.products = response.data._embedded.products;
-        })
-        .catch(function(error) {
-          alert("Ha ocurrido un error recuperando los productos");
-        });
-    },
-    addPrice() {
-      var vm = this;
-      if (!this.sameProduct()) {
-        this.productPrices.push({
-          product: vm.product,
-          price: vm.price
-        });
-        vm.product = undefined;
-        vm.price = 0;
-      }
-    },
-    sameProduct() {
-      var vm = this;
-      return (
-        vm.product &&
-        vm.productPrices.some(
-          product => product.product.code === vm.product.code
-        )
-      );
-    },
-    removePrice(price) {
-      this.productPrices = this.productPrices.filter(function(item) {
-        return item != price;
-      });
     }
   }
 };

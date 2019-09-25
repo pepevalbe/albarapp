@@ -3,7 +3,7 @@
     <v-container>
       <v-layout text-right wrap class="pb-10 pt-5 mr-5">
         <v-flex xs12>
-          <v-btn to="/new-product/">
+          <v-btn to="/product-creation/">
             <span>Nuevo</span>
           </v-btn>
         </v-flex>

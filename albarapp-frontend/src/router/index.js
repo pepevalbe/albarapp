@@ -16,6 +16,11 @@ export default new Router({
       name: "Productos"
     },
     {
+      path: "/product-creation/",
+      component: () => import("@/views/ProductCreation"),
+      name: "Nuevo producto"
+    },
+    {
       path: "/customer-list/",
       component: () => import("@/views/CustomerList"),
       name: "Clientes"
