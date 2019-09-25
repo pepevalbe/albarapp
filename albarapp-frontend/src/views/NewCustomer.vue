@@ -45,13 +45,9 @@ export default {
     price: 0,
     productPrices: []
   }),
-  created() {
-    //this.listProducts();
-  },
   methods: {
     validate() {
       var vm = this;
-      //if (this.$refs.form.validate()) {
       if (this.form.valid) {
         // Rest call to create new customer
         var customer = {
