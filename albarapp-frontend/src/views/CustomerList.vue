@@ -8,8 +8,29 @@
           </v-btn>
         </v-flex>
       </v-layout>
-      <v-data-table :loading="!customers || customers.length == 0" loading-text="Cargando... Por favor, espere" :headers="headers" :items="customers" :items-per-page="15">
-      </v-data-table>
+      <v-card>
+        <v-card-title>
+          Listado de clientes
+          <div class="flex-grow-1"></div>
+          <v-text-field
+            v-model="search"
+            append-icon="mdi-magnify"
+            label="Buscar ..."
+            single-line
+            hide-details
+          ></v-text-field>
+        </v-card-title>
+        <v-data-table
+          :loading="!customers || customers.length == 0"
+          loading-text="Cargando... Por favor, espere"
+          :headers="headers"
+          :items="customers"
+          :search="search"
+          :sort-by.sync="sortBy"
+          :sort-desc.sync="descending"
+          :items-per-page="15"
+        ></v-data-table>
+      </v-card>
       <v-layout text-center wrap class="pt-10">
         <v-flex xs12>
           <v-btn to="/">
@@ -28,15 +49,18 @@ export default {
     return {
       customers: [],
       headers: [
-          {text: "Código", sortable: false, value: "code"},
-          {text: "Alias", sortable: false, value: "alias"},
-          {text: "Nombre", sortable: false, value: "name"},
-          {text: "NIF", sortable: false, value: "fiscalId"},
-          {text: "Teléfono", sortable: false, value: "phoneNumber"},
-          {text: "E-mail", sortable: false, value: "email"},
-          {text: "Dirección", sortable: false, value: "address"},
-          {text: "Provincia", sortable: false, value: "province"}
-      ]
+        { text: "Código", sortable: false, value: "code" },
+        { text: "Alias", sortable: false, value: "alias" },
+        { text: "Nombre", sortable: false, value: "name" },
+        { text: "NIF", sortable: false, value: "fiscalId" },
+        { text: "Teléfono", sortable: false, value: "phoneNumber" },
+        { text: "E-mail", sortable: false, value: "email" },
+        { text: "Dirección", sortable: false, value: "address" },
+        { text: "Provincia", sortable: false, value: "province" }
+      ],
+      search: "",
+      sortBy: "code",
+      descending: false
     };
   },
   created() {
@@ -45,13 +69,13 @@ export default {
   methods: {
     listCustomers() {
       this.$axios
-        .get('/customers')
+        .get("/customers")
         .then(response => {
-          this.customers = response.data._embedded.customers 
+          this.customers = response.data._embedded.customers;
         })
-        .catch(function (error) {
-          alert('Ha ocurrido un error recuperando los clientes')
-        })
+        .catch(function(error) {
+          alert("Ha ocurrido un error recuperando los clientes");
+        });
     }
   }
 };
