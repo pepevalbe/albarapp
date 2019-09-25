@@ -19,7 +19,7 @@ public class Customer {
     @Column(nullable = false)
     private String fiscalId;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private int code;
 
     @Column(nullable = false)
