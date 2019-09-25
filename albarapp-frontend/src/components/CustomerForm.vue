@@ -55,7 +55,7 @@ export default {
   data: () => ({
     codeRules: [
       v => !!v || "El código es obligatorio",
-      v => (v && v.length <= 5) || "El nombre debe tener un máximo de 5 dígitos"
+      v => (v && v.length <= 5) || "El código debe tener un máximo de 5 dígitos"
     ],
     nameRules: [
       v => !!v || "El nombre es obligatorio",
