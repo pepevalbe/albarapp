@@ -5,7 +5,7 @@
 
       <div class="mb-3"></div>
 
-      <CustomerPriceTable v-bind:productPrices="productPrices"></CustomerPriceTable>
+      <CustomerPriceTable v-bind:productPrices="productPrices" :key="componentKey"></CustomerPriceTable>
 
       <div class="mb-10"></div>
 
@@ -39,6 +39,7 @@ export default {
       province: "",
       telephone: ""
     },
+    componentKey: 0,
     products: [],
     product: undefined,
     price: 0,
@@ -102,6 +103,7 @@ export default {
         province: "",
         telephone: ""
       };
+      this.componentKey += 1;
       this.productPrices = [];
     }
   }

@@ -88,11 +88,6 @@ export default {
     telephoneRules: [
       v => !v || v.length <= 15 || "El teléfono debe tener menos de 15 dígitos"
     ]
-  }),
-  methods: {
-    resetForm() {
-      this.$refs.form.reset();
-    }
-  }
+  })
 };
 </script>

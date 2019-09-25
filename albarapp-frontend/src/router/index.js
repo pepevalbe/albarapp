@@ -12,7 +12,7 @@ export default new Router({
       },
       {
         path: "/customer/",
-        component: () => import("@/views/Customer"),
+        component: () => import("@/views/CustomerList"),
         name: "Clientes"
       },
       {

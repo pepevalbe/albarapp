@@ -23,7 +23,7 @@
 
 <script>
 export default {
-  name: "customer",
+  name: "CustomerList",
   data: () => {
     return {
       customers: [],
