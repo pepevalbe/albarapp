@@ -29,6 +29,11 @@ export default new Router({
       path: "/customer-creation/",
       component: () => import("@/views/CustomerCreation"),
       name: "Nuevo cliente"
-    }
+    },
+    {
+      path: "/customer-update/",
+      component: () => import("@/views/CustomerUpdate"),
+      name: "Actualizar cliente"
+    },
   ]
 });

@@ -29,7 +29,22 @@
           :sort-by.sync="sortBy"
           :sort-desc.sync="descending"
           :items-per-page="15"
-        ></v-data-table>
+        >
+          <template v-slot:body="{ items }">
+            <tbody>
+              <tr v-for="item in items" :key="item.code" @click="updateCustomer(item)">
+                <td>{{item.code}}</td>
+                <td>{{item.name}}</td>
+                <td>{{item.alias}}</td>
+                <td>{{item.fiscalId}}</td>
+                <td>{{item.phoneNumber}}</td>
+                <td>{{item.email}}</td>
+                <td>{{item.address}}</td>
+                <td>{{item.province}}</td>
+              </tr>
+            </tbody>
+          </template>
+        </v-data-table>
       </v-card>
       <v-layout text-center wrap class="pt-10">
         <v-flex xs12>
@@ -76,6 +91,12 @@ export default {
         .catch(function(error) {
           alert("Ha ocurrido un error recuperando los clientes");
         });
+    },
+    updateCustomer(item) {
+      this.$router.push({
+        name: "Actualizar cliente",
+        params: { customer: item._links.self.href }
+      });
     }
   }
 };
