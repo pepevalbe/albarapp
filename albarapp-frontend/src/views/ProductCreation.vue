@@ -33,6 +33,10 @@
         <v-btn color="error" class="mr-4" @click="reset">Cancelar</v-btn>
         <v-btn to="/product-list/">Volver</v-btn>
       </v-form>
+      <v-snackbar v-model="snackbar">
+        {{snackbarMessage}}
+        <v-btn color="green" text @click="snackbar = false">Cerrar</v-btn>
+      </v-snackbar>
     </v-container>
   </v-content>
 </template>
@@ -65,7 +69,9 @@ export default {
         "El tipo impositivo debe ser menor que 100%, podemita"
     ],
     products: [],
-    product: undefined
+    product: undefined,
+    snackbar: false,
+    snackbarMessage: ""
   }),
   methods: {
     validate() {
@@ -80,7 +86,8 @@ export default {
         this.$axios
           .post("/products", product)
           .then(response => {
-            alert("Se ha creado el producto correctamente");
+            this.snackbar = true;
+            this.snackbarMessage = "Cliente creado correctamente";
             this.reset();
           })
           .catch(function(error) {
