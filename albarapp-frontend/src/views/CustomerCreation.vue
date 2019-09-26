@@ -11,7 +11,7 @@
 
       <v-btn :disabled="!form.valid" color="success" class="mr-4" @click="validate">Crear</v-btn>
 
-      <v-btn color="error" class="mr-4" @click="reset">Cancelar</v-btn>
+      <v-btn color="error" class="mr-4" @click="reset">Borrar</v-btn>
 
       <v-btn to="/customer-list/">Volver</v-btn>
 

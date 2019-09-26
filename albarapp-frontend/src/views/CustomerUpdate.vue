@@ -47,6 +47,7 @@ export default {
     product: undefined,
     price: 0,
     productPrices: [],
+    productPricesOriginal: [],
     snackbar: false,
     snackbarMessage: ""
   }),
@@ -68,13 +69,12 @@ export default {
         this.$axios
           .get(response.data._links.customerProductPrices.href)
           .then(response => {
-            console.log(response);
             for (
               var i = 0;
               i < response.data._embedded.customerProductPrices.length;
               i++
             ) {
-              this.productPrices.push({
+              var productPrice = {
                 product: {},
                 price:
                   response.data._embedded.customerProductPrices[i].offeredPrice,
@@ -84,17 +84,21 @@ export default {
                 productHref:
                   response.data._embedded.customerProductPrices[i]._links
                     .product.href
-              });
+              };
+              this.productPrices.push(productPrice);
+              this.productPricesOriginal.push(productPrice);
               this.$axios
                 .get(
                   response.data._embedded.customerProductPrices[i]._links
                     .product.href
                 )
                 .then(responseProduct => {
-                  console.log(responseProduct);
-                  console.log(response);
-                  var index = this.productPrices.findIndex(function (element) {return element.productHref === responseProduct.config.url});
+                  var index = this.productPrices.findIndex(function(element) {
+                    return element.productHref === responseProduct.config.url;
+                  });
                   this.productPrices[index].product = responseProduct.data;
+                  this.productPricesOriginal[index].product =
+                    responseProduct.data;
                 });
             }
           });
@@ -125,9 +129,38 @@ export default {
             this.snackbarMessage = "Cliente actualizado correctamente";
           })
           .catch(function(error) {
-            console.log(error);
             alert("Ha ocurrido un error creando el cliente");
           });
+        var productPricesToDelete = [];
+        productPricesToDelete = this.productPricesOriginal.filter(
+          f => !this.productPrices.includes(f)
+        );
+        var productPricesToInsert = [];
+        productPricesToInsert = this.productPrices.filter(
+          f => !this.productPricesOriginal.includes(f)
+        );
+        for (var i = 0; i < productPricesToDelete.length; i++) {
+          this.$axios
+            .delete(productPricesToDelete[i].productPriceHref)
+            .then(response => {})
+            .catch(function(error) {
+              alert("Ha ocurrido un error creando el cliente");
+            });
+        }
+        for (var i = 0; i < productPricesToInsert.length; i++) {
+          var item = productPricesToInsert[i];
+          var customerProductPrice = {
+            offeredPrice: item.price,
+            customer: this.customerHref,
+            product: item.product._links.self.href
+          };
+          this.$axios
+            .post("/customerProductPrices", customerProductPrice)
+            .then(response => {})
+            .catch(function(error) {
+              alert("Ha ocurrido un error creando los precios");
+            });
+        }
       }
     }
   }

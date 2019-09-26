@@ -28,7 +28,14 @@
         :sort-by.sync="sortBy"
         :sort-desc.sync="descending"
         :items-per-page="15"
-      ></v-data-table>
+      >
+        <template v-slot:item.factoryPrice="{item}">
+          <span>{{item.factoryPrice}} €</span>
+        </template>
+        <template v-slot:item.tax="{item}">
+          <span>{{item.tax}} %</span>
+        </template>
+      </v-data-table>
       <v-layout text-center wrap class="pt-10">
         <v-flex xs12>
           <v-btn to="/">
