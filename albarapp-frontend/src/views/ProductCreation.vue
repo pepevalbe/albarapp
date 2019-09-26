@@ -87,7 +87,7 @@ export default {
           .post("/products", product)
           .then(response => {
             this.snackbar = true;
-            this.snackbarMessage = "Cliente creado correctamente";
+            this.snackbarMessage = "Producto creado correctamente";
             this.reset();
           })
           .catch(function(error) {
