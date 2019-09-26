@@ -81,7 +81,6 @@ export default {
                 .post("/customerProductPrices", customerProductPrice)
                 .then(response => {})
                 .catch(function(error) {
-                  console.log(error);
                   alert("Ha ocurrido un error creando los precios");
                 });
             }
@@ -90,7 +89,6 @@ export default {
             this.reset();
           })
           .catch(function(error) {
-            console.log(error);
             alert("Ha ocurrido un error creando el cliente");
           });
       }

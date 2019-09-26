@@ -69,7 +69,7 @@ export default {
     return {
       customers: [],
       headers: [
-        { text: "Código", sortable: false, value: "code" },
+        { text: "Código", sortable: true, value: "code" },
         { text: "Alias", sortable: false, value: "alias" },
         { text: "Nombre", sortable: false, value: "name" },
         { text: "NIF", sortable: false, value: "fiscalId" },
@@ -94,8 +94,7 @@ export default {
         .then(response => {
           this.customers = response.data._embedded.customers;
         })
-        .catch(function(error) {
-          console.log(error);
+        .catch(function() {
           alert("Ha ocurrido un error recuperando los clientes");
         });
     },

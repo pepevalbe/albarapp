@@ -104,7 +104,6 @@ export default {
           });
       })
       .catch(function(error) {
-        console.log(error);
         alert("Ha ocurrido un error recuperando los datos del cliente");
       });
   },
@@ -130,7 +129,6 @@ export default {
             this.snackbarMessage = "Cliente actualizado correctamente";
           })
           .catch(function(error) {
-            console.log(error);
             alert("Ha ocurrido un error creando el cliente");
           });
         var productPricesToDelete = [];
@@ -146,7 +144,6 @@ export default {
             .delete(productPricesToDelete[i].productPriceHref)
             .then(response => {})
             .catch(function(error) {
-              console.log(error);
               alert("Ha ocurrido un error creando el cliente");
             });
         }
@@ -161,7 +158,6 @@ export default {
             .post("/customerProductPrices", customerProductPrice)
             .then(response => {})
             .catch(function(error) {
-              console.log(error);
               alert("Ha ocurrido un error creando los precios");
             });
         }
