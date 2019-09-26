@@ -51,12 +51,57 @@ export default {
     snackbarMessage: ""
   }),
   props: {
-    customer: Object
+    customerHref: String
   },
   created() {
-    console.log(this.customer);
-    console.log(this.$router.params);
-    //this.$axios.get("");
+    this.$axios
+      .get(this.customerHref)
+      .then(response => {
+        this.form.code = response.data.code.toString();
+        this.form.name = response.data.name;
+        this.form.alias = response.data.alias;
+        this.form.email = response.data.email;
+        this.form.idn = response.data.fiscalId;
+        this.form.address = response.data.address;
+        this.form.province = response.data.province;
+        this.form.telephone = response.data.phoneNumber;
+        this.$axios
+          .get(response.data._links.customerProductPrices.href)
+          .then(response => {
+            console.log(response);
+            for (
+              var i = 0;
+              i < response.data._embedded.customerProductPrices.length;
+              i++
+            ) {
+              this.productPrices.push({
+                product: {},
+                price:
+                  response.data._embedded.customerProductPrices[i].offeredPrice,
+                productPriceHref:
+                  response.data._embedded.customerProductPrices[i]._links.self
+                    .href,
+                productHref:
+                  response.data._embedded.customerProductPrices[i]._links
+                    .product.href
+              });
+              this.$axios
+                .get(
+                  response.data._embedded.customerProductPrices[i]._links
+                    .product.href
+                )
+                .then(responseProduct => {
+                  console.log(responseProduct);
+                  console.log(response);
+                  var index = this.productPrices.findIndex(function (element) {return element.productHref === responseProduct.config.url});
+                  this.productPrices[index].product = responseProduct.data;
+                });
+            }
+          });
+      })
+      .catch(function(error) {
+        alert("Ha ocurrido un error recuperando los datos del cliente");
+      });
   },
   methods: {
     validate() {
@@ -74,27 +119,13 @@ export default {
           province: this.form.province
         };
         this.$axios
-          .post("/customers", customer)
+          .put(this.customerHref, customer)
           .then(response => {
-            for (var i = 0; i < vm.productPrices.length; i++) {
-              var item = vm.productPrices[i];
-              var customerProductPrice = {
-                offeredPrice: item.price,
-                customer: response.data._links.self.href,
-                product: item.product._links.self.href
-              };
-              this.$axios
-                .post("/customerProductPrices", customerProductPrice)
-                .then(response => {})
-                .catch(function(error) {
-                  alert("Ha ocurrido un error creando los precios");
-                });
-            }
             this.snackbar = true;
             this.snackbarMessage = "Cliente actualizado correctamente";
-            this.reset();
           })
           .catch(function(error) {
+            console.log(error);
             alert("Ha ocurrido un error creando el cliente");
           });
       }

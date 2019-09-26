@@ -33,6 +33,7 @@ export default new Router({
     {
       path: "/customer-update/",
       component: () => import("@/views/CustomerUpdate"),
+      props: true,
       name: "Actualizar cliente"
     },
   ]

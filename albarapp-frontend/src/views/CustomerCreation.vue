@@ -15,13 +15,10 @@
 
       <v-btn to="/customer-list/">Volver</v-btn>
 
-     <v-snackbar v-model="snackbar">
-      {{snackbarMessage}}
-      <v-btn color="green" text @click="snackbar = false">
-      Cerrar
-      </v-btn>
-    </v-snackbar>
-
+      <v-snackbar v-model="snackbar">
+        {{snackbarMessage}}
+        <v-btn color="green" text @click="snackbar = false">Cerrar</v-btn>
+      </v-snackbar>
     </v-container>
   </v-content>
 </template>
@@ -52,8 +49,8 @@ export default {
     product: undefined,
     price: 0,
     productPrices: [],
-    snackbar : false,
-    snackbarMessage : ""
+    snackbar: false,
+    snackbarMessage: ""
   }),
   methods: {
     validate() {
@@ -82,9 +79,7 @@ export default {
               };
               this.$axios
                 .post("/customerProductPrices", customerProductPrice)
-                .then(response => {
-                  
-                })
+                .then(response => {})
                 .catch(function(error) {
                   alert("Ha ocurrido un error creando los precios");
                 });

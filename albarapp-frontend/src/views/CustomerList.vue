@@ -32,7 +32,7 @@
         >
           <template v-slot:body="{ items }">
             <tbody>
-              <tr v-for="item in items" :key="item.code" @click="updateCustomer(item)">
+              <tr v-for="item in items" :key="item.code">
                 <td>{{item.code}}</td>
                 <td>{{item.name}}</td>
                 <td>{{item.alias}}</td>
@@ -41,6 +41,11 @@
                 <td>{{item.email}}</td>
                 <td>{{item.address}}</td>
                 <td>{{item.province}}</td>
+                <td>
+                  <v-btn @click="updateCustomer(item)">
+                    <v-icon dark>mdi-pencil</v-icon>
+                  </v-btn>
+                </td>
               </tr>
             </tbody>
           </template>
@@ -71,7 +76,8 @@ export default {
         { text: "Teléfono", sortable: false, value: "phoneNumber" },
         { text: "E-mail", sortable: false, value: "email" },
         { text: "Dirección", sortable: false, value: "address" },
-        { text: "Provincia", sortable: false, value: "province" }
+        { text: "Provincia", sortable: false, value: "province" },
+        { text: "", sortable: false, value: "update" }
       ],
       search: "",
       sortBy: "code",
@@ -95,7 +101,7 @@ export default {
     updateCustomer(item) {
       this.$router.push({
         name: "Actualizar cliente",
-        params: { customer: item._links.self.href }
+        params: { customerHref: item._links.self.href }
       });
     }
   }
