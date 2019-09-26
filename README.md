@@ -17,9 +17,12 @@ Backend:
 ---
 ### Run App ###  
 
-Run app (development and production):   
-  _./mvnw spring-boot:run_
+- Development\
+./mvnw spring-boot:run -Dspring-boot.run.profiles=development
 
-Run only frontend for development:      
-  _cd albarapp-frontend_      
-  _npm run serve_
+- Development only frontend (hot reload)\
+cd albarapp-frontend    
+npm run serve
+
+- Production\
+ ./mvnw spring-boot:run -Dspring-boot.run.profiles=production
