@@ -95,6 +95,7 @@ export default {
           this.customers = response.data._embedded.customers;
         })
         .catch(function(error) {
+          console.log(error);
           alert("Ha ocurrido un error recuperando los clientes");
         });
     },

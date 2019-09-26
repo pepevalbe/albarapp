@@ -104,6 +104,7 @@ export default {
           });
       })
       .catch(function(error) {
+        console.log(error);
         alert("Ha ocurrido un error recuperando los datos del cliente");
       });
   },
@@ -140,16 +141,10 @@ export default {
         productPricesToInsert = this.productPrices.filter(
           f => !this.productPricesOriginal.includes(f)
         );
-        console.log("A eliminar: ");
-        console.log(productPricesToDelete);
-        console.log("A insertar: ");
-        console.log(productPricesToInsert);
         for (var i = 0; i < productPricesToDelete.length; i++) {
           this.$axios
             .delete(productPricesToDelete[i].productPriceHref)
-            .then(response => {
-              console.log("Precio eliminado");
-            })
+            .then(response => {})
             .catch(function(error) {
               console.log(error);
               alert("Ha ocurrido un error creando el cliente");
@@ -166,6 +161,7 @@ export default {
             .post("/customerProductPrices", customerProductPrice)
             .then(response => {})
             .catch(function(error) {
+              console.log(error);
               alert("Ha ocurrido un error creando los precios");
             });
         }
