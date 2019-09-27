@@ -94,7 +94,7 @@ export default {
         .then(response => {
           this.customers = response.data._embedded.customers;
         })
-        .catch(function() {
+        .catch(function(error) {
           alert("Ha ocurrido un error recuperando los clientes");
         });
     },

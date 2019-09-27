@@ -36,5 +36,15 @@ export default new Router({
       props: true,
       name: "Actualizar cliente"
     },
+    {
+      path: "/delivery-note-list/",
+      component: () => import("@/views/DeliveryNoteList"),
+      name: "Albaranes"
+    },
+    {
+      path: "/delivery-note-creation/",
+      component: () => import("@/views/DeliveryNoteCreation"),
+      name: "Nuevo albarán"
+    },
   ]
 });
