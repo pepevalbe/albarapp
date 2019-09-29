@@ -35,6 +35,7 @@
             <tbody>
               <tr v-for="item in items" :key="item.deliveryNoteNr">
                 <td>{{item.deliveryNoteNr}}</td>
+                <td>{{item.auxDeliveryNoteNr}}</td>
                 <td>{{item.alias}}</td>
                 <td>{{item.issuedTimestamp}}</td>
                 <td>{{item.total.toFixed(2)}} €</td>
@@ -67,6 +68,11 @@ export default {
       deliveryNotes: [],
       headers: [
         { text: "Nº Albarán", sortable: true, value: "deliveryNoteNr" },
+        {
+          text: "Nº Albarán auxiliar",
+          sortable: false,
+          value: "auxDeliveryNoteNr"
+        },
         { text: "Alias Cliente", sortable: false, value: "alias" },
         { text: "Fecha", sortable: false, value: "issuedTimestamp" },
         { text: "Total", sortable: false, value: "total" },
@@ -90,6 +96,7 @@ export default {
             function(item) {
               return {
                 deliveryNoteNr: "",
+                auxDeliveryNoteNr: "",
                 alias: "",
                 issuedTimestamp: new Date(
                   item.issuedTimestamp
