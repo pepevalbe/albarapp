@@ -15,14 +15,27 @@ Backend:
 * SQL Database
 
 ---
+### Build App ###  
+There are three maven profiles. You can build with any group of them:
+- development: Add development dependencies
+- production: Add production dependencies
+- front-end: Add frontend maven plugin
+
+        ./mvnw clean install -P development,production,frontend
+---
 ### Run App ###  
+There are two spring profiles. You can specify the active profile with -Dspring.profiles.active
+- Development:
 
-- Development\
-./mvnw spring-boot:run -Dspring-boot.run.profiles=development
+        java -jar -Dspring.profiles.active=development target/albarapp-0.0.1-SNAPSHOT.jar
+        ./mvnw spring-boot:run -P development -Dspring-boot.run.profiles=development
 
-- Development only frontend (hot reload)\
-cd albarapp-frontend    
-npm run serve
+- Production:
 
-- Production\
- ./mvnw spring-boot:run -Dspring-boot.run.profiles=production
+        java -jar -Dspring.profiles.active=production,frontend target/albarapp-0.0.1-SNAPSHOT.jar           
+        ./mvnw spring-boot:run -P production,frontend -Dspring-boot.run.profiles=production
+
+- Frontend development (with hot reload). In albarap-frontend directory:
+
+        npm run serve
+
