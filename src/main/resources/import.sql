@@ -23,20 +23,20 @@ INSERT INTO customer_product_price(id, offered_price, customer_id, product_id) V
     (8, 3.6, 2, 1),
     (9, 4, 3, 7);
 
-INSERT INTO invoice(id, invoice_number, issued_timestamp) VALUES
-    (1, 201900001, 1569173243000),
-    (2, 201900002, 1569173243000),
-    (3, 201900003, 1569173243000);
-	
+INSERT INTO invoice(id, issued_timestamp) VALUES
+    (201800000, 1569173243000),
+    (201800001, 1569173243000),
+    (201800002, 1569173243000);
+
 INSERT INTO delivery_note(id, issued_timestamp, customer_id, invoice_id) VALUES
-    (1, 1569173243000, 1, 1),
-    (2, 1569173243000, 1, 1),
-    (3, 1569173243000, 2, 2),
-    (4, 1569173243000, 3, 3);
+    (1, 1569173243000, 1, 201800000),
+    (2, 1569173243000, 1, 201800000),
+    (3, 1569173243000, 2, 201800001),
+    (4, 1569173243000, 3, 201800002);
 
 INSERT INTO delivery_note_item(id, quantity, price, product_id, delivery_note_id) VALUES
     (1, 3, 29.5, 1, 1),
     (2, 5, 29.0, 1, 2),
     (3, 2, 33, 1, 3),
     (4, 1, 5, 2, 3),
-    (5, 3, 5, 2, 4);	
+    (5, 3, 5, 2, 4);

@@ -12,9 +12,12 @@ import java.util.Set;
 public class DeliveryNote {
 
     @Id
-    @GeneratedValue(generator = "uuid")
-    @GenericGenerator(name = "uuid", strategy = "uuid2")
-    private String id;
+    @GeneratedValue(generator = "SequentialByYear")
+    @GenericGenerator(name = "SequentialByYear", strategy = "com.pepe.albarapp.persistance.SequentialByYearIdGenerator")
+    private Long id;
+
+    @Column
+    private String auxDeliveryNoteNumber;
 
     @Column(nullable = false)
     private long issuedTimestamp;

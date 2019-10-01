@@ -12,12 +12,9 @@ import java.util.Set;
 public class Invoice {
 
     @Id
-    @GeneratedValue(generator = "uuid")
-    @GenericGenerator(name = "uuid", strategy = "uuid2")
-    private String id;
-
-    @Column(nullable = false)
-    private long invoiceNumber;
+    @GeneratedValue(generator = "SequentialByYear")
+    @GenericGenerator(name = "SequentialByYear", strategy = "com.pepe.albarapp.persistance.SequentialByYearIdGenerator")
+    private Long id;
 
     @Column(nullable = false)
     private long issuedTimestamp;
