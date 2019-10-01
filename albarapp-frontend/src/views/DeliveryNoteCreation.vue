@@ -10,6 +10,8 @@
             :counter="5"
             label="Código cliente"
             required
+            autofocus
+            @focus="$event.target.select()"
             v-on:blur="selectCustomerByCode()"
             v-on:input="clearCustomer()"
           ></v-text-field>
@@ -26,7 +28,7 @@
             v-on:change="selectCustomerByAlias()"
           ></v-autocomplete>
         </v-col>
-        <v-col cols="12" md="3">
+        <v-col cols="12" md="1">
           <v-menu
             ref="menu1"
             v-model="menu1"
@@ -43,6 +45,7 @@
                 label="Fecha"
                 hint="Formatos: ddMMaa, ddMMaaaa, dd/MM/aa, dd/MM/aaaa"
                 persistent-hint
+                @focus="$event.target.select()"
                 prepend-icon="mdi-calendar"
                 @blur="parseDateText()"
                 v-on="on"
@@ -57,8 +60,98 @@
             ></v-date-picker>
           </v-menu>
         </v-col>
+        <v-col cols="12" md="2">
+          <v-text-field
+            ref="auxDeliveryNoteNr"
+            v-model="auxDeliveryNoteNr"
+            type="number"
+            label="Nº  Albarán auxiliar"
+            @focus="$event.target.select()"
+          ></v-text-field>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col cols="12" md="2">
+          <v-text-field
+            ref="quantity"
+            v-model="quantity"
+            type="number"
+            label="Cantidad"
+            @focus="$event.target.select()"
+          ></v-text-field>
+        </v-col>
+        <v-col cols="12" md="2">
+          <v-text-field
+            ref="productCode"
+            v-model="productCode"
+            type="number"
+            label="Código de producto"
+            @focus="$event.target.select()"
+            v-on:blur="selectProductByCode()"
+            v-on:input="clearProduct()"
+          ></v-text-field>
+        </v-col>
+        <v-col cols="12" md="5">
+          <v-autocomplete
+            v-model="product"
+            label="Producto"
+            :items="products"
+            item-text="name"
+            return-object
+            no-data-text="Sin coincidencias"
+            v-on:blur="selectProductByName()"
+            v-on:change="selectProductByName()"
+          ></v-autocomplete>
+        </v-col>
+        <v-col cols="12" md="2">
+          <v-text-field
+            ref="price"
+            v-model="price"
+            type="number"
+            label="Precio"
+            @focus="$event.target.select()"
+          ></v-text-field>
+        </v-col>
+        <v-col cols="12" md="1">
+          <v-flex text-xs-center align-center>
+            <v-btn @click="addDeliveryNoteItem()">
+              <span>Añadir línea</span>
+            </v-btn>
+          </v-flex>
+        </v-col>
       </v-row>
     </v-form>
+    <v-row class="ml-5" justify="center">
+      <v-col cols="12" md="5">
+        <v-simple-table>
+          <template v-slot:default>
+            <thead>
+              <tr>
+                <th class="text-left">Cantidad</th>
+                <th class="text-left">Producto</th>
+                <th class="text-left">Precio</th>
+                <th class="text-left">Total bruto</th>
+                <th class="text-left">Tipo impositivo</th>
+                <th class="text-left">Total neto</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="item in deliveryNoteItems" :key="item.itemNumber">
+                <td>{{ item.quantity }}</td>
+                <td>{{ item.productName }}</td>
+                <td>{{ item.price }}</td>
+                <td>{{ item.gross }} €</td>
+                <td>{{ item.taxRate }} %</td>
+                <td>{{ item.net }} €</td>
+              </tr>
+              <tr>
+                <td>Total:</td>
+              </tr>
+            </tbody>
+          </template>
+        </v-simple-table>
+      </v-col>
+    </v-row>
     <v-snackbar v-model="snackbar">
       {{snackbarMessage}}
       <v-btn :color="snackbarColor" text @click="snackbar = false">Cerrar</v-btn>
@@ -70,20 +163,27 @@ export default {
   data: () => ({
     form: {
       valid: false,
-      customerCode: "",
-      customerAlias: ""
+      customerCode: ""
     },
     customers: [],
     customer: {},
+    auxDeliveryNoteNr: "",
+    products: [],
+    product: {},
+    productCode: "",
+    quantity: "",
+    price: "",
     menu1: false,
     date: "",
     dateFormatted: "",
+    deliveryNoteItems: [],
     snackbar: false,
     snackbarMessage: "",
     snackbarColor: ""
   }),
   created() {
     this.listCustomers();
+    this.listProducts();
   },
   methods: {
     listCustomers() {
@@ -91,6 +191,16 @@ export default {
         .get("/customers")
         .then(response => {
           this.customers = response.data._embedded.customers;
+        })
+        .catch(function(error) {
+          alert("Ha ocurrido un error recuperando los clientes");
+        });
+    },
+    listProducts() {
+      this.$axios
+        .get("/products")
+        .then(response => {
+          this.products = response.data._embedded.products;
         })
         .catch(function(error) {
           alert("Ha ocurrido un error recuperando los clientes");
@@ -109,12 +219,43 @@ export default {
           this.$nextTick(this.$refs.customerCode.focus);
         } else {
           this.customer = this.customers[index];
+          this.listCustomerPrices();
           this.$nextTick(this.$refs.dateText.focus);
         }
       }
     },
     clearCustomer() {
       this.customer = {};
+    },
+    listCustomerPrices() {
+      var vm = this;
+      this.$axios
+        .get(this.customer._links.customerProductPrices.href)
+        .then(response => {
+          this.customerPrices = response.data._embedded.customerProductPrices;
+          this.customerPrices.forEach(function(item) {
+            vm.$axios
+              .get(item._links.product.href)
+              .then(responseProduct => {
+                var index = vm.customerPrices.findIndex(function(element) {
+                  return (
+                    element._links.product.href === responseProduct.config.url
+                  );
+                });
+                vm.customerPrices[index].productCode =
+                  responseProduct.data.code;
+              })
+              .catch(function(error) {
+                alert(
+                  "Ha ocurrido un error recuperando los productos del precio: " +
+                    error
+                );
+              });
+          });
+        })
+        .catch(function(error) {
+          alert("Ha ocurrido un error recuperando los precios");
+        });
     },
     selectCustomerByAlias() {
       if (
@@ -123,8 +264,62 @@ export default {
         this.customer != undefined
       ) {
         this.form.customerCode = this.customer.code;
+        this.listCustomerPrices();
       }
       this.$nextTick(this.$refs.dateText.focus);
+    },
+    selectProductByCode() {
+      var vm = this;
+      if (this.productCode != "" && this.productCode != null) {
+        var index = this.products.findIndex(function(element) {
+          return element.code == vm.productCode;
+        });
+        if (index === -1) {
+          this.snackbar = true;
+          this.snackbarMessage = "No existe ningún producto con ese código";
+          this.snackbarColor = "error";
+          this.$nextTick(this.$refs.productCode.focus);
+        } else {
+          this.product = this.products[index];
+          this.selectPrice();
+          this.$nextTick(this.$refs.price.focus);
+        }
+      }
+    },
+    clearProduct() {
+      this.product = {};
+    },
+    selectProductByName() {
+      if (
+        this.product != {} &&
+        this.product != null &&
+        this.product != undefined
+      ) {
+        this.productCode = this.product.code;
+        this.selectPrice();
+        this.$nextTick(this.$refs.price.focus);
+      }
+    },
+    selectPrice() {
+      var vm = this;
+      var index = this.customerPrices.findIndex(function(element) {
+        return element.productCode == vm.productCode;
+      });
+      if (index === -1) {
+        this.price = this.product.factoryPrice;
+      } else {
+        this.price = this.customerPrices[index].offeredPrice;
+      }
+    },
+    addDeliveryNoteItem() {
+      this.deliveryNoteItems.push({
+        quantity: this.quantity,
+        productName: this.product.name,
+        price: this.price,
+        gross: this.quantity * this.price,
+        taxRate: this.product.tax,
+        net: this.quantity * this.price * (1 + this.product.tax / 100)
+      });
     },
     parseDateText() {
       var date = "";
@@ -163,8 +358,10 @@ export default {
           date = year + "-" + month + "-" + day;
           this.dateFormatted = day + "/" + month + "/" + year;
           break;
+        case 0:
+          break;
         default:
-          this.dateFormatted = "";
+          this.$nextTick(this.$refs.dateText.focus);
       }
       this.date = date;
     },

@@ -101,7 +101,7 @@ export default {
                 issuedTimestamp: new Date(
                   item.issuedTimestamp
                 ).toLocaleDateString("es-ES"),
-                total: "",
+                total: 0,
                 update: "",
                 customerHref: item._links.customer.href,
                 deliveryNoteItemsHref: item._links.deliveryNoteItems.href
