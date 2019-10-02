@@ -123,46 +123,10 @@
     </v-form>
     <v-row class="ml-5" justify="center">
       <v-col cols="12" md="8">
-        <v-simple-table>
-          <template v-slot:default>
-            <thead>
-              <tr>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th>Albarán:</th>
-                <th>{{ auxDeliveryNoteNr }}</th>
-              </tr>
-              <tr>
-                <th class="text-left">Cantidad</th>
-                <th class="text-left">Producto</th>
-                <th class="text-left">Precio</th>
-                <th class="text-left">Total bruto</th>
-                <th class="text-left">Tipo impositivo</th>
-                <th class="text-left">Total neto</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="item in deliveryNoteItems" :key="item.itemNumber">
-                <td>{{ item.quantity }}</td>
-                <td>{{ item.productName }}</td>
-                <td>{{ item.price }}</td>
-                <td>{{ item.gross.toFixed(2) }} €</td>
-                <td>{{ item.taxRate }} %</td>
-                <td>{{ item.net.toFixed(2) }} €</td>
-              </tr>
-              <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td>Total: {{deliveryNoteTotal.toFixed(2)}} €</td>
-              </tr>
-            </tbody>
-          </template>
-        </v-simple-table>
+        <DeliveryNoteItemTable
+          :deliveryNoteItems="deliveryNoteItems"
+          :deliveryNoteTotal="deliveryNoteTotal"
+        ></DeliveryNoteItemTable>
       </v-col>
     </v-row>
     <div class="mb-10"></div>
@@ -186,7 +150,12 @@
   </v-container>
 </template>
 <script>
+import DeliveryNoteItemTable from "@/components/DeliveryNoteItemTable";
+
 export default {
+  components: {
+    DeliveryNoteItemTable
+  },
   data: () => ({
     form: {
       valid: false
