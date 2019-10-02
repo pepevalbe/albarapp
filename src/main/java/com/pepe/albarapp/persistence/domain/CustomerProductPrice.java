@@ -1,4 +1,4 @@
-package com.pepe.albarapp.persistance;
+package com.pepe.albarapp.persistence.domain;
 
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;

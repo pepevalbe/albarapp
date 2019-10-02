@@ -1,9 +1,9 @@
-package com.pepe.albarapp.projection;
+package com.pepe.albarapp.persistence.projection;
 
-import com.pepe.albarapp.persistance.Customer;
-import com.pepe.albarapp.persistance.DeliveryNote;
-import com.pepe.albarapp.persistance.DeliveryNoteItem;
-import com.pepe.albarapp.persistance.Invoice;
+import com.pepe.albarapp.persistence.domain.Customer;
+import com.pepe.albarapp.persistence.domain.DeliveryNote;
+import com.pepe.albarapp.persistence.domain.DeliveryNoteItem;
+import com.pepe.albarapp.persistence.domain.Invoice;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.rest.core.config.Projection;
 

@@ -1,4 +1,4 @@
-package com.pepe.albarapp.persistance;
+package com.pepe.albarapp.persistence.domain;
 
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
@@ -13,7 +13,7 @@ public class Invoice {
 
     @Id
     @GeneratedValue(generator = "SequentialByYear")
-    @GenericGenerator(name = "SequentialByYear", strategy = "com.pepe.albarapp.persistance.SequentialByYearIdGenerator")
+    @GenericGenerator(name = "SequentialByYear", strategy = "com.pepe.albarapp.persistence.SequentialByYearGenerator")
     private Long id;
 
     @Column(nullable = false)

@@ -1,42 +1,40 @@
-package com.pepe.albarapp.persistance;
+package com.pepe.albarapp.persistence.domain;
 
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.Objects;
-import java.util.Set;
 
 @Entity
 @Data
-public class Product {
+public class DeliveryNoteItem {
 
     @Id
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid2")
     private String id;
 
-    @Column(nullable = false, unique = true)
-    private int code;
+    @Column(nullable = false)
+    private long quantity;
 
     @Column(nullable = false)
-    private String name;
+    private double price;
 
-    @Column(nullable = false)
-    private double factoryPrice;
+    @ManyToOne
+    @JoinColumn(name = "product_id", nullable = false)
+    private Product product;
 
-    @Column(nullable = false)
-    private double tax;
-
-    @OneToMany(mappedBy = "product")
-    private Set<CustomerProductPrice> customerProductPrices;
+    @ManyToOne
+    @JoinColumn(name = "delivery_note_id", nullable = false)
+    private DeliveryNote deliveryNote;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Product product = (Product) o;
-        return id == product.id;
+        DeliveryNoteItem that = (DeliveryNoteItem) o;
+        return id == that.id;
     }
 
     @Override

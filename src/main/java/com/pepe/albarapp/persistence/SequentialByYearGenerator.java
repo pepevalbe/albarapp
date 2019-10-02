@@ -1,4 +1,4 @@
-package com.pepe.albarapp.persistance;
+package com.pepe.albarapp.persistence;
 
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
@@ -7,7 +7,7 @@ import org.hibernate.id.IdentifierGenerator;
 import java.io.Serializable;
 import java.time.LocalDate;
 
-public class SequentialByYearIdGenerator implements IdentifierGenerator {
+public class SequentialByYearGenerator implements IdentifierGenerator {
 
     @Override
     public Serializable generate(SharedSessionContractImplementor session, Object obj) throws HibernateException {

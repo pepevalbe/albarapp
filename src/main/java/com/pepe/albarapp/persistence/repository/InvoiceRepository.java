@@ -1,9 +1,7 @@
-package com.pepe.albarapp.repository;
+package com.pepe.albarapp.persistence.repository;
 
-import com.pepe.albarapp.persistance.Invoice;
-import com.pepe.albarapp.projection.InvoiceView;
+import com.pepe.albarapp.persistence.domain.Invoice;
 import org.springframework.data.repository.CrudRepository;
-import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
 @CrossOrigin(origins = "http://localhost:8080")
