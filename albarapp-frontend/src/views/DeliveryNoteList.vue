@@ -33,7 +33,7 @@
         >
           <template v-slot:body="{ items }">
             <tbody>
-              <tr v-for="item in items" :key="item.deliveryNoteNr">
+              <tr v-for="item in items" :key="item.deliveryNoteItemsHref">
                 <td>{{item.deliveryNoteNr}}</td>
                 <td>{{item.auxDeliveryNoteNr}}</td>
                 <td>{{item.alias}}</td>

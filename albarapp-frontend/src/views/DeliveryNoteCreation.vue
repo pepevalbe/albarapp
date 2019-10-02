@@ -5,7 +5,7 @@
         <v-col cols="12" md="2">
           <v-text-field
             ref="customerCode"
-            v-model="form.customerCode"
+            v-model="customerCode"
             type="number"
             :counter="5"
             label="Código cliente"
@@ -28,7 +28,7 @@
             v-on:change="selectCustomerByAlias()"
           ></v-autocomplete>
         </v-col>
-        <v-col cols="12" md="1">
+        <v-col cols="12" md="2">
           <v-menu
             ref="menu1"
             v-model="menu1"
@@ -43,7 +43,7 @@
                 v-model="dateFormatted"
                 ref="dateText"
                 label="Fecha"
-                hint="Formatos: ddMMaa, ddMMaaaa, dd/MM/aa, dd/MM/aaaa"
+                hint="Formato: ddMMaaaa"
                 persistent-hint
                 @focus="$event.target.select()"
                 prepend-icon="mdi-calendar"
@@ -60,7 +60,7 @@
             ></v-date-picker>
           </v-menu>
         </v-col>
-        <v-col cols="12" md="2">
+        <v-col cols="12" md="1">
           <v-text-field
             ref="auxDeliveryNoteNr"
             v-model="auxDeliveryNoteNr"
@@ -127,6 +127,14 @@
           <template v-slot:default>
             <thead>
               <tr>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th>Albarán:</th>
+                <th>{{ auxDeliveryNoteNr }}</th>
+              </tr>
+              <tr>
                 <th class="text-left">Cantidad</th>
                 <th class="text-left">Producto</th>
                 <th class="text-left">Precio</th>
@@ -140,17 +148,36 @@
                 <td>{{ item.quantity }}</td>
                 <td>{{ item.productName }}</td>
                 <td>{{ item.price }}</td>
-                <td>{{ item.gross }} €</td>
+                <td>{{ item.gross.toFixed(2) }} €</td>
                 <td>{{ item.taxRate }} %</td>
-                <td>{{ item.net }} €</td>
+                <td>{{ item.net.toFixed(2) }} €</td>
               </tr>
               <tr>
-                <td>Total:</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>Total: {{deliveryNoteTotal.toFixed(2)}} €</td>
               </tr>
             </tbody>
           </template>
         </v-simple-table>
       </v-col>
+    </v-row>
+    <div class="mb-10"></div>
+    <v-row class="ml-5" justify="center">
+      <v-btn
+        color="success"
+        ref="createbutton"
+        class="mr-4"
+        @click="createDeliveryNote()"
+        @keyup.left="backToQuantity()"
+      >Guardar</v-btn>
+
+      <v-btn color="error" class="mr-4" @click="reset()">Borrar</v-btn>
+
+      <v-btn to="/delivery-note-list/">Volver</v-btn>
     </v-row>
     <v-snackbar v-model="snackbar">
       {{snackbarMessage}}
@@ -162,9 +189,9 @@
 export default {
   data: () => ({
     form: {
-      valid: false,
-      customerCode: ""
+      valid: false
     },
+    customerCode: "",
     customers: [],
     customer: {},
     auxDeliveryNoteNr: "",
@@ -177,6 +204,7 @@ export default {
     date: "",
     dateFormatted: "",
     deliveryNoteItems: [],
+    deliveryNoteTotal: 0,
     snackbar: false,
     snackbarMessage: "",
     snackbarColor: ""
@@ -208,9 +236,9 @@ export default {
     },
     selectCustomerByCode() {
       var vm = this;
-      if (this.form.customerCode != "" && this.form.customerCode != null) {
+      if (this.customerCode != "" && this.customerCode != null) {
         var index = this.customers.findIndex(function(element) {
-          return element.code == vm.form.customerCode;
+          return element.code == vm.customerCode;
         });
         if (index === -1) {
           this.snackbar = true;
@@ -263,7 +291,7 @@ export default {
         this.customer != null &&
         this.customer != undefined
       ) {
-        this.form.customerCode = this.customer.code;
+        this.customerCode = this.customer.code;
         this.listCustomerPrices();
       }
       this.$nextTick(this.$refs.dateText.focus);
@@ -312,13 +340,72 @@ export default {
       }
     },
     addDeliveryNoteItem() {
+      var itemNet = this.quantity * this.price * (1 + this.product.tax / 100);
       this.deliveryNoteItems.push({
         quantity: this.quantity,
         productName: this.product.name,
+        product: this.product,
         price: this.price,
         gross: this.quantity * this.price,
         taxRate: this.product.tax,
         net: this.quantity * this.price * (1 + this.product.tax / 100)
+      });
+
+      this.deliveryNoteTotal += itemNet;
+
+      this.quantity = "";
+      this.product = {};
+      (this.productCode = ""), (this.price = "");
+      this.$nextTick(() => this.$refs.createbutton.$el.focus());
+    },
+    backToQuantity() {
+      this.$nextTick(this.$refs.quantity.focus);
+    },
+    reset() {
+      this.customer = {};
+      this.customerCode = "";
+      this.auxDeliveryNoteNr = "";
+      this.quantity = "";
+      this.product = {};
+      this.productCode = "";
+      this.price = "";
+      this.deliveryNoteItems = [];
+      this.deliveryNoteTotal = 0;
+      this.$nextTick(this.$refs.customerCode.focus);
+    },
+    createDeliveryNote() {
+      var vm = this;
+      var promises = [];
+      var issuedTimestamp = new Date();
+      issuedTimestamp.setDate(this.date.substring(8, 10));
+      issuedTimestamp.setMonth(this.date.substring(5, 7) - 1);
+      issuedTimestamp.setFullYear(this.date.substring(0, 4));
+      // Rest call to create new deliveryNote
+      var deliveryNote = {
+        auxDeliveryNoteNumber: this.auxDeliveryNoteNr,
+        issuedTimestamp: issuedTimestamp.getTime(),
+        customer: this.customer._links.self.href
+      };
+
+      this.$axios.post("/deliveryNotes", deliveryNote).then(response => {
+        for (var i = 0; i < vm.deliveryNoteItems.length; i++) {
+          var item = vm.deliveryNoteItems[i];
+          var deliveryNoteItem = {
+            quantity: item.quantity,
+            price: item.price,
+            product: item.product._links.self.href,
+            deliveryNote: response.data._links.self.href
+          };
+          promises.push(
+            this.$axios.post("/deliveryNoteItems", deliveryNoteItem)
+          );
+        }
+      });
+      this.snackbar = true;
+      this.snackbarColor = "success";
+      this.snackbarMessage = "Albarán creado correctamente";
+      Promise.all(promises).then(function(values) {
+        this.reset();
       });
     },
     parseDateText() {
@@ -327,13 +414,6 @@ export default {
       var month = "";
       var year = "";
       switch (this.dateFormatted.length) {
-        case 6: // ddMMyy
-          day = this.dateFormatted.substring(0, 2);
-          month = this.dateFormatted.substring(2, 4);
-          year = this.dateFormatted.substring(4, 6);
-          date = "20" + year + "-" + month + "-" + day;
-          this.dateFormatted = day + "/" + month + "/" + year;
-          break;
         case 8:
           if (!isNaN(this.dateFormatted)) {
             // ddMMyyyy
@@ -341,22 +421,11 @@ export default {
             month = this.dateFormatted.substring(2, 4);
             year = this.dateFormatted.substring(4, 8);
             date = year + "-" + month + "-" + day;
-            this.dateFormatted = day + "/" + month + "/" + year.substring(2, 4);
+            this.dateFormatted = day + "/" + month + "/" + year;
           } else {
             // dd-MM-yy
-            day = this.dateFormatted.substring(0, 2);
-            month = this.dateFormatted.substring(3, 5);
-            year = this.dateFormatted.substring(6, 8);
-            date = "20" + year + "-" + month + "-" + day;
-            this.dateFormatted = day + "/" + month + "/" + year;
+            his.$nextTick(this.$refs.dateText.focus);
           }
-          break;
-        case 10: // dd-MM-yyyy
-          day = this.dateFormatted.substring(0, 2);
-          month = this.dateFormatted.substring(3, 5);
-          year = this.dateFormatted.substring(6, 10);
-          date = year + "-" + month + "-" + day;
-          this.dateFormatted = day + "/" + month + "/" + year;
           break;
         case 0:
           break;
@@ -368,7 +437,7 @@ export default {
     parseDatePick() {
       var day = this.date.substring(8, 10);
       var month = this.date.substring(5, 7);
-      var year = this.date.substring(2, 4);
+      var year = this.date.substring(0, 4);
       this.dateFormatted = day + "/" + month + "/" + year;
     }
   }
