@@ -62,7 +62,7 @@
 
 <script>
 export default {
-  name: "CustomerList",
+  name: "DeliveryNoteList",
   data: () => {
     return {
       deliveryNotes: [],
@@ -95,8 +95,8 @@ export default {
           this.deliveryNotes = response.data._embedded.deliveryNotes.map(
             function(item) {
               return {
-                deliveryNoteNr: "",
-                auxDeliveryNoteNr: "",
+                deliveryNoteNr: item.id,
+                auxDeliveryNoteNr: item.auxDeliveryNoteNr,
                 alias: "",
                 issuedTimestamp: new Date(
                   item.issuedTimestamp

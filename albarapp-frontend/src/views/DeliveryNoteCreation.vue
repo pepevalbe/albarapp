@@ -16,7 +16,7 @@
             v-on:input="clearCustomer()"
           ></v-text-field>
         </v-col>
-        <v-col cols="12" md="7">
+        <v-col cols="12" md="6">
           <v-autocomplete
             v-model="customer"
             label="Alias cliente"
@@ -60,7 +60,7 @@
             ></v-date-picker>
           </v-menu>
         </v-col>
-        <v-col cols="12" md="1">
+        <v-col cols="12" md="2">
           <v-text-field
             ref="auxDeliveryNoteNr"
             v-model="auxDeliveryNoteNr"
@@ -91,7 +91,7 @@
             v-on:input="clearProduct()"
           ></v-text-field>
         </v-col>
-        <v-col cols="12" md="5">
+        <v-col cols="12" md="4">
           <v-autocomplete
             v-model="product"
             label="Producto"
@@ -112,7 +112,7 @@
             @focus="$event.target.select()"
           ></v-text-field>
         </v-col>
-        <v-col cols="12" md="1">
+        <v-col cols="12" md="2">
           <v-flex text-xs-center align-center>
             <v-btn @click="addDeliveryNoteItem()">
               <span>Añadir línea</span>
@@ -122,7 +122,7 @@
       </v-row>
     </v-form>
     <v-row class="ml-5" justify="center">
-      <v-col cols="12" md="5">
+      <v-col cols="12" md="8">
         <v-simple-table>
           <template v-slot:default>
             <thead>
@@ -382,7 +382,7 @@ export default {
       issuedTimestamp.setFullYear(this.date.substring(0, 4));
       // Rest call to create new deliveryNote
       var deliveryNote = {
-        auxDeliveryNoteNumber: this.auxDeliveryNoteNr,
+        auxDeliveryNoteNr: this.auxDeliveryNoteNr,
         issuedTimestamp: issuedTimestamp.getTime(),
         customer: this.customer._links.self.href
       };
