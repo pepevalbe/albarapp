@@ -14,6 +14,7 @@
             @focus="$event.target.select()"
             v-on:blur="selectCustomerByCode()"
             v-on:input="clearCustomer()"
+            v-on:keyup.enter="moveToDate()"
           ></v-text-field>
         </v-col>
         <v-col cols="12" md="6">
@@ -24,7 +25,6 @@
             item-text="alias"
             return-object
             no-data-text="Sin coincidencias"
-            v-on:blur="selectCustomerByAlias()"
             v-on:change="selectCustomerByAlias()"
           ></v-autocomplete>
         </v-col>
@@ -48,6 +48,7 @@
                 @focus="$event.target.select()"
                 prepend-icon="mdi-calendar"
                 @blur="parseDateText()"
+                v-on:keyup.enter="moveToAuxDeliveryNoteNr()"
                 v-on="on"
               ></v-text-field>
             </template>
@@ -67,6 +68,7 @@
             type="number"
             label="Nº  Albarán auxiliar"
             @focus="$event.target.select()"
+            v-on:keyup.enter="moveToQuantity()"
           ></v-text-field>
         </v-col>
       </v-row>
@@ -78,6 +80,7 @@
             type="number"
             label="Cantidad"
             @focus="$event.target.select()"
+            v-on:keyup.enter="moveToProductCode()"
           ></v-text-field>
         </v-col>
         <v-col cols="12" md="2">
@@ -87,6 +90,7 @@
             type="number"
             label="Código de producto"
             @focus="$event.target.select()"
+            v-on:keyup.enter="selectProductByCode()"
             v-on:blur="selectProductByCode()"
             v-on:input="clearProduct()"
           ></v-text-field>
@@ -99,7 +103,6 @@
             item-text="name"
             return-object
             no-data-text="Sin coincidencias"
-            v-on:blur="selectProductByName()"
             v-on:change="selectProductByName()"
           ></v-autocomplete>
         </v-col>
@@ -110,11 +113,12 @@
             type="number"
             label="Precio"
             @focus="$event.target.select()"
+            v-on:keyup.enter="moveToAddLine()"
           ></v-text-field>
         </v-col>
         <v-col cols="12" md="2">
           <v-flex text-xs-center align-center>
-            <v-btn @click="addDeliveryNoteItem()">
+            <v-btn @click="addDeliveryNoteItem()" ref="addLineButton">
               <span>Añadir línea</span>
             </v-btn>
           </v-flex>
@@ -135,8 +139,8 @@
         color="success"
         ref="createbutton"
         class="mr-4"
-        @click="createDeliveryNote()"
-        @keyup.left="backToQuantity()"
+        @click="createDeliveryNote($event)"
+        @keyup.left="moveToQuantity()"
       >Guardar</v-btn>
 
       <v-btn color="error" class="mr-4" @click="reset()">Borrar</v-btn>
@@ -217,8 +221,9 @@ export default {
         } else {
           this.customer = this.customers[index];
           this.listCustomerPrices();
-          this.$nextTick(this.$refs.dateText.focus);
         }
+      } else {
+        this.$nextTick(this.$refs.customerCode.focus);
       }
     },
     clearCustomer() {
@@ -258,12 +263,13 @@ export default {
       if (
         this.customer != {} &&
         this.customer != null &&
-        this.customer != undefined
+        this.customer != undefined &&
+        this.customer.code != null
       ) {
         this.customerCode = this.customer.code;
         this.listCustomerPrices();
       }
-      this.$nextTick(this.$refs.dateText.focus);
+      this.moveToDate();
     },
     selectProductByCode() {
       var vm = this;
@@ -279,7 +285,7 @@ export default {
         } else {
           this.product = this.products[index];
           this.selectPrice();
-          this.$nextTick(this.$refs.price.focus);
+          this.moveToPrice();
         }
       }
     },
@@ -294,7 +300,7 @@ export default {
       ) {
         this.productCode = this.product.code;
         this.selectPrice();
-        this.$nextTick(this.$refs.price.focus);
+        this.moveToPrice();
       }
     },
     selectPrice() {
@@ -327,8 +333,23 @@ export default {
       (this.productCode = ""), (this.price = "");
       this.$nextTick(() => this.$refs.createbutton.$el.focus());
     },
-    backToQuantity() {
+    moveToDate() {
+      this.$nextTick(this.$refs.dateText.focus);
+    },
+    moveToAuxDeliveryNoteNr() {
+      this.$nextTick(this.$refs.auxDeliveryNoteNr.focus);
+    },
+    moveToQuantity() {
       this.$nextTick(this.$refs.quantity.focus);
+    },
+    moveToProductCode() {
+      this.$nextTick(this.$refs.productCode.focus);
+    },
+    moveToPrice() {
+      this.$nextTick(this.$refs.price.focus);
+    },
+    moveToAddLine() {
+      this.$nextTick(() => this.$refs.addLineButton.$el.focus());
     },
     reset() {
       this.customer = {};
@@ -342,7 +363,8 @@ export default {
       this.deliveryNoteTotal = 0;
       this.$nextTick(this.$refs.customerCode.focus);
     },
-    createDeliveryNote() {
+    createDeliveryNote(event) {
+      event.preventDefault();
       var vm = this;
       var promises = [];
       var issuedTimestamp = new Date();
@@ -374,7 +396,7 @@ export default {
       this.snackbarColor = "success";
       this.snackbarMessage = "Albarán creado correctamente";
       Promise.all(promises).then(function(values) {
-        this.reset();
+        vm.reset();
       });
     },
     parseDateText() {
@@ -392,10 +414,22 @@ export default {
             date = year + "-" + month + "-" + day;
             this.dateFormatted = day + "/" + month + "/" + year;
           } else {
-            // dd-MM-yy
-            his.$nextTick(this.$refs.dateText.focus);
+            // Wrong
+            this.$nextTick(this.$refs.dateText.focus);
           }
           break;
+        case 10:
+          if (
+            this.dateFormatted.substring(2, 3) === "/" &&
+            this.dateFormatted.substring(5, 6) === "/"
+          ) {
+            // dd/MM/yyyy
+            day = this.dateFormatted.substring(0, 2);
+            month = this.dateFormatted.substring(3, 5);
+            year = this.dateFormatted.substring(6, 10);
+            date = year + "-" + month + "-" + day;
+            this.dateFormatted = day + "/" + month + "/" + year;
+          }
         case 0:
           break;
         default:
@@ -408,6 +442,8 @@ export default {
       var month = this.date.substring(5, 7);
       var year = this.date.substring(0, 4);
       this.dateFormatted = day + "/" + month + "/" + year;
+      this.menu1 = false;
+      this.moveToAuxDeliveryNoteNr();
     }
   }
 };
