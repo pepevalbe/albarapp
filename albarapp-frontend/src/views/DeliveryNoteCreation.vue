@@ -184,6 +184,7 @@ export default {
   created() {
     this.listCustomers();
     this.listProducts();
+    this.setDateToday();
   },
   methods: {
     listCustomers() {
@@ -205,6 +206,19 @@ export default {
         .catch(function(error) {
           alert("Ha ocurrido un error recuperando los clientes");
         });
+    },
+    setDateToday() {
+      var today = new Date();
+      var day = today
+        .getDate()
+        .toString()
+        .padStart(2, "0");
+      var month = (today.getMonth() + 1).toString().padStart(2, "0");
+      var year = today
+        .getFullYear()
+        .toString()
+        .padStart(4, "0");
+      this.dateFormatted = day + "/" + month + "/" + year;
     },
     selectCustomerByCode() {
       var vm = this;
