@@ -23,6 +23,7 @@ export default new Router({
     {
       path: "/product-update/",
       component: () => import("@/views/ProductUpdate"),
+      props: true,
       name: "Actualizar producto"
     },
     {

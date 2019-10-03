@@ -68,7 +68,8 @@ export default {
         { text: "Código", sortable: true, value: "code" },
         { text: "Nombre", sortable: false, value: "name" },
         { text: "Precio estándar", sortable: true, value: "factoryPrice" },
-        { text: "Tipo impositivo (%)", sortable: false, value: "tax" }
+        { text: "Tipo impositivo (%)", sortable: false, value: "tax" },
+        { text: "", sortable: false, value: "update" }
       ],
       search: "",
       sortBy: "code",
@@ -90,9 +91,10 @@ export default {
         });
     },
     updateProduct(item) {
+      console.log(item._links.self.href);
       this.$router.push({
         name: "Actualizar producto",
-        params: { customerHref: item._links.self.href }
+        params: { productHref: item._links.self.href }
       });
     }
   }

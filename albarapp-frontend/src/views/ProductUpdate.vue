@@ -1,16 +1,18 @@
 <template>
   <v-content>
     <v-container class="pl-10 pr-10">
+      <ProductForm v-bind:form="form"></ProductForm>
       <div class="mb-3"></div>
-
       <div class="mb-10"></div>
-
-      <v-btn :disabled="!form.valid" color="success" class="mr-4" @click="validate">Actualizar</v-btn>
-
+      <v-btn
+        :disabled="!form.valid"
+        color="success"
+        class="mr-4"
+        @click="updateProduct()"
+      >Actualizar</v-btn>
       <v-btn to="/product-list/">Volver</v-btn>
-
       <v-snackbar v-model="snackbar">
-        {{snackbarMessage}}
+        Producto actualizado correctamente
         <v-btn color="green" text @click="snackbar = false">Cerrar</v-btn>
       </v-snackbar>
     </v-container>
@@ -18,27 +20,21 @@
 </template>
 
 <script>
+import ProductForm from "@/components/ProductForm";
+
 export default {
+  components: {
+    ProductForm
+  },
   data: () => ({
     form: {
       valid: false,
       code: "",
       name: "",
-      alias: "",
-      email: "",
-      idn: "",
-      address: "",
-      province: "",
-      telephone: ""
+      factoryPrice: 0,
+      tax: 0
     },
-    componentKey: 0,
-    products: [],
-    product: undefined,
-    price: 0,
-    productPrices: [],
-    productPricesOriginal: [],
-    snackbar: false,
-    snackbarMessage: ""
+    snackbar: false
   }),
   props: {
     productHref: String
@@ -46,13 +42,36 @@ export default {
   created() {
     this.$axios
       .get(this.productHref)
-      .then(response => {})
+      .then(response => {
+        this.form.code = response.data.code.toString();
+        this.form.name = response.data.name;
+        this.form.factoryPrice = response.data.factoryPrice;
+        this.form.tax = response.data.tax;
+      })
       .catch(function(error) {
         alert("Ha ocurrido un error recuperando los datos del producto");
       });
   },
   methods: {
-    validate() {}
+    updateProduct() {
+      var vm = this;
+      if (this.form.valid) {
+        var product = {
+          code: this.form.code,
+          name: this.form.name,
+          factoryPrice: this.form.factoryPrice,
+          tax: this.form.tax
+        };
+        this.$axios
+          .put(this.productHref, product)
+          .then(response => {
+            this.snackbar = true;
+          })
+          .catch(function(error) {
+            alert("Ha ocurrido un error actualizando el producto");
+          });
+      }
+    }
   }
 };
 </script>
