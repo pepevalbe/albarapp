@@ -136,10 +136,9 @@
     <div class="mb-10"></div>
     <v-row class="ml-5" justify="center">
       <v-btn
-        color="success"
         ref="createbutton"
         class="mr-4"
-        @click="createDeliveryNote($event)"
+        @click="createDeliveryNote()"
         @keyup.left="moveToQuantity()"
       >Guardar</v-btn>
 
@@ -363,8 +362,7 @@ export default {
       this.deliveryNoteTotal = 0;
       this.$nextTick(this.$refs.customerCode.focus);
     },
-    createDeliveryNote(event) {
-      event.preventDefault();
+    createDeliveryNote() {
       var vm = this;
       var promises = [];
       var issuedTimestamp = new Date();
@@ -391,13 +389,13 @@ export default {
             this.$axios.post("/deliveryNoteItems", deliveryNoteItem)
           );
         }
+        Promise.all(promises).then(function(values) {
+          vm.reset();
+        });
       });
       this.snackbar = true;
       this.snackbarColor = "success";
       this.snackbarMessage = "Albarán creado correctamente";
-      Promise.all(promises).then(function(values) {
-        vm.reset();
-      });
     },
     parseDateText() {
       var date = "";

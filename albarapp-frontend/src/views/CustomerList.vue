@@ -34,8 +34,8 @@
             <tbody>
               <tr v-for="item in items" :key="item.code">
                 <td>{{item.code}}</td>
-                <td>{{item.name}}</td>
                 <td>{{item.alias}}</td>
+                <td>{{item.name}}</td>
                 <td>{{item.fiscalId}}</td>
                 <td>{{item.phoneNumber}}</td>
                 <td>{{item.email}}</td>
