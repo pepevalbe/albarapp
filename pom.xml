@@ -16,7 +16,7 @@
 
     <properties>
         <java.version>1.8</java.version>
-        <maven.test.skip>true</maven.test.skip>
+        <maven.test.skip>false</maven.test.skip>
     </properties>
 
     <dependencies>
@@ -77,6 +77,9 @@
                     <scope>runtime</scope>
                 </dependency>
             </dependencies>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
         </profile>
         <profile>
             <id>development</id>
@@ -91,6 +94,9 @@
                     <artifactId>spring-data-rest-hal-browser</artifactId>
                 </dependency>
             </dependencies>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
         </profile>
         <profile>
             <id>frontend</id>
@@ -158,6 +164,9 @@
                     </plugin>
                 </plugins>
             </build>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
         </profile>
     </profiles>
 
