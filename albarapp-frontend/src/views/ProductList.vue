@@ -8,34 +8,45 @@
           </v-btn>
         </v-flex>
       </v-layout>
-      <v-card-title>
-        Listado de productos
-        <div class="flex-grow-1"></div>
-        <v-text-field
-          v-model="search"
-          append-icon="mdi-magnify"
-          label="Buscar ..."
-          single-line
-          hide-details
-        ></v-text-field>
-      </v-card-title>
-      <v-data-table
-        :loading="!products || products.length == 0"
-        loading-text="Cargando... Por favor, espere"
-        :headers="headers"
-        :items="products"
-        :search="search"
-        :sort-by.sync="sortBy"
-        :sort-desc.sync="descending"
-        :items-per-page="15"
-      >
-        <template v-slot:item.factoryPrice="{item}">
-          <span>{{item.factoryPrice}} €</span>
-        </template>
-        <template v-slot:item.tax="{item}">
-          <span>{{item.tax}} %</span>
-        </template>
-      </v-data-table>
+      <v-card>
+        <v-card-title>
+          Listado de productos
+          <div class="flex-grow-1"></div>
+          <v-text-field
+            v-model="search"
+            append-icon="mdi-magnify"
+            label="Buscar ..."
+            single-line
+            hide-details
+          ></v-text-field>
+        </v-card-title>
+        <v-data-table
+          :loading="!products || products.length == 0"
+          loading-text="Cargando... Por favor, espere"
+          :headers="headers"
+          :items="products"
+          :search="search"
+          :sort-by.sync="sortBy"
+          :sort-desc.sync="descending"
+          :items-per-page="15"
+        >
+          <template v-slot:body="{ items }">
+            <tbody>
+              <tr v-for="item in items" :key="item.code">
+                <td>{{item.code}}</td>
+                <td>{{item.name}}</td>
+                <td>{{item.factoryPrice}} €</td>
+                <td>{{item.tax}} %</td>
+                <td>
+                  <v-btn @click="updateProduct(item)">
+                    <v-icon dark>mdi-pencil</v-icon>
+                  </v-btn>
+                </td>
+              </tr>
+            </tbody>
+          </template>
+        </v-data-table>
+      </v-card>
       <v-layout text-center wrap class="pt-10">
         <v-flex xs12>
           <v-btn to="/">
@@ -77,6 +88,12 @@ export default {
         .catch(function(error) {
           alert("Ha ocurrido un error recuperando los productos");
         });
+    },
+    updateProduct(item) {
+      this.$router.push({
+        name: "Actualizar producto",
+        params: { customerHref: item._links.self.href }
+      });
     }
   }
 };

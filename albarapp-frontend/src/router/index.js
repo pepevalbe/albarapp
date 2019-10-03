@@ -21,6 +21,11 @@ export default new Router({
       name: "Nuevo producto"
     },
     {
+      path: "/product-update/",
+      component: () => import("@/views/ProductUpdate"),
+      name: "Actualizar producto"
+    },
+    {
       path: "/customer-list/",
       component: () => import("@/views/CustomerList"),
       name: "Clientes"
