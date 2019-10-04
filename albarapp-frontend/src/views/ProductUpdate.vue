@@ -46,7 +46,7 @@ export default {
         this.form.code = response.data.code.toString();
         this.form.name = response.data.name;
         this.form.factoryPrice = response.data.factoryPrice;
-        this.form.tax = response.data.tax;
+        this.form.tax = response.data.tax.toString();
       })
       .catch(function(error) {
         alert("Ha ocurrido un error recuperando los datos del producto");
