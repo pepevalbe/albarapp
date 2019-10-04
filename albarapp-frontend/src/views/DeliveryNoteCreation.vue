@@ -14,7 +14,7 @@
             @focus="$event.target.select()"
             v-on:blur="selectCustomerByCode()"
             v-on:input="clearCustomer()"
-            v-on:keyup.enter="moveToDate()"
+            v-on:keypress.enter="moveToDate()"
           ></v-text-field>
         </v-col>
         <v-col cols="12" md="6">
@@ -48,7 +48,7 @@
                 @focus="$event.target.select()"
                 prepend-icon="mdi-calendar"
                 @blur="parseDateText()"
-                v-on:keyup.enter="moveToAuxDeliveryNoteNr()"
+                v-on:keypress.enter="moveToAuxDeliveryNoteNr()"
                 v-on="on"
               ></v-text-field>
             </template>
@@ -68,7 +68,7 @@
             type="number"
             label="Nº  Albarán auxiliar"
             @focus="$event.target.select()"
-            v-on:keyup.enter="moveToQuantity()"
+            v-on:keypress.enter="moveToQuantity()"
           ></v-text-field>
         </v-col>
       </v-row>
@@ -80,7 +80,7 @@
             type="number"
             label="Cantidad"
             @focus="$event.target.select()"
-            v-on:keyup.enter="moveToProductCode()"
+            v-on:keypress.enter="moveToProductCode()"
           ></v-text-field>
         </v-col>
         <v-col cols="12" md="2">
@@ -90,7 +90,7 @@
             type="number"
             label="Código de producto"
             @focus="$event.target.select()"
-            v-on:keyup.enter="selectProductByCode()"
+            v-on:keypress.enter="selectProductByCode()"
             v-on:blur="selectProductByCode()"
             v-on:input="clearProduct()"
           ></v-text-field>
@@ -113,7 +113,7 @@
             type="number"
             label="Precio"
             @focus="$event.target.select()"
-            v-on:keyup.enter="moveToAddLine()"
+            v-on:keypress.enter="moveToAddLine()"
           ></v-text-field>
         </v-col>
         <v-col cols="12" md="2">
@@ -124,28 +124,29 @@
           </v-flex>
         </v-col>
       </v-row>
+
+      <v-row class="ml-5" justify="center">
+        <v-col cols="12" md="8">
+          <DeliveryNoteItemTable
+            :deliveryNoteItems="deliveryNoteItems"
+            :deliveryNoteTotal="deliveryNoteTotal"
+          ></DeliveryNoteItemTable>
+        </v-col>
+      </v-row>
+      <div class="mb-10"></div>
+      <v-row class="ml-5" justify="center">
+        <v-btn
+          ref="createbutton"
+          class="mr-4"
+          @click="createDeliveryNote()"
+          @keyup.left="moveToQuantity()"
+        >Guardar</v-btn>
+
+        <v-btn color="error" class="mr-4" @click="reset()">Borrar</v-btn>
+
+        <v-btn to="/delivery-note-list/">Volver</v-btn>
+      </v-row>
     </v-form>
-    <v-row class="ml-5" justify="center">
-      <v-col cols="12" md="8">
-        <DeliveryNoteItemTable
-          :deliveryNoteItems="deliveryNoteItems"
-          :deliveryNoteTotal="deliveryNoteTotal"
-        ></DeliveryNoteItemTable>
-      </v-col>
-    </v-row>
-    <div class="mb-10"></div>
-    <v-row class="ml-5" justify="center">
-      <v-btn
-        ref="createbutton"
-        class="mr-4"
-        @click="createDeliveryNote()"
-        @keyup.left="moveToQuantity()"
-      >Guardar</v-btn>
-
-      <v-btn color="error" class="mr-4" @click="reset()">Borrar</v-btn>
-
-      <v-btn to="/delivery-note-list/">Volver</v-btn>
-    </v-row>
     <v-snackbar v-model="snackbar">
       {{snackbarMessage}}
       <v-btn :color="snackbarColor" text @click="snackbar = false">Cerrar</v-btn>
@@ -235,8 +236,6 @@ export default {
           this.customer = this.customers[index];
           this.listCustomerPrices();
         }
-      } else {
-        this.$nextTick(this.$refs.customerCode.focus);
       }
     },
     clearCustomer() {
@@ -281,8 +280,9 @@ export default {
       ) {
         this.customerCode = this.customer.code;
         this.listCustomerPrices();
+        this.moveToDate();
       }
-      this.moveToDate();
+      return false;
     },
     selectProductByCode() {
       var vm = this;
@@ -347,7 +347,9 @@ export default {
       this.$nextTick(() => this.$refs.createbutton.$el.focus());
     },
     moveToDate() {
-      this.$nextTick(this.$refs.dateText.focus);
+      if (this.customerCode != "") {
+        this.$nextTick(this.$refs.dateText.focus);
+      }
     },
     moveToAuxDeliveryNoteNr() {
       this.$nextTick(this.$refs.auxDeliveryNoteNr.focus);
