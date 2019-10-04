@@ -4,7 +4,7 @@ INSERT INTO product(id, code, name, factory_price, tax) VALUES
 	(3, 3, 'Huevo M', 0.11, 0),
 	(4, 4, 'Huevo S', 0.09, 0),
 	(5, 5, 'Huevo M - Estuche 10uds', 0.13, 0),
-	(6, 6, 'Huevo M - Estuche 6uds', 4.5, 0),
+	(6, 6, 'Huevo M - Estuche 6uds', 0.13, 0),
 	(7, 7, 'Gallina', 4, 6.5);
 	
 INSERT INTO customer(id, fiscal_id, code, name, alias, phone_number, email, address, province) VALUES
