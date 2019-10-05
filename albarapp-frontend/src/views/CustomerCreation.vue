@@ -36,7 +36,7 @@ export default {
     form: {
       valid: false,
       customer: {
-        code: undefined,
+        code: "",
         name: "",
         alias: "",
         email: "",
