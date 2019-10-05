@@ -29,10 +29,12 @@ export default {
   data: () => ({
     form: {
       valid: false,
-      code: "",
-      name: "",
-      factoryPrice: 0,
-      tax: 0
+      product: {
+        code: "",
+        name: "",
+        factoryPrice: 0,
+        tax: 0
+      }
     },
     snackbar: false
   }),
@@ -43,10 +45,7 @@ export default {
     this.$axios
       .get(this.productHref)
       .then(response => {
-        this.form.code = response.data.code.toString();
-        this.form.name = response.data.name;
-        this.form.factoryPrice = response.data.factoryPrice;
-        this.form.tax = response.data.tax.toString();
+        this.form.product = response.data;
       })
       .catch(function(error) {
         alert("Ha ocurrido un error recuperando los datos del producto");
@@ -56,12 +55,7 @@ export default {
     updateProduct() {
       var vm = this;
       if (this.form.valid) {
-        var product = {
-          code: this.form.code,
-          name: this.form.name,
-          factoryPrice: this.form.factoryPrice,
-          tax: this.form.tax
-        };
+        var product = this.form.product;
         this.$axios
           .put(this.productHref, product)
           .then(response => {

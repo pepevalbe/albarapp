@@ -91,7 +91,6 @@ export default {
         });
     },
     updateProduct(item) {
-      console.log(item._links.self.href);
       this.$router.push({
         name: "Actualizar producto",
         params: { productHref: item._links.self.href }
