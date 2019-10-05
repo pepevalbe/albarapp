@@ -408,10 +408,10 @@ export default {
         Promise.all(promises).then(function(values) {
           vm.reset();
         });
+        this.snackbar = true;
+        this.snackbarColor = "success";
+        this.snackbarMessage = "Albarán creado correctamente";
       });
-      this.snackbar = true;
-      this.snackbarColor = "success";
-      this.snackbarMessage = "Albarán creado correctamente";
     },
     parseDateText() {
       var date = "";

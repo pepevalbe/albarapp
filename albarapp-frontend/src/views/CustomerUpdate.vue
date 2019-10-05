@@ -33,14 +33,16 @@ export default {
   data: () => ({
     form: {
       valid: false,
-      code: "",
-      name: "",
-      alias: "",
-      email: "",
-      idn: "",
-      address: "",
-      province: "",
-      telephone: ""
+      customer: {
+        code: "",
+        name: "",
+        alias: "",
+        email: "",
+        fiscalId: "",
+        address: "",
+        province: "",
+        phoneNumber: ""
+      }
     },
     componentKey: 0,
     products: [],
@@ -58,14 +60,7 @@ export default {
     this.$axios
       .get(this.customerHref)
       .then(response => {
-        this.form.code = response.data.code.toString();
-        this.form.name = response.data.name;
-        this.form.alias = response.data.alias;
-        this.form.email = response.data.email;
-        this.form.idn = response.data.fiscalId;
-        this.form.address = response.data.address;
-        this.form.province = response.data.province;
-        this.form.telephone = response.data.phoneNumber;
+        this.form.customer = response.data;
         this.$axios
           .get(response.data._links.customerProductPrices.href)
           .then(response => {
@@ -111,19 +106,8 @@ export default {
     validate() {
       var vm = this;
       if (this.form.valid) {
-        // Rest call to create new customer
-        var customer = {
-          fiscalId: this.form.idn,
-          code: this.form.code,
-          name: this.form.name,
-          alias: this.form.alias,
-          phoneNumber: this.form.telephone,
-          email: this.form.email,
-          address: this.form.address,
-          province: this.form.province
-        };
         this.$axios
-          .put(this.customerHref, customer)
+          .put(this.customerHref, this.form.customer)
           .then(response => {
             this.snackbar = true;
             this.snackbarMessage = "Cliente actualizado correctamente";

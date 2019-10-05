@@ -5,31 +5,55 @@
       <v-divider></v-divider>
 
       <v-text-field
-        v-model="form.code"
+        v-model="form.customer.code"
         type="number"
         :counter="5"
         :rules="codeRules"
+        autofocus
+        @focus="$event.target.select()"
         label="Código *"
         required
       ></v-text-field>
 
-      <v-text-field v-model="form.alias" :counter="20" :rules="aliasRules" label="Alias *" required></v-text-field>
-
-      <v-text-field v-model="form.name" :counter="40" :rules="nameRules" label="Nombre *" required></v-text-field>
-
-      <v-text-field v-model="form.email" :rules="emailRules" label="E-mail"></v-text-field>
-
-      <v-text-field v-model="form.idn" :rules="idnRules" label="NIF *" required></v-text-field>
-
-      <v-text-field v-model="form.address" :counter="200" :rules="addressRules" label="Dirección"></v-text-field>
-
-      <v-text-field v-model="form.province" :counter="20" :rules="provinceRules" label="Provincia"></v-text-field>
+      <v-text-field
+        v-model="form.customer.alias"
+        :counter="20"
+        :rules="aliasRules"
+        label="Alias *"
+        required
+      ></v-text-field>
 
       <v-text-field
-        v-model="form.telephone"
+        v-model="form.customer.name"
+        :counter="40"
+        :rules="nameRules"
+        label="Nombre *"
+        required
+      ></v-text-field>
+
+      <v-text-field v-model="form.customer.email" :rules="emailRules" label="E-mail"></v-text-field>
+
+      <v-text-field v-model="form.customer.fiscalId" :rules="fiscalIdRules" label="NIF *" required></v-text-field>
+
+      <v-text-field
+        v-model="form.customer.address"
+        :counter="200"
+        :rules="addressRules"
+        label="Dirección"
+      ></v-text-field>
+
+      <v-text-field
+        v-model="form.customer.province"
+        :counter="20"
+        :rules="provinceRules"
+        label="Provincia"
+      ></v-text-field>
+
+      <v-text-field
+        v-model="form.customer.phoneNumber"
         type="number"
         :counter="15"
-        :rules="telephoneRules"
+        :rules="phoneNumberRules"
         label="Teléfono"
       ></v-text-field>
     </v-form>
@@ -42,20 +66,22 @@ export default {
   props: {
     form: {
       valid: Boolean,
-      code: String,
-      name: String,
-      alias: String,
-      email: String,
-      idn: String,
-      address: String,
-      province: String,
-      telephone: String
+      customer: {
+        code: Number,
+        name: String,
+        alias: String,
+        email: String,
+        fiscalId: String,
+        address: String,
+        province: String,
+        phoneNumber: String
+      }
     }
   },
   data: () => ({
     codeRules: [
       v => !!v || "El código es obligatorio",
-      v => (v && v.length <= 5) || "El código debe tener un máximo de 5 dígitos"
+      v => (v && v >= 1 && v <= 99999) || "El código debe tener un máximo de 5 dígitos"
     ],
     nameRules: [
       v => !!v || "El nombre es obligatorio",
@@ -67,7 +93,7 @@ export default {
       v => (v && v.length <= 20) || "El alias debe tener menos de 20 caracteres"
     ],
     emailRules: [v => !v || /.+@.+\..+/.test(v) || "E-mail no válido"],
-    idnRules: [
+    fiscalIdRules: [
       v => !!v || "El NIF es obligatorio",
       v =>
         /^(\d{8})([A-Z])$/.test(v) ||
@@ -85,9 +111,14 @@ export default {
       v =>
         !v || v.length <= 20 || "La provincia debe tener menos de 20 caracteres"
     ],
-    telephoneRules: [
+    phoneNumberRules: [
       v => !v || v.length <= 15 || "El teléfono debe tener menos de 15 dígitos"
     ]
-  })
+  }),
+  methods: {
+    reset: function() {
+      this.$refs.form.reset();
+    }
+  }
 };
 </script>

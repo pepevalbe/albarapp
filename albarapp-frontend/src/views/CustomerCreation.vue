@@ -1,11 +1,11 @@
 <template>
   <v-content>
     <v-container class="pl-10 pr-10">
-      <CustomerForm v-bind:form="form"></CustomerForm>
+      <CustomerForm v-bind:form="form" ref="form"></CustomerForm>
 
       <div class="mb-3"></div>
 
-      <CustomerPriceTable v-bind:productPrices="productPrices" :key="componentKey"></CustomerPriceTable>
+      <CustomerPriceTable v-bind:productPrices="productPrices"></CustomerPriceTable>
 
       <div class="mb-10"></div>
 
@@ -35,16 +35,17 @@ export default {
   data: () => ({
     form: {
       valid: false,
-      code: "",
-      name: "",
-      alias: "",
-      email: "",
-      idn: "",
-      address: "",
-      province: "",
-      telephone: ""
+      customer: {
+        code: undefined,
+        name: "",
+        alias: "",
+        email: "",
+        fiscalId: "",
+        address: "",
+        province: "",
+        phoneNumber: ""
+      }
     },
-    componentKey: 0,
     products: [],
     product: undefined,
     price: 0,
@@ -56,19 +57,8 @@ export default {
     validate() {
       var vm = this;
       if (this.form.valid) {
-        // Rest call to create new customer
-        var customer = {
-          fiscalId: this.form.idn,
-          code: this.form.code,
-          name: this.form.name,
-          alias: this.form.alias,
-          phoneNumber: this.form.telephone,
-          email: this.form.email,
-          address: this.form.address,
-          province: this.form.province
-        };
         this.$axios
-          .post("/customers", customer)
+          .post("/customers", this.form.customer)
           .then(response => {
             for (var i = 0; i < vm.productPrices.length; i++) {
               var item = vm.productPrices[i];
@@ -94,18 +84,7 @@ export default {
       }
     },
     reset() {
-      this.form = {
-        valid: false,
-        code: "",
-        name: "",
-        alias: "",
-        email: "",
-        idn: "",
-        address: "",
-        province: "",
-        telephone: ""
-      };
-      this.componentKey += 1;
+      this.$refs.form.reset();
       this.productPrices = [];
     }
   }
