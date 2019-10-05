@@ -9,6 +9,7 @@
             type="number"
             :counter="5"
             label="Código cliente"
+            :rules="customerCodeRules"
             required
             autofocus
             @focus="$event.target.select()"
@@ -118,7 +119,11 @@
         </v-col>
         <v-col cols="12" md="2">
           <v-flex text-xs-center align-center>
-            <v-btn @click="addDeliveryNoteItem()" ref="addLineButton">
+            <v-btn
+              @click="addDeliveryNoteItem()"
+              ref="addLineButton"
+              v-bind:disabled="!noteItemToAdd()"
+            >
               <span>Añadir línea</span>
             </v-btn>
           </v-flex>
@@ -138,6 +143,7 @@
         <v-btn
           ref="createbutton"
           class="mr-4"
+          :disabled="!deliveryNoteValid()"
           @click="createDeliveryNote()"
           @keyup.left="moveToQuantity()"
         >Guardar</v-btn>
@@ -180,7 +186,13 @@ export default {
     deliveryNoteTotal: 0,
     snackbar: false,
     snackbarMessage: "",
-    snackbarColor: ""
+    snackbarColor: "",
+    customerCodeRules:  [
+      v => !!v || "El código es obligatorio",
+      v =>
+        (v && v > 0 && v <= 99999) ||
+        "El código debe tener un máximo de 5 dígitos"
+    ]
   }),
   created() {
     this.listCustomers();
@@ -238,6 +250,19 @@ export default {
         }
       }
     },
+    selectCustomerByAlias() {
+      if (
+        this.customer != {} &&
+        this.customer != null &&
+        this.customer != undefined &&
+        this.customer.code != null
+      ) {
+        this.customerCode = this.customer.code;
+        this.listCustomerPrices();
+        this.moveToDate();
+      }
+      return false;
+    },
     clearCustomer() {
       this.customer = {};
     },
@@ -270,19 +295,6 @@ export default {
         .catch(function(error) {
           alert("Ha ocurrido un error recuperando los precios");
         });
-    },
-    selectCustomerByAlias() {
-      if (
-        this.customer != {} &&
-        this.customer != null &&
-        this.customer != undefined &&
-        this.customer.code != null
-      ) {
-        this.customerCode = this.customer.code;
-        this.listCustomerPrices();
-        this.moveToDate();
-      }
-      return false;
     },
     selectProductByCode() {
       var vm = this;
@@ -318,9 +330,12 @@ export default {
     },
     selectPrice() {
       var vm = this;
-      var index = this.customerPrices.findIndex(function(element) {
-        return element.productCode == vm.productCode;
-      });
+      var index = -1;
+      if (this.customerPrices) {
+        var index = this.customerPrices.findIndex(function(element) {
+          return element.productCode == vm.productCode;
+        });
+      }
       if (index === -1) {
         this.price = this.product.factoryPrice;
       } else {
@@ -367,6 +382,7 @@ export default {
       this.$nextTick(() => this.$refs.addLineButton.$el.focus());
     },
     reset() {
+      this.$refs.customerCode.reset();
       this.customer = {};
       this.customerCode = "";
       this.auxDeliveryNoteNr = "";
@@ -458,6 +474,20 @@ export default {
       this.dateFormatted = day + "/" + month + "/" + year;
       this.menu1 = false;
       this.moveToAuxDeliveryNoteNr();
+    },
+    noteItemToAdd() {
+      if (this.quantity && this.product && this.price) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+    deliveryNoteValid() {
+      if (this.customer && this.dateFormatted && this.deliveryNoteItems.length > 0) {
+        return true;
+      } else {
+        return false;
+      }
     }
   }
 };
