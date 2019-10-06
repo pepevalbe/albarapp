@@ -183,11 +183,11 @@ export default {
     date: "",
     dateFormatted: "",
     deliveryNoteItems: [],
-    deliveryNoteTotal: 0,
+    deliveryNoteTotal: { value: 0 },
     snackbar: false,
     snackbarMessage: "",
     snackbarColor: "",
-    customerCodeRules:  [
+    customerCodeRules: [
       v => !!v || "El código es obligatorio",
       v =>
         (v && v > 0 && v <= 99999) ||
@@ -354,7 +354,7 @@ export default {
         net: this.quantity * this.price * (1 + this.product.tax / 100)
       });
 
-      this.deliveryNoteTotal += itemNet;
+      this.deliveryNoteTotal.value += itemNet;
 
       this.quantity = "";
       this.product = {};
@@ -391,7 +391,7 @@ export default {
       this.productCode = "";
       this.price = "";
       this.deliveryNoteItems = [];
-      this.deliveryNoteTotal = 0;
+      this.deliveryNoteTotal.value = 0;
       this.$nextTick(this.$refs.customerCode.focus);
     },
     createDeliveryNote() {
@@ -483,7 +483,11 @@ export default {
       }
     },
     deliveryNoteValid() {
-      if (this.customer && this.dateFormatted && this.deliveryNoteItems.length > 0) {
+      if (
+        this.customer &&
+        this.dateFormatted &&
+        this.deliveryNoteItems.length > 0
+      ) {
         return true;
       } else {
         return false;
