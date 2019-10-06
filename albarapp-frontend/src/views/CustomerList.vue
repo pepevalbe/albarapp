@@ -31,7 +31,7 @@
           :items-per-page="15"
         >
           <template v-slot:body="{ items }">
-            <tbody>
+            <tbody v-if="!$vuetify.breakpoint.xsOnly">
               <tr v-for="item in items" :key="item.code">
                 <td>{{item.code}}</td>
                 <td>{{item.alias}}</td>
@@ -45,6 +45,49 @@
                   <v-btn @click="updateCustomer(item)">
                     <v-icon dark>mdi-pencil</v-icon>
                   </v-btn>
+                </td>
+              </tr>
+            </tbody>
+            <tbody v-else>
+              <tr>
+                <td>
+                  <v-card class="flex-content" v-for="item in items" :key="item.code">
+                    <v-card-text>
+                      <span class="black--text">Código:</span>
+                      {{item.code}}
+                      <br />
+                      <span class="black--text">Alias:</span>
+                      {{item.alias}}
+                      <br />
+                      <span class="black--text">Nombre:</span>
+                      {{item.name}}
+                      <br />
+                      <span class="black--text">NIF:</span>
+                      {{item.fiscalId}}
+                      <br />
+                      <span class="black--text">Teléfono:</span>
+                      {{item.phoneNumber}}
+                      <br />
+                      <span class="black--text">Email:</span>
+                      {{item.email}}
+                      <br />
+                      <span class="black--text">Dirección:</span>
+                      {{item.address}}
+                      <br />
+                      <span class="black--text">Provincia:</span>
+                      {{item.province}}
+                      <br />
+                    </v-card-text>
+                    <v-card-actions>
+                      <v-layout text-center wrap>
+                        <v-flex xs12>
+                          <v-btn @click="updateCustomer(item)">
+                            <v-icon dark>mdi-pencil</v-icon>
+                          </v-btn>
+                        </v-flex>
+                      </v-layout>
+                    </v-card-actions>
+                  </v-card>
                 </td>
               </tr>
             </tbody>
