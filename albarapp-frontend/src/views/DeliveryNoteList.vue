@@ -32,7 +32,7 @@
           :items-per-page="15"
         >
           <template v-slot:body="{ items }">
-            <tbody>
+            <tbody v-if="!$vuetify.breakpoint.xsOnly">
               <tr v-for="item in items" :key="item.deliveryNoteItemsHref">
                 <td>{{item.deliveryNoteNr}}</td>
                 <td>{{item.auxDeliveryNoteNr}}</td>
@@ -44,6 +44,38 @@
                     <v-icon dark>mdi-pencil</v-icon>
                   </v-btn>
                 </td>
+              </tr>
+            </tbody>
+            <tbody v-else>
+              <tr>
+                <v-card class="flex-content" outlined v-for="item in items" :key="item.deliveryNoteNr">
+                  <v-card-text>
+                    <span class="black--text">Nº Albarán:</span>
+                    {{item.deliveryNoteNr}}
+                    <br />
+                    <span class="black--text">Nº Albarán auxiliar:</span>
+                    {{item.auxDeliveryNoteNr}}
+                    <br />
+                    <span class="black--text">Cliente:</span>
+                    {{item.alias}}
+                    <br />
+                    <span class="black--text">Fecha:</span>
+                    {{item.issuedTimestamp}}
+                    <br />
+                    <span class="black--text">Total:</span>
+                    {{item.total.toFixed(2)}} €
+                    <br />
+                  </v-card-text>
+                  <v-card-actions>
+                    <v-layout text-center wrap>
+                      <v-flex xs12>
+                        <v-btn @click="updateDeliveryNote(item)">
+                          <v-icon dark>mdi-pencil</v-icon>
+                        </v-btn>
+                      </v-flex>
+                    </v-layout>
+                  </v-card-actions>
+                </v-card>
               </tr>
             </tbody>
           </template>
@@ -73,7 +105,7 @@ export default {
           sortable: false,
           value: "auxDeliveryNoteNr"
         },
-        { text: "Alias Cliente", sortable: false, value: "alias" },
+        { text: "Cliente", sortable: false, value: "alias" },
         { text: "Fecha", sortable: false, value: "issuedTimestamp" },
         { text: "Total", sortable: false, value: "total" },
         { text: "", sortable: false, value: "update" }

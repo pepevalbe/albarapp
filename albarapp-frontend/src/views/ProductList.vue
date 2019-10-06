@@ -31,7 +31,7 @@
           :items-per-page="15"
         >
           <template v-slot:body="{ items }">
-            <tbody>
+            <tbody v-if="!$vuetify.breakpoint.xsOnly">
               <tr v-for="item in items" :key="item.code">
                 <td>{{item.code}}</td>
                 <td>{{item.name}}</td>
@@ -42,6 +42,35 @@
                     <v-icon dark>mdi-pencil</v-icon>
                   </v-btn>
                 </td>
+              </tr>
+            </tbody>
+            <tbody v-else>
+              <tr>
+                <v-card class="flex-content" outlined v-for="item in items" :key="item.code">
+                  <v-card-text>
+                    <span class="black--text">Código:</span>
+                    {{item.code}}
+                    <br />
+                    <span class="black--text">Nombre:</span>
+                    {{item.name}}
+                    <br />
+                    <span class="black--text">Precio estándar:</span>
+                    {{item.factoryPrice}} €
+                    <br />
+                    <span class="black--text">Tipo impositivo:</span>
+                    {{item.tax}} %
+                    <br />
+                  </v-card-text>
+                  <v-card-actions>
+                    <v-layout text-center wrap>
+                      <v-flex xs12>
+                        <v-btn @click="updateProduct(item)">
+                          <v-icon dark>mdi-pencil</v-icon>
+                        </v-btn>
+                      </v-flex>
+                    </v-layout>
+                  </v-card-actions>
+                </v-card>
               </tr>
             </tbody>
           </template>
