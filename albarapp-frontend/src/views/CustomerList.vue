@@ -36,11 +36,10 @@
                 <td>{{item.code}}</td>
                 <td>{{item.alias}}</td>
                 <td>{{item.name}}</td>
-                <td>{{item.fiscalId}}</td>
                 <td>{{item.phoneNumber}}</td>
-                <td>{{item.email}}</td>
-                <td>{{item.address}}</td>
-                <td>{{item.province}}</td>
+                <td>
+                  <v-btn @click="showCustomer(item)">Ver ficha</v-btn>
+                </td>
                 <td>
                   <v-btn @click="updateCustomer(item)">
                     <v-icon dark>mdi-pencil</v-icon>
@@ -55,30 +54,21 @@
                     <span class="black--text">Código:</span>
                     {{item.code}}
                     <br />
-                    <span class="black--text">Alias:</span>
+                    <span class="black--text">Nombre Comercial:</span>
                     {{item.alias}}
                     <br />
-                    <span class="black--text">Nombre:</span>
+                    <span class="black--text">Razón social:</span>
                     {{item.name}}
-                    <br />
-                    <span class="black--text">NIF:</span>
-                    {{item.fiscalId}}
                     <br />
                     <span class="black--text">Teléfono:</span>
                     {{item.phoneNumber}}
                     <br />
-                    <span class="black--text">Email:</span>
-                    {{item.email}}
-                    <br />
-                    <span class="black--text">Dirección:</span>
-                    {{item.address}}
-                    <br />
-                    <span class="black--text">Provincia:</span>
-                    {{item.province}}
-                    <br />
                   </v-card-text>
                   <v-card-actions>
                     <v-layout text-center wrap>
+                      <v-flex xs12>
+                        <v-btn @click="showCustomer(item)">Ver ficha</v-btn>
+                      </v-flex>
                       <v-flex xs12>
                         <v-btn @click="updateCustomer(item)">
                           <v-icon dark>mdi-pencil</v-icon>
@@ -111,13 +101,10 @@ export default {
       customers: [],
       headers: [
         { text: "Código", sortable: true, value: "code" },
-        { text: "Alias", sortable: false, value: "alias" },
-        { text: "Nombre", sortable: false, value: "name" },
-        { text: "NIF", sortable: false, value: "fiscalId" },
+        { text: "Nombre Comercial", sortable: false, value: "alias" },
+        { text: "Razón Social", sortable: false, value: "name" },
         { text: "Teléfono", sortable: false, value: "phoneNumber" },
-        { text: "E-mail", sortable: false, value: "email" },
-        { text: "Dirección", sortable: false, value: "address" },
-        { text: "Provincia", sortable: false, value: "province" },
+        { text: "", sortable: false, value: "detail" },
         { text: "", sortable: false, value: "update" }
       ],
       search: "",
@@ -138,6 +125,13 @@ export default {
         .catch(function(error) {
           alert("Ha ocurrido un error recuperando los clientes");
         });
+    },
+    showCustomer(item) {
+      console.log(item._links.self.href);
+      this.$router.push({
+        name: "Detalle de cliente",
+        params: { customerHref: item._links.self.href }
+      });
     },
     updateCustomer(item) {
       this.$router.push({

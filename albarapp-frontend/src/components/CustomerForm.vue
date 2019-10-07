@@ -3,54 +3,63 @@
     <v-form ref="form" v-model="form.valid">
       <v-subheader class="title ml-1">Datos de cliente</v-subheader>
       <v-divider></v-divider>
-
       <v-text-field
         v-model="form.customer.code"
+        :readonly="readonly"
         type="number"
         :counter="5"
         :rules="codeRules"
-        autofocus
+        :autofocus="!readonly"
         @focus="$event.target.select()"
         label="Código *"
         required
       ></v-text-field>
-
       <v-text-field
         v-model="form.customer.alias"
+        :readonly="readonly"
         :counter="20"
         :rules="aliasRules"
-        label="Alias *"
+        label="Nombre Comercial *"
         required
       ></v-text-field>
-
       <v-text-field
         v-model="form.customer.name"
+        :readonly="readonly"
         :counter="40"
         :rules="nameRules"
-        label="Nombre *"
+        label="Razón social *"
         required
       ></v-text-field>
-
-      <v-text-field v-model="form.customer.email" :rules="emailRules" label="E-mail"></v-text-field>
-
-      <v-text-field v-model="form.customer.fiscalId" :rules="fiscalIdRules" label="NIF *" required></v-text-field>
-
+      <v-text-field
+        v-model="form.customer.email"
+        :readonly="readonly"
+        :rules="emailRules"
+        label="E-mail"
+      ></v-text-field>
+      <v-text-field
+        v-model="form.customer.fiscalId"
+        :readonly="readonly"
+        :rules="fiscalIdRules"
+        label="NIF *"
+        required
+      ></v-text-field>
       <v-text-field
         v-model="form.customer.address"
+        :readonly="readonly"
         :counter="200"
         :rules="addressRules"
         label="Dirección"
       ></v-text-field>
-
       <v-text-field
         v-model="form.customer.province"
+        :readonly="readonly"
         :counter="20"
         :rules="provinceRules"
         label="Provincia"
       ></v-text-field>
-
       <v-text-field
         v-model="form.customer.phoneNumber"
+        :readonly="readonly"
         type="number"
         :counter="15"
         :rules="phoneNumberRules"
@@ -76,12 +85,15 @@ export default {
         province: String,
         phoneNumber: String
       }
-    }
+    },
+    readonly: Boolean
   },
   data: () => ({
     codeRules: [
       v => !!v || "El código es obligatorio",
-      v => (v && v >= 1 && v <= 99999) || "El código debe tener un máximo de 5 dígitos"
+      v =>
+        (v && v >= 1 && v <= 99999) ||
+        "El código debe tener un máximo de 5 dígitos"
     ],
     nameRules: [
       v => !!v || "El nombre es obligatorio",

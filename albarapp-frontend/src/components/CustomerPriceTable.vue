@@ -8,7 +8,7 @@
         type="error"
       >No puedes introducir dos precios para el mismo producto.</v-alert>
     </v-row>
-    <v-row class="ml-5" justify="center">
+    <v-row class="ml-5" justify="center" v-if="!readonly">
       <v-col cols="12" md="3">
         <v-select
           v-model="product"
@@ -34,14 +34,14 @@
               <tr>
                 <th class="text-left">Producto</th>
                 <th class="text-left">Precio</th>
-                <th class="text-left"></th>
+                <th class="text-left" v-if="!readonly"></th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="item in productPrices" :key="item.productId">
                 <td>{{ item.product.name }}</td>
                 <td>{{ item.price }} €</td>
-                <td justify="center">
+                <td justify="center" v-if="!readonly">
                   <div class="text-xs-center">
                     <v-btn
                       class="ma-2"
@@ -72,7 +72,8 @@ export default {
     price: 0
   }),
   props: {
-    productPrices: Array
+    productPrices: Array,
+    readonly: Boolean
   },
   created() {
     this.listProducts();

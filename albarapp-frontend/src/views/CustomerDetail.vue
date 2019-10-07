@@ -1,21 +1,11 @@
 <template>
   <v-content>
     <v-container class="pl-10 pr-10">
-      <CustomerForm :form="form"></CustomerForm>
+      <CustomerForm :form="form" :readonly="true"></CustomerForm>
       <div class="mb-3"></div>
-      <CustomerPriceTable :productPrices="productPrices"></CustomerPriceTable>
+      <CustomerPriceTable :productPrices="productPrices" :readonly="true"></CustomerPriceTable>
       <div class="mb-10"></div>
-      <v-btn
-        :disabled="!form.valid"
-        color="success"
-        class="mr-4"
-        @click="updateCustomer()"
-      >Actualizar</v-btn>
       <v-btn to="/customer-list/">Volver</v-btn>
-      <v-snackbar v-model="snackbar">
-        Cliente actualizado correctamente
-        <v-btn color="green" text @click="snackbar = false">Cerrar</v-btn>
-      </v-snackbar>
     </v-container>
   </v-content>
 </template>
@@ -44,8 +34,7 @@ export default {
       }
     },
     productPrices: [],
-    productPricesOriginal: [],
-    snackbar: false
+    productPricesOriginal: []
   }),
   props: {
     customerHref: String
@@ -95,51 +84,6 @@ export default {
       .catch(function(error) {
         alert("Ha ocurrido un error recuperando los datos del cliente");
       });
-  },
-  methods: {
-    updateCustomer() {
-      var vm = this;
-      if (this.form.valid) {
-        this.$axios
-          .put(this.customerHref, this.form.customer)
-          .then(response => {
-            this.snackbar = true;
-          })
-          .catch(function(error) {
-            alert("Ha ocurrido un error creando el cliente");
-          });
-        var productPricesToDelete = [];
-        productPricesToDelete = this.productPricesOriginal.filter(
-          f => !this.productPrices.includes(f)
-        );
-        var productPricesToInsert = [];
-        productPricesToInsert = this.productPrices.filter(
-          f => !this.productPricesOriginal.includes(f)
-        );
-        for (var i = 0; i < productPricesToDelete.length; i++) {
-          this.$axios
-            .delete(productPricesToDelete[i].productPriceHref)
-            .then(response => {})
-            .catch(function(error) {
-              alert("Ha ocurrido un error creando el cliente");
-            });
-        }
-        for (var i = 0; i < productPricesToInsert.length; i++) {
-          var item = productPricesToInsert[i];
-          var customerProductPrice = {
-            offeredPrice: item.price,
-            customer: this.customerHref,
-            product: item.product._links.self.href
-          };
-          this.$axios
-            .post("/customerProductPrices", customerProductPrice)
-            .then(response => {})
-            .catch(function(error) {
-              alert("Ha ocurrido un error creando los precios");
-            });
-        }
-      }
-    }
   }
 };
 </script>

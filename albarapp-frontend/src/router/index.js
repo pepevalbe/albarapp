@@ -37,6 +37,12 @@ export default new Router({
       name: "Nuevo cliente"
     },
     {
+      path: "/customer-detail/",
+      component: () => import("@/views/CustomerDetail"),
+      props: true,
+      name: "Detalle de cliente",
+    },
+    {
       path: "/customer-update/",
       component: () => import("@/views/CustomerUpdate"),
       props: true,
