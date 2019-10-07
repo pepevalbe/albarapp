@@ -23,7 +23,7 @@ export default {
   }),
   computed: {
     currentRouteName() {
-        return this.$route.name;
+        return this.$route.meta.headerName;
     }
   }
 };
