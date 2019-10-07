@@ -121,7 +121,7 @@ export default {
     },
     updateProduct(item) {
       this.$router.push({
-        name: "Actualizar producto",
+        name: "ProductUpdate",
         params: { productHref: item._links.self.href }
       });
     }

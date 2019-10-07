@@ -8,55 +8,65 @@ export default new Router({
     {
       path: "/",
       component: () => import("@/views/HomePage"),
-      name: "Home"
+      name: "HomePage",
+      meta: { headerName: "Home" }
     },
     {
       path: "/product-list/",
       component: () => import("@/views/ProductList"),
-      name: "Productos"
+      name: "ProductList",
+      meta: { headerName: "Productos" }
     },
     {
       path: "/product-creation/",
       component: () => import("@/views/ProductCreation"),
-      name: "Nuevo producto"
+      name: "ProductCreation",
+      meta: { headerName: "Nuevo producto" }
     },
     {
       path: "/product-update/",
       component: () => import("@/views/ProductUpdate"),
       props: true,
-      name: "Actualizar producto"
+      name: "ProductUpdate",
+      meta: { headerName: "Actualizar producto" }
     },
     {
       path: "/customer-list/",
       component: () => import("@/views/CustomerList"),
-      name: "Clientes"
+      name: "CustomerList",
+      meta: { headerName: "Clientes" }
     },
     {
       path: "/customer-creation/",
       component: () => import("@/views/CustomerCreation"),
-      name: "Nuevo cliente"
+      name: "CustomerCreation",
+      meta: { headerName: "Nuevo cliente" }
     },
     {
       path: "/customer-detail/",
       component: () => import("@/views/CustomerDetail"),
       props: true,
-      name: "Detalle de cliente",
+      name: "CustomerDetail",
+      meta: { headerName: "Detalle de cliente" }
     },
     {
       path: "/customer-update/",
       component: () => import("@/views/CustomerUpdate"),
       props: true,
-      name: "Actualizar cliente"
+      name: "CustomerUpdate",
+      meta: { headerName: "Actualizar cliente" }
     },
     {
       path: "/delivery-note-list/",
       component: () => import("@/views/DeliveryNoteList"),
-      name: "Albaranes"
+      name: "DeliveryNoteList",
+      meta: { headerName: "Albaranes" }
     },
     {
       path: "/delivery-note-creation/",
       component: () => import("@/views/DeliveryNoteCreation"),
-      name: "Nuevo albarán"
+      name: "DeliveryNoteCreationn",
+      meta: { headerName: "Nuevo albarán" }
     },
   ]
 });
