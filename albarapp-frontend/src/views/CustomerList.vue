@@ -66,7 +66,7 @@
                   </v-card-text>
                   <v-card-actions>
                     <v-layout text-center wrap>
-                      <v-flex xs12>
+                      <v-flex xs12 class="mb-3">
                         <v-btn @click="showCustomer(item)">Ver ficha</v-btn>
                       </v-flex>
                       <v-flex xs12>
