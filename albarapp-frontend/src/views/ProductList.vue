@@ -88,6 +88,8 @@
 </template>
 
 <script>
+import ProductService from "@/services/ProductService.js";
+
 export default {
   name: "ProductList",
   data: () => {
@@ -109,6 +111,9 @@ export default {
     this.listProducts();
   },
   methods: {
+    async listProductsNew() {
+      this.products = await ProductService.getAll();
+    },
     listProducts() {
       this.$axios
         .get("/products")
