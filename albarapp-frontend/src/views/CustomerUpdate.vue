@@ -63,7 +63,7 @@ export default {
     async updateCustomer() {
       var vm = this;
       if (this.form.valid) {
-        await CustomerService.update(
+        CustomerService.update(
           this.customerHref,
           this.form.customer
         ).then(() => {
