@@ -24,6 +24,7 @@
 import CustomerForm from "@/components/CustomerForm";
 import CustomerPriceTable from "@/components/CustomerPriceTable";
 import CustomerService from "@/services/CustomerService.js";
+import CustomerProductPriceService from "@/services/CustomerProductPriceService.js";
 
 export default {
   components: {
@@ -51,64 +52,23 @@ export default {
   props: {
     customerHref: String
   },
-  created() {
-    this.$axios
-      .get(this.customerHref)
-      .then(response => {
-        this.form.customer = response.data;
-        this.$axios
-          .get(response.data._links.customerProductPrices.href)
-          .then(response => {
-            for (
-              var i = 0;
-              i < response.data._embedded.customerProductPrices.length;
-              i++
-            ) {
-              var productPrice = {
-                product: {},
-                price:
-                  response.data._embedded.customerProductPrices[i].offeredPrice,
-                productPriceHref:
-                  response.data._embedded.customerProductPrices[i]._links.self
-                    .href,
-                productHref:
-                  response.data._embedded.customerProductPrices[i]._links
-                    .product.href
-              };
-              this.productPrices.push(productPrice);
-              this.productPricesOriginal.push(productPrice);
-              this.$axios
-                .get(
-                  response.data._embedded.customerProductPrices[i]._links
-                    .product.href
-                )
-                .then(responseProduct => {
-                  var index = this.productPrices.findIndex(function(element) {
-                    return element.productHref === responseProduct.config.url;
-                  });
-                  this.productPrices[index].product = responseProduct.data;
-                  this.productPricesOriginal[index].product =
-                    responseProduct.data;
-                });
-            }
-          });
-      })
-      .catch(function(error) {
-        alert("Ha ocurrido un error recuperando los datos del cliente");
-      });
+  async created() {
+    this.form.customer = await CustomerService.get(this.customerHref);
+    this.productPrices = await CustomerService.getCustomerProductPrices(
+      this.customerHref
+    );
+    this.productPricesOriginal = Array.from(this.productPrices);
   },
   methods: {
-    updateCustomer() {
+    async updateCustomer() {
       var vm = this;
       if (this.form.valid) {
-        this.$axios
-          .put(this.customerHref, this.form.customer)
-          .then(response => {
-            this.snackbar = true;
-          })
-          .catch(function(error) {
-            alert("Ha ocurrido un error creando el cliente");
-          });
+        await CustomerService.update(
+          this.customerHref,
+          this.form.customer
+        ).then(() => {
+          this.snackbar = true;
+        });
         var productPricesToDelete = [];
         productPricesToDelete = this.productPricesOriginal.filter(
           f => !this.productPrices.includes(f)
@@ -117,28 +77,17 @@ export default {
         productPricesToInsert = this.productPrices.filter(
           f => !this.productPricesOriginal.includes(f)
         );
-        for (var i = 0; i < productPricesToDelete.length; i++) {
-          this.$axios
-            .delete(productPricesToDelete[i].productPriceHref)
-            .then(response => {})
-            .catch(function(error) {
-              alert("Ha ocurrido un error creando el cliente");
-            });
-        }
-        for (var i = 0; i < productPricesToInsert.length; i++) {
-          var item = productPricesToInsert[i];
+        productPricesToDelete.forEach(element => {
+          CustomerProductPriceService.delete(element.productPriceHref);
+        });
+        productPricesToInsert.forEach(element => {
           var customerProductPrice = {
-            offeredPrice: item.price,
+            offeredPrice: element.price,
             customer: this.customerHref,
-            product: item.product._links.self.href
+            product: element.product._links.self.href
           };
-          this.$axios
-            .post("/customerProductPrices", customerProductPrice)
-            .then(response => {})
-            .catch(function(error) {
-              alert("Ha ocurrido un error creando los precios");
-            });
-        }
+          CustomerProductPriceService.create(customerProductPrice);
+        });
       }
     }
   }
