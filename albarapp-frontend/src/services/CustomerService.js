@@ -1,6 +1,6 @@
 import HttpClient from '@/services/HttpClient.js';
  
-const RESOURCE_NAME = '/products';
+const RESOURCE_NAME = '/customers';
 
 export default {
   getAll() {
@@ -9,7 +9,7 @@ export default {
       return response.data._embedded.products;
     })
     .catch(function() {
-      alert("Ha ocurrido un error recuperando los productos");
+      alert("Ha ocurrido un error recuperando los clientes");
     });
   },
  
@@ -19,17 +19,7 @@ export default {
       return response.data;
     })
     .catch(function() {
-      alert("Ha ocurrido un error recuperando el producto");
-    });
-  },
-
-  getById(id) {
-    return HttpClient.get(`${RESOURCE_NAME}/${id}`)
-    .then(response => {
-      return response.data;
-    })
-    .catch(function() {
-      alert("Ha ocurrido un error recuperando el producto");
+      alert("Ha ocurrido un error recuperando el cliente");
     });
   },
  
@@ -39,7 +29,7 @@ export default {
       return response.data;
     })
     .catch(function() {
-      alert("Ha ocurrido un error creando el producto");
+      alert("Ha ocurrido un error creando el cliente");
     });
   },
  
@@ -49,14 +39,14 @@ export default {
       return response.data;
     })
     .catch(function() {
-      alert("Ha ocurrido un error actualizando el producto");
+      alert("Ha ocurrido un error actualizando el cliente");
     });
   },
  
   delete(resourceUrl) {
     return HttpClient.delete(resourceUrl)
     .catch(function() {
-      alert("Ha ocurrido un error borrando el producto");
+      alert("Ha ocurrido un error borrando el cliente");
     });
   }
 };

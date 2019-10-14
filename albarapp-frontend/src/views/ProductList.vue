@@ -111,10 +111,10 @@ export default {
     this.listProducts();
   },
   methods: {
-    async listProductsNew() {
+    async listProducts() {
       this.products = await ProductService.getAll();
     },
-    listProducts() {
+    listProductsOld() {
       this.$axios
         .get("/products")
         .then(response => {

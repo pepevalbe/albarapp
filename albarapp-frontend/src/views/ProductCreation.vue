@@ -16,6 +16,7 @@
 
 <script>
 import ProductForm from "@/components/ProductForm";
+import ProductService from "@/services/ProductService.js";
 
 export default {
   components: {
@@ -34,7 +35,15 @@ export default {
     snackbar: false
   }),
   methods: {
-    createProduct() {
+    async createProduct() {
+      if (this.form.valid) {
+        await ProductService.create(this.form.product).then(() => {
+          this.snackbar = true;
+          this.reset();
+        });
+      }
+    },
+    createProductOld() {
       if (this.form.valid) {
         this.$axios
           .post("/products", this.form.product)

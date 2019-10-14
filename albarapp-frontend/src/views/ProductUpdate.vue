@@ -21,6 +21,7 @@
 
 <script>
 import ProductForm from "@/components/ProductForm";
+import ProductService from "@/services/ProductService.js";
 
 export default {
   components: {
@@ -41,18 +42,28 @@ export default {
   props: {
     productHref: String
   },
-  created() {
-    this.$axios
-      .get(this.productHref)
-      .then(response => {
-        this.form.product = response.data;
-      })
-      .catch(function(error) {
-        alert("Ha ocurrido un error recuperando los datos del producto");
-      });
+  async created() {
+    this.form.product = await ProductService.get(this.productHref);
+    // this.$axios
+    //   .get(this.productHref)
+    //   .then(response => {
+    //     this.form.product = response.data;
+    //   })
+    //   .catch(function(error) {
+    //     alert("Ha ocurrido un error recuperando los datos del producto");
+    //   });
   },
   methods: {
-    updateProduct() {
+    async updateProduct() {
+      if (this.form.valid) {
+        await ProductService.update(this.productHref, this.form.product).then(
+          () => {
+            this.snackbar = true;
+          }
+        );
+      }
+    },
+    updateProductOld() {
       var vm = this;
       if (this.form.valid) {
         var product = this.form.product;
