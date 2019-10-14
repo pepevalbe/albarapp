@@ -107,13 +107,10 @@ export default {
       descending: false
     };
   },
-  created() {
-    this.listProducts();
+  async created() {
+    this.products = await ProductService.getAll();
   },
   methods: {
-    async listProducts() {
-      this.products = await ProductService.getAll();
-    },
     listProductsOld() {
       this.$axios
         .get("/products")

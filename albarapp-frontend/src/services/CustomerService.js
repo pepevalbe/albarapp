@@ -6,7 +6,7 @@ export default {
   getAll() {
     return HttpClient.get(RESOURCE_NAME)
     .then(response => {
-      return response.data._embedded.products;
+      return response.data._embedded.customers;
     })
     .catch(function() {
       alert("Ha ocurrido un error recuperando los clientes");
@@ -43,10 +43,49 @@ export default {
     });
   },
  
-  delete(resourceUrl) {
-    return HttpClient.delete(resourceUrl)
+  getCustomerProductPrices(resourceUrl) {
+    return HttpClient.get(resourceUrl + "/customerProductPrices")
+    .then(response => {
+      var productPrices = [];
+      var productPricesOriginal = [];
+      for (
+        var i = 0;
+        i < response.data._embedded.customerProductPrices.length;
+        i++
+      ) {
+        var productPrice = {
+          product: {},
+          price:
+            response.data._embedded.customerProductPrices[i].offeredPrice,
+          productPriceHref:
+            response.data._embedded.customerProductPrices[i]._links.self
+              .href,
+          productHref:
+            response.data._embedded.customerProductPrices[i]._links
+              .product.href
+        };
+        productPrices.push(productPrice);
+        productPricesOriginal.push(productPrice);
+        HttpClient.get(
+            response.data._embedded.customerProductPrices[i]._links
+              .product.href
+          )
+          .then(responseProduct => {
+            var index = productPrices.findIndex(function(element) {
+              return element.productHref === responseProduct.config.url;
+            });
+            productPrices[index].product = responseProduct.data;
+            productPricesOriginal[index].product =
+              responseProduct.data;
+          })
+          .catch(function() {
+            alert("Ha ocurrido un error recuperando los precios de productos");
+          });          
+      }
+      return productPrices;
+    })
     .catch(function() {
-      alert("Ha ocurrido un error borrando el cliente");
+      alert("Ha ocurrido un error recuperando los precios de productos");
     });
   }
 };

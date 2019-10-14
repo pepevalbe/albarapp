@@ -9,7 +9,7 @@
 
       <div class="mb-10"></div>
 
-      <v-btn :disabled="!form.valid" color="success" class="mr-4" @click="validate">Crear</v-btn>
+      <v-btn :disabled="!form.valid" color="success" class="mr-4" @click="createCustomer()">Crear</v-btn>
 
       <v-btn color="error" class="mr-4" @click="reset">Borrar</v-btn>
 
@@ -26,6 +26,7 @@
 <script>
 import CustomerPriceTable from "@/components/CustomerPriceTable";
 import CustomerForm from "@/components/CustomerForm";
+import CustomerService from "@/services/CustomerService.js";
 
 export default {
   components: {
@@ -54,7 +55,7 @@ export default {
     snackbarMessage: ""
   }),
   methods: {
-    validate() {
+    createCustomer() {
       var vm = this;
       if (this.form.valid) {
         this.$axios

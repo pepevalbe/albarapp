@@ -13,6 +13,7 @@
 <script>
 import CustomerForm from "@/components/CustomerForm";
 import CustomerPriceTable from "@/components/CustomerPriceTable";
+import CustomerService from "@/services/CustomerService.js";
 
 export default {
   components: {
@@ -33,57 +34,16 @@ export default {
         phoneNumber: ""
       }
     },
-    productPrices: [],
-    productPricesOriginal: []
+    productPrices: []
   }),
   props: {
     customerHref: String
   },
-  created() {
-    this.$axios
-      .get(this.customerHref)
-      .then(response => {
-        this.form.customer = response.data;
-        this.$axios
-          .get(response.data._links.customerProductPrices.href)
-          .then(response => {
-            for (
-              var i = 0;
-              i < response.data._embedded.customerProductPrices.length;
-              i++
-            ) {
-              var productPrice = {
-                product: {},
-                price:
-                  response.data._embedded.customerProductPrices[i].offeredPrice,
-                productPriceHref:
-                  response.data._embedded.customerProductPrices[i]._links.self
-                    .href,
-                productHref:
-                  response.data._embedded.customerProductPrices[i]._links
-                    .product.href
-              };
-              this.productPrices.push(productPrice);
-              this.productPricesOriginal.push(productPrice);
-              this.$axios
-                .get(
-                  response.data._embedded.customerProductPrices[i]._links
-                    .product.href
-                )
-                .then(responseProduct => {
-                  var index = this.productPrices.findIndex(function(element) {
-                    return element.productHref === responseProduct.config.url;
-                  });
-                  this.productPrices[index].product = responseProduct.data;
-                  this.productPricesOriginal[index].product =
-                    responseProduct.data;
-                });
-            }
-          });
-      })
-      .catch(function(error) {
-        alert("Ha ocurrido un error recuperando los datos del cliente");
-      });
+  async created() {
+    this.form.customer = await CustomerService.get(this.customerHref);
+    this.productPrices = await CustomerService.getCustomerProductPrices(
+      this.customerHref
+    );
   }
 };
 </script>

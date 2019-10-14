@@ -94,6 +94,8 @@
 </template>
 
 <script>
+import CustomerService from "@/services/CustomerService.js";
+
 export default {
   name: "CustomerList",
   data: () => {
@@ -112,20 +114,10 @@ export default {
       descending: false
     };
   },
-  created() {
-    this.listCustomers();
+  async created() {
+    this.customers = await CustomerService.getAll();
   },
   methods: {
-    listCustomers() {
-      this.$axios
-        .get("/customers")
-        .then(response => {
-          this.customers = response.data._embedded.customers;
-        })
-        .catch(function(error) {
-          alert("Ha ocurrido un error recuperando los clientes");
-        });
-    },
     showCustomer(item) {
       console.log(item._links.self.href);
       this.$router.push({
