@@ -36,12 +36,9 @@ export default {
   }),
   methods: {
     async createProduct() {
-      if (this.form.valid) {
-        ProductService.create(this.form.product).then(() => {
-          this.snackbar = true;
-          this.reset();
-        });
-      }
+      await ProductService.create(this.form.product);
+      this.snackbar = true;
+      this.reset();
     },
     reset() {
       this.$refs.form.reset();
