@@ -67,6 +67,10 @@ export default {
         this.productPricesOriginal
       );
       this.snackbar = true;
+      this.productPrices = await CustomerService.getCustomerProductPrices(
+        this.customerId
+      );
+      this.productPricesOriginal = Array.from(this.productPrices);
     }
   }
 };

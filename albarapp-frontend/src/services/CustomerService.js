@@ -89,9 +89,9 @@ export default {
       });
   },
 
-  update(id, customer, productPrices, productPricesOriginal) {
-
-    return HttpClient.put(`${RESOURCE_NAME}/${id}`, customer)
+  async update(id, customer, productPrices, productPricesOriginal) {
+    var promises = [];
+    var promisePut = HttpClient.put(`${RESOURCE_NAME}/${id}`, customer)
       .then(() => {
         var productPricesToDelete = productPricesOriginal.filter(
           f => !productPrices.includes(f)
@@ -100,26 +100,28 @@ export default {
           f => !productPricesOriginal.includes(f)
         );
         productPricesToDelete.forEach(element => {
-          HttpClient.delete(element.productPriceHref)
+          promises.push(HttpClient.delete(element.productPriceHref)
             .catch(() => {
               alert("Ha ocurrido un error actualizando los precios");
-            })
+            }));
         });
         productPricesToInsert.forEach(element => {
           var customerProductPrice = {
             offeredPrice: element.price,
-            customer: this.customerHref,
+            customer: customer._links.self.href,
             product: element.product._links.self.href
           };
-          HttpClient.post("/customerProductPrices", customerProductPrice)
+          promises.push(HttpClient.post("/customerProductPrices", customerProductPrice)
             .catch(() => {
               alert("Ha ocurrido un error actualizando los precios");
-            });
+            }));
         });
       })
       .catch(() => {
         alert("Ha ocurrido un error actualizando el cliente");
-      });
+      })
+    await promisePut;
+    return Promise.all(promises);
   },
 
   createNoPrices(data) {
