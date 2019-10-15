@@ -283,6 +283,9 @@ export default {
                 });
                 vm.customerPrices[index].productCode =
                   responseProduct.data.code;
+                  vm.productCode = responseProduct.data.code;
+                  vm.product = responseProduct.data;
+                  vm.price = vm.customerPrices[index].offeredPrice;
               })
               .catch(function(error) {
                 alert(
