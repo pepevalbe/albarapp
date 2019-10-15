@@ -24,7 +24,6 @@
 import CustomerForm from "@/components/CustomerForm";
 import CustomerPriceTable from "@/components/CustomerPriceTable";
 import CustomerService from "@/services/CustomerService.js";
-import CustomerProductPriceService from "@/services/CustomerProductPriceService.js";
 
 export default {
   components: {
@@ -50,45 +49,24 @@ export default {
     snackbar: false
   }),
   props: {
-    customerHref: String
+    customerId: String
   },
   async created() {
-    this.form.customer = await CustomerService.get(this.customerHref);
+    this.form.customer = await CustomerService.get(this.customerId);
     this.productPrices = await CustomerService.getCustomerProductPrices(
-      this.customerHref
+      this.customerId
     );
     this.productPricesOriginal = Array.from(this.productPrices);
   },
   methods: {
     async updateCustomer() {
-      var vm = this;
-      if (this.form.valid) {
-        CustomerService.update(
-          this.customerHref,
-          this.form.customer
-        ).then(() => {
-          this.snackbar = true;
-        });
-        var productPricesToDelete = [];
-        productPricesToDelete = this.productPricesOriginal.filter(
-          f => !this.productPrices.includes(f)
-        );
-        var productPricesToInsert = [];
-        productPricesToInsert = this.productPrices.filter(
-          f => !this.productPricesOriginal.includes(f)
-        );
-        productPricesToDelete.forEach(element => {
-          CustomerProductPriceService.delete(element.productPriceHref);
-        });
-        productPricesToInsert.forEach(element => {
-          var customerProductPrice = {
-            offeredPrice: element.price,
-            customer: this.customerHref,
-            product: element.product._links.self.href
-          };
-          CustomerProductPriceService.create(customerProductPrice);
-        });
-      }
+      await CustomerService.update(
+        this.customerId,
+        this.form.customer,
+        this.productPrices,
+        this.productPricesOriginal
+      );
+      this.snackbar = true;
     }
   }
 };

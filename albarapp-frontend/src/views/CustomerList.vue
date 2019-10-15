@@ -119,16 +119,15 @@ export default {
   },
   methods: {
     showCustomer(item) {
-      console.log(item._links.self.href);
       this.$router.push({
         name: "CustomerDetail",
-        params: { customerHref: item._links.self.href }
+        params: { customerId: item.id }
       });
     },
     updateCustomer(item) {
       this.$router.push({
         name: "CustomerUpdate",
-        params: { customerHref: item._links.self.href }
+        params: { customerId: item.id }
       });
     }
   }

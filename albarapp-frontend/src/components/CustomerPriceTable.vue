@@ -23,7 +23,7 @@
         <v-text-field v-model="price" type="number" label="Precio" suffix="€"></v-text-field>
       </v-col>
       <v-col cols="12" md="1" align-self="center">
-        <v-btn :disabled="!price || !product || sameProduct()" @click="addPrice">Añadir</v-btn>
+        <v-btn :disabled="!price || !product || sameProduct()" @click="addPrice()">Añadir</v-btn>
       </v-col>
     </v-row>
     <v-row class="ml-5" justify="center">
@@ -64,6 +64,8 @@
 </template>
 
 <script>
+import ProductService from "@/services/ProductService.js";
+
 export default {
   name: "CustomerPriceTable",
   data: () => ({
@@ -75,21 +77,10 @@ export default {
     productPrices: Array,
     readonly: Boolean
   },
-  created() {
-    this.listProducts();
+  async created() {
+    this.products = await ProductService.getAll();
   },
   methods: {
-    listProducts() {
-      // Rest call to list products
-      this.$axios
-        .get("/products")
-        .then(response => {
-          this.products = response.data._embedded.products;
-        })
-        .catch(function(error) {
-          alert("Ha ocurrido un error recuperando los productos");
-        });
-    },
     addPrice() {
       var vm = this;
       if (!this.sameProduct()) {
