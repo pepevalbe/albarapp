@@ -31,8 +31,8 @@
         </v-col>
         <v-col cols="12" md="2">
           <v-menu
-            ref="menu1"
-            v-model="menu1"
+            ref="menuDatePicker"
+            v-model="menuDatePicker"
             :close-on-content-click="false"
             transition="scale-transition"
             offset-y
@@ -161,6 +161,7 @@
 </template>
 <script>
 import DeliveryNoteItemTable from "@/components/DeliveryNoteItemTable";
+import DateFormatService from "@/services/DateFormatService.js";
 
 export default {
   components: {
@@ -179,7 +180,7 @@ export default {
     productCode: "",
     quantity: "",
     price: "",
-    menu1: false,
+    menuDatePicker: false,
     date: "",
     dateFormatted: "",
     deliveryNoteItems: [],
@@ -400,14 +401,11 @@ export default {
     createDeliveryNote() {
       var vm = this;
       var promises = [];
-      var issuedTimestamp = new Date();
-      issuedTimestamp.setDate(this.date.substring(8, 10));
-      issuedTimestamp.setMonth(this.date.substring(5, 7) - 1);
-      issuedTimestamp.setFullYear(this.date.substring(0, 4));
+      var issuedTimestamp = DateFormatService.datePickToTimestamp(this.date);
       // Rest call to create new deliveryNote
       var deliveryNote = {
         auxDeliveryNoteNr: this.auxDeliveryNoteNr,
-        issuedTimestamp: issuedTimestamp.getTime(),
+        issuedTimestamp: issuedTimestamp,
         customer: this.customer._links.self.href
       };
 
@@ -433,49 +431,17 @@ export default {
       });
     },
     parseDateText() {
-      var date = "";
-      var day = "";
-      var month = "";
-      var year = "";
-      switch (this.dateFormatted.length) {
-        case 8:
-          if (!isNaN(this.dateFormatted)) {
-            // ddMMyyyy
-            day = this.dateFormatted.substring(0, 2);
-            month = this.dateFormatted.substring(2, 4);
-            year = this.dateFormatted.substring(4, 8);
-            date = year + "-" + month + "-" + day;
-            this.dateFormatted = day + "/" + month + "/" + year;
-          } else {
-            // Wrong
-            this.$nextTick(this.$refs.dateText.focus);
-          }
-          break;
-        case 10:
-          if (
-            this.dateFormatted.substring(2, 3) === "/" &&
-            this.dateFormatted.substring(5, 6) === "/"
-          ) {
-            // dd/MM/yyyy
-            day = this.dateFormatted.substring(0, 2);
-            month = this.dateFormatted.substring(3, 5);
-            year = this.dateFormatted.substring(6, 10);
-            date = year + "-" + month + "-" + day;
-            this.dateFormatted = day + "/" + month + "/" + year;
-          }
-        case 0:
-          break;
-        default:
-          this.$nextTick(this.$refs.dateText.focus);
+      var resultDateFormat = DateFormatService.formatDateText(this.dateFormatted);
+      if (resultDateFormat.format) {
+        this.date = resultDateFormat.date;
+        this.dateFormatted = resultDateFormat.dateFormatted;
+      } else {
+        this.$nextTick(this.$refs.dateText.focus);
       }
-      this.date = date;
     },
     parseDatePick() {
-      var day = this.date.substring(8, 10);
-      var month = this.date.substring(5, 7);
-      var year = this.date.substring(0, 4);
-      this.dateFormatted = day + "/" + month + "/" + year;
-      this.menu1 = false;
+      this.dateFormatted = DateFormatService.formatDatePick(this.date);
+      this.menuDatePicker = false;
       this.moveToAuxDeliveryNoteNr();
     },
     noteItemToAdd() {
@@ -487,7 +453,7 @@ export default {
     },
     deliveryNoteValid() {
       if (
-        this.customer &&
+        this.customer && this.customer.code &&
         this.dateFormatted &&
         this.deliveryNoteItems.length > 0
       ) {
