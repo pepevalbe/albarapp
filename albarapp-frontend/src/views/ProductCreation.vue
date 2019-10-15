@@ -37,23 +37,10 @@ export default {
   methods: {
     async createProduct() {
       if (this.form.valid) {
-        await ProductService.create(this.form.product).then(() => {
+        ProductService.create(this.form.product).then(() => {
           this.snackbar = true;
           this.reset();
         });
-      }
-    },
-    createProductOld() {
-      if (this.form.valid) {
-        this.$axios
-          .post("/products", this.form.product)
-          .then(response => {
-            this.snackbar = true;
-            this.reset();
-          })
-          .catch(function(error) {
-            alert("Ha ocurrido un error creando el producto");
-          });
       }
     },
     reset() {

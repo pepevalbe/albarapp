@@ -44,37 +44,13 @@ export default {
   },
   async created() {
     this.form.product = await ProductService.get(this.productHref);
-    // this.$axios
-    //   .get(this.productHref)
-    //   .then(response => {
-    //     this.form.product = response.data;
-    //   })
-    //   .catch(function(error) {
-    //     alert("Ha ocurrido un error recuperando los datos del producto");
-    //   });
   },
   methods: {
     async updateProduct() {
       if (this.form.valid) {
-        await ProductService.update(this.productHref, this.form.product).then(
-          () => {
-            this.snackbar = true;
-          }
-        );
-      }
-    },
-    updateProductOld() {
-      var vm = this;
-      if (this.form.valid) {
-        var product = this.form.product;
-        this.$axios
-          .put(this.productHref, product)
-          .then(response => {
-            this.snackbar = true;
-          })
-          .catch(function(error) {
-            alert("Ha ocurrido un error actualizando el producto");
-          });
+        ProductService.update(this.productHref, this.form.product).then(() => {
+          this.snackbar = true;
+        });
       }
     }
   }
