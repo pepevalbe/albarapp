@@ -29,6 +29,7 @@ export default {
                     year = dateTextIn.substring(6, 10);
                     date = year + "-" + month + "-" + day;
                     dateFormatted = day + "/" + month + "/" + year;
+                    format = true;
                 }
                 break;
             case 0:
