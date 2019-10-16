@@ -1,6 +1,5 @@
 export default {
     formatDateText(dateTextIn) {
-        var date = "";
         var day = "";
         var month = "";
         var year = "";
@@ -31,6 +30,7 @@ export default {
                     date = year + "-" + month + "-" + day;
                     dateFormatted = day + "/" + month + "/" + year;
                 }
+                break;
             case 0:
                 format = true;
                 break;
