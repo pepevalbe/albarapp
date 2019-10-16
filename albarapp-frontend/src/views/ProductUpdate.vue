@@ -40,18 +40,15 @@ export default {
     snackbar: false
   }),
   props: {
-    productHref: String
+    productId: String
   },
   async created() {
-    this.form.product = await ProductService.get(this.productHref);
+    this.form.product = await ProductService.get(this.productId);
   },
   methods: {
     async updateProduct() {
-      if (this.form.valid) {
-        ProductService.update(this.productHref, this.form.product).then(() => {
-          this.snackbar = true;
-        });
-      }
+      await ProductService.update(this.productId, this.form.product);
+      this.snackbar = true;
     }
   }
 };

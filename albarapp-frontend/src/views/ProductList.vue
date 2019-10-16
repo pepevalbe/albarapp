@@ -111,20 +111,10 @@ export default {
     this.products = await ProductService.getAll();
   },
   methods: {
-    listProductsOld() {
-      this.$axios
-        .get("/products")
-        .then(response => {
-          this.products = response.data._embedded.products;
-        })
-        .catch(function(error) {
-          alert("Ha ocurrido un error recuperando los productos");
-        });
-    },
     updateProduct(item) {
       this.$router.push({
         name: "ProductUpdate",
-        params: { productHref: item._links.self.href }
+        params: { productId: item.id }
       });
     }
   }

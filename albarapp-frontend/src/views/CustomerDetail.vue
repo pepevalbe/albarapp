@@ -37,12 +37,12 @@ export default {
     productPrices: []
   }),
   props: {
-    customerHref: String
+    customerId: String
   },
   async created() {
-    this.form.customer = await CustomerService.get(this.customerHref);
+    this.form.customer = await CustomerService.get(this.customerId);
     this.productPrices = await CustomerService.getCustomerProductPrices(
-      this.customerHref
+      this.customerId
     );
   }
 };

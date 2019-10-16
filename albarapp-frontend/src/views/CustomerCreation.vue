@@ -2,21 +2,14 @@
   <v-content>
     <v-container class="pl-10 pr-10">
       <CustomerForm v-bind:form="form" ref="form"></CustomerForm>
-
       <div class="mb-3"></div>
-
       <CustomerPriceTable v-bind:productPrices="productPrices"></CustomerPriceTable>
-
       <div class="mb-10"></div>
-
       <v-btn :disabled="!form.valid" color="success" class="mr-4" @click="createCustomer()">Crear</v-btn>
-
-      <v-btn color="error" class="mr-4" @click="reset">Borrar</v-btn>
-
+      <v-btn color="error" class="mr-4" @click="reset()">Borrar</v-btn>
       <v-btn to="/customer-list/">Volver</v-btn>
-
       <v-snackbar v-model="snackbar">
-        {{snackbarMessage}}
+        Cliente creado correctamente
         <v-btn color="green" text @click="snackbar = false">Cerrar</v-btn>
       </v-snackbar>
     </v-container>
@@ -24,8 +17,8 @@
 </template>
 
 <script>
-import CustomerPriceTable from "@/components/CustomerPriceTable";
 import CustomerForm from "@/components/CustomerForm";
+import CustomerPriceTable from "@/components/CustomerPriceTable";
 import CustomerService from "@/services/CustomerService.js";
 
 export default {
@@ -47,42 +40,14 @@ export default {
         phoneNumber: ""
       }
     },
-    products: [],
-    product: undefined,
-    price: 0,
     productPrices: [],
-    snackbar: false,
-    snackbarMessage: ""
+    snackbar: false
   }),
   methods: {
-    createCustomer() {
-      var vm = this;
-      if (this.form.valid) {
-        this.$axios
-          .post("/customers", this.form.customer)
-          .then(response => {
-            for (var i = 0; i < vm.productPrices.length; i++) {
-              var item = vm.productPrices[i];
-              var customerProductPrice = {
-                offeredPrice: item.price,
-                customer: response.data._links.self.href,
-                product: item.product._links.self.href
-              };
-              this.$axios
-                .post("/customerProductPrices", customerProductPrice)
-                .then(response => {})
-                .catch(function(error) {
-                  alert("Ha ocurrido un error creando los precios");
-                });
-            }
-            this.snackbar = true;
-            this.snackbarMessage = "Cliente creado correctamente";
-            this.reset();
-          })
-          .catch(function(error) {
-            alert("Ha ocurrido un error creando el cliente");
-          });
-      }
+    async createCustomer() {
+      await CustomerService.create(this.form.customer, this.productPrices);
+      this.snackbar = true;
+      this.reset();
     },
     reset() {
       this.$refs.form.reset();
