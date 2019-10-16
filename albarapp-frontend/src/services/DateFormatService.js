@@ -52,5 +52,12 @@ export default {
         issuedDate.setMonth(dateTextIn.substring(5, 7) - 1);
         issuedDate.setFullYear(dateTextIn.substring(0, 4));
         return issuedDate.getTime();
+    },
+    formatFromTimestamp(timestamp) {
+        var issuedDate = new Date(timestamp);
+        var day = issuedDate.getDate();
+        var month = issuedDate.getMonth() + 1;
+        var year = issuedDate.getUTCFullYear();
+        return day + "/" + month + "/" + year;
     }
 }

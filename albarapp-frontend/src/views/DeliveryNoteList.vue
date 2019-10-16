@@ -34,10 +34,10 @@
           <template v-slot:body="{ items }">
             <tbody v-if="!$vuetify.breakpoint.xsOnly">
               <tr v-for="item in items" :key="item.deliveryNoteItemsHref">
-                <td>{{item.deliveryNoteNr}}</td>
+                <td>{{item.id}}</td>
                 <td>{{item.auxDeliveryNoteNr}}</td>
-                <td>{{item.alias}}</td>
-                <td>{{item.issuedTimestamp}}</td>
+                <td>{{item.customer.alias}}</td>
+                <td>{{item.issuedDate}}</td>
                 <td>{{item.total.toFixed(2)}} €</td>
                 <td>
                   <v-btn @click="updateDeliveryNote(item)">
@@ -48,19 +48,19 @@
             </tbody>
             <tbody v-else>
               <tr>
-                <v-card class="flex-content" outlined v-for="item in items" :key="item.deliveryNoteNr">
+                <v-card class="flex-content" outlined v-for="item in items" :key="item.id">
                   <v-card-text>
                     <span class="black--text">Nº Albarán:</span>
-                    {{item.deliveryNoteNr}}
+                    {{item.id}}
                     <br />
                     <span class="black--text">Nº Albarán auxiliar:</span>
                     {{item.auxDeliveryNoteNr}}
                     <br />
                     <span class="black--text">Cliente:</span>
-                    {{item.alias}}
+                    {{item.customer || item.customer.alias}}
                     <br />
                     <span class="black--text">Fecha:</span>
-                    {{item.issuedTimestamp}}
+                    {{item.issuedDate}}
                     <br />
                     <span class="black--text">Total:</span>
                     {{item.total.toFixed(2)}} €
@@ -93,84 +93,43 @@
 </template>
 
 <script>
+import DeliveryNoteService from "@/services/DeliveryNoteService.js";
+
 export default {
   name: "DeliveryNoteList",
   data: () => {
     return {
       deliveryNotes: [],
       headers: [
-        { text: "Nº Albarán", sortable: true, value: "deliveryNoteNr" },
+        { text: "Nº Albarán", sortable: true, value: "id" },
         {
-          text: "Nº Albarán auxiliar",
+          text: "Nº pedido",
           sortable: false,
           value: "auxDeliveryNoteNr"
         },
         { text: "Cliente", sortable: false, value: "alias" },
-        { text: "Fecha", sortable: false, value: "issuedTimestamp" },
+        { text: "Fecha", sortable: false, value: "issuedDate" },
         { text: "Total", sortable: false, value: "total" },
         { text: "", sortable: false, value: "update" }
       ],
       search: "",
-      sortBy: "deliveryNoteNr",
+      sortBy: "id",
       descending: false
     };
   },
-  created() {
-    this.listDeliveryNotes();
+  async created() {
+    await this.listDeliveryNotes();
   },
   methods: {
-    listDeliveryNotes() {
-      var vm = this;
-      this.$axios
-        .get("/deliveryNotes")
-        .then(response => {
-          this.deliveryNotes = response.data._embedded.deliveryNotes.map(
-            function(item) {
-              return {
-                deliveryNoteNr: item.id,
-                auxDeliveryNoteNr: item.auxDeliveryNoteNr,
-                alias: "",
-                issuedTimestamp: new Date(
-                  item.issuedTimestamp
-                ).toLocaleDateString("es-ES"),
-                total: 0,
-                update: "",
-                customerHref: item._links.customer.href,
-                deliveryNoteItemsHref: item._links.deliveryNoteItems.href
-              };
-            }
-          );
-          response.data._embedded.deliveryNotes.forEach(function(item) {
-            vm.$axios.get(item._links.customer.href).then(response => {
-              vm.mapCustomer(response);
-            });
-            vm.$axios.get(item._links.deliveryNoteItems.href).then(response => {
-              vm.mapDeliveryNoteItems(response);
-            });
-          });
-        })
-        .catch(function(error) {
-          console.log(error);
-          alert("Ha ocurrido un error recuperando los clientes");
-        });
+    async listDeliveryNotes() {
+      this.deliveryNotes = await DeliveryNoteService.getAllWithCustomerAndTotal();
     },
-    mapCustomer(response) {
-      var index = this.deliveryNotes.findIndex(function(element) {
-        return element.customerHref === response.config.url;
+    updateDeliveryNote(item) {
+      this.$router.push({
+        name: "DeliveryNoteUpdate",
+        params: { deliveryNoteId: item.id }
       });
-      this.deliveryNotes[index].alias = response.data.alias;
-    },
-    mapDeliveryNoteItems(response) {
-      var vm = this;
-      var index = this.deliveryNotes.findIndex(function(element) {
-        return element.deliveryNoteItemsHref === response.config.url;
-      });
-      this.deliveryNotes[index].total = 0;
-      response.data._embedded.deliveryNoteItems.forEach(function(item) {
-        vm.deliveryNotes[index].total += item.quantity * item.price;
-      });
-    },
-    updateDeliveryNote(item) {}
+    }
   }
 };
 </script>

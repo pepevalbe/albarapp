@@ -65,8 +65,15 @@ export default new Router({
     {
       path: "/delivery-note-creation/",
       component: () => import("@/views/DeliveryNoteCreation"),
-      name: "DeliveryNoteCreationn",
+      name: "DeliveryNoteCreation",
       meta: { headerName: "Nuevo albarán" }
     },
+    {
+      path: "/delivery-note-update/",
+      component: () => import("@/views/DeliveryNoteUpdate"),
+      props: true,
+      name: "DeliveryNoteUpdate",
+      meta: { headerName: "Modificar albarán" }
+    }
   ]
 });

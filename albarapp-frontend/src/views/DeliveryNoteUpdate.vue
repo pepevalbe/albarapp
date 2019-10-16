@@ -2,7 +2,7 @@
   <v-container>
     <DeliveryNoteForm v-bind:form="form" @saveClicked="createDeliveryNote" ref="form"></DeliveryNoteForm>
     <v-snackbar v-model="snackbar">
-      Albarán creado correctamente
+      Albarán modificado correctamente
       <v-btn color="success" text @click="snackbar = false">Cerrar</v-btn>
     </v-snackbar>
   </v-container>
@@ -11,6 +11,7 @@
 <script>
 import DeliveryNoteForm from "@/components/DeliveryNoteForm";
 import DateFormatService from "@/services/DateFormatService.js";
+import DeliveryNoteService from "@/services/DeliveryNoteService.js";
 
 export default {
   components: {
@@ -27,22 +28,16 @@ export default {
     },
     snackbar: false
   }),
+  props: {
+    deliveryNoteId: Number
+  },
   created() {
-    this.setDateToday();
+    this.loadDeliveryNote();
+    //this.setDateToday();
   },
   methods: {
-    setDateToday() {
-      var today = new Date();
-      var day = today
-        .getDate()
-        .toString()
-        .padStart(2, "0");
-      var month = (today.getMonth() + 1).toString().padStart(2, "0");
-      var year = today
-        .getFullYear()
-        .toString()
-        .padStart(4, "0");
-      this.form.date = year + "-" + month + "-" + day;
+    async loadDeliveryNote() {
+        this.form = await DeliveryNoteService.get(this.deliveryNoteId);
     },
     reset() {
       this.$refs.form.reset();
