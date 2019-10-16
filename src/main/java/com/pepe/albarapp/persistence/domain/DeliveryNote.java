@@ -4,8 +4,8 @@ import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 @Entity
 @Data
@@ -31,7 +31,7 @@ public class DeliveryNote {
     private Invoice invoice;
 
     @OneToMany(mappedBy = "deliveryNote")
-    private Set<DeliveryNoteItem> deliveryNoteItems;
+    private List<DeliveryNoteItem> deliveryNoteItems;
 
     @Override
     public boolean equals(Object o) {

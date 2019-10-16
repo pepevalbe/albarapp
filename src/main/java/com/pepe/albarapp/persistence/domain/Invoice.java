@@ -4,8 +4,8 @@ import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 @Entity
 @Data
@@ -20,7 +20,7 @@ public class Invoice {
     private long issuedTimestamp;
 
     @OneToMany(mappedBy = "invoice")
-    private Set<DeliveryNote> deliveryNotes;
+    private List<DeliveryNote> deliveryNotes;
 
     @Override
     public boolean equals(Object o) {
