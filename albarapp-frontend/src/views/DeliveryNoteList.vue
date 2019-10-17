@@ -37,7 +37,7 @@
                 <td>{{item.id}}</td>
                 <td>{{item.auxDeliveryNoteNr}}</td>
                 <td>{{item.customer.alias}}</td>
-                <td>{{item.issuedDate}}</td>
+                <td>{{item.dateFormatted}}</td>
                 <td>{{item.total.toFixed(2)}} €</td>
                 <td>
                   <v-btn @click="updateDeliveryNote(item)">
@@ -57,10 +57,10 @@
                     {{item.auxDeliveryNoteNr}}
                     <br />
                     <span class="black--text">Cliente:</span>
-                    {{item.customer || item.customer.alias}}
+                    {{item.customer.alias}}
                     <br />
                     <span class="black--text">Fecha:</span>
-                    {{item.issuedDate}}
+                    {{item.dateFormatted}}
                     <br />
                     <span class="black--text">Total:</span>
                     {{item.total.toFixed(2)}} €
@@ -108,7 +108,7 @@ export default {
           value: "auxDeliveryNoteNr"
         },
         { text: "Cliente", sortable: false, value: "alias" },
-        { text: "Fecha", sortable: false, value: "issuedDate" },
+        { text: "Fecha", sortable: false, value: "dateFormatted" },
         { text: "Total", sortable: false, value: "total" },
         { text: "", sortable: false, value: "update" }
       ],

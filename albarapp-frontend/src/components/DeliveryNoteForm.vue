@@ -172,6 +172,7 @@ export default {
   data: () => ({
     customerCode: "",
     customers: [],
+    dateFormatted: "",
     auxDeliveryNoteNr: "",
     products: [],
     product: {},
@@ -179,7 +180,6 @@ export default {
     quantity: "",
     price: "",
     menuDatePicker: false,
-    dateFormatted: "",
     snackbar: false,
     snackbarMessage: "",
     customerCodeRules: [
@@ -190,19 +190,18 @@ export default {
     ]
   }),
   props: {
-    form: {
-      valid: Boolean,
-      customer: Object,
-      auxDeliveryNoteNr: String,
-      date: String,
-      deliveryNoteItems: Array,
-      deliveryNoteTotal: Object
+    form: Object
+  },
+  watch: {
+    form: function() {
+      this.selectCustomerByAlias();
+      this.parseDatePick();
+      this.$nextTick(this.$refs.customerCode.focus);
     }
   },
   created() {
     this.listCustomers();
     this.listProducts();
-    this.dateFormatted = DateFormatService.formatDatePick(this.form.date);
   },
   methods: {
     listCustomers() {

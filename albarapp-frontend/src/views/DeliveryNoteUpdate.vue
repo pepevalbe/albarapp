@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <DeliveryNoteForm v-bind:form="form" @saveClicked="createDeliveryNote" ref="form"></DeliveryNoteForm>
+    <DeliveryNoteForm :form="form" @saveClicked="createDeliveryNote" ref="form"></DeliveryNoteForm>
     <v-snackbar v-model="snackbar">
       Albarán modificado correctamente
       <v-btn color="success" text @click="snackbar = false">Cerrar</v-btn>
@@ -19,12 +19,11 @@ export default {
   },
   data: () => ({
     form: {
-      valid: false,
-      customer: {},
-      auxDeliveryNoteNr: "",
-      date: "",
-      deliveryNoteItems: [],
-      deliveryNoteTotal: { value: 0 }
+        customer: {},
+        date : "",
+        auxDeliveryNoteNr: "",
+        deliveryNoteItems: [],
+        deliveryNoteTotal: {value: 0}
     },
     snackbar: false
   }),
@@ -33,11 +32,12 @@ export default {
   },
   created() {
     this.loadDeliveryNote();
-    //this.setDateToday();
   },
   methods: {
     async loadDeliveryNote() {
-        this.form = await DeliveryNoteService.get(this.deliveryNoteId);
+        this.form = await DeliveryNoteService.getWithCustomerAndTotal(this.deliveryNoteId);
+        //this.$refs.form.selectCustomerByAlias();
+        //this.$refs.form.parseDatePick();
     },
     reset() {
       this.$refs.form.reset();

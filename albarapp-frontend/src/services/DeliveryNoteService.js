@@ -55,7 +55,8 @@ export default {
         var promises = [];
         var deliveryNotes = await this.getAll();
         for (const deliveryNote of deliveryNotes) {
-            deliveryNote.issuedDate = DateFormatService.formatFromTimestamp(deliveryNote.issuedTimestamp);
+            deliveryNote.dateFormatted = DateFormatService.formatFromTimestamp(deliveryNote.issuedTimestamp);
+            deliveryNote.date = DateFormatService.formatDateText(deliveryNote.dateFormatted).date;
             promises.push(this.getCustomer(deliveryNote));
             promises.push(this.getDeliveryNoteItems(deliveryNote));
         }
@@ -69,9 +70,40 @@ export default {
         for (const deliveryNote of deliveryNotes) {
             deliveryNote.total = 0;
             for (const deliveryNoteItem of deliveryNote.deliveryNoteItems) {
-                deliveryNote.total += deliveryNoteItem.quantity * deliveryNoteItem.price * (1 + deliveryNoteItem.product.tax/100);
+                deliveryNote.total += deliveryNoteItem.quantity * deliveryNoteItem.price * (1 + deliveryNoteItem.product.tax / 100);
             }
         }
         return deliveryNotes;
-    }
+    },
+    async getWithCustomerAndTotal(id) {
+        var promises = [];
+        var deliveryNote = {};
+        await HttpClient.get(`${RESOURCE_NAME}/${id}`)
+            .then(response => {
+                deliveryNote = response.data;
+                promises.push(this.getCustomer(deliveryNote));
+                promises.push(this.getDeliveryNoteItems(deliveryNote));
+                deliveryNote.dateFormatted = DateFormatService.formatFromTimestamp(deliveryNote.issuedTimestamp);
+                deliveryNote.date = DateFormatService.formatDateText(deliveryNote.dateFormatted).date;
+                deliveryNote.valid = false;
+                deliveryNote.deliveryNoteItems = [];
+                deliveryNote.deliveryNoteTotal = { value: 0 };
+            })
+            .catch(() => {
+                alert("Ha ocurrido un error recuperando el albarán");
+            });
+        await Promise.all(promises);
+        for (const deliveryNoteItem of deliveryNote.deliveryNoteItems) {
+            promises.push(this.getProducts(deliveryNoteItem));
+        }
+        await Promise.all(promises);
+        deliveryNote.total = 0
+        for (const deliveryNoteItem of deliveryNote.deliveryNoteItems) {
+            deliveryNoteItem.gross = deliveryNoteItem.quantity * deliveryNoteItem.price;
+            deliveryNoteItem.taxRate = deliveryNoteItem.product.tax;
+            deliveryNoteItem.net = deliveryNoteItem.quantity * deliveryNoteItem.price * (1 + deliveryNoteItem.product.tax / 100)
+            deliveryNote.deliveryNoteTotal.value += deliveryNoteItem.net;
+        }
+        return deliveryNote;
+    },
 }

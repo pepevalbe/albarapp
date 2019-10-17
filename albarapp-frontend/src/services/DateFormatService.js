@@ -55,8 +55,8 @@ export default {
     },
     formatFromTimestamp(timestamp) {
         var issuedDate = new Date(timestamp);
-        var day = issuedDate.getDate();
-        var month = issuedDate.getMonth() + 1;
+        var day = issuedDate.getDate().toString().padStart(2, "0");
+        var month = (issuedDate.getMonth() + 1).toString().padStart(2, "0");
         var year = issuedDate.getUTCFullYear();
         return day + "/" + month + "/" + year;
     }
