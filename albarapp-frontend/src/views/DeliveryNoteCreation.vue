@@ -43,6 +43,14 @@ export default {
         .toString()
         .padStart(4, "0");
       this.form.date = year + "-" + month + "-" + day;
+      this.form = {
+        valid: false,
+        customer: {},
+        auxDeliveryNoteNr: "",
+        date: this.form.date,
+        deliveryNoteItems: [],
+        deliveryNoteTotal: { value: 0 }
+      };
     },
     reset() {
       this.$refs.form.reset();

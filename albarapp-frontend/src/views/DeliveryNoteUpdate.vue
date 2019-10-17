@@ -36,8 +36,6 @@ export default {
   methods: {
     async loadDeliveryNote() {
         this.form = await DeliveryNoteService.getWithCustomerAndTotal(this.deliveryNoteId);
-        //this.$refs.form.selectCustomerByAlias();
-        //this.$refs.form.parseDatePick();
     },
     reset() {
       this.$refs.form.reset();

@@ -202,6 +202,7 @@ export default {
   created() {
     this.listCustomers();
     this.listProducts();
+    this.parseDatePick();
   },
   methods: {
     listCustomers() {
@@ -403,7 +404,6 @@ export default {
     parseDatePick() {
       this.dateFormatted = DateFormatService.formatDatePick(this.form.date);
       this.menuDatePicker = false;
-      this.moveToAuxDeliveryNoteNr();
     },
     noteItemToAdd() {
       if (this.quantity && this.product && this.price) {
