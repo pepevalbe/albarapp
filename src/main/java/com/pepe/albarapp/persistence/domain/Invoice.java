@@ -11,27 +11,27 @@ import java.util.Objects;
 @Data
 public class Invoice {
 
-    @Id
-    @GeneratedValue(generator = "SequentialByYear")
-    @GenericGenerator(name = "SequentialByYear", strategy = "com.pepe.albarapp.persistence.SequentialByYearGenerator")
-    private Long id;
+	@Id
+	@GeneratedValue(generator = "SequentialByYear")
+	@GenericGenerator(name = "SequentialByYear", strategy = "com.pepe.albarapp.persistence.SequentialByYearGenerator")
+	private Long id;
 
-    @Column(nullable = false)
-    private long issuedTimestamp;
+	@Column(nullable = false)
+	private long issuedTimestamp;
 
-    @OneToMany(mappedBy = "invoice")
-    private List<DeliveryNote> deliveryNotes;
+	@OneToMany(mappedBy = "invoice")
+	private List<DeliveryNote> deliveryNotes;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Invoice invoice = (Invoice) o;
-        return id == invoice.id;
-    }
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Invoice invoice = (Invoice) o;
+		return id.equals(invoice.id);
+	}
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
+	@Override
+	public int hashCode() {
+		return Objects.hash(id);
+	}
 }

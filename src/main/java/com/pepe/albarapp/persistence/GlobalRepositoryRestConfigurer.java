@@ -8,8 +8,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class GlobalRepositoryRestConfigurer implements RepositoryRestConfigurer {
 
-    @Override
-    public void configureRepositoryRestConfiguration(RepositoryRestConfiguration config) {
-        config.exposeIdsFor(Customer.class, CustomerProductPrice.class, DeliveryNote.class, DeliveryNote.class, Invoice.class, Product.class);
-    }
+	@Override
+	public void configureRepositoryRestConfiguration(RepositoryRestConfiguration config) {
+		config.exposeIdsFor(Customer.class, CustomerProductPrice.class, DeliveryNote.class, DeliveryNote.class, Invoice.class, Product.class);
+	}
 }

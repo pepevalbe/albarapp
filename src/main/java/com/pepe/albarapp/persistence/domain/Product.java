@@ -11,36 +11,36 @@ import java.util.Set;
 @Data
 public class Product {
 
-    @Id
-    @GeneratedValue(generator = "uuid")
-    @GenericGenerator(name = "uuid", strategy = "uuid2")
-    private String id;
+	@Id
+	@GeneratedValue(generator = "uuid")
+	@GenericGenerator(name = "uuid", strategy = "uuid2")
+	private String id;
 
-    @Column(nullable = false, unique = true)
-    private int code;
+	@Column(nullable = false, unique = true)
+	private int code;
 
-    @Column(nullable = false)
-    private String name;
+	@Column(nullable = false)
+	private String name;
 
-    @Column(nullable = false)
-    private double factoryPrice;
+	@Column(nullable = false)
+	private double factoryPrice;
 
-    @Column(nullable = false)
-    private double tax;
+	@Column(nullable = false)
+	private double tax;
 
-    @OneToMany(mappedBy = "product")
-    private Set<CustomerProductPrice> customerProductPrices;
+	@OneToMany(mappedBy = "product")
+	private Set<CustomerProductPrice> customerProductPrices;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Product product = (Product) o;
-        return id == product.id;
-    }
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Product product = (Product) o;
+		return id.equals(product.id);
+	}
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
+	@Override
+	public int hashCode() {
+		return Objects.hash(id);
+	}
 }
