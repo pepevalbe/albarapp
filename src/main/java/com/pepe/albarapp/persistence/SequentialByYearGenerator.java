@@ -9,29 +9,29 @@ import java.time.LocalDate;
 
 public class SequentialByYearGenerator implements IdentifierGenerator {
 
-    @Override
-    public Serializable generate(SharedSessionContractImplementor session, Object obj) throws HibernateException {
+	@Override
+	public Serializable generate(SharedSessionContractImplementor session, Object obj) throws HibernateException {
 
-        String idColumnName = session.getEntityPersister(obj.getClass().getName(), obj).getIdentifierPropertyName();
-        String tableName = obj.getClass().getSimpleName();
-        String query = String.format("select max(%s) from %s", idColumnName, tableName);
+		String idColumnName = session.getEntityPersister(obj.getClass().getName(), obj).getIdentifierPropertyName();
+		String tableName = obj.getClass().getSimpleName();
+		String query = String.format("select max(%s) from %s", idColumnName, tableName);
 
-        //Get first Id of current year
-        long firstId = LocalDate.now().getYear() * 100000L;
+		//Get first Id of current year
+		long firstId = LocalDate.now().getYear() * 100000L;
 
-        // Get latest Id
-        Long max = (Long) session.createQuery(query).getSingleResult();
+		// Get latest Id
+		Long max = (Long) session.createQuery(query).getSingleResult();
 
-        // Empty table
-        if (max == null) {
-            return firstId;
-        }
+		// Empty table
+		if (max == null) {
+			return firstId;
+		}
 
-        // Begin new year
-        if (firstId > max) {
-            return firstId;
-        }
+		// Begin new year
+		if (firstId > max) {
+			return firstId;
+		}
 
-        return max + 1;
-    }
+		return max + 1;
+	}
 }

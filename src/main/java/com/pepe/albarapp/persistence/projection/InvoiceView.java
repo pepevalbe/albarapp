@@ -10,10 +10,10 @@ import java.util.Set;
 @Projection(name = "invoiceView", types = {Invoice.class})
 public interface InvoiceView {
 
-    @Value("#{'F' + target.id}")
-    String getInvoiceNumber();
+	@Value("#{'F' + target.id}")
+	String getInvoiceNumber();
 
-    long getIssuedTimestamp();
+	long getIssuedTimestamp();
 
-    Set<DeliveryNote> getDeliveryNotes();
+	Set<DeliveryNote> getDeliveryNotes();
 }

@@ -12,16 +12,16 @@ import java.util.Set;
 @Projection(name = "deliveryNoteView", types = {DeliveryNote.class})
 public interface DeliveryNoteView {
 
-    @Value("#{'A' + target.id}")
-    String getDeliveryNoteNumber();
+	@Value("#{'A' + target.id}")
+	String getDeliveryNoteNumber();
 
-    String getAuxDeliveryNoteNumber();
+	String getAuxDeliveryNoteNumber();
 
-    long getIssuedTimestamp();
+	long getIssuedTimestamp();
 
-    Customer getCustomer();
+	Customer getCustomer();
 
-    Invoice getInvoice();
+	Invoice getInvoice();
 
-    Set<DeliveryNoteItem> getDeliveryNoteItems();
+	Set<DeliveryNoteItem> getDeliveryNoteItems();
 }
