@@ -19,6 +19,14 @@ export default {
   data: () => ({
     form: {
       valid: false,
+      deliveryNote: {
+        customer: {},
+        auxDeliveryNoteNr: "",
+        issuedTimestamp: 0,
+        date: "",
+        deliveryNoteItems: [],
+        deliveryNoteTotal: { value: 0 }
+      },
       customer: {},
       auxDeliveryNoteNr: "",
       date: "",
@@ -42,9 +50,17 @@ export default {
         .getFullYear()
         .toString()
         .padStart(4, "0");
-      this.form.date = year + "-" + month + "-" + day;
+      this.form.deliveryNote.date = year + "-" + month + "-" + day;
       this.form = {
         valid: false,
+        deliveryNote: {
+          customer: {},
+          auxDeliveryNoteNr: "",
+          issuedTimestamp: 0,
+          date: this.form.deliveryNote.date,
+          deliveryNoteItems: [],
+          deliveryNoteTotal: { value: 0 }
+        },
         customer: {},
         auxDeliveryNoteNr: "",
         date: this.form.date,
@@ -58,19 +74,17 @@ export default {
     createDeliveryNote() {
       var vm = this;
       var promises = [];
-      var issuedTimestamp = DateFormatService.datePickToTimestamp(
-        this.form.date
-      );
+
       // Rest call to create new deliveryNote
       var deliveryNote = {
-        auxDeliveryNoteNr: this.form.auxDeliveryNoteNr,
-        issuedTimestamp: issuedTimestamp,
-        customer: this.form.customer._links.self.href
+        auxDeliveryNoteNr: this.form.deliveryNote.dateauxDeliveryNoteNr,
+        issuedTimestamp: this.form.deliveryNote.issuedTimestamp,
+        customer: this.form.deliveryNote.customer._links.self.href
       };
 
       this.$axios.post("/deliveryNotes", deliveryNote).then(response => {
-        for (var i = 0; i < vm.form.deliveryNoteItems.length; i++) {
-          var item = vm.form.deliveryNoteItems[i];
+        for (var i = 0; i < vm.form.deliveryNote.deliveryNoteItems.length; i++) {
+          var item = vm.form.deliveryNote.deliveryNoteItems[i];
           var deliveryNoteItem = {
             quantity: item.quantity,
             price: item.price,

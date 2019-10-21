@@ -82,11 +82,11 @@ export default {
             .then(response => {
                 deliveryNote = response.data;
                 promises.push(this.getCustomer(deliveryNote));
-                promises.push(this.getDeliveryNoteItems(deliveryNote));
-                deliveryNote.dateFormatted = DateFormatService.formatFromTimestamp(deliveryNote.issuedTimestamp);
-                deliveryNote.date = DateFormatService.formatDateText(deliveryNote.dateFormatted).date;
-                deliveryNote.valid = false;
                 deliveryNote.deliveryNoteItems = [];
+                promises.push(this.getDeliveryNoteItems(deliveryNote));
+                var date = DateFormatService.formatFromTimestamp(deliveryNote.issuedTimestamp);
+                deliveryNote.date = DateFormatService.formatDateText(date).date;
+                deliveryNote.valid = false;
                 deliveryNote.deliveryNoteTotal = { value: 0 };
             })
             .catch(() => {
@@ -105,5 +105,49 @@ export default {
             deliveryNote.deliveryNoteTotal.value += deliveryNoteItem.net;
         }
         return deliveryNote;
+    },
+
+    async update(id, deliveryNote, deliveryNoteItems, deliveryNoteItemsOriginal) {
+        var promises = [];
+
+        var deliveryNoteToUpdate = {
+            auxDeliveryNoteNr: deliveryNote.auxDeliveryNoteNr,
+            issuedTimestamp: deliveryNote.issuedTimestamp,
+            customer: deliveryNote.customer._links.self.href
+        };
+
+        var promisePut = HttpClient.put(`${RESOURCE_NAME}/${id}`, deliveryNoteToUpdate)
+            .then(() => {
+                var itemsToDelete = deliveryNoteItemsOriginal.filter(
+                    f => !deliveryNoteItems.includes(f)
+                );
+                var itemsToInsert = deliveryNoteItems.filter(
+                    f => !deliveryNoteItemsOriginal.includes(f)
+                );
+                itemsToDelete.forEach(element => {
+                    promises.push(HttpClient.delete(element._links.self.href)
+                        .catch(() => {
+                            alert("Ha ocurrido un error actualizando las líneas de albarán");
+                        }));
+                });
+                itemsToInsert.forEach(element => {
+                    var deliveryNoteItem = {
+                        quantity: element.quantity,
+                        price: element.price,
+                        product: element.product._links.self.href,
+                        deliveryNote: deliveryNote._links.self.href
+                    };
+                    promises.push(HttpClient.post("/deliveryNoteItems", deliveryNoteItem)
+                        .catch(() => {
+                            alert("Ha ocurrido un error actualizando líneas de albarán");
+                        }));
+                });
+            })
+            .catch((error) => {
+                console.log(error);
+                alert("Ha ocurrido un error actualizando el albarán");
+            })
+        await promisePut;
+        return Promise.all(promises);
     },
 }

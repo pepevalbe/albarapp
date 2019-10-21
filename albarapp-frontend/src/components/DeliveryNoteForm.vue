@@ -20,7 +20,7 @@
         </v-col>
         <v-col cols="12" md="6">
           <v-autocomplete
-            v-model="form.customer"
+            v-model="form.deliveryNote.customer"
             label="Alias cliente"
             :items="customers"
             item-text="alias"
@@ -54,7 +54,7 @@
               ></v-text-field>
             </template>
             <v-date-picker
-              v-model="form.date"
+              v-model="form.deliveryNote.date"
               no-title
               @input="parseDatePick()"
               locale="es-ES"
@@ -65,7 +65,7 @@
         <v-col cols="12" md="2">
           <v-text-field
             ref="auxDeliveryNoteNr"
-            v-model="form.auxDeliveryNoteNr"
+            v-model="form.deliveryNote.auxDeliveryNoteNr"
             type="number"
             label="Nº Pedido"
             @focus="$event.target.select()"
@@ -133,8 +133,8 @@
       <v-row class="ml-5" justify="center">
         <v-col cols="12" md="8">
           <DeliveryNoteItemTable
-            :deliveryNoteItems="form.deliveryNoteItems"
-            :deliveryNoteTotal="form.deliveryNoteTotal"
+            :deliveryNoteItems="form.deliveryNote.deliveryNoteItems"
+            :deliveryNoteTotal="form.deliveryNote.deliveryNoteTotal"
           ></DeliveryNoteItemTable>
         </v-col>
       </v-row>
@@ -173,7 +173,6 @@ export default {
     customerCode: "",
     customers: [],
     dateFormatted: "",
-    auxDeliveryNoteNr: "",
     products: [],
     product: {},
     productCode: "",
@@ -236,31 +235,31 @@ export default {
           this.snackbarMessage = "No existe ningún cliente con ese código";
           this.$nextTick(this.$refs.customerCode.focus);
         } else {
-          this.form.customer = this.customers[index];
+          this.form.deliveryNote.customer = this.customers[index];
           this.listCustomerPrices();
         }
       }
     },
     selectCustomerByAlias() {
       if (
-        this.form.customer != {} &&
-        this.form.customer != null &&
-        this.form.customer != undefined &&
-        this.form.customer.code != null
+        this.form.deliveryNote.customer != {} &&
+        this.form.deliveryNote.customer != null &&
+        this.form.deliveryNote.customer != undefined &&
+        this.form.deliveryNote.customer.code != null
       ) {
-        this.customerCode = this.form.customer.code;
+        this.customerCode = this.form.deliveryNote.customer.code;
         this.listCustomerPrices();
         this.moveToDate();
       }
       return false;
     },
     clearCustomer() {
-      this.form.customer = {};
+      this.form.deliveryNote.customer = {};
     },
     listCustomerPrices() {
       var vm = this;
       this.$axios
-        .get(this.form.customer._links.customerProductPrices.href)
+        .get(this.form.deliveryNote.customer._links.customerProductPrices.href)
         .then(response => {
           this.customerPrices = response.data._embedded.customerProductPrices;
           this.customerPrices.forEach(function(item) {
@@ -337,7 +336,7 @@ export default {
     },
     addDeliveryNoteItem() {
       var itemNet = this.quantity * this.price * (1 + this.product.tax / 100);
-      this.form.deliveryNoteItems.push({
+      this.form.deliveryNote.deliveryNoteItems.push({
         quantity: this.quantity,
         productName: this.product.name,
         product: this.product,
@@ -347,7 +346,7 @@ export default {
         net: this.quantity * this.price * (1 + this.product.tax / 100)
       });
 
-      this.form.deliveryNoteTotal.value += itemNet;
+      this.form.deliveryNote.deliveryNoteTotal.value += itemNet;
 
       this.quantity = "";
       this.product = {};
@@ -376,10 +375,10 @@ export default {
     },
     reset() {
       this.$refs.customerCode.reset();
-      this.form.customer = {};
-      this.form.deliveryNoteItems = [];
-      this.form.deliveryNoteTotal.value = 0;
-      this.form.auxDeliveryNoteNr = "";
+      this.form.deliveryNote.customer = {};
+      this.form.deliveryNote.deliveryNoteItems = [];
+      this.form.deliveryNote.deliveryNoteTotal.value = 0;
+      this.form.deliveryNote.auxDeliveryNoteNr = "";
       this.customerCode = "";
       this.quantity = "";
       this.product = {};
@@ -395,14 +394,22 @@ export default {
         this.dateFormatted
       );
       if (resultDateFormat.format) {
-        this.form.date = resultDateFormat.date;
+        this.form.deliveryNote.date = resultDateFormat.date;
         this.dateFormatted = resultDateFormat.dateFormatted;
+        this.form.deliveryNote.issuedTimestamp = DateFormatService.datePickToTimestamp(
+          this.form.deliveryNote.date
+        );
       } else {
         this.$nextTick(this.$refs.dateText.focus);
       }
     },
     parseDatePick() {
-      this.dateFormatted = DateFormatService.formatDatePick(this.form.date);
+      this.dateFormatted = DateFormatService.formatDatePick(
+        this.form.deliveryNote.date
+      );
+      this.form.deliveryNote.issuedTimestamp = DateFormatService.datePickToTimestamp(
+        this.form.deliveryNote.date
+      );
       this.menuDatePicker = false;
     },
     noteItemToAdd() {
@@ -414,10 +421,10 @@ export default {
     },
     deliveryNoteValid() {
       if (
-        this.form.customer &&
-        this.form.customer.code &&
+        this.form.deliveryNote.customer &&
+        this.form.deliveryNote.customer.code &&
         this.dateFormatted &&
-        this.form.deliveryNoteItems.length > 0
+        this.form.deliveryNote.deliveryNoteItems.length > 0
       ) {
         return true;
       } else {
