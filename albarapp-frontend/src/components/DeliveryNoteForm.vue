@@ -148,7 +148,7 @@
           @keyup.left="moveToQuantity()"
         >Guardar</v-btn>
 
-        <v-btn color="error" class="mr-4" @click="reset()">Borrar</v-btn>
+        <v-btn color="error" v-if="form.create" class="mr-4" @click="reset()">Borrar</v-btn>
 
         <v-btn to="/delivery-note-list/">Volver</v-btn>
       </v-row>

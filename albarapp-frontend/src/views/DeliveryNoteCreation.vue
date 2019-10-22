@@ -18,6 +18,7 @@ export default {
   data: () => ({
     form: {
       valid: false,
+      create: true,
       deliveryNote: {
         customer: {},
         auxDeliveryNoteNr: "",
@@ -52,6 +53,7 @@ export default {
       this.form.deliveryNote.date = year + "-" + month + "-" + day;
       this.form = {
         valid: false,
+        create: true,
         deliveryNote: {
           customer: {},
           auxDeliveryNoteNr: "",

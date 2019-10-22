@@ -19,6 +19,7 @@ export default {
   data: () => ({
     form: {
       valid: false,
+      create: false,
       deliveryNote: {
         customer: {},
         date: "",
@@ -42,6 +43,7 @@ export default {
       );
       this.form = {
         valid: false,
+        create: false,
         deliveryNote: deliveryNote
       };
       this.deliveryNoteItemsOriginal = Array.from(
