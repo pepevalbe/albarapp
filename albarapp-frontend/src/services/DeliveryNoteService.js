@@ -116,7 +116,7 @@ export default {
             customer: deliveryNote.customer._links.self.href
         };
 
-        var promisePut = HttpClient.put(`${RESOURCE_NAME}/${id}`, deliveryNoteToUpdate)
+        var promisePut = HttpClient.patch(`${RESOURCE_NAME}/${id}`, deliveryNoteToUpdate)
             .then(() => {
                 var itemsToDelete = deliveryNoteItemsOriginal.filter(
                     f => !deliveryNoteItems.includes(f)
