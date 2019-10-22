@@ -10,7 +10,6 @@
 
 <script>
 import DeliveryNoteForm from "@/components/DeliveryNoteForm";
-import DateFormatService from "@/services/DateFormatService.js";
 
 export default {
   components: {

@@ -273,9 +273,6 @@ export default {
                 });
                 vm.customerPrices[index].productCode =
                   responseProduct.data.code;
-                vm.productCode = responseProduct.data.code;
-                vm.product = responseProduct.data;
-                vm.price = vm.customerPrices[index].offeredPrice;
               })
               .catch(function(error) {
                 alert(
@@ -362,6 +359,16 @@ export default {
       this.$nextTick(this.$refs.auxDeliveryNoteNr.focus);
     },
     moveToQuantity() {
+      // We load default product and productPrice for this customer
+      if (this.customerPrices && this.customerPrices.length > 0) {
+        var vm = this;
+        var index = this.products.findIndex(function(element) {
+          return element.code = vm.customerPrices[0].productCode;
+        });
+        vm.productCode = vm.products[index].code;
+        vm.product = vm.products[index];
+        vm.price = vm.customerPrices[0].offeredPrice;
+      }
       this.$nextTick(this.$refs.quantity.focus);
     },
     moveToProductCode() {

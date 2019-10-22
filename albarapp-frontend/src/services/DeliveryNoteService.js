@@ -143,8 +143,7 @@ export default {
                         }));
                 });
             })
-            .catch((error) => {
-                console.log(error);
+            .catch(() => {
                 alert("Ha ocurrido un error actualizando el albarán");
             })
         await promisePut;
