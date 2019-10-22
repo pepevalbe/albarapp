@@ -363,7 +363,7 @@ export default {
       if (this.customerPrices && this.customerPrices.length > 0) {
         var vm = this;
         var index = this.products.findIndex(function(element) {
-          return element.code = vm.customerPrices[0].productCode;
+          return element.code == vm.customerPrices[0].productCode;
         });
         vm.productCode = vm.products[index].code;
         vm.product = vm.products[index];
