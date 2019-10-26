@@ -1,3 +1,5 @@
+INSERT INTO user(id, email, password, name, surname, role) VALUES ('0', 'admin@albarapp.com', 'admin', 'name', 'surname', 'ADMIN');
+
 INSERT INTO product(id, code, name, factory_price, tax) VALUES
 	(1, 1, 'Huevo XL', 0.15, 0),
 	(2, 2, 'Huevo L', 0.13, 0),
