@@ -51,7 +51,7 @@ public class AdminService {
         Invitation invitation = invitationRepository.findByToken(registrationDto.getToken())
                 .orElseThrow(() -> new RuntimeException("Token not found!"));
 
-        if (invitation.getIssuedTimestamp() + EXPIRATION_TIME_MILLIS > System.currentTimeMillis()) {
+        if (System.currentTimeMillis() > invitation.getIssuedTimestamp() + EXPIRATION_TIME_MILLIS) {
             throw new RuntimeException("Invitation expired!");
         }
 

@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class AdminController {
 
-    private final static String INVITATION_ENDPOINT = "/api/invitation";
-    private final static String USER_ENDPOINT = "/api/user";
+    private final static String INVITATION_ENDPOINT = "/api/send-invitation";
+    private final static String USER_ENDPOINT = "/public/user-creation";
 
     @Autowired
     private AdminService adminService;
