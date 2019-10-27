@@ -34,7 +34,7 @@
           <template v-slot:body="{ items }">
             <tbody v-if="!$vuetify.breakpoint.xsOnly">
               <tr v-for="item in items" :key="item.deliveryNoteItemsHref">
-                <td>{{item.id}}</td>
+                <td>A{{item.id}}</td>
                 <td>{{item.auxDeliveryNoteNr}}</td>
                 <td>{{item.customer.alias}}</td>
                 <td>{{item.dateFormatted}}</td>
@@ -51,7 +51,7 @@
                 <v-card class="flex-content" outlined v-for="item in items" :key="item.id">
                   <v-card-text>
                     <span class="black--text">Nº Albarán:</span>
-                    {{item.id}}
+                    A{{item.id}}
                     <br />
                     <span class="black--text">Nº Albarán auxiliar:</span>
                     {{item.auxDeliveryNoteNr}}

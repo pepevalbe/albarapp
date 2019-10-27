@@ -34,7 +34,7 @@
           <template v-slot:body="{ items }">
             <tbody v-if="!$vuetify.breakpoint.xsOnly">
               <tr v-for="item in items" :key="item.id">
-                <td>{{item.id}}</td>
+                <td>F{{item.id}}</td>
                 <td>{{item.deliveryNotes[0].customer.alias}}</td>
                 <td>{{item.dateFormatted}}</td>
                 <td>{{item.total.toFixed(2)}} €</td>
@@ -50,7 +50,7 @@
                 <v-card class="flex-content" outlined v-for="item in items" :key="item.id">
                   <v-card-text>
                     <span class="black--text">Nº Factura:</span>
-                    {{item.id}}
+                    F{{item.id}}
                     <br />
                     <span class="black--text">Cliente:</span>
                     {{item.deliveryNotes[0].customer.alias}}
