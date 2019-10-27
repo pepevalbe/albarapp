@@ -163,6 +163,8 @@
 <script>
 import DeliveryNoteItemTable from "@/components/DeliveryNoteItemTable";
 import DateFormatService from "@/services/DateFormatService.js";
+import CustomerService from "@/services/CustomerService.js";
+import ProductService from "@/services/ProductService.js";
 
 export default {
   name: "DeliveryNoteForm",
@@ -204,25 +206,11 @@ export default {
     this.parseDatePick();
   },
   methods: {
-    listCustomers() {
-      this.$axios
-        .get("/customers")
-        .then(response => {
-          this.customers = response.data._embedded.customers;
-        })
-        .catch(function() {
-          alert("Ha ocurrido un error recuperando los clientes");
-        });
+    async listCustomers() {
+      this.customers = await CustomerService.getAll();
     },
-    listProducts() {
-      this.$axios
-        .get("/products")
-        .then(response => {
-          this.products = response.data._embedded.products;
-        })
-        .catch(function() {
-          alert("Ha ocurrido un error recuperando los clientes");
-        });
+    async listProducts() {
+      this.products = await ProductService.getAll();
     },
     selectCustomerByCode() {
       var vm = this;
@@ -256,35 +244,8 @@ export default {
     clearCustomer() {
       this.form.deliveryNote.customer = {};
     },
-    listCustomerPrices() {
-      var vm = this;
-      this.$axios
-        .get(this.form.deliveryNote.customer._links.customerProductPrices.href)
-        .then(response => {
-          this.customerPrices = response.data._embedded.customerProductPrices;
-          this.customerPrices.forEach(function(item) {
-            vm.$axios
-              .get(item._links.product.href)
-              .then(responseProduct => {
-                var index = vm.customerPrices.findIndex(function(element) {
-                  return (
-                    element._links.product.href === responseProduct.config.url
-                  );
-                });
-                vm.customerPrices[index].productCode =
-                  responseProduct.data.code;
-              })
-              .catch(function(error) {
-                alert(
-                  "Ha ocurrido un error recuperando los productos del precio: " +
-                    error
-                );
-              });
-          });
-        })
-        .catch(function() {
-          alert("Ha ocurrido un error recuperando los precios");
-        });
+    async listCustomerPrices() {
+      this.customerPrices = await CustomerService.getCustomerProductPrices(this.customerCode);
     },
     selectProductByCode() {
       var vm = this;
@@ -322,13 +283,13 @@ export default {
       var index = -1;
       if (this.customerPrices) {
         index = this.customerPrices.findIndex(function(element) {
-          return element.productCode == vm.productCode;
+          return element.product.code == vm.productCode;
         });
       }
       if (index === -1) {
         this.price = this.product.factoryPrice;
       } else {
-        this.price = this.customerPrices[index].offeredPrice;
+        this.price = this.customerPrices[index].price;
       }
     },
     addDeliveryNoteItem() {
@@ -363,11 +324,11 @@ export default {
       if (this.customerPrices && this.customerPrices.length > 0) {
         var vm = this;
         var index = this.products.findIndex(function(element) {
-          return element.code == vm.customerPrices[0].productCode;
+          return element.code == vm.customerPrices[0].product.code;
         });
         vm.productCode = vm.products[index].code;
         vm.product = vm.products[index];
-        vm.price = vm.customerPrices[0].offeredPrice;
+        vm.price = vm.customerPrices[0].price;
       }
       this.$nextTick(this.$refs.quantity.focus);
     },

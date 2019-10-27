@@ -107,6 +107,35 @@ export default {
         return deliveryNote;
     },
 
+    async create(deliveryNote, deliveryNoteItems) {
+
+        var promises = [];
+
+        var deliveryNoteToCreate = {
+            auxDeliveryNoteNr: deliveryNote.dateauxDeliveryNoteNr,
+            issuedTimestamp: deliveryNote.issuedTimestamp,
+            customer: deliveryNote.customer._links.self.href
+        };
+
+        var promisePost = HttpClient.post(RESOURCE_NAME, deliveryNoteToCreate).then(response => {
+            for (var i = 0; i < deliveryNoteItems.length; i++) {
+                var item = deliveryNoteItems[i];
+                var deliveryNoteItem = {
+                    quantity: item.quantity,
+                    price: item.price,
+                    product: item.product._links.self.href,
+                    deliveryNote: response.data._links.self.href
+                };
+                promises.push(
+                    HttpClient.post("/deliveryNoteItems", deliveryNoteItem)
+                );
+            }
+        });
+
+        await promisePost;
+        return Promise.all(promises);
+    },
+
     async update(id, deliveryNote, deliveryNoteItems, deliveryNoteItemsOriginal) {
         var promises = [];
 

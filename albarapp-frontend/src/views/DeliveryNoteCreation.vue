@@ -10,6 +10,7 @@
 
 <script>
 import DeliveryNoteForm from "@/components/DeliveryNoteForm";
+import DeliveryNoteService from "@/services/DeliveryNoteService.js";
 
 export default {
   components: {
@@ -72,35 +73,13 @@ export default {
     reset() {
       this.$refs.form.reset();
     },
-    createDeliveryNote() {
-      var vm = this;
-      var promises = [];
-
-      // Rest call to create new deliveryNote
-      var deliveryNote = {
-        auxDeliveryNoteNr: this.form.deliveryNote.dateauxDeliveryNoteNr,
-        issuedTimestamp: this.form.deliveryNote.issuedTimestamp,
-        customer: this.form.deliveryNote.customer._links.self.href
-      };
-
-      this.$axios.post("/deliveryNotes", deliveryNote).then(response => {
-        for (var i = 0; i < vm.form.deliveryNote.deliveryNoteItems.length; i++) {
-          var item = vm.form.deliveryNote.deliveryNoteItems[i];
-          var deliveryNoteItem = {
-            quantity: item.quantity,
-            price: item.price,
-            product: item.product._links.self.href,
-            deliveryNote: response.data._links.self.href
-          };
-          promises.push(
-            this.$axios.post("/deliveryNoteItems", deliveryNoteItem)
-          );
-        }
-        Promise.all(promises).then(function() {
-          vm.reset();
-        });
-        this.snackbar = true;
-      });
+    async createDeliveryNote() {
+      await DeliveryNoteService.create(
+        this.form.deliveryNote,
+        this.form.deliveryNote.deliveryNoteItems
+      );
+      this.reset();
+      this.snackbar = true;
     }
   }
 };
