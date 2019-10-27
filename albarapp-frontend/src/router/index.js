@@ -80,6 +80,12 @@ export default new Router({
       props: true,
       name: "DeliveryNoteUpdate",
       meta: { headerName: "Modificar albarán" }
+    },
+    {
+      path: "/invoice-list/",
+      component: () => import("@/views/InvoiceList"),
+      name: "InvoiceList",
+      meta: { headerName: "Facturas" }
     }
   ]
 });

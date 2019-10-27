@@ -28,6 +28,13 @@
         </v-btn>
       </v-flex>
     </v-layout>
+    <v-layout text-center wrap class="pt-10">
+      <v-flex xs12>
+        <v-btn to="/invoice-list/">
+          <span>Facturas</span>
+        </v-btn>
+      </v-flex>
+    </v-layout>
   </v-container>
 </template>
 
