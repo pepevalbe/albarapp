@@ -162,7 +162,6 @@
 
 <script>
 import DeliveryNoteItemTable from "@/components/DeliveryNoteItemTable";
-import DateFormatService from "@/services/DateFormatService.js";
 import CustomerService from "@/services/CustomerService.js";
 import ProductService from "@/services/ProductService.js";
 
@@ -245,7 +244,9 @@ export default {
       this.form.deliveryNote.customer = {};
     },
     async listCustomerPrices() {
-      this.customerPrices = await CustomerService.getCustomerProductPrices(this.customerCode);
+      this.customerPrices = await CustomerService.getCustomerProductPrices(
+        this.customerCode
+      );
     },
     selectProductByCode() {
       var vm = this;
@@ -358,26 +359,27 @@ export default {
       this.$emit("saveClicked");
     },
     parseDateText() {
-      var resultDateFormat = DateFormatService.formatDateText(
-        this.dateFormatted
+      var moment = this.$moment(
+        this.dateFormatted,
+        ["DDMMYYYY", "DD/MM/YYYY"],
+        true
       );
-      if (resultDateFormat.format) {
-        this.form.deliveryNote.date = resultDateFormat.date;
-        this.dateFormatted = resultDateFormat.dateFormatted;
-        this.form.deliveryNote.issuedTimestamp = DateFormatService.datePickToTimestamp(
-          this.form.deliveryNote.date
-        );
+      if (moment.isValid()) {
+        this.form.deliveryNote.date = moment.format("YYYY-MM-DD");
+        this.dateFormatted = moment.format("DD/MM/YYYY");
+        this.form.deliveryNote.issuedTimestamp = moment.format("x");
       } else {
         this.$nextTick(this.$refs.dateText.focus);
       }
     },
     parseDatePick() {
-      this.dateFormatted = DateFormatService.formatDatePick(
-        this.form.deliveryNote.date
+      var moment = this.$moment(
+        this.form.deliveryNote.date,
+        "YYYY-MM-DD",
+        true
       );
-      this.form.deliveryNote.issuedTimestamp = DateFormatService.datePickToTimestamp(
-        this.form.deliveryNote.date
-      );
+      this.dateFormatted = moment.format("DD/MM/YYYY");
+      this.form.deliveryNote.issuedTimestamp = moment.format("x");
       this.menuDatePicker = false;
     },
     noteItemToAdd() {

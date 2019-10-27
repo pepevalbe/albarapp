@@ -1,5 +1,5 @@
 import HttpClient from '@/services/HttpClient.js';
-import DateFormatService from "@/services/DateFormatService.js";
+import moment from "moment";
 
 const RESOURCE_NAME = '/deliveryNotes';
 
@@ -55,8 +55,8 @@ export default {
         var promises = [];
         var deliveryNotes = await this.getAll();
         for (const deliveryNote of deliveryNotes) {
-            deliveryNote.dateFormatted = DateFormatService.formatFromTimestamp(deliveryNote.issuedTimestamp);
-            deliveryNote.date = DateFormatService.formatDateText(deliveryNote.dateFormatted).date;
+            deliveryNote.dateFormatted = moment(deliveryNote.issuedTimestamp, "x").format("DD/MM/YYYY");
+            deliveryNote.date = moment(deliveryNote.issuedTimestamp, "x").format("YYYY-MM-DD");
             promises.push(this.getCustomer(deliveryNote));
             promises.push(this.getDeliveryNoteItems(deliveryNote));
         }
@@ -84,8 +84,7 @@ export default {
                 promises.push(this.getCustomer(deliveryNote));
                 deliveryNote.deliveryNoteItems = [];
                 promises.push(this.getDeliveryNoteItems(deliveryNote));
-                var date = DateFormatService.formatFromTimestamp(deliveryNote.issuedTimestamp);
-                deliveryNote.date = DateFormatService.formatDateText(date).date;
+                deliveryNote.date = moment(deliveryNote.issuedTimestamp, "x").format("YYYY-MM-DD");
                 deliveryNote.valid = false;
                 deliveryNote.deliveryNoteTotal = { value: 0 };
             })

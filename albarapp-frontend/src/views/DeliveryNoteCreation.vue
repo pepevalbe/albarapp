@@ -28,9 +28,6 @@ export default {
         deliveryNoteItems: [],
         deliveryNoteTotal: { value: 0 }
       },
-      customer: {},
-      auxDeliveryNoteNr: "",
-      date: "",
       deliveryNoteItems: [],
       deliveryNoteTotal: { value: 0 }
     },
@@ -41,34 +38,8 @@ export default {
   },
   methods: {
     setDateToday() {
-      var today = new Date();
-      var day = today
-        .getDate()
-        .toString()
-        .padStart(2, "0");
-      var month = (today.getMonth() + 1).toString().padStart(2, "0");
-      var year = today
-        .getFullYear()
-        .toString()
-        .padStart(4, "0");
-      this.form.deliveryNote.date = year + "-" + month + "-" + day;
-      this.form = {
-        valid: false,
-        create: true,
-        deliveryNote: {
-          customer: {},
-          auxDeliveryNoteNr: "",
-          issuedTimestamp: 0,
-          date: this.form.deliveryNote.date,
-          deliveryNoteItems: [],
-          deliveryNoteTotal: { value: 0 }
-        },
-        customer: {},
-        auxDeliveryNoteNr: "",
-        date: this.form.date,
-        deliveryNoteItems: [],
-        deliveryNoteTotal: { value: 0 }
-      };
+      this.form.deliveryNote.date = this.$moment().format("YYYY-MM-DD");
+      this.$refs.form.parseDatePick();
     },
     reset() {
       this.$refs.form.reset();
