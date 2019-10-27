@@ -18,6 +18,24 @@ export default new Router({
       meta: { headerName: "Login" }
     },
     {
+      path: "/admin",
+      component: () => import("@/views/admin/AdminPage"),
+      name: "AdminPage",
+      meta: { headerName: "Administración de usuarios" }
+    },
+    {
+      path: "/invitation",
+      component: () => import("@/views/admin/InvitationForm"),
+      name: "InvitationForm",
+      meta: { headerName: "Enviar invitación" }
+    },
+    {
+      path: "/user-creation",
+      component: () => import("@/views/admin/UserCreation"),
+      name: "UserCreation",
+      meta: { headerName: "Creación de usuario" }
+    },
+    {
       path: "/product-list/",
       component: () => import("@/views/ProductList"),
       name: "ProductList",
