@@ -1,6 +1,6 @@
 import HttpClient from '@/services/HttpClient.js';
 
-const RESOURCE_NAME = '/customers';
+const RESOURCE_NAME = '/hateoas/customers';
 
 export default {
   getAll() {

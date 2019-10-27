@@ -10,6 +10,7 @@ public class GlobalRepositoryRestConfigurer implements RepositoryRestConfigurer 
 
 	@Override
 	public void configureRepositoryRestConfiguration(RepositoryRestConfiguration config) {
+		config.setBasePath("/hateoas");
 		config.exposeIdsFor(Customer.class, CustomerProductPrice.class, DeliveryNote.class, DeliveryNote.class, Invoice.class, Product.class);
 	}
 }

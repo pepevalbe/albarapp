@@ -33,11 +33,10 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 				.addFilter(new JWTAuthorizationFilter(authenticationManager()));
 
 		http.authorizeRequests().antMatchers("/admin/**").hasRole("ADMIN");
-		http.authorizeRequests().anyRequest().hasAnyRole("ADMIN", "USER");
+		http.authorizeRequests().antMatchers("/hateoas/**", "/api/**").hasAnyRole("ADMIN", "USER");
 		http.authorizeRequests().antMatchers(HttpMethod.OPTIONS, "/**").permitAll();
-		http.headers().frameOptions().sameOrigin();     // Needed for H2 console
-
-		http.authorizeRequests().anyRequest().permitAll();
+		//http.headers().frameOptions().sameOrigin();	// Needed for H2 console
+		//http.authorizeRequests().anyRequest().permitAll();	// Permit all requests
 	}
 
 	@Override

@@ -2,7 +2,7 @@ import HttpClient from '@/services/HttpClient.js';
 import moment from "moment";
 import DeliveryNoteService from "@/services/DeliveryNoteService.js";
 
-const RESOURCE_NAME = '/invoices';
+const RESOURCE_NAME = '/hateoas/invoices';
 
 export default {
     getAll() {
