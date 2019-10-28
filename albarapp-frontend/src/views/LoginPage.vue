@@ -48,9 +48,14 @@ export default {
   },
   methods: {
     async login() {
-      var token = await LoginService.login(this.email, this.password);
-      localStorage.setItem("token", token);
-      this.$router.push({ name: "HomePage" });
+      var result = await LoginService.login(this.email, this.password);
+      if (result.isError) {
+        this.alertError(result);
+        this.password = "";
+      } else {
+        localStorage.setItem("token", result);
+        this.$router.push({ name: "HomePage" });
+      }
     }
   }
 };

@@ -12,8 +12,9 @@ export default {
       .then(response => {
         return response.headers.authorization;
       })
-      .catch(() => {
-        alert("Ha ocurrido un error en el login");
+      .catch((response) => {
+      response.isError = true;
+        return response;
       });
   }
 }

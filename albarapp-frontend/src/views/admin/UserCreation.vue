@@ -1,7 +1,7 @@
 <template>
   <v-content>
     <v-container class="pl-10 pr-10">
-      <v-form v-model="valid">
+      <v-form ref="form" v-model="valid">
         <v-subheader class="title ml-1">Datos de producto</v-subheader>
         <v-text-field
           v-model="name"
@@ -20,21 +20,26 @@
         ></v-text-field>
         <v-text-field
           v-model="password"
-          :counter="30"
+          :append-icon="showPassword ? 'mdi-eye-outline' : 'mdi-eye'"
           :rules="passwordRules"
+          :type="showPassword ? 'text' : 'password'"
           label="Contraseña"
-          required
+          hint="Como mínimo 5 caracteres"
+          @click:append="showPassword = !showPassword"
+        ></v-text-field>
+        <v-text-field
+          v-model="rePassword"
+          :append-icon="showRepassword ? 'mdi-eye-outline' : 'mdi-eye'"
+          :rules="[rePasswordMatchRule]"
+          :type="showRepassword ? 'text' : 'password'"
+          label="Repita la contraseña"
+          counter
+          @click:append="showRepassword = !showRepassword"
         ></v-text-field>
       </v-form>
       <div class="mb-3"></div>
-      <v-btn
-        :disabled="!valid && token !== null"
-        color="success"
-        class="mr-4"
-        @click="createUser()"
-      >Crear</v-btn>
       <v-btn color="error" class="mr-4" @click="reset()">Borrar</v-btn>
-      <v-btn to="/User-list/">Volver</v-btn>
+      <v-btn :disabled="!valid && token !== null" color="success" @click="createUser()">Crear</v-btn>
     </v-container>
   </v-content>
 </template>
@@ -48,6 +53,9 @@ export default {
     name: "",
     surname: "",
     password: "",
+    rePassword: "",
+    showPassword: false,
+    showRepassword: false,
     nameRules: [
       v => !!v || "El nombre es obligatorio",
       v =>
@@ -60,14 +68,22 @@ export default {
         "Los apellidos deben tener menos de 30 caracteres"
     ],
     passwordRules: [
-      v => !!v || "La contraseña es obligatorio",
+      v => !!v || "La contraseña es obligatoria",
       v =>
-        (v && v.length <= 15) || "La contraseña de tener menos de 15 caracteres"
+        (v && v.length >= 5) ||
+        "La contraseña debe tener al menos 5 caracteres",
+      v =>
+        (v && v.length <= 15) ||
+        "La contraseña debe tener menos de 15 caracteres"
     ]
   }),
   computed: {
     token: function() {
       return this.$route.query.token;
+    },
+    rePasswordMatchRule() {
+      return () =>
+        this.password === this.rePassword || "Las contraseñas no coinciden";
     }
   },
   methods: {
@@ -83,9 +99,7 @@ export default {
       });
     },
     reset() {
-      this.name = "";
-      this.surname = "";
-      this.password = "";
+      this.$refs.form.reset();
     }
   }
 };
