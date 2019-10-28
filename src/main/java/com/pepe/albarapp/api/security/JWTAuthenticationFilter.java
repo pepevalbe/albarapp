@@ -28,13 +28,16 @@ import java.util.Date;
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
 	private final static String LOGIN_ENDPOINT = "/login";
+	private final static String TOKEN_ISSUER = "albarapp";
 	private final static long TOKEN_EXPIRATION_TIME_MILLIS = 432000000; // 432000000 milliseconds = 5 day
 
 	private final AuthenticationManager authenticationManager;
+	private final String signingKey;
 
-	public JWTAuthenticationFilter(AuthenticationManager authenticationManager) {
+	public JWTAuthenticationFilter(AuthenticationManager authenticationManager, String signingKey) {
 		super.setFilterProcessesUrl(LOGIN_ENDPOINT);
 		this.authenticationManager = authenticationManager;
+		this.signingKey = signingKey;
 	}
 
 	@Override
@@ -51,10 +54,10 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 											Authentication auth) {
 		String token = Jwts.builder()
 				.setIssuedAt(new Date(System.currentTimeMillis()))
-				.setIssuer("albarapp")
+				.setIssuer(TOKEN_ISSUER)
 				.setSubject(auth.getName())
 				.setExpiration(new Date(System.currentTimeMillis() + TOKEN_EXPIRATION_TIME_MILLIS))
-				.signWith(SignatureAlgorithm.HS512, "signingkey").compact();
+				.signWith(SignatureAlgorithm.HS512, signingKey).compact();
 
 		response.addHeader("Authorization", "Bearer " + token);
 		response.addHeader("Access-Control-Expose-Headers", "Authorization");        // For CORS requests

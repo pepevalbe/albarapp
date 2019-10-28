@@ -9,5 +9,5 @@ import java.util.Optional;
 @CrossOrigin(origins = "http://localhost:8080")
 public interface UserRepository extends CrudRepository<User, String> {
 
-    Optional<User> findByEmailAndPassword(String email, String password);
+	Optional<User> findByEmail(String email);
 }

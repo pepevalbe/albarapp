@@ -1,4 +1,4 @@
-INSERT INTO user(id, email, password, name, surname, role) VALUES ('0', 'admin@albarapp.com', 'admin', 'name', 'surname', 'ADMIN');
+INSERT INTO user(id, email, password, name, surname, role) VALUES ('0', 'admin@albarapp.com', '$2a$10$eB4FAVGW3ykdZCpofs1zwO.zKHup.Y6B21hPpWCbfqH1dyD8uhJHS', 'name', 'surname', 'ADMIN');
 
 INSERT INTO product(id, code, name, factory_price, tax) VALUES
 	(1, 1, 'Huevo XL', 0.15, 0),

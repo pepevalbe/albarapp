@@ -24,8 +24,11 @@ import java.util.List;
  */
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 
-	public JWTAuthorizationFilter(AuthenticationManager authManager) {
+	private final String signingKey;
+
+	public JWTAuthorizationFilter(AuthenticationManager authManager, String signingKey) {
 		super(authManager);
+		this.signingKey = signingKey;
 	}
 
 	@Override
@@ -51,7 +54,7 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 		String username;
 		try {
 			username = Jwts.parser()
-					.setSigningKey("signingkey")
+					.setSigningKey(signingKey)
 					.parseClaimsJws(token.replace("Bearer ", ""))
 					.getBody()
 					.getSubject();
@@ -66,7 +69,7 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 
 		ApiLog.addUserToLoggingContext(username);
 		ApiLog.log(JWTAuthorizationFilter.class, LogLevel.DEBUG, "Successfully checked token");
-		List<GrantedAuthority> authorities = AuthorityUtils.createAuthorityList("ROLE_USER", "ROLE_ADMIN");
+		List<GrantedAuthority> authorities = AuthorityUtils.createAuthorityList("USER", "ADMIN");
 		return new UsernamePasswordAuthenticationToken(username, null, authorities);
 	}
 }

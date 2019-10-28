@@ -1,5 +1,6 @@
 package com.pepe.albarapp.persistence.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -13,47 +14,48 @@ import java.util.Objects;
 @Data
 public class User {
 
-    @Id
-    @GeneratedValue(generator = "uuid")
-    @GenericGenerator(name = "uuid", strategy = "uuid2")
-    private String id;
+	@Id
+	@GeneratedValue(generator = "uuid")
+	@GenericGenerator(name = "uuid", strategy = "uuid2")
+	private String id;
 
-    @Column(nullable = false)
-    private String email;
+	@Column(nullable = false)
+	private String email;
 
-    @Column(nullable = false)
-    private String password;
+	@JsonIgnore
+	@Column(nullable = false)
+	private String password;
 
-    @Column(nullable = false)
-    private String name;
+	@Column(nullable = false)
+	private String name;
 
-    @Column(nullable = false)
-    private String surname;
+	@Column(nullable = false)
+	private String surname;
 
-    @Column(nullable = false)
-    private String role;
+	@Column(nullable = false)
+	private String role;
 
-    public User() {
-    }
+	public User() {
+	}
 
-    public User(String email, String password, String name, String surname, String role) {
-        this.email = email;
-        this.password = password;
-        this.name = name;
-        this.surname = surname;
-        this.role = role;
-    }
+	public User(String email, String password, String name, String surname, String role) {
+		this.email = email;
+		this.password = password;
+		this.name = name;
+		this.surname = surname;
+		this.role = role;
+	}
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        User customer = (User) o;
-        return id.equals(customer.id);
-    }
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		User customer = (User) o;
+		return id.equals(customer.id);
+	}
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
+	@Override
+	public int hashCode() {
+		return Objects.hash(id);
+	}
 }

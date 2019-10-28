@@ -1,6 +1,7 @@
 package com.pepe.albarapp.api.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -12,6 +13,9 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 @Configuration
 @EnableWebSecurity
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
+
+	@Value("${albarapp.signing_key}")
+	private String signingKey;
 
 	@Autowired
 	private CustomAuthenticationProvider customAuthenticationProvider;
@@ -29,8 +33,8 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
 		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 				.and().cors().and().csrf().disable()
-				.addFilter(new JWTAuthenticationFilter(authenticationManager()))
-				.addFilter(new JWTAuthorizationFilter(authenticationManager()));
+				.addFilter(new JWTAuthenticationFilter(authenticationManager(), signingKey))
+				.addFilter(new JWTAuthorizationFilter(authenticationManager(), signingKey));
 
 		http.authorizeRequests().antMatchers("/admin/**").hasRole("ADMIN");
 		http.authorizeRequests().antMatchers("/hateoas/**", "/api/**").hasAnyRole("ADMIN", "USER");
@@ -43,5 +47,4 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(AuthenticationManagerBuilder auth) {
 		auth.authenticationProvider(customAuthenticationProvider);
 	}
-
 }
