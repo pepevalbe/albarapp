@@ -10,4 +10,6 @@ import java.util.Optional;
 public interface InvitationRepository extends CrudRepository<Invitation, String> {
 
     Optional<Invitation> findByToken(String token);
+
+	void deleteByToken(String token);
 }

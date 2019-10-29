@@ -33,8 +33,8 @@ export default {
       });
   },
 
-  createUser(token, name, surname, password) {
-    var registration = { "token": token, "name": name, "surname": surname, "password": password };
+  createUser(invitation, name, surname, password) {
+    var registration = { "token": invitation, "name": name, "surname": surname, "password": password };
     return HttpClient.post(CREATE_USER_URL, registration)
       .then(() => {
         alert("Usuario creado. Ya puede entrar utilizando su email y contraseña");

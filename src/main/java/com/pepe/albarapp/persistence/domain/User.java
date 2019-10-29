@@ -19,7 +19,7 @@ public class User {
 	@GenericGenerator(name = "uuid", strategy = "uuid2")
 	private String id;
 
-	@Column(nullable = false)
+	@Column(unique = true, nullable = false)
 	private String email;
 
 	@JsonIgnore

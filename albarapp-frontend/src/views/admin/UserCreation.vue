@@ -2,7 +2,7 @@
   <v-content>
     <v-container class="pl-10 pr-10">
       <v-form ref="form" v-model="valid">
-        <v-subheader class="title ml-1">Datos de producto</v-subheader>
+        <v-subheader class="title ml-1">Inhformación de usuario</v-subheader>
         <v-text-field
           v-model="name"
           :counter="15"
@@ -78,7 +78,7 @@ export default {
     ]
   }),
   computed: {
-    token: function() {
+    invitation: function() {
       return this.$route.query.token;
     },
     rePasswordMatchRule() {
@@ -89,7 +89,7 @@ export default {
   methods: {
     async createUser() {
       await AdminService.createUser(
-        this.token,
+        this.invitation,
         this.name,
         this.surname,
         this.password

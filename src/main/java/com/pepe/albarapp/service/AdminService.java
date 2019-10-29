@@ -8,6 +8,7 @@ import com.pepe.albarapp.service.dto.RegistrationDto;
 import com.pepe.albarapp.service.dto.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -15,56 +16,64 @@ import javax.transaction.Transactional;
 @Service
 public class AdminService {
 
-    private static final long EXPIRATION_TIME_MILLIS = 24 * 60 * 60 * 1000;     // 24h expiration time
+	private static final long EXPIRATION_TIME_MILLIS = 24 * 60 * 60 * 1000;     // 24h expiration time
 
-    @Value("${albarapp.create_user_url}")
-    private String createUserUrl;
+	@Value("${albarapp.create_user_url}")
+	private String createUserUrl;
 
-    @Autowired
-    private UserRepository userRepository;
+	@Autowired
+	private UserRepository userRepository;
 
-    @Autowired
-    private InvitationRepository invitationRepository;
+	@Autowired
+	private InvitationRepository invitationRepository;
 
-    @Autowired
-    private EmailService emailService;
+	@Autowired
+	private EmailService emailService;
 
-    @Transactional
-    public void sendInvitation(String email, String role) {
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 
-        if (!EmailService.isValidEmail(email)) {
-            throw new RuntimeException("Invalid email!");
-        }
+	@Transactional
+	public void sendInvitation(String email, String role) {
 
-        if (!UserRole.contains(role)) {
-            throw new RuntimeException("Invalid role!");
-        }
+		if (!EmailService.isValidEmail(email)) {
+			throw new RuntimeException("Invalid email!");
+		}
 
-        Invitation invitation = invitationRepository.save(new Invitation(email, role));
-        String link = createUserUrl.concat(invitation.getToken());
-        emailService.sendInvitation(email, link);
-    }
+		if (!UserRole.contains(role)) {
+			throw new RuntimeException("Invalid role!");
+		}
 
-    @Transactional
-    public User createUser(RegistrationDto registrationDto) {
+		if (userRepository.findByEmail(email).isPresent()) {
+			throw new RuntimeException("Email already exists!");
+		}
 
-        Invitation invitation = invitationRepository.findByToken(registrationDto.getToken())
-                .orElseThrow(() -> new RuntimeException("Token not found!"));
+		Invitation invitation = invitationRepository.save(new Invitation(email, role));
+		String link = createUserUrl.concat(invitation.getToken());
+		emailService.sendInvitation(email, link);
+	}
 
-        if (System.currentTimeMillis() > invitation.getIssuedTimestamp() + EXPIRATION_TIME_MILLIS) {
-            throw new RuntimeException("Invitation expired!");
-        }
+	@Transactional
+	public User createUser(RegistrationDto registrationDto) {
 
-        // TODO: Hash password
-        User user = new User(invitation.getEmail(),
-                registrationDto.getPassword(),
-                registrationDto.getName(),
-                registrationDto.getSurname(),
-                invitation.getRole());
+		Invitation invitation = invitationRepository.findByToken(registrationDto.getToken())
+				.orElseThrow(() -> new RuntimeException("Invitation not found!"));
 
-        User createdUser = userRepository.save(user);
-        emailService.sendWelcomeEmail(createdUser);
+		invitationRepository.deleteByToken(registrationDto.getToken());
 
-        return createdUser;
-    }
+		if (System.currentTimeMillis() > invitation.getIssuedTimestamp() + EXPIRATION_TIME_MILLIS) {
+			throw new RuntimeException("Invitation expired!");
+		}
+
+		User user = new User(invitation.getEmail(),
+				passwordEncoder.encode(registrationDto.getPassword()),
+				registrationDto.getName(),
+				registrationDto.getSurname(),
+				invitation.getRole());
+
+		User createdUser = userRepository.save(user);
+		emailService.sendWelcomeEmail(createdUser);
+
+		return createdUser;
+	}
 }
