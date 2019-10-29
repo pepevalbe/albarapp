@@ -1,11 +1,12 @@
 import HttpClient from '@/services/HttpClient.js';
 import moment from "moment";
 
-const RESOURCE_NAME = '/hateoas/deliveryNotes';
+const DELIVERY_NOTE_RESOURCE = '/hateoas/deliveryNotes';
+const DELIVERY_NOTE_ITEM_RESOURCE = '/hateoas/deliveryNoteItems';
 
 export default {
     getAll() {
-        return HttpClient.get(RESOURCE_NAME)
+        return HttpClient.get(DELIVERY_NOTE_RESOURCE)
             .then(response => {
                 return response.data._embedded.deliveryNotes;
             })
@@ -15,7 +16,7 @@ export default {
     },
 
     get(id) {
-        return HttpClient.get(`${RESOURCE_NAME}/${id}`)
+        return HttpClient.get(`${DELIVERY_NOTE_RESOURCE}/${id}`)
             .then(response => {
                 return response.data;
             })
@@ -78,7 +79,7 @@ export default {
     async getWithCustomerAndTotal(id) {
         var promises = [];
         var deliveryNote = {};
-        await HttpClient.get(`${RESOURCE_NAME}/${id}`)
+        await HttpClient.get(`${DELIVERY_NOTE_RESOURCE}/${id}`)
             .then(response => {
                 deliveryNote = response.data;
                 promises.push(this.getCustomer(deliveryNote));
@@ -116,7 +117,7 @@ export default {
             customer: deliveryNote.customer._links.self.href
         };
 
-        var promisePost = HttpClient.post(RESOURCE_NAME, deliveryNoteToCreate).then(response => {
+        var promisePost = HttpClient.post(DELIVERY_NOTE_RESOURCE, deliveryNoteToCreate).then(response => {
             for (var i = 0; i < deliveryNoteItems.length; i++) {
                 var item = deliveryNoteItems[i];
                 var deliveryNoteItem = {
@@ -126,7 +127,7 @@ export default {
                     deliveryNote: response.data._links.self.href
                 };
                 promises.push(
-                    HttpClient.post("/deliveryNoteItems", deliveryNoteItem)
+                    HttpClient.post(DELIVERY_NOTE_ITEM_RESOURCE, deliveryNoteItem)
                 );
             }
         });
@@ -144,7 +145,7 @@ export default {
             customer: deliveryNote.customer._links.self.href
         };
 
-        var promisePut = HttpClient.patch(`${RESOURCE_NAME}/${id}`, deliveryNoteToUpdate)
+        var promisePut = HttpClient.patch(`${DELIVERY_NOTE_RESOURCE}/${id}`, deliveryNoteToUpdate)
             .then(() => {
                 var itemsToDelete = deliveryNoteItemsOriginal.filter(
                     f => !deliveryNoteItems.includes(f)
@@ -165,7 +166,7 @@ export default {
                         product: element.product._links.self.href,
                         deliveryNote: deliveryNote._links.self.href
                     };
-                    promises.push(HttpClient.post("/deliveryNoteItems", deliveryNoteItem)
+                    promises.push(HttpClient.post(DELIVERY_NOTE_ITEM_RESOURCE, deliveryNoteItem)
                         .catch(() => {
                             alert("Ha ocurrido un error actualizando líneas de albarán");
                         }));

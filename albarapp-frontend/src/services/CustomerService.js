@@ -1,10 +1,12 @@
 import HttpClient from '@/services/HttpClient.js';
 
-const RESOURCE_NAME = '/hateoas/customers';
+const CUSTOMER_RESOURCE = '/hateoas/customers';
+const CUSTOMER_PRODUCT_PRICE_RELATION = '/customerProductPrices';
+const CUSTOMER_PRODUCT_PRICE_RESOURCE = '/hateoas/customerProductPrices';
 
 export default {
   getAll() {
-    return HttpClient.get(RESOURCE_NAME)
+    return HttpClient.get(CUSTOMER_RESOURCE)
       .then(response => {
         return response.data._embedded.customers;
       })
@@ -14,7 +16,7 @@ export default {
   },
 
   get(id) {
-    return HttpClient.get(`${RESOURCE_NAME}/${id}`)
+    return HttpClient.get(`${CUSTOMER_RESOURCE}/${id}`)
       .then(response => {
         return response.data;
       })
@@ -24,7 +26,7 @@ export default {
   },
 
   getCustomerProductPrices(id) {
-    return HttpClient.get(`${RESOURCE_NAME}/${id}` + "/customerProductPrices")
+    return HttpClient.get(`${CUSTOMER_RESOURCE}/${id}${CUSTOMER_PRODUCT_PRICE_RELATION}`)
       .then(response => {
         var productPrices = [];
         var productPricesOriginal = [];
@@ -70,7 +72,7 @@ export default {
   },
 
   create(customer, productPrices) {
-    return HttpClient.post(RESOURCE_NAME, customer)
+    return HttpClient.post(CUSTOMER_RESOURCE, customer)
       .then(response => {
         productPrices.forEach(function (item) {
           var customerProductPrice = {
@@ -78,7 +80,7 @@ export default {
             customer: response.data._links.self.href,
             product: item.product._links.self.href
           };
-          HttpClient.post("/customerProductPrices", customerProductPrice)
+          HttpClient.post(CUSTOMER_PRODUCT_PRICE_RESOURCE, customerProductPrice)
             .catch(() => {
               alert("Ha ocurrido un error creando los precios");
             })
@@ -91,7 +93,7 @@ export default {
 
   async update(id, customer, productPrices, productPricesOriginal) {
     var promises = [];
-    var promisePut = HttpClient.put(`${RESOURCE_NAME}/${id}`, customer)
+    var promisePut = HttpClient.put(`${CUSTOMER_RESOURCE}/${id}`, customer)
       .then(() => {
         var productPricesToDelete = productPricesOriginal.filter(
           f => !productPrices.includes(f)
@@ -111,7 +113,7 @@ export default {
             customer: customer._links.self.href,
             product: element.product._links.self.href
           };
-          promises.push(HttpClient.post("/customerProductPrices", customerProductPrice)
+          promises.push(HttpClient.post(CUSTOMER_PRODUCT_PRICE_RESOURCE, customerProductPrice)
             .catch(() => {
               alert("Ha ocurrido un error actualizando los precios");
             }));
@@ -125,7 +127,7 @@ export default {
   },
 
   createNoPrices(data) {
-    return HttpClient.post(RESOURCE_NAME, data)
+    return HttpClient.post(CUSTOMER_RESOURCE, data)
       .then(response => {
         return response.data;
       })
@@ -135,7 +137,7 @@ export default {
   },
 
   updateNoPrices(id, data) {
-    return HttpClient.put(`${RESOURCE_NAME}/${id}`, data)
+    return HttpClient.put(`${CUSTOMER_RESOURCE}/${id}`, data)
       .then(response => {
         return response.data;
       })
