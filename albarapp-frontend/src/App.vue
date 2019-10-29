@@ -1,9 +1,9 @@
 <template>
   <v-app>
     <v-content>
-      <WebHeader v-bind:currentState="currentRouteName"/>
+      <WebHeader v-bind:currentState="currentRouteName" />
       <router-view class="pb-9"></router-view>
-      <WebFooter/>
+      <WebFooter />
     </v-content>
   </v-app>
 </template>
@@ -13,17 +13,15 @@ import WebHeader from "@/components/TheHeader";
 import WebFooter from "@/components/TheFooter";
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
     WebHeader,
     WebFooter
   },
-  data: () => ({
-    
-  }),
+  data: () => ({}),
   computed: {
     currentRouteName() {
-        return this.$route.meta.headerName;
+      return this.$route.meta.headerName;
     }
   }
 };
