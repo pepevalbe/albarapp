@@ -2,7 +2,7 @@
   <div>
     <v-app-bar>
       <v-toolbar-title class="headline text-uppercase">
-        <span>AlbarApp -</span>
+        <span>AlbarApp - </span>
         <span class="font-weight-light">{{currentState}}</span>
       </v-toolbar-title>
       <v-layout text-right>
