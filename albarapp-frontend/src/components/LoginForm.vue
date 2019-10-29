@@ -33,7 +33,7 @@
 import LoginService from "@/services/LoginService.js";
 
 export default {
-  name: "LoginPage",
+  name: "LoginForm",
   data() {
     return {
       email: "",
@@ -53,8 +53,7 @@ export default {
         this.alertError(result);
         this.password = "";
       } else {
-        localStorage.setItem("token", result);
-        this.$router.push({ name: "HomePage" });
+        this.$parent.setToken(result);
       }
     }
   }

@@ -12,12 +12,6 @@ export default new Router({
       meta: { headerName: "Home" }
     },
     {
-      path: "/login",
-      component: () => import("@/views/LoginPage"),
-      name: "LoginPage",
-      meta: { headerName: "Login" }
-    },
-    {
       path: "/admin",
       component: () => import("@/views/admin/AdminPage"),
       name: "AdminPage",

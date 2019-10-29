@@ -35,6 +35,9 @@ Vue.mixin({
     }
   },
   methods: {
+    setToken: function (token) {
+      this.token = token;
+    },
     logout: function () {
       this.token = null;
     },
