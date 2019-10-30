@@ -1,11 +1,11 @@
 <template>
-  <v-container>
+  <v-flex align-self-start>
     <DeliveryNoteForm v-bind:form="form" @saveClicked="createDeliveryNote" ref="form"></DeliveryNoteForm>
     <v-snackbar v-model="snackbar">
       Albarán creado correctamente
       <v-btn color="success" text @click="snackbar = false">Cerrar</v-btn>
     </v-snackbar>
-  </v-container>
+  </v-flex>
 </template>
 
 <script>
@@ -33,7 +33,7 @@ export default {
     },
     snackbar: false
   }),
-  created() {
+  mounted() {
     this.setDateToday();
   },
   methods: {

@@ -1,11 +1,11 @@
 <template>
-  <v-container>
+  <v-flex align-self-start>
     <DeliveryNoteForm :form="form" @saveClicked="updateDeliveryNote" ref="form"></DeliveryNoteForm>
     <v-snackbar v-model="snackbar">
       Albarán modificado correctamente
       <v-btn color="success" text @click="snackbar = false">Cerrar</v-btn>
     </v-snackbar>
-  </v-container>
+  </v-flex>
 </template>
 
 <script>

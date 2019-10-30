@@ -1,11 +1,17 @@
-<template>
-  <v-app>
-    <v-content>
+ <template>
+  <div>
+    <v-app>
       <WebHeader v-bind:currentState="currentRouteName" />
-      <router-view class="pb-9"></router-view>
+      <v-content>
+        <v-container fluid fill-height>
+          <v-layout justify-center align-center>
+            <router-view></router-view>
+          </v-layout>
+        </v-container>
+      </v-content>
       <WebFooter />
-    </v-content>
-  </v-app>
+    </v-app>
+  </div>
 </template>
 
 <script>

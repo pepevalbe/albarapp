@@ -139,19 +139,23 @@
         </v-col>
       </v-row>
       <div class="mb-10"></div>
-      <v-row class="ml-5" justify="center">
-        <v-btn
-          ref="createbutton"
-          class="mr-4"
-          :disabled="!deliveryNoteValid()"
-          @click="createDeliveryNote()"
-          @keyup.left="moveToQuantity()"
-        >Guardar</v-btn>
+      <v-layout text-center wrap class="pt-10">
+        <v-flex xs12>
+          <v-row class="ml-5" justify="center">
+            <v-btn
+              ref="createbutton"
+              class="mr-4"
+              :disabled="!deliveryNoteValid()"
+              @click="createDeliveryNote()"
+              @keyup.left="moveToQuantity()"
+            >Guardar</v-btn>
 
-        <v-btn color="error" v-if="form.create" class="mr-4" @click="reset()">Borrar</v-btn>
+            <v-btn color="error" v-if="form.create" class="mr-4" @click="reset()">Borrar</v-btn>
 
-        <v-btn to="/delivery-note-list/">Volver</v-btn>
-      </v-row>
+            <v-btn to="/delivery-note-list/">Volver</v-btn>
+          </v-row>
+        </v-flex>
+      </v-layout>
     </v-form>
     <v-snackbar v-model="snackbar">
       {{snackbarMessage}}

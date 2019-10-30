@@ -1,32 +1,30 @@
 <template>
-  <v-content>
-    <v-container class="pl-10 pr-10">
-      <v-form ref="form" v-model="valid">
-        <v-subheader class="title ml-1">Introduzca sus credenciales</v-subheader>
-        <v-text-field
-          v-model="email"
-          type="email"
-          :rules="emailRules"
-          label="Email"
-          required
-          autofocus
-        ></v-text-field>
-        <v-text-field
-          v-model="password"
-          type="password"
-          :rules="passwordRules"
-          label="Contraseña"
-          required
-          @keyup.enter="login()"
-        ></v-text-field>
-      </v-form>
-      <v-layout text-right>
-        <v-flex xs12>
-          <v-btn :disabled="!valid" color="success" class="mr-4" @click="login()">Acceder</v-btn>
-        </v-flex>
-      </v-layout>
-    </v-container>
-  </v-content>
+  <v-container class="pl-10 pr-10">
+    <v-form ref="form" v-model="valid">
+      <v-subheader class="title ml-1">Introduzca sus credenciales</v-subheader>
+      <v-text-field
+        v-model="email"
+        type="email"
+        :rules="emailRules"
+        label="Email"
+        required
+        autofocus
+      ></v-text-field>
+      <v-text-field
+        v-model="password"
+        type="password"
+        :rules="passwordRules"
+        label="Contraseña"
+        required
+        @keyup.enter="login()"
+      ></v-text-field>
+    </v-form>
+    <v-layout text-right>
+      <v-flex xs12>
+        <v-btn :disabled="!valid" color="success" class="mr-4" @click="login()">Acceder</v-btn>
+      </v-flex>
+    </v-layout>
+  </v-container>
 </template>
 
 <script>
@@ -53,7 +51,9 @@ export default {
         this.alertError(result);
         this.password = "";
       } else {
-        this.$parent.setToken(result);
+        this.setToken(result); // Esto no funciona. No lo mete en el localStorage
+        localStorage.setItem('token', result); // Así que lo meto manualmente...
+        this.$router.go();
       }
     }
   }

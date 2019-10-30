@@ -1,13 +1,15 @@
 <template>
-  <v-content>
-    <v-container class="pl-10 pr-10">
-      <CustomerForm :form="form" :readonly="true"></CustomerForm>
-      <div class="mb-3"></div>
-      <CustomerPriceTable :productPrices="productPrices" :readonly="true"></CustomerPriceTable>
-      <div class="mb-10"></div>
-      <v-btn to="/customer-list/">Volver</v-btn>
-    </v-container>
-  </v-content>
+  <v-flex align-self-start>
+    <CustomerForm :form="form" :readonly="true"></CustomerForm>
+    <div class="mb-3"></div>
+    <CustomerPriceTable :productPrices="productPrices" :readonly="true"></CustomerPriceTable>
+    <div class="mb-10"></div>
+    <v-layout text-center wrap>
+      <v-flex xs12>
+        <v-btn to="/customer-list/">Volver</v-btn>
+      </v-flex>
+    </v-layout>
+  </v-flex>
 </template>
 
 <script>

@@ -1,17 +1,19 @@
 <template>
-  <v-content>
-    <v-container class="pl-10 pr-10">
-      <ProductForm v-bind:form="form" ref="form"></ProductForm>
-      <div class="mb-3"></div>
-      <v-btn :disabled="!form.valid" color="success" class="mr-4" @click="createProduct()">Crear</v-btn>
-      <v-btn color="error" class="mr-4" @click="reset()">Borrar</v-btn>
-      <v-btn to="/product-list/">Volver</v-btn>
-      <v-snackbar v-model="snackbar">
-        Producto creado correctamente
-        <v-btn color="green" text @click="snackbar=false">Cerrar</v-btn>
-      </v-snackbar>
-    </v-container>
-  </v-content>
+  <v-flex align-self-start>
+    <ProductForm v-bind:form="form" ref="form"></ProductForm>
+    <div class="mb-3"></div>
+    <v-layout text-center wrap class="pt-10">
+      <v-flex xs12>
+        <v-btn :disabled="!form.valid" color="success" class="mr-4" @click="createProduct()">Crear</v-btn>
+        <v-btn color="error" class="mr-4" @click="reset()">Borrar</v-btn>
+        <v-btn to="/product-list/">Volver</v-btn>
+      </v-flex>
+    </v-layout>
+    <v-snackbar v-model="snackbar">
+      Producto creado correctamente
+      <v-btn color="green" text @click="snackbar=false">Cerrar</v-btn>
+    </v-snackbar>
+  </v-flex>
 </template>
 
 <script>

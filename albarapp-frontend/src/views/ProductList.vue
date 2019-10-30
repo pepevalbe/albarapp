@@ -1,90 +1,88 @@
 <template>
-  <v-content>
-    <v-container>
-      <v-layout text-right wrap class="pb-10 pt-5 mr-5">
-        <v-flex xs12>
-          <v-btn to="/product-creation/">
-            <span>Nuevo</span>
-          </v-btn>
-        </v-flex>
-      </v-layout>
-      <v-card>
-        <v-card-title>
-          Listado de productos
-          <div class="flex-grow-1"></div>
-          <v-text-field
-            v-model="search"
-            append-icon="mdi-magnify"
-            label="Buscar ..."
-            single-line
-            hide-details
-          ></v-text-field>
-        </v-card-title>
-        <v-data-table
-          :loading="!products || products.length == 0"
-          loading-text="Cargando... Por favor, espere"
-          :headers="headers"
-          :items="products"
-          :search="search"
-          :sort-by.sync="sortBy"
-          :sort-desc.sync="descending"
-          :items-per-page="15"
-        >
-          <template v-slot:body="{ items }">
-            <tbody v-if="!$vuetify.breakpoint.xsOnly">
-              <tr v-for="item in items" :key="item.code">
-                <td>{{item.code}}</td>
-                <td>{{item.name}}</td>
-                <td>{{item.factoryPrice}} €</td>
-                <td>{{item.tax}} %</td>
-                <td>
-                  <v-btn @click="updateProduct(item)">
-                    <v-icon dark>mdi-pencil</v-icon>
-                  </v-btn>
-                </td>
-              </tr>
-            </tbody>
-            <tbody v-else>
-              <tr>
-                <v-card class="flex-content" outlined v-for="item in items" :key="item.code">
-                  <v-card-text>
-                    <span class="black--text">Código:</span>
-                    {{item.code}}
-                    <br />
-                    <span class="black--text">Nombre:</span>
-                    {{item.name}}
-                    <br />
-                    <span class="black--text">Precio estándar:</span>
-                    {{item.factoryPrice}} €
-                    <br />
-                    <span class="black--text">Tipo impositivo:</span>
-                    {{item.tax}} %
-                    <br />
-                  </v-card-text>
-                  <v-card-actions>
-                    <v-layout text-center wrap>
-                      <v-flex xs12>
-                        <v-btn @click="updateProduct(item)">
-                          <v-icon dark>mdi-pencil</v-icon>
-                        </v-btn>
-                      </v-flex>
-                    </v-layout>
-                  </v-card-actions>
-                </v-card>
-              </tr>
-            </tbody>
-          </template>
-        </v-data-table>
-      </v-card>
-      <v-layout text-center wrap class="pt-10">
-        <v-flex xs12>
-          <v-btn to="/">
-            <span>Volver</span>
-          </v-btn>
-        </v-flex>
-      </v-layout>
-    </v-container>
-  </v-content>
+  <v-flex align-self-start>
+    <v-layout text-right wrap class="pb-10 pt-5 mr-5">
+      <v-flex xs12>
+        <v-btn to="/product-creation/">
+          <span>Nuevo</span>
+        </v-btn>
+      </v-flex>
+    </v-layout>
+    <v-card>
+      <v-card-title>
+        Listado de productos
+        <div class="flex-grow-1"></div>
+        <v-text-field
+          v-model="search"
+          append-icon="mdi-magnify"
+          label="Buscar ..."
+          single-line
+          hide-details
+        ></v-text-field>
+      </v-card-title>
+      <v-data-table
+        :loading="!products || products.length == 0"
+        loading-text="Cargando... Por favor, espere"
+        :headers="headers"
+        :items="products"
+        :search="search"
+        :sort-by.sync="sortBy"
+        :sort-desc.sync="descending"
+        :items-per-page="15"
+      >
+        <template v-slot:body="{ items }">
+          <tbody v-if="!$vuetify.breakpoint.xsOnly">
+            <tr v-for="item in items" :key="item.code">
+              <td>{{item.code}}</td>
+              <td>{{item.name}}</td>
+              <td>{{item.factoryPrice}} €</td>
+              <td>{{item.tax}} %</td>
+              <td>
+                <v-btn @click="updateProduct(item)">
+                  <v-icon dark>mdi-pencil</v-icon>
+                </v-btn>
+              </td>
+            </tr>
+          </tbody>
+          <tbody v-else>
+            <tr>
+              <v-card class="flex-content" outlined v-for="item in items" :key="item.code">
+                <v-card-text>
+                  <span class="black--text">Código:</span>
+                  {{item.code}}
+                  <br />
+                  <span class="black--text">Nombre:</span>
+                  {{item.name}}
+                  <br />
+                  <span class="black--text">Precio estándar:</span>
+                  {{item.factoryPrice}} €
+                  <br />
+                  <span class="black--text">Tipo impositivo:</span>
+                  {{item.tax}} %
+                  <br />
+                </v-card-text>
+                <v-card-actions>
+                  <v-layout text-center wrap>
+                    <v-flex xs12>
+                      <v-btn @click="updateProduct(item)">
+                        <v-icon dark>mdi-pencil</v-icon>
+                      </v-btn>
+                    </v-flex>
+                  </v-layout>
+                </v-card-actions>
+              </v-card>
+            </tr>
+          </tbody>
+        </template>
+      </v-data-table>
+    </v-card>
+    <v-layout text-center wrap class="pt-10">
+      <v-flex xs12>
+        <v-btn to="/">
+          <span>Volver</span>
+        </v-btn>
+      </v-flex>
+    </v-layout>
+  </v-flex>
 </template>
 
 <script>

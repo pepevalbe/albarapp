@@ -1,47 +1,45 @@
 <template>
-  <v-content>
-    <v-container class="pl-10 pr-10">
-      <v-form ref="form" v-model="valid">
-        <v-subheader class="title ml-1">Inhformación de usuario</v-subheader>
-        <v-text-field
-          v-model="name"
-          :counter="15"
-          :rules="nameRules"
-          label="Nombre"
-          required
-          autofocus
-        ></v-text-field>
-        <v-text-field
-          v-model="surname"
-          :counter="30"
-          :rules="surnameRules"
-          label="Apellidos"
-          required
-        ></v-text-field>
-        <v-text-field
-          v-model="password"
-          :append-icon="showPassword ? 'mdi-eye-outline' : 'mdi-eye'"
-          :rules="passwordRules"
-          :type="showPassword ? 'text' : 'password'"
-          label="Contraseña"
-          hint="Como mínimo 5 caracteres"
-          @click:append="showPassword = !showPassword"
-        ></v-text-field>
-        <v-text-field
-          v-model="rePassword"
-          :append-icon="showRepassword ? 'mdi-eye-outline' : 'mdi-eye'"
-          :rules="[rePasswordMatchRule]"
-          :type="showRepassword ? 'text' : 'password'"
-          label="Repita la contraseña"
-          counter
-          @click:append="showRepassword = !showRepassword"
-        ></v-text-field>
-      </v-form>
-      <div class="mb-3"></div>
-      <v-btn color="error" class="mr-4" @click="reset()">Borrar</v-btn>
-      <v-btn :disabled="!valid && token !== null" color="success" @click="createUser()">Crear</v-btn>
-    </v-container>
-  </v-content>
+  <v-flex align-self-start>
+    <v-form ref="form" v-model="valid">
+      <v-subheader class="title ml-1">Inhformación de usuario</v-subheader>
+      <v-text-field
+        v-model="name"
+        :counter="15"
+        :rules="nameRules"
+        label="Nombre"
+        required
+        autofocus
+      ></v-text-field>
+      <v-text-field
+        v-model="surname"
+        :counter="30"
+        :rules="surnameRules"
+        label="Apellidos"
+        required
+      ></v-text-field>
+      <v-text-field
+        v-model="password"
+        :append-icon="showPassword ? 'mdi-eye-outline' : 'mdi-eye'"
+        :rules="passwordRules"
+        :type="showPassword ? 'text' : 'password'"
+        label="Contraseña"
+        hint="Como mínimo 5 caracteres"
+        @click:append="showPassword = !showPassword"
+      ></v-text-field>
+      <v-text-field
+        v-model="rePassword"
+        :append-icon="showRepassword ? 'mdi-eye-outline' : 'mdi-eye'"
+        :rules="[rePasswordMatchRule]"
+        :type="showRepassword ? 'text' : 'password'"
+        label="Repita la contraseña"
+        counter
+        @click:append="showRepassword = !showRepassword"
+      ></v-text-field>
+    </v-form>
+    <div class="mb-3"></div>
+    <v-btn color="error" class="mr-4" @click="reset()">Borrar</v-btn>
+    <v-btn :disabled="!valid && token !== null" color="success" @click="createUser()">Crear</v-btn>
+  </v-flex>
 </template>
 
 <script>

@@ -58,7 +58,7 @@
         </template>
       </v-navigation-drawer>
     </v-card>
-    <LoginForm v-if="!token"></LoginForm>
+    <!--<LoginForm v-if="!token"></LoginForm>-->
   </v-container>
 </template>
 

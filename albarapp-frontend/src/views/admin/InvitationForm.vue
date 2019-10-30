@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-flex align-self-start>
     <v-form ref="form" v-model="valid">
       <v-subheader class="title ml-1">Invitar usuario</v-subheader>
       <v-text-field v-model="email" :rules="emailRules" label="Email" required></v-text-field>
@@ -7,7 +7,7 @@
     </v-form>
     <v-btn class="mr-4" to="/admin">Volver</v-btn>
     <v-btn :disabled="!valid" color="success" @click="sendInvitation()">Enviar</v-btn>
-  </v-container>
+  </v-flex>
 </template>
 
 <script>
