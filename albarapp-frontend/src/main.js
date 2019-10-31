@@ -40,6 +40,7 @@ Vue.mixin({
     },
     logout: function () {
       this.token = null;
+      this.$router.go();
     },
     alertError: function (error) {
       if (
