@@ -1,7 +1,8 @@
 <template>
   <div>
-    <WebNavDrawer />
+    <WebNavDrawer v-bind:drawer="drawer"/>
     <v-app-bar color="darken-3" dark app :clipped-left="$vuetify.breakpoint.mdAndUp" fixed>
+      <v-app-bar-nav-icon @click="toggleNavDrawer"></v-app-bar-nav-icon>
       <v-toolbar-title class="headline text-uppercase">
         <span>AlbarApp - </span>
         <span class="font-weight-light">{{currentState}}</span>
@@ -30,8 +31,16 @@ export default {
   },
   data: () => {
     return {
-      dialog: true
+      dialog: true,
+      drawer: {
+        value: true
+      }
     };
+  },
+  methods: {
+    toggleNavDrawer() {
+      this.drawer.value = !this.drawer.value;
+    }
   }
 };
 </script>

@@ -1,5 +1,5 @@
 <template>
-  <v-navigation-drawer fixed :clipped="$vuetify.breakpoint.mdAndUp" app>
+  <v-navigation-drawer fixed :clipped="$vuetify.breakpoint.mdAndUp" app v-model="drawer.value">
     <v-list-item v-if="token">
       <v-list-item-content>
         <v-list-item-title class="title">Albarapp</v-list-item-title>
@@ -67,6 +67,9 @@
 
 <script>
 export default {
-  name: "WebNavDrawer"
+  name: "WebNavDrawer",
+  props: {
+    drawer: Object
+  }
 };
 </script>
