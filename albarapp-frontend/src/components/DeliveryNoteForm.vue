@@ -249,7 +249,7 @@ export default {
     },
     async listCustomerPrices() {
       this.customerPrices = await CustomerService.getCustomerProductPrices(
-        this.customerCode
+        this.form.deliveryNote.customer.id
       );
     },
     selectProductByCode() {
