@@ -26,15 +26,13 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 	public Authentication authenticate(Authentication authentication) {
 		String email = authentication.getName();
 		String password = authentication.getCredentials() != null ? authentication.getCredentials().toString() : null;
-
 		if (email == null || password == null) {
 			return null;
 		}
 
 		User user = userRepository.findByEmail(email).orElse(null);
-		String hashedPassword = user != null ? user.getPassword() : null;
 
-		if (!passwordEncoder().matches(password, hashedPassword)) {
+		if (user == null || !passwordEncoder().matches(password, user.getPassword())) {
 			ApiLog.log(this.getClass(), LogLevel.WARN, "Failed authentication: " + email);
 			return null;
 		}
