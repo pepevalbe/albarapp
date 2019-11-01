@@ -11,5 +11,6 @@ import java.util.Optional;
 @PreAuthorize("hasRole('ROLE_ADMIN')")
 public interface UserRepository extends CrudRepository<User, String> {
 
+	@PreAuthorize("hasRole('ROLE_ADMIN') or #username == authentication.principal.username")
 	Optional<User> findByEmail(String email);
 }

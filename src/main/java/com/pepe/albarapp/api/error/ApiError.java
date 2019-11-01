@@ -5,16 +5,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum ApiError {
-	ApiError001("ApiError001", 500, "Generic API Error", "Ups, algo ha ido mal"),
-	ApiError100("ApiError100", 500, "Global API Error", "Ups, algo ha ido mal"),
-	ApiError002("ApiError002", 404, "Endpoint not found", "Endpoint no encontrado"),
-	ApiError003("ApiError003", 401, "Bad credentials", "Credenciales incorrectos"),
-	ApiError004("ApiError004", 401, "Bad or missing token", "Token inválido"),
-	ApiError005("ApiError005", 400, "Bad input parameters", "Ups, algo ha ido mal"),
-	ApiError006("ApiError006", 500, "Error parsing JSON", "Ups, algo ha ido mal"),
-	ApiError007("ApiError007", 500, "Client error in provider", "Ups, algo ha ido mal"),
-	ApiError008("ApiError008", 500, "Server error in provider", "Ups, algo ha ido mal"),
-	ApiError009("ApiError009", 500, "Unexpected error in provider", "Ups, algo ha ido mal");
+	ApiError100("100", 500, "Global API Error", "Ups, algo ha ido mal"),
+	ApiError001("001", 500, "Generic API Error", "Ups, algo ha ido mal"),
+	ApiError002("002", 404, "Endpoint not found", "Endpoint no encontrado"),
+	ApiError003("003", 401, "Bad credentials", "Credenciales incorrectos"),
+	ApiError004("004", 403, "Bad or missing token", "Token inválido"),
+	ApiError005("005", 403, "Not allowed", "No tienes permisos para acceder al recurso");
 
 	final String errorCode;
 	@JsonIgnore

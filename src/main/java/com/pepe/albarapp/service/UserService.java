@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 
 @Service
-public class AdminService {
+public class UserService {
 
 	private static final long EXPIRATION_TIME_MILLIS = 24 * 60 * 60 * 1000;     // 24h expiration time
 
@@ -32,6 +32,11 @@ public class AdminService {
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
+
+	public User getProfile(String email) {
+
+		return userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("Email not found!"));
+	}
 
 	@Transactional
 	public void sendInvitation(String email, String role) {
