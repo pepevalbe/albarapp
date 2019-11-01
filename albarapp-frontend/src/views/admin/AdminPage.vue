@@ -72,7 +72,7 @@
 </template>
 
 <script>
-import AdminService from "@/services/AdminService.js";
+import UserService from "@/services/UserService.js";
 
 export default {
   name: "AdminPage",
@@ -98,7 +98,7 @@ export default {
     };
   },
   async created() {
-    this.users = await AdminService.getAllUsers();
+    this.users = await UserService.getAllUsers();
   },
   methods: {}
 };

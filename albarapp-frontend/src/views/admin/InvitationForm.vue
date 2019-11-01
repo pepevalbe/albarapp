@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import AdminService from "@/services/AdminService.js";
+import UserService from "@/services/UserService.js";
 
 export default {
   name: "InvitationForm",
@@ -28,7 +28,7 @@ export default {
   }),
   methods: {
     sendInvitation: async function() {
-      await AdminService.sendInvitation(this.email, this.role);
+      await UserService.sendInvitation(this.email, this.role);
       this.$refs.form.reset();
     }
   }

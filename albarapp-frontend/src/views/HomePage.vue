@@ -58,17 +58,11 @@
         </template>
       </v-navigation-drawer>
     </v-card>
-    <!--<LoginForm v-if="!token"></LoginForm>-->
   </v-container>
 </template>
 
 <script>
-import LoginForm from "@/components/LoginForm";
-
 export default {
-  name: "home",
-  components: {
-    LoginForm
-  }
+  name: "home"
 };
 </script>

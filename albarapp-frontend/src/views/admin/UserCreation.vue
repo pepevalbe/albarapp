@@ -43,7 +43,7 @@
 </template>
 
 <script>
-import AdminService from "@/services/AdminService.js";
+import UserService from "@/services/UserService.js";
 
 export default {
   data: () => ({
@@ -86,7 +86,7 @@ export default {
   },
   methods: {
     async createUser() {
-      await AdminService.createUser(
+      await UserService.createUser(
         this.invitation,
         this.name,
         this.surname,
