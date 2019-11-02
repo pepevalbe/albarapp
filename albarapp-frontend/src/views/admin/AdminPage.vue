@@ -3,7 +3,8 @@
     <v-layout text-right wrap class="pb-10 pt-5 mr-5">
       <v-flex xs12>
         <v-btn to="/invitation/">
-          <span>Enviar Invitación</span>
+          Enviar Invitación
+          <v-icon class="ml-4">mdi-account-plus</v-icon>
         </v-btn>
       </v-flex>
     </v-layout>

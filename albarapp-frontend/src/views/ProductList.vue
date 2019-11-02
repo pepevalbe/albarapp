@@ -3,7 +3,8 @@
     <v-layout text-right wrap class="pb-10 pt-5 mr-5">
       <v-flex xs12>
         <v-btn to="/product-creation/">
-          <span>Nuevo</span>
+          Nuevo
+          <v-icon class="ml-2">mdi-plus-circle</v-icon>
         </v-btn>
       </v-flex>
     </v-layout>
