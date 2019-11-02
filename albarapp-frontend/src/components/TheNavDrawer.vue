@@ -1,13 +1,19 @@
 <template>
-  <v-navigation-drawer fixed :clipped="$vuetify.breakpoint.mdAndUp" app v-model="drawer.value">
-    <v-list-item v-if="token">
+  <v-navigation-drawer
+    v-if="token"
+    fixed
+    :clipped="$vuetify.breakpoint.mdAndUp"
+    app
+    v-model="drawer.value"
+  >
+    <v-list-item>
       <v-list-item-content>
-        <v-list-item-title class="title">Albarapp</v-list-item-title>
+        <v-list-item-title class="title">{{profile.name}}</v-list-item-title>
         <v-list-item-subtitle>{{parsedToken.sub}}</v-list-item-subtitle>
       </v-list-item-content>
     </v-list-item>
     <v-divider></v-divider>
-    <v-list dense nav v-if="token">
+    <v-list dense nav>
       <v-list-item link to="/">
         <v-list-item-icon>
           <v-icon>mdi-home</v-icon>
@@ -66,10 +72,22 @@
 </template>
 
 <script>
+import UserService from "@/services/UserService.js";
+
 export default {
   name: "WebNavDrawer",
   props: {
     drawer: Object
+  },
+  data: () => {
+    return {
+      profile: Object
+    };
+  },
+  async created() {
+    if (this.token) {
+      this.profile = await UserService.getProfile();
+    }
   }
 };
 </script>

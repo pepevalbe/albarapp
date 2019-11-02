@@ -39,7 +39,7 @@ Vue.mixin({
       this.token = token;
     },
     logout: function () {
-      this.token = null;
+      localStorage.clear();
       this.$router.go();
     },
     alertError: function (error) {

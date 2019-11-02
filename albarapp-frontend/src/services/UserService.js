@@ -1,10 +1,21 @@
 import HttpClient from '@/services/HttpClient.js';
 
 const USER_RESOURCE_NAME = '/hateoas/users';
+const USER_PROFILE_URL = 'api/profile';
 const SEND_INVITATION_URL = '/api/send-invitation';
 const CREATE_USER_URL = '/public/user-creation';
 
 export default {
+  getProfile() {
+    return HttpClient.get(USER_PROFILE_URL)
+      .then(response => {
+        return response.data;
+      })
+      .catch(() => {
+        alert("Ha ocurrido un error recuperando el perfil");
+      });
+  },
+
   getAllUsers() {
     return HttpClient.get(USER_RESOURCE_NAME)
       .then(response => {
@@ -12,13 +23,6 @@ export default {
       })
       .catch(() => {
         alert("Ha ocurrido un error recuperando los usuarios");
-      });
-  },
-
-  deleteUser(id) {
-    return HttpClient.delete(`${USER_RESOURCE_NAME}/${id}`)
-      .catch(() => {
-        alert("Ha ocurrido un error borrando el usuario");
       });
   },
 
