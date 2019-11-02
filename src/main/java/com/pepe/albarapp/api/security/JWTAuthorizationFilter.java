@@ -59,7 +59,7 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 
 		Jws<Claims> claims;
 		try {
-			claims = Jwts.parser().setSigningKey(signingKey).parseClaimsJws(token);
+			claims = Jwts.parser().setSigningKey(signingKey.getBytes()).parseClaimsJws(token);
 		} catch (JwtException e) {
 			ApiLog.log(JWTAuthorizationFilter.class, LogLevel.ERROR, e);
 			return null;

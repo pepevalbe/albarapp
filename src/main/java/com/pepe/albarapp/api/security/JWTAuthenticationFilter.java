@@ -69,7 +69,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 				.setSubject(auth.getName())
 				.setExpiration(new Date(System.currentTimeMillis() + TOKEN_EXPIRATION_TIME_MILLIS))
 				.addClaims(Collections.singletonMap(ROLE_CLAIMS, roles))
-				.signWith(SignatureAlgorithm.HS512, signingKey).compact();
+				.signWith(SignatureAlgorithm.HS512, signingKey.getBytes()).compact();
 
 		response.addHeader("Authorization", "Bearer " + token);
 		response.addHeader("Access-Control-Expose-Headers", "Authorization");        // For CORS requests
