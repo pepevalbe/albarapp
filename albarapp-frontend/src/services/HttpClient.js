@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from 'axios';
 
 const httpClient = axios.create({
     baseURL: process.env.VUE_APP_API_URL,
@@ -14,4 +14,14 @@ httpClient.interceptors.request.use(function (config) {
     return config;
 });
 
+httpClient.interceptors.response.use(function (response) {
+    return response
+}, function (error) {
+    if (error.response.status === 401 ||
+        error.response.status === 403) {
+        localStorage.clear();
+        window.location.href = "/";
+    }
+    return Promise.reject(error)
+});
 export default httpClient;
