@@ -16,7 +16,7 @@ import javax.mail.internet.InternetAddress;
 @Component
 public class EmailService {
 
-	private static final String INVITATION_SUBECT = "Invitación para albarapp";
+	private static final String INVITATION_SUBJECT = "Invitación para albarapp";
 	private static final String INVITATION_TEMPLATE = "Has sido invitado a albarapp, utilice el siguiente link para registrarse: %s";
 	private static final String WELCOME_EMAIL = "Bienvenido a albarapp";
 	private static final String WELCOME_TEMPLATE = "Hola %s, ya puedes entrar a tu cuenta con tu email y contraseña";
@@ -53,7 +53,7 @@ public class EmailService {
 	public void sendInvitation(String email, String link) {
 		String text = String.format(INVITATION_TEMPLATE, link);
 		log.info("Sending invitation to: " + email);
-		sendEmail(email, INVITATION_SUBECT, text);
+		sendEmail(email, INVITATION_SUBJECT, text);
 	}
 
 	@Async
