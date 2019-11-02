@@ -53,4 +53,8 @@ a:visited {
   color: white;
   text-decoration: none;
 }
+a:link {
+  color: white;
+  text-decoration: none;
+}
 </style>

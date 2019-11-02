@@ -54,6 +54,6 @@ public class UserController {
 	public ResponseEntity<String> getQuestion() throws IOException, InterruptedException {
 
 		RestTemplate restTemplate = new RestTemplate();
-		return restTemplate.getForEntity(triviaUrl, String.class);
+		return ResponseEntity.ok(restTemplate.getForEntity(triviaUrl, String.class).getBody());
 	}
 }
