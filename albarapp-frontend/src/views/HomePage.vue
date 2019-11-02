@@ -1,7 +1,10 @@
 <template>
   <div>
     <v-card v-if="questionReady" class="mt-2">
-      <v-card-title class="mb-4">{{ question }}</v-card-title>
+      <v-card-title class="mb-4">
+        <v-icon large class="mr-2">mdi-comment-question</v-icon>
+        {{ question }}
+      </v-card-title>
       <v-card-text v-for="(answer, index) in answers" :key="index">
         <v-btn v-if="answerStatus[index] == 0" @click="checkAnswer(index)">{{ answer }}</v-btn>
         <v-btn v-if="answerStatus[index] == 1" text>

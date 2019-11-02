@@ -37,9 +37,9 @@ export default {
       email: "",
       password: "",
       valid: false,
-      passwordRules: [v => !!v || "La contraseña es necesaria"],
+      passwordRules: [v => !!v],
       emailRules: [
-        v => !!v || "El email es necesario",
+        v => !!v,
         v => /.+@.+\..+/.test(v) || "Email inválido"
       ]
     };

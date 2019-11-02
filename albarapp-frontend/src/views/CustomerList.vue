@@ -86,13 +86,6 @@
         </template>
       </v-data-table>
     </v-card>
-    <v-layout text-center wrap class="pt-10">
-      <v-flex xs12>
-        <v-btn to="/">
-          <span>Volver</span>
-        </v-btn>
-      </v-flex>
-    </v-layout>
   </v-flex>
 </template>
 

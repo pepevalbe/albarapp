@@ -7,6 +7,9 @@
     v-model="drawer.value"
   >
     <v-list-item>
+      <v-list-item-avatar>
+        <v-icon large>mdi-account-circle</v-icon>
+      </v-list-item-avatar>
       <v-list-item-content>
         <v-list-item-title class="title">{{profile.name}}</v-list-item-title>
         <v-list-item-subtitle>{{parsedToken.sub}}</v-list-item-subtitle>
