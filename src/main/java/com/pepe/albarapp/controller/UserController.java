@@ -11,12 +11,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.security.Principal;
 
 @RestController
@@ -56,12 +53,7 @@ public class UserController {
 	@GetMapping(QUESTION)
 	public ResponseEntity<String> getQuestion() throws IOException, InterruptedException {
 
-		HttpClient client = HttpClient.newHttpClient();
-		HttpRequest request = HttpRequest.newBuilder()
-				.uri(URI.create(triviaUrl))
-				.build();
-		HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
-		return ResponseEntity.ok(response.body());
+		RestTemplate restTemplate = new RestTemplate();
+		return restTemplate.getForEntity(triviaUrl, String.class);
 	}
 }
