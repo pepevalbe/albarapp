@@ -4,8 +4,8 @@
     <v-app-bar color="darken-3" dark app :clipped-left="$vuetify.breakpoint.mdAndUp" fixed>
       <v-app-bar-nav-icon @click="toggleNavDrawer"></v-app-bar-nav-icon>
       <v-toolbar-title class="headline text-uppercase">
-        <span>AlbarApp - </span>
-        <span class="font-weight-light">{{currentState}}</span>
+        <a href="/">Albarapp</a>
+        <span class="font-weight-light"> - {{currentState}}</span>
       </v-toolbar-title>
     </v-app-bar>
     <v-dialog v-if="!token" v-model="dialog" persistent max-width="600px">
@@ -44,3 +44,13 @@ export default {
   }
 };
 </script>
+<style scoped>
+a {
+  color: white;
+  text-decoration: none;
+}
+a:visited {
+  color: white;
+  text-decoration: none;
+}
+</style>

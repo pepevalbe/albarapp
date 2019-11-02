@@ -1,68 +1,81 @@
 <template>
-  <v-container>
-    <v-card height="400" width="256" class="mx-auto" v-if="token">
-      <v-navigation-drawer permanent>
-        <v-list-item>
-          <v-list-item-content>
-            <v-list-item-title class="title">Albarapp</v-list-item-title>
-            <v-list-item-subtitle>{{parsedToken.sub}}</v-list-item-subtitle>
-          </v-list-item-content>
-        </v-list-item>
-        <v-divider></v-divider>
-        <v-list dense nav>
-          <v-list-item link to="/admin/" v-if="parsedToken.roles.includes('ADMIN')">
-            <v-list-item-icon>
-              <v-icon>mdi-account-group</v-icon>
-            </v-list-item-icon>
-            <v-list-item-content>
-              <v-list-item-title>Administrar</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-          <v-list-item link to="/product-list/">
-            <v-list-item-icon>
-              <v-icon>mdi-baguette</v-icon>
-            </v-list-item-icon>
-            <v-list-item-content>
-              <v-list-item-title>Productos</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-          <v-list-item link to="/customer-list/">
-            <v-list-item-icon>
-              <v-icon>mdi-account-tie</v-icon>
-            </v-list-item-icon>
-            <v-list-item-content>
-              <v-list-item-title>Clientes</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-          <v-list-item link to="/delivery-note-list/">
-            <v-list-item-icon>
-              <v-icon>mdi-basket</v-icon>
-            </v-list-item-icon>
-            <v-list-item-content>
-              <v-list-item-title>Albaranes</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-          <v-list-item link to="/invoice-list/">
-            <v-list-item-icon>
-              <v-icon>mdi-cash</v-icon>
-            </v-list-item-icon>
-            <v-list-item-content>
-              <v-list-item-title>Facturas</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-        </v-list>
-        <template v-slot:append>
-          <div class="pa-2">
-            <v-btn block @click="logout()">Cerrar sesión</v-btn>
-          </div>
-        </template>
-      </v-navigation-drawer>
+  <div>
+    <v-card v-if="questionReady">
+      <v-card-title class="mb-4">{{ question }}</v-card-title>
+      <v-card-text v-for="(answer, index) in answers" :key="index">
+        <v-btn v-if="answerStatus[index] == 0" @click="checkAnswer(index)">{{ answer }}</v-btn>
+        <v-btn v-if="answerStatus[index] == 1" text>
+          {{ answer }}
+          <v-icon color="error" class="ml-4">mdi-close-circle</v-icon>
+        </v-btn>
+        <v-btn v-if="answerStatus[index] == 2">
+          {{ answer }}
+          <v-icon color="success" class="ml-4">mdi-check-circle</v-icon>
+        </v-btn>
+      </v-card-text>
     </v-card>
-  </v-container>
+  </div>
 </template>
 
 <script>
+import HttpClient from "@/services/HttpClient.js";
+
 export default {
-  name: "home"
+  name: "home",
+  data: () => {
+    return {
+      question: String,
+      rightAnswer: String,
+      answers: [],
+      answerStatus: [],
+      questionReady: false
+    };
+  },
+  created() {
+    if (this.token) {
+      this.getQuestion();
+    }
+  },
+  methods: {
+    getQuestion: function() {
+      HttpClient.get("api/question")
+        .then(response => {
+          var answers = [
+            decodeURIComponent(response.data.results[0].correct_answer)
+          ];
+          response.data.results[0].incorrect_answers.forEach(function(item) {
+            answers.push(decodeURIComponent(item));
+          });
+          this.shuffleArray(answers);
+          this.question = decodeURIComponent(response.data.results[0].question);
+          this.rightAnswer = decodeURIComponent(
+            response.data.results[0].correct_answer
+          );
+          this.answers = answers;
+          this.answerStatus = [0, 0, 0, 0];
+          this.questionReady = true;
+        })
+        .catch(() => {
+          alert("Ha ocurrido un error generando preguntas");
+        });
+    },
+    checkAnswer: function(index) {
+      if (this.answers[index] == this.rightAnswer) {
+        this.$set(this.answerStatus, index, 2);
+        var vm = this;
+        setTimeout(function() {
+          vm.getQuestion();
+        }, 1000);
+      } else {
+        this.$set(this.answerStatus, index, 1);
+      }
+    },
+    shuffleArray: function(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+    }
+  }
 };
 </script>
