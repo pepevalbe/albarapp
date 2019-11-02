@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-card v-if="questionReady">
+    <v-card v-if="questionReady" class="mt-2">
       <v-card-title class="mb-4">{{ question }}</v-card-title>
       <v-card-text v-for="(answer, index) in answers" :key="index">
         <v-btn v-if="answerStatus[index] == 0" @click="checkAnswer(index)">{{ answer }}</v-btn>

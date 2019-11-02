@@ -1,6 +1,6 @@
 <template>
   <v-flex align-self-start>
-    <v-layout text-right wrap class="pb-10 pt-5 mr-5">
+    <v-layout text-right wrap class="pt-2 pb-5 mr-5">
       <v-flex xs12>
         <v-btn to="/">
           Nuevo
