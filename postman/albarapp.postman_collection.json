@@ -1,0 +1,362 @@
+{
+	"info": {
+		"_postman_id": "d2a0bdbd-a635-43b7-95fa-35292bc046ee",
+		"name": "albarapp",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "/login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f3cdf1d1-61e6-4f71-979f-092b18be39bb",
+						"exec": [
+							"pm.environment.set(\"token\",postman.getResponseHeader(\"Authorization\").replace(\"Bearer \", \"\"));\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "username",
+							"value": "user@albarapp.com",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "user",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{host}}/login",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/create-user",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"token\" : \"50094f13-428d-4b60-b6b4-ce6effac173c\",\n\t\"name\" : \"Pepe\",\n\t\"surname\" : \"Valverde\",\n\t\"password\" : \"patata\"\n\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/user-creation",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"user-creation"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/api/profile",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f3cdf1d1-61e6-4f71-979f-092b18be39bb",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/api/profile",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"profile"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/api/send-invitation",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"email\" : \"pepevalbe@gmail.com\",\n\t\"role\" : \"ADMIN\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/send-invitation",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"send-invitation"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/hateoas",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f3cdf1d1-61e6-4f71-979f-092b18be39bb",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/hateoas",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"hateoas"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/api/customers",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f3cdf1d1-61e6-4f71-979f-092b18be39bb",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"fiscalId\": \"H88888888\",\r\n  \"code\": 888,\r\n  \"name\": \"C.C Yumbo Centrum\",\r\n  \"alias\": \"jumbo\",\r\n  \"phoneNumber\": \"928764196\",\r\n  \"email\": \"info@yumbocentrum.com\",\r\n  \"address\": \"Av. Estados Unidos, 54, 35100 Maspalomas, Las Palmas\",\r\n  \"province\": \"Las Palmas\",\r\n  \"customerProductPrices\" : [\r\n  \t{\r\n  \t\t\"offeredPrice\" : 0.12,\r\n  \t\t\"product\" : { \"id\" : \"1\" }\r\n  \t},\r\n  \t{\r\n  \t\t\"offeredPrice\" : 0.13,\r\n  \t\t\"product\" : { \"id\" : \"2\" }\r\n  \t}\r\n  ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/customers",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"customers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/api/customers",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f3cdf1d1-61e6-4f71-979f-092b18be39bb",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"fiscalId\": \"H35083187\",\r\n  \"code\": 1,\r\n  \"name\": \"Nombre Jumbo Actualizado\",\r\n  \"alias\": \"jumbo\",\r\n  \"phoneNumber\": \"928764196\",\r\n  \"email\": \"info@yumbocentrum.com\",\r\n  \"address\": \"Av. Estados Unidos, 54, 35100 Maspalomas, Las Palmas\",\r\n  \"province\": \"Las Palmas\",\r\n  \"customerProductPrices\" : [\r\n  \t{\r\n  \t\t\"offeredPrice\" : 0.12,\r\n  \t\t\"product\" : { \"id\" : \"1\" }\r\n  \t},\r\n  \t{\r\n  \t\t\"offeredPrice\" : 0.13,\r\n  \t\t\"product\" : { \"id\" : \"2\" }\r\n  \t}\r\n  ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/customers/1",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"customers",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/api/deliveryNotes",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f3cdf1d1-61e6-4f71-979f-092b18be39bb",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"auxDeliveryNoteNr\": 31416,\r\n    \"issuedTimestamp\": 1569173243000,\r\n    \"customer\" : {\r\n    \t\"id\" : \"1\"\r\n    },\r\n    \"deliveryNoteItems\": [\r\n    \t{\r\n    \t\t\"quantity\" : 2,\r\n    \t\t\"price\" : 0.4,\r\n    \t\t\"product\" : { \"id\" : \"1\" }\r\n    \t},\r\n    \t{\r\n    \t\t\"quantity\" : 5,\r\n    \t\t\"price\" : 1.1,\r\n    \t\t\"product\" : { \"id\" : \"2\" }\r\n    \t}\r\n\t]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/deliveryNotes",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"deliveryNotes"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "75c59740-4b62-46d5-807e-eb15d5dff723",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "6343ea47-4ee2-4f30-8e0c-0e2aeefc97d5",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"protocolProfileBehavior": {}
+}

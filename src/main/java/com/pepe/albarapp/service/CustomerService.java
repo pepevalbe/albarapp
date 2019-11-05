@@ -1,5 +1,7 @@
 package com.pepe.albarapp.service;
 
+import com.pepe.albarapp.api.error.ApiError;
+import com.pepe.albarapp.api.error.ApiException;
 import com.pepe.albarapp.persistence.domain.*;
 import com.pepe.albarapp.persistence.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +38,7 @@ public class CustomerService {
 		// Check customer product prices relations
 		for (CustomerProductPrice customerProductPrice : customer.getCustomerProductPrices()) {
 			if (!productIds.contains(customerProductPrice.getProduct().getId())) {
-				return null;
+				throw new ApiException(ApiError.ApiError006);
 			}
 		}
 
@@ -64,7 +66,7 @@ public class CustomerService {
 		// Check delivery note items relations
 		for (DeliveryNoteItem deliveryNoteItem : deliveryNote.getDeliveryNoteItems()) {
 			if (!productIds.contains(deliveryNoteItem.getProduct().getId())) {
-				return null;
+				throw new ApiException(ApiError.ApiError006);
 			}
 		}
 

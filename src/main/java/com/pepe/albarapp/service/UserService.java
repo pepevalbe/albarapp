@@ -1,11 +1,13 @@
 package com.pepe.albarapp.service;
 
+import com.pepe.albarapp.api.error.ApiError;
+import com.pepe.albarapp.api.error.ApiException;
+import com.pepe.albarapp.api.security.UserRole;
 import com.pepe.albarapp.persistence.domain.Invitation;
 import com.pepe.albarapp.persistence.domain.User;
 import com.pepe.albarapp.persistence.repository.InvitationRepository;
 import com.pepe.albarapp.persistence.repository.UserRepository;
 import com.pepe.albarapp.service.dto.RegistrationDto;
-import com.pepe.albarapp.service.dto.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -62,12 +64,12 @@ public class UserService {
 	public User createUser(RegistrationDto registrationDto) {
 
 		Invitation invitation = invitationRepository.findByToken(registrationDto.getToken())
-				.orElseThrow(() -> new RuntimeException("Invitation not found!"));
+				.orElseThrow(() -> new ApiException(ApiError.ApiError007));
 
 		invitationRepository.deleteByToken(registrationDto.getToken());
 
 		if (System.currentTimeMillis() > invitation.getIssuedTimestamp() + EXPIRATION_TIME_MILLIS) {
-			throw new RuntimeException("Invitation expired!");
+			throw new ApiException(ApiError.ApiError008);
 		}
 
 		User user = new User(invitation.getEmail(),
