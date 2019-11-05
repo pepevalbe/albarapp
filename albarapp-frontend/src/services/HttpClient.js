@@ -21,6 +21,11 @@ httpClient.interceptors.response.use(function (response) {
         error.response.status === 403) {
         localStorage.clear();
         window.location.href = "/";
+    } else if (
+        error.response.data != null &&
+        error.response.data.errorCode != null &&
+        error.response.data.errorMessage != null) {
+        alert(error.response.data.errorCode + ' : ' + error.response.data.errorMessage)
     }
     return Promise.reject(error)
 });

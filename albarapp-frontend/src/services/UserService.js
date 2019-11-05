@@ -3,7 +3,7 @@ import HttpClient from '@/services/HttpClient.js';
 const USER_RESOURCE_NAME = '/hateoas/users';
 const USER_PROFILE_URL = 'api/profile';
 const SEND_INVITATION_URL = '/api/send-invitation';
-const CREATE_USER_URL = '/public/user-creation';
+const CREATE_USER_URL = '/user-creation';
 
 export default {
   getProfile() {
@@ -32,9 +32,6 @@ export default {
       .then(() => {
         alert("Invitación enviada");
       })
-      .catch(() => {
-        alert("Ha ocurrido un error enviando la invitación");
-      });
   },
 
   createUser(invitation, name, surname, password) {
@@ -43,8 +40,5 @@ export default {
       .then(() => {
         alert("Usuario creado. Ya puede entrar utilizando su email y contraseña");
       })
-      .catch(() => {
-        alert("Ha ocurrido un error creando el usuario");
-      });
   },
 };
