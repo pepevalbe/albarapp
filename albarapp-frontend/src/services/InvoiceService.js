@@ -91,10 +91,12 @@ export default {
                 timestampFrom,
                 timestampTo
             );
-            var invoice = {
-                issuedTimestamp: issuedTimestamp
-            };
-            promises.push(this.create(invoice, deliveryNotesToBill));
+            if (deliveryNotesToBill && deliveryNotesToBill.length) {
+                var invoice = {
+                    issuedTimestamp: issuedTimestamp
+                };
+                promises.push(this.create(invoice, deliveryNotesToBill));
+            }
         }
         return Promise.all(promises);
     }
