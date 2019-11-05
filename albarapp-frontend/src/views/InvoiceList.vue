@@ -2,7 +2,7 @@
   <v-flex align-self-start>
     <v-layout text-right wrap class="pt-2 pb-5 mr-5">
       <v-flex xs12>
-        <v-btn to="/">
+        <v-btn to="/invoice-bill-process/">
           Nuevo
           <v-icon class="ml-2">mdi-plus-circle</v-icon>
         </v-btn>

@@ -182,7 +182,7 @@ export default {
         return HttpClient.get(`${DELIVERY_NOTE_RESOURCE}/search/findDeliveryNotesToBill?customerCode=` +
             + customerCode + `&timestampFrom=` + timestampFrom + `&timestampTo=` + timestampTo)
             .then(response => {
-                return response.data;
+                return response.data._embedded.deliveryNotes;
             })
             .catch(() => {
                 alert("Ha ocurrido un error recuperando el albarán");

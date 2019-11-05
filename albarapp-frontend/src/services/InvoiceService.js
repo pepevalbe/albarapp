@@ -62,4 +62,41 @@ export default {
         }
         return invoices;
     },
+    async create(invoice, deliveryNotes) {
+
+        var promises = [];
+
+        var invoiceToCreate = {
+            issuedTimestamp: invoice.issuedTimestamp
+        };
+
+        var promisePost = HttpClient.post(RESOURCE_NAME, invoiceToCreate).then(response => {
+            for (var i = 0; i < deliveryNotes.length; i++) {
+                var item = deliveryNotes[i];
+                item.invoice = response.data._links.self.href;
+                promises.push(
+                    HttpClient.patch(item._links.self.href, item)
+                );
+            }
+        });
+
+        await promisePost;
+        return Promise.all(promises);
+    },
+    async createList(customerCodeFrom, customerCodeTo, timestampFrom, timestampTo, issuedTimestamp) {
+        var promises = [];
+        for (var i = customerCodeFrom; i <= customerCodeTo; i++) {
+            var deliveryNotesToBill = await DeliveryNoteService.findDeliveryNotesToBill(
+                i,
+                timestampFrom,
+                timestampTo
+            );
+            var invoice = {
+                issuedTimestamp: issuedTimestamp
+            };
+            promises.push(this.create(invoice, deliveryNotesToBill));
+        }
+        return Promise.all(promises);
+    }
+
 }

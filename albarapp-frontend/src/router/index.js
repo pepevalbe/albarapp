@@ -98,6 +98,12 @@ export default new Router({
       component: () => import("@/views/InvoiceList"),
       name: "InvoiceList",
       meta: { headerName: "Facturas" }
+    },
+    {
+      path: "/invoice-bill-process/",
+      component: () => import("@/views/BillProcess"),
+      name: "BillProcess",
+      meta: { headerName: "Facturar" }
     }
   ]
 });
