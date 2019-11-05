@@ -3,7 +3,6 @@ package com.pepe.albarapp.api.security;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -29,8 +28,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 		 * Disable use of cookies
 		 * Activate CORS configuration with default values and disable CSRF filter
 		 * Add authentication and authorization filter
-		 * Authorize admin url to role ADMIN
-		 * Authorize any other request to roles ADMIN and USER
+		 * Authorize /hateoas and /api requests to any role
 		 */
 
 		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -38,11 +36,9 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 				.addFilter(new JWTAuthenticationFilter(authenticationManager(), signingKey))
 				.addFilter(new JWTAuthorizationFilter(authenticationManager(), signingKey));
 
-		http.authorizeRequests().antMatchers("/admin/**").hasRole("ADMIN");
-		http.authorizeRequests().antMatchers("/hateoas/**", "/api/**").hasAnyRole("ADMIN", "USER");
-		http.authorizeRequests().antMatchers(HttpMethod.OPTIONS, "/**").permitAll();
-		//http.headers().frameOptions().sameOrigin();	// Needed for H2 console
-		//http.authorizeRequests().anyRequest().permitAll();	// Permit all requests
+		http.authorizeRequests().antMatchers("/hateoas/**", "/api/**").hasAnyRole(UserRole.roles());
+		//http.headers().frameOptions().sameOrigin();	      // Needed for H2 console
+		//http.authorizeRequests().anyRequest().permitAll();  // Permit all requests
 	}
 
 	@Override

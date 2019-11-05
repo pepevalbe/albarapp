@@ -17,29 +17,29 @@ public class CustomerController {
 	private CustomerService customerService;
 
 	@PostMapping(CUSTOMERS_ENDPOINT)
-	public ResponseEntity<Customer> postCustomer(@RequestBody Customer customer) {
+	public ResponseEntity postCustomer(@RequestBody Customer customer) {
 
 		customer.setId(null);
 		Customer persistedCustomer = customerService.persistCustomer(customer);
 
-		return persistedCustomer != null ? ResponseEntity.ok(persistedCustomer) : ResponseEntity.badRequest().build();
+		return ResponseEntity.ok().build();
 	}
 
 	@PutMapping(CUSTOMERS_ENDPOINT + "/{id}")
-	public ResponseEntity<Customer> putCustomer(@PathVariable String id, @RequestBody Customer customer) {
+	public ResponseEntity putCustomer(@PathVariable String id, @RequestBody Customer customer) {
 
 		customer.setId(id);
-		Customer persistedCustomer = customerService.persistCustomer(customer);
+		customerService.persistCustomer(customer);
 
-		return persistedCustomer != null ? ResponseEntity.ok(persistedCustomer) : ResponseEntity.badRequest().build();
+		return ResponseEntity.ok().build();
 	}
 
 	@PostMapping(DELIVERY_NOTES_ENDPOINT)
-	public ResponseEntity<DeliveryNote> postDeliveryNote(@RequestBody DeliveryNote deliveryNote) {
+	public ResponseEntity postDeliveryNote(@RequestBody DeliveryNote deliveryNote) {
 
 		deliveryNote.setId(null);
-		DeliveryNote persistedDeliveryNote = customerService.persistDeliveryNote(deliveryNote);
+		customerService.persistDeliveryNote(deliveryNote);
 
-		return persistedDeliveryNote != null ? ResponseEntity.ok(persistedDeliveryNote) : ResponseEntity.badRequest().build();
+		return ResponseEntity.ok().build();
 	}
 }
