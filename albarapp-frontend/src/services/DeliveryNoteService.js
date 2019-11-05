@@ -178,4 +178,14 @@ export default {
         await promisePut;
         return Promise.all(promises);
     },
+    findDeliveryNotesToBill(customerCode, timestampFrom, timestampTo) {
+        return HttpClient.get(`${DELIVERY_NOTE_RESOURCE}/search/findDeliveryNotesToBill?customerCode=` +
+            + customerCode + `&timestampFrom=` + timestampFrom + `&timestampTo=` + timestampTo)
+            .then(response => {
+                return response.data;
+            })
+            .catch(() => {
+                alert("Ha ocurrido un error recuperando el albarán");
+            });
+    }
 }
