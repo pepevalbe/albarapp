@@ -5,10 +5,10 @@
       <v-app-bar-nav-icon @click="toggleNavDrawer"></v-app-bar-nav-icon>
       <v-toolbar-title class="headline text-uppercase">
         <a href="/">Albarapp</a>
-        <span class="font-weight-light"> - {{currentState}}</span>
+        <span class="font-weight-light"> - {{currentStateHeaderName}}</span>
       </v-toolbar-title>
     </v-app-bar>
-    <v-dialog v-if="!token" v-model="dialog" persistent max-width="600px">
+    <v-dialog v-if="!token && currentState != 'UserCreation'" v-model="dialog" persistent max-width="600px">
       <v-card>
         <LoginForm />
       </v-card>
@@ -27,6 +27,7 @@ export default {
     LoginForm
   },
   props: {
+    currentStateHeaderName: String,
     currentState: String
   },
   data: () => {

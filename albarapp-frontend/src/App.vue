@@ -1,7 +1,7 @@
  <template>
   <div>
     <v-app>
-      <WebHeader v-bind:currentState="currentRouteName" />
+      <WebHeader v-bind:currentStateHeaderName="currentRouteHeaderName" v-bind:currentState="currentRouteName" />
       <v-content>
         <v-container>
           <router-view></router-view>
@@ -24,9 +24,12 @@ export default {
   },
   data: () => ({}),
   computed: {
-    currentRouteName() {
+    currentRouteHeaderName() {
       return this.$route.meta.headerName;
-    }
+    },
+    currentRouteName() {
+      return this.$route.name;
+    },
   }
 };
 </script>
