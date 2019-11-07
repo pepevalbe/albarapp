@@ -8,6 +8,7 @@ import com.pepe.albarapp.persistence.domain.User;
 import com.pepe.albarapp.persistence.repository.InvitationRepository;
 import com.pepe.albarapp.persistence.repository.UserRepository;
 import com.pepe.albarapp.service.dto.RegistrationDto;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 
+@Slf4j
 @Service
 public class UserService {
 
@@ -37,22 +39,25 @@ public class UserService {
 
 	public User getProfile(String email) {
 
-		return userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("Email not found!"));
+		return userRepository.findByEmail(email).orElseThrow(() -> new ApiException(ApiError.ApiError001));
 	}
 
 	@Transactional
 	public void sendInvitation(String email, String role) {
 
 		if (!EmailService.isValidEmail(email)) {
-			throw new RuntimeException("Invalid email!");
+			log.warn("Invalid email!");
+			throw new ApiException(ApiError.ApiError006);
 		}
 
 		if (!UserRole.contains(role)) {
-			throw new RuntimeException("Invalid role!");
+			log.warn("Invalid role!");
+			throw new ApiException(ApiError.ApiError006);
 		}
 
 		if (userRepository.findByEmail(email).isPresent()) {
-			throw new RuntimeException("Email already exists!");
+			log.warn("User already exists with this email!");
+			throw new ApiException(ApiError.ApiError006);
 		}
 
 		Invitation invitation = invitationRepository.save(new Invitation(email, role));
@@ -69,6 +74,7 @@ public class UserService {
 		invitationRepository.deleteByToken(registrationDto.getToken());
 
 		if (System.currentTimeMillis() > invitation.getIssuedTimestamp() + EXPIRATION_TIME_MILLIS) {
+			log.info("Invitation expired!");
 			throw new ApiException(ApiError.ApiError008);
 		}
 
@@ -81,6 +87,7 @@ public class UserService {
 		User createdUser = userRepository.save(user);
 		emailService.sendWelcomeEmail(createdUser);
 
+		log.info("User created: " + createdUser.getEmail());
 		return createdUser;
 	}
 }

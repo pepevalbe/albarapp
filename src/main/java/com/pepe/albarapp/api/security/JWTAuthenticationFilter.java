@@ -2,10 +2,10 @@ package com.pepe.albarapp.api.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pepe.albarapp.api.error.ApiError;
-import com.pepe.albarapp.api.log.ApiLog;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import org.springframework.boot.logging.LogLevel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -30,6 +30,8 @@ import java.util.stream.Collectors;
 	successfulAuthentication is invoked when authentication is successful
  */
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
+
+	private static final Logger logger = LoggerFactory.getLogger(JWTAuthenticationFilter.class);
 
 	final static String ROLE_CLAIMS = "roles";
 	private final static String LOGIN_ENDPOINT = "/login";
@@ -73,7 +75,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
 		response.addHeader("Authorization", "Bearer " + token);
 		response.addHeader("Access-Control-Expose-Headers", "Authorization");        // For CORS requests
-		ApiLog.log(this.getClass(), LogLevel.INFO, "Token generated for: " + auth.getName());
+		logger.info("Token generated for: " + auth.getName());
 	}
 
 	@Override
@@ -88,6 +90,6 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 		out.print(new ObjectMapper().writeValueAsString(ApiError.ApiError003));
 		out.flush();
 		out.close();
-		ApiLog.log(this.getClass(), LogLevel.WARN, ApiError.ApiError003.toString());
+		logger.warn(ApiError.ApiError003.toString());
 	}
 }

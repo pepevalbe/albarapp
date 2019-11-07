@@ -4,6 +4,7 @@ import com.pepe.albarapp.api.error.ApiError;
 import com.pepe.albarapp.api.error.ApiException;
 import com.pepe.albarapp.persistence.domain.*;
 import com.pepe.albarapp.persistence.repository.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class CustomerService {
 
@@ -54,6 +56,7 @@ public class CustomerService {
 		customer.getCustomerProductPrices().forEach(customerProductPrice -> customerProductPrice.setCustomer(persistedCustomer));
 		customerProductPriceRepository.saveAll(customer.getCustomerProductPrices());
 
+		log.info("Customer created/updated: " + persistedCustomer.getId());
 		return persistedCustomer;
 	}
 
@@ -75,6 +78,7 @@ public class CustomerService {
 		deliveryNote.getDeliveryNoteItems().forEach(deliveryNoteItem -> deliveryNoteItem.setDeliveryNote(createdDeliveryNote));
 		deliveryNoteItemRepository.saveAll(deliveryNote.getDeliveryNoteItems());
 
+		log.info("DeliveryNote created/updated: " + deliveryNote.getId());
 		return createdDeliveryNote;
 	}
 

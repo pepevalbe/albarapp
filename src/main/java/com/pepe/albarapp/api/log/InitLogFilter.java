@@ -1,6 +1,7 @@
 package com.pepe.albarapp.api.log;
 
-import org.springframework.boot.logging.LogLevel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -17,9 +18,11 @@ import java.io.IOException;
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class InitLogFilter implements Filter {
 
+	private static final Logger logger = LoggerFactory.getLogger(InitLogFilter.class);
+
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
-		ApiLog.log(this.getClass(), LogLevel.DEBUG, "Initializing InitLogFilter");
+		logger.debug("Initializing InitLogFilter");
 	}
 
 	@Override
@@ -28,7 +31,7 @@ public class InitLogFilter implements Filter {
 
 		HttpServletRequest httpRequest = (HttpServletRequest) request;
 		ApiLog.startLoggingContext(httpRequest.getMethod() + " " + httpRequest.getRequestURI());
-		ApiLog.log(this.getClass(), LogLevel.INFO, "Initialized api logging context");
+		logger.info("Initialized api logging context");
 
 		chain.doFilter(request, response);
 	}

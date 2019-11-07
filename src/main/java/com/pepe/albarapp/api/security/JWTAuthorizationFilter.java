@@ -5,7 +5,8 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
-import org.springframework.boot.logging.LogLevel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
@@ -27,6 +28,8 @@ import java.util.stream.Collectors;
 	If token is not valid request is rejected
  */
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
+
+	private static final Logger logger = LoggerFactory.getLogger(JWTAuthorizationFilter.class);
 
 	private final String signingKey;
 
@@ -61,7 +64,7 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 		try {
 			claims = Jwts.parser().setSigningKey(signingKey.getBytes()).parseClaimsJws(token);
 		} catch (JwtException e) {
-			ApiLog.log(JWTAuthorizationFilter.class, LogLevel.ERROR, e);
+			logger.error(e.getMessage(), e);
 			return null;
 		}
 
@@ -75,7 +78,7 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 		List<GrantedAuthority> authorities = roles.stream().map(s -> new SimpleGrantedAuthority("ROLE_".concat(s))).collect(Collectors.toList());
 
 		ApiLog.addUserToLoggingContext(username);
-		ApiLog.log(JWTAuthorizationFilter.class, LogLevel.DEBUG, "Successfully checked token");
+		logger.debug("Successfully checked token");
 
 		return new UsernamePasswordAuthenticationToken(username, null, authorities);
 	}
