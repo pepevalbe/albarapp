@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /*
@@ -16,13 +17,13 @@ import java.io.IOException;
  */
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
-public class InitLogFilter implements Filter {
+public class LogFilter implements Filter {
 
-	private static final Logger logger = LoggerFactory.getLogger(InitLogFilter.class);
+	private static final Logger logger = LoggerFactory.getLogger(LogFilter.class);
 
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
-		logger.debug("Initializing InitLogFilter");
+		logger.debug("Initializing LogFilter");
 	}
 
 	@Override
@@ -31,8 +32,12 @@ public class InitLogFilter implements Filter {
 
 		HttpServletRequest httpRequest = (HttpServletRequest) request;
 		ApiLog.startLoggingContext(httpRequest.getMethod() + " " + httpRequest.getRequestURI());
-		logger.info("Initialized api logging context");
+		logger.info("Incoming request");
 
 		chain.doFilter(request, response);
+
+		HttpServletResponse httpResponse = (HttpServletResponse) response;
+		ApiLog.updateElapsedTime();
+		logger.info("Response sent: " + httpResponse.getStatus());
 	}
 }
