@@ -24,7 +24,8 @@ httpClient.interceptors.response.use(function (response) {
     } else if (
         error.response.data != null &&
         error.response.data.errorCode != null &&
-        error.response.data.errorMessage != null) {
+        error.response.data.errorMessage != null &&
+        error.response.data.errorCode !== '002') {
         alert(error.response.data.errorCode + ' : ' + error.response.data.errorMessage)
     }
     return Promise.reject(error)

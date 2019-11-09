@@ -9,10 +9,7 @@
       </v-flex>
     </v-layout>
     <v-card>
-      <v-card-title>
-        Listado de albaranes
-
-      </v-card-title>
+      <v-card-title>Listado de albaranes</v-card-title>
       <CustomerAndDatesFilterForm v-bind:form="filter.form" />
       <v-data-table
         :loading="loading"
@@ -26,6 +23,9 @@
           <tbody v-if="!$vuetify.breakpoint.xsOnly">
             <tr v-for="item in items" :key="item.deliveryNoteItemsHref">
               <td>A{{item.id}}</td>
+              <td>
+                <span v-if="item.invoice">F{{item.invoice.id}}</span>
+              </td>
               <td>{{item.auxDeliveryNoteNr}}</td>
               <td>{{item.customer.alias}}</td>
               <td>{{item.dateFormatted}}</td>
@@ -43,6 +43,9 @@
                 <v-card-text>
                   <span class="black--text">Nº Albarán:</span>
                   A{{item.id}}
+                  <br />
+                  <span class="black--text">Nº Factura:</span>
+                  <span v-if="item.invoice">F{{item.invoice.id}}</span>
                   <br />
                   <span class="black--text">Nº Albarán auxiliar:</span>
                   {{item.auxDeliveryNoteNr}}
@@ -89,6 +92,7 @@ export default {
       deliveryNotes: [],
       headers: [
         { text: "Nº Albarán", sortable: true, value: "id" },
+        { text: "Nº Factura", sortable: true, value: "invoiceId" },
         {
           text: "Nº pedido",
           sortable: false,
@@ -112,7 +116,7 @@ export default {
       }
     };
   },
-  async mounted () {
+  async mounted() {
     await this.listDeliveryNotes();
   },
   watch: {

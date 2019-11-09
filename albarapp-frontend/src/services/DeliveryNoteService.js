@@ -23,8 +23,6 @@ export default {
         }).join('&');
 
         if (queryString != "") queryString = '?' + queryString;
-        //        { sortBy, sortDesc, page, itemsPerPage }
-
 
         return HttpClient.get(DELIVERY_NOTE_RESOURCE + '/search/findDeliveryNotes' + queryString)
             .then(response => {
@@ -56,6 +54,19 @@ export default {
                 alert("Ha ocurrido un error recuperando el cliente del albarán");
             });
     },
+    getInvoice(deliveryNote) {
+        return HttpClient.get(deliveryNote._links.invoice.href)
+            .then(response => {
+                deliveryNote.invoice = response.data;
+            })
+            .catch((error) => {
+                if (error.response.data.errorCode === '002') {
+                    return Promise.resolve();
+                } else {
+                    return Promise.reject(error);
+                }
+            });
+    },
     getDeliveryNoteItems(deliveryNote) {
         return HttpClient.get(deliveryNote._links.deliveryNoteItems.href)
             .then(response => {
@@ -82,6 +93,7 @@ export default {
             deliveryNote.dateFormatted = moment(deliveryNote.issuedTimestamp, "x").format("DD/MM/YYYY");
             deliveryNote.date = moment(deliveryNote.issuedTimestamp, "x").format("YYYY-MM-DD");
             promises.push(this.getCustomer(deliveryNote));
+            promises.push(this.getInvoice(deliveryNote));
             promises.push(this.getDeliveryNoteItems(deliveryNote));
         }
         await Promise.all(promises);
