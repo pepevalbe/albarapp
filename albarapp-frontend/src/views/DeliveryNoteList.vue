@@ -11,24 +11,16 @@
     <v-card>
       <v-card-title>
         Listado de albaranes
-        <div class="flex-grow-1"></div>
-        <v-text-field
-          v-model="search"
-          append-icon="mdi-magnify"
-          label="Buscar ..."
-          single-line
-          hide-details
-        ></v-text-field>
+
       </v-card-title>
+      <CustomerAndDatesFilterForm v-bind:form="filter.form" />
       <v-data-table
-        :loading="!deliveryNotes || deliveryNotes.length == 0"
+        :loading="loading"
         loading-text="Cargando... Por favor, espere"
         :headers="headers"
         :items="deliveryNotes"
-        :search="search"
-        :sort-by.sync="sortBy"
-        :sort-desc.sync="descending"
-        :items-per-page="15"
+        :server-items-length="totalItems"
+        :options.sync="options"
       >
         <template v-slot:body="{ items }">
           <tbody v-if="!$vuetify.breakpoint.xsOnly">
@@ -85,9 +77,13 @@
 
 <script>
 import DeliveryNoteService from "@/services/DeliveryNoteService.js";
+import CustomerAndDatesFilterForm from "@/components/CustomerAndDatesFilterForm";
 
 export default {
   name: "DeliveryNoteList",
+  components: {
+    CustomerAndDatesFilterForm
+  },
   data: () => {
     return {
       deliveryNotes: [],
@@ -103,17 +99,46 @@ export default {
         { text: "Total", sortable: false, value: "total" },
         { text: "", sortable: false, value: "update" }
       ],
-      search: "",
-      sortBy: "id",
-      descending: false
+      options: {},
+      loading: true,
+      totalItems: 0,
+      filter: {
+        form: {
+          valid: false,
+          customer: {},
+          dateFrom: "",
+          dateTo: ""
+        }
+      }
     };
   },
-  async created() {
+  async mounted () {
     await this.listDeliveryNotes();
+  },
+  watch: {
+    options: {
+      handler() {
+        this.listDeliveryNotes();
+      },
+      deep: true
+    },
+    filter: {
+      handler() {
+        this.listDeliveryNotes();
+      },
+      deep: true
+    }
   },
   methods: {
     async listDeliveryNotes() {
-      this.deliveryNotes = await DeliveryNoteService.getAllWithCustomerAndTotal();
+      this.loading = true;
+      var response = await DeliveryNoteService.getAllWithCustomerAndTotal(
+        this.filter,
+        this.options
+      );
+      this.deliveryNotes = response.deliveryNotes;
+      this.totalItems = response.page.totalElements;
+      this.loading = false;
     },
     updateDeliveryNote(item) {
       this.$router.push({

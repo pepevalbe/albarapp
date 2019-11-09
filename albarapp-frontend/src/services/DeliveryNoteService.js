@@ -5,16 +5,38 @@ const DELIVERY_NOTE_RESOURCE = '/hateoas/deliveryNotes';
 const DELIVERY_NOTE_ITEM_RESOURCE = '/hateoas/deliveryNoteItems';
 
 export default {
-    getAll() {
-        return HttpClient.get(DELIVERY_NOTE_RESOURCE)
+    getAll(filter, options) {
+        var params = {};
+        if (filter && filter.form) {
+            if (filter.form.customer && filter.form.customer.code)
+                params.customerCode = filter.form.customer.code;
+            if (filter.form.dateFrom) params.timestampFrom = moment(filter.form.dateFrom, "YYYY-MM-DD").format('x');
+            if (filter.form.dateTo) params.timestampTo = moment(filter.form.dateTo, "YYYY-MM-DD").format('x');
+        }
+        if (options) {
+            if (options.page) params.page = options.page - 1;
+            if (options.itemsPerPage) params.size = options.itemsPerPage;
+        }
+
+        var queryString = Object.keys(params).map(function (key) {
+            return key + '=' + params[key]
+        }).join('&');
+
+        if (queryString != "") queryString = '?' + queryString;
+        //        { sortBy, sortDesc, page, itemsPerPage }
+
+
+        return HttpClient.get(DELIVERY_NOTE_RESOURCE + '/search/findDeliveryNotes' + queryString)
             .then(response => {
-                return response.data._embedded.deliveryNotes;
+                return {
+                    deliveryNotes: response.data._embedded.deliveryNotes,
+                    page: response.data.page
+                };
             })
             .catch(() => {
                 alert("Ha ocurrido un error recuperando los albaranes");
             });
     },
-
     get(id) {
         return HttpClient.get(`${DELIVERY_NOTE_RESOURCE}/${id}`)
             .then(response => {
@@ -52,9 +74,10 @@ export default {
                 alert("Ha ocurrido un error recuperando los productos de las líneas de albarán");
             });
     },
-    async getAllWithCustomerAndTotal() {
+    async getAllWithCustomerAndTotal(filter, options) {
         var promises = [];
-        var deliveryNotes = await this.getAll();
+        var response = await this.getAll(filter, options);
+        var deliveryNotes = response.deliveryNotes;
         for (const deliveryNote of deliveryNotes) {
             deliveryNote.dateFormatted = moment(deliveryNote.issuedTimestamp, "x").format("DD/MM/YYYY");
             deliveryNote.date = moment(deliveryNote.issuedTimestamp, "x").format("YYYY-MM-DD");
@@ -74,7 +97,7 @@ export default {
                 deliveryNote.total += deliveryNoteItem.quantity * deliveryNoteItem.price * (1 + deliveryNoteItem.product.tax / 100);
             }
         }
-        return deliveryNotes;
+        return response;
     },
     async getWithCustomerAndTotal(id) {
         var promises = [];
@@ -180,7 +203,7 @@ export default {
     },
     findDeliveryNotesToBill(customerCode, timestampFrom, timestampTo) {
         return HttpClient.get(`${DELIVERY_NOTE_RESOURCE}/search/findDeliveryNotesToBill?customerCode=` +
-            + customerCode + `&timestampFrom=` + timestampFrom + `&timestampTo=` + timestampTo)
+            + customerCode + `&timestampFrom=` + timestampFrom + `&timestampTo=` + timestampTo + `&size=1000`)
             .then(response => {
                 return response.data._embedded.deliveryNotes;
             })
