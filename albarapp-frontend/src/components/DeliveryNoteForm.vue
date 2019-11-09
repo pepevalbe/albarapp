@@ -210,7 +210,7 @@ export default {
   },
   methods: {
     async listCustomers() {
-      this.customers = await CustomerService.getAll();
+      this.customers = await CustomerService.getAllWithPrices();
     },
     async listProducts() {
       this.products = await ProductService.getAll();
@@ -227,7 +227,7 @@ export default {
           this.$nextTick(this.$refs.customerCode.focus);
         } else {
           this.form.deliveryNote.customer = this.customers[index];
-          this.listCustomerPrices();
+          this.selectCustomerPrices();
         }
       }
     },
@@ -239,7 +239,7 @@ export default {
         this.form.deliveryNote.customer.code != null
       ) {
         this.customerCode = this.form.deliveryNote.customer.code;
-        this.listCustomerPrices();
+        this.selectCustomerPrices();
         this.moveToDate();
       }
       return false;
@@ -247,10 +247,8 @@ export default {
     clearCustomer() {
       this.form.deliveryNote.customer = {};
     },
-    async listCustomerPrices() {
-      this.customerPrices = await CustomerService.getCustomerProductPrices(
-        this.form.deliveryNote.customer.id
-      );
+    async selectCustomerPrices() {
+      this.customerPrices = this.form.deliveryNote.customer.customerProductPrices;
     },
     selectProductByCode() {
       var vm = this;

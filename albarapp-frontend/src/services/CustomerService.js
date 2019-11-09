@@ -24,7 +24,18 @@ export default {
         alert("Ha ocurrido un error recuperando el cliente");
       });
   },
-
+  async getAllWithPrices() {
+    var customers = await this.getAll();
+    var promises = [];
+    var service = this;
+    customers.forEach(customer => {
+      promises.push(service.getCustomerProductPrices(customer.id).then(response => {
+        customer.customerProductPrices = response;
+      }))
+    })
+    await Promise.all(promises);
+    return customers;
+  },
   getCustomerProductPrices(id) {
     return HttpClient.get(`${CUSTOMER_RESOURCE}/${id}${CUSTOMER_PRODUCT_PRICE_RELATION}`)
       .then(response => {
