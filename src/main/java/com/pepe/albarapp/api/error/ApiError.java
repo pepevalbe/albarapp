@@ -13,7 +13,8 @@ public enum ApiError {
 	ApiError005("005", 403, "Not allowed", "No tienes permisos para acceder al recurso"),
 	ApiError006("006", 400, "Bad input parameters", "Parámetros de entrada incorrectos"),
 	ApiError007("007", 400, "Bad invitation", "Invitación no encontrada"),
-	ApiError008("008", 400, "Invitation expired", "La invitación ha caducado");
+	ApiError008("008", 400, "Invitation expired", "La invitación ha caducado"),
+	ApiError009("009", 400, "Bad invoice", "No se puede generar el documento de la factura solicitada");
 
 	final String errorCode;
 	@JsonIgnore

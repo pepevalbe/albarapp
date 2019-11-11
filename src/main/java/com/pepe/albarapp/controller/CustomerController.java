@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.List;
 
 @Slf4j
 @RestController
@@ -21,7 +20,7 @@ public class CustomerController {
 
 	private final static String CUSTOMERS_ENDPOINT = "/api/customers";
 	private final static String DELIVERY_NOTES_ENDPOINT = "/api/deliveryNotes";
-	private final static String PDF_ENDPOINT = "/api/pdf";
+	private final static String INVOICE_DOWNLOAD_ENDPOINT = "/api/invoice/download";
 
 	@Autowired
 	private CustomerService customerService;
@@ -56,11 +55,11 @@ public class CustomerController {
 		return ResponseEntity.ok().build();
 	}
 
-	@PostMapping(PDF_ENDPOINT)
-	public void generateInvoiceDoc(@RequestParam Long invoiceId, HttpServletResponse response) {
-
+	@GetMapping(INVOICE_DOWNLOAD_ENDPOINT)
+	public void downloadInvoice(@RequestParam Long invoiceId, HttpServletResponse response) {
 		try {
 			documentService.generateInvoice(invoiceId, response.getOutputStream());
+			response.setContentType("application/pdf; filename=Invoice.pdf");
 			response.flushBuffer();
 		} catch (IOException e) {
 			log.error(e.getMessage(), e);
