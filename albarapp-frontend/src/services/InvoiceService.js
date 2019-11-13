@@ -24,7 +24,24 @@ export default {
                 alert("Ha ocurrido un error recuperando la afactura");
             });
     },
-
+    async getWithCustomerAndTotal(id) {
+        var invoice = await this.get(id);
+        await this.getDeliveryNotes(invoice);
+        var promises = [];
+        for (const deliveryNote of invoice.deliveryNotes) {
+            promises.push(this.getDeliveryNoteItemsAndCustomer(deliveryNote));
+        }
+        await Promise.all(promises);
+        invoice.total = 0;
+        invoice.dateFormatted = moment(invoice.issuedTimestamp, "x").format("DD/MM/YYYY");
+        invoice.date = moment(invoice.issuedTimestamp, "x").format("YYYY-MM-DD");
+        for (const deliveryNote of invoice.deliveryNotes) {
+            invoice.total += deliveryNote.deliveryNoteTotal.value;
+            deliveryNote.date = moment(deliveryNote.issuedTimestamp, "x").format("YYYY-MM-DD");
+            deliveryNote.dateFormatted = moment(deliveryNote.issuedTimestamp, "x").format("DD/MM/YYYY");
+        }
+        return invoice;
+    },
     getDeliveryNotes(invoice) {
         return HttpClient.get(invoice._links.deliveryNotes.href)
             .then(response => {

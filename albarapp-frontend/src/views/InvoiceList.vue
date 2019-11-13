@@ -110,8 +110,11 @@ export default {
     async listInvoices() {
       this.invoices = await InvoiceService.getAllWithCustomerAndTotal();
     },
-    updateInvoice() {
-      //TODO: Navigate to update-invoice
+    updateInvoice(item) {
+      this.$router.push({
+        name: "InvoiceUpdate",
+        params: { invoiceId: item.id }
+      });
     }
   }
 };

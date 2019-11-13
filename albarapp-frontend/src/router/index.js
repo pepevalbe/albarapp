@@ -100,6 +100,13 @@ export default new Router({
       meta: { headerName: "Facturas" }
     },
     {
+      path: "/invoice-update/",
+      component: () => import("@/views/InvoiceUpdate"),
+      props: true,
+      name: "InvoiceUpdate",
+      meta: { headerName: "Modificar factura"}
+    },
+    {
       path: "/invoice-bill-process/",
       component: () => import("@/views/BillProcess"),
       name: "BillProcess",

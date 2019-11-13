@@ -240,7 +240,6 @@ export default {
       ) {
         this.customerCode = this.form.deliveryNote.customer.code;
         this.selectCustomerPrices();
-        this.moveToDate();
       }
       return false;
     },
