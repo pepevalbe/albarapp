@@ -21,6 +21,7 @@ import ProductForm from "@/components/ProductForm";
 import ProductService from "@/services/ProductService.js";
 
 export default {
+  name: "ProductCreation",
   components: {
     ProductForm
   },

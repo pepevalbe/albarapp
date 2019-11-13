@@ -13,6 +13,7 @@ import DeliveryNoteForm from "@/components/DeliveryNoteForm";
 import DeliveryNoteService from "@/services/DeliveryNoteService.js";
 
 export default {
+  name: "DeliveryNoteUpdate",
   components: {
     DeliveryNoteForm
   },

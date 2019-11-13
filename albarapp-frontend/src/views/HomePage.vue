@@ -24,7 +24,7 @@
 import HttpClient from "@/services/HttpClient.js";
 
 export default {
-  name: "home",
+  name: "Home",
   data: () => {
     return {
       question: String,

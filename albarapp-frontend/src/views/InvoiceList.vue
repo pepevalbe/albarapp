@@ -3,6 +3,10 @@
     <v-layout text-right wrap class="pt-2 pb-5 mr-5">
       <v-flex xs12>
         <v-btn to="/invoice-bill-process/">
+          Facturar albaranes
+          <v-icon class="ml-2">mdi-animation</v-icon>
+        </v-btn>
+        <v-btn to="/" class="ml-2">
           Nuevo
           <v-icon class="ml-2">mdi-plus-circle</v-icon>
         </v-btn>
@@ -90,7 +94,7 @@ export default {
       headers: [
         { text: "Nº Factura", sortable: true, value: "id" },
         { text: "Cliente", sortable: false, value: "alias" },
-        { text: "Fecha", sortable: false, value: "dateFormatted" },
+        { text: "Fecha de emisión", sortable: false, value: "dateFormatted" },
         { text: "Total", sortable: false, value: "total" },
         { text: "", sortable: false, value: "update" }
       ],

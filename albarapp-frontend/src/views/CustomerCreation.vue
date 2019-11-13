@@ -24,6 +24,7 @@ import CustomerPriceTable from "@/components/CustomerPriceTable";
 import CustomerService from "@/services/CustomerService.js";
 
 export default {
+  name: "CustomerCreation",
   components: {
     CustomerPriceTable,
     CustomerForm
