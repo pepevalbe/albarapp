@@ -45,6 +45,17 @@
             ></v-date-picker>
           </v-menu>
         </v-col>
+        <v-col cols="12" md="1">
+          <v-text-field
+            ref="total"
+            v-model="form.invoice.total"
+            type="text"
+            label="Total"
+            suffix=" €"
+            required
+            readonly
+          ></v-text-field>
+        </v-col>
       </v-row>
       <v-subheader class="title ml-1">Albaranes</v-subheader>
       <v-data-table
@@ -55,30 +66,76 @@
       >
         <template v-slot:body="{ items }">
           <tbody v-if="!$vuetify.breakpoint.xsOnly">
-            <tr v-for="item in items" :key="item.deliveryNoteItemsHref">
-              <td>A{{item.id}}</td>
-              <td>{{item.auxDeliveryNoteNr}}</td>
-              <td>{{item.dateFormatted}}</td>
-              <td>{{item.deliveryNoteTotal.value.toFixed(2)}} €</td>
+            <tr v-for="deliveryNote in items" :key="deliveryNote.deliveryNoteItemsHref">
+              <td>A{{deliveryNote.id}}</td>
+              <td>{{deliveryNote.auxDeliveryNoteNr}}</td>
+              <td>{{deliveryNote.dateFormatted}}</td>
+              <td>
+                <span v-for="noteItem in deliveryNote.deliveryNoteItems" :key="noteItem.id">
+                  {{noteItem.quantity}} - {{noteItem.product.name}} - {{noteItem.price}} €
+                  <br />
+                </span>
+              </td>
+              <td>{{deliveryNote.deliveryNoteTotal.value.toFixed(2)}} €</td>
+              <td justify="center">
+                <div class="text-xs-center">
+                  <v-btn
+                    class="ma-2"
+                    justify="center"
+                    color="red"
+                    dark
+                    @click="disassociate(deliveryNote)"
+                    :disabled="form.invoice.deliveryNotes.length<=1"
+                  >
+                    <v-icon dark>mdi-link-variant-off</v-icon>
+                  </v-btn>
+                </div>
+              </td>
             </tr>
           </tbody>
           <tbody v-else>
             <tr>
-              <v-card class="flex-content" outlined v-for="item in items" :key="item.id">
+              <v-card
+                class="flex-content"
+                outlined
+                v-for="deliveryNote in items"
+                :key="deliveryNote.id"
+              >
                 <v-card-text>
                   <span class="black--text">Nº Albarán:</span>
-                  A{{item.id}}
+                  A{{deliveryNote.id}}
                   <br />
                   <span class="black--text">Nº Pedido:</span>
-                  {{item.auxDeliveryNoteNr}}
+                  {{deliveryNote.auxDeliveryNoteNr}}
                   <br />
                   <span class="black--text">Fecha:</span>
-                  {{item.dateFormatted}}
+                  {{deliveryNote.dateFormatted}}
                   <br />
+                  <span class="black--text">Productos:</span>
+                  <br />
+                  <span v-for="noteItem in deliveryNote.deliveryNoteItems" :key="noteItem.id">
+                    {{noteItem.quantity}} - {{noteItem.product.name}} - {{noteItem.price}} €
+                    <br />
+                  </span>
                   <span class="black--text">Total:</span>
-                  {{item.deliveryNoteTotal.value.toFixed(2)}} €
+                  {{deliveryNote.deliveryNoteTotal.value.toFixed(2)}} €
                   <br />
                 </v-card-text>
+                <v-card-actions>
+                  <v-layout text-center wrap>
+                    <v-flex xs12>
+                      <v-btn
+                        class="ma-2"
+                        justify="center"
+                        color="red"
+                        dark
+                        @click="disassociate(deliveryNote)"
+                      >
+                        <v-icon dark>mdi-link-variant-off</v-icon>
+                      </v-btn>
+                    </v-flex>
+                  </v-layout>
+                </v-card-actions>
               </v-card>
             </tr>
           </tbody>
@@ -100,11 +157,23 @@
       Factura actualizada correctamente
       <v-btn color="green" text @click="snackbar = false">Cerrar</v-btn>
     </v-snackbar>
+    <v-dialog v-model="dialog.show" max-width="600">
+      <v-card>
+        <v-card-title class="headline">¿Desasociar albarán?</v-card-title>
+        <v-card-text>Si sigue adelante deasociará el albarán A{{dialog.deliveryNote.id}} de la factura F{{dialog.invoice}}. Esto afectará a una factura ya emitida por lo que si ya ha sido presentada debería hacer una factura rectificativa.</v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="darken-1" text @click="dialog.show = false">Cancelar</v-btn>
+          <v-btn color="red darken-1" text @click="confirmDisassociate()">Entendido</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-flex>
 </template>
 
 <script>
 import InvoiceService from "@/services/InvoiceService.js";
+import DeliveryNoteService from "@/services/DeliveryNoteService.js";
 
 export default {
   name: "InvoiceUpdate",
@@ -122,7 +191,8 @@ export default {
                 value: 0
               }
             }
-          ]
+          ],
+          total: 0
         }
       },
       headers: [
@@ -133,12 +203,23 @@ export default {
           value: "auxDeliveryNoteNr"
         },
         { text: "Fecha", sortable: false, value: "dateFormatted" },
-        { text: "Total", sortable: false, value: "total" }
+        {
+          text: "Productos",
+          sortable: false,
+          value: "deliveryNoteItems"
+        },
+        { text: "Total", sortable: false, value: "total" },
+        { text: "", sortable: false, value: "disassociate" }
       ],
       dateFormatted: "",
       menuDatePicker: false,
       loading: false,
-      snackbar: false
+      snackbar: false,
+      dialog: {
+        show: false,
+        deliveryNote: "",
+        invoice: ""
+      }
     };
   },
   props: {
@@ -175,6 +256,19 @@ export default {
       this.dateFormatted = moment.format("DD/MM/YYYY");
       this.form.invoice.issuedTimestamp = moment.format("x");
       this.menuDatePicker = false;
+    },
+    disassociate(deliveryNote) {
+      this.dialog.deliveryNote = deliveryNote;
+      this.dialog.invoice = this.form.invoice.id;
+      this.dialog.show = true;
+    },
+    async confirmDisassociate() {
+      await DeliveryNoteService.disassociateInvoice(
+        this.dialog.deliveryNote.id
+      );
+      this.snackbar = true;
+      this.loadInvoice(this.invoiceId);
+      this.dialog.show = false;
     }
   }
 };

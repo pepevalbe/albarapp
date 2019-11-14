@@ -87,6 +87,7 @@ export default {
             issuedTimestamp: invoice.issuedTimestamp
         };
 
+        // Refactorizar usando DeliveryNoteService
         var promisePost = HttpClient.post(RESOURCE_NAME, invoiceToCreate).then(response => {
             for (var i = 0; i < deliveryNotes.length; i++) {
                 var item = deliveryNotes[i];

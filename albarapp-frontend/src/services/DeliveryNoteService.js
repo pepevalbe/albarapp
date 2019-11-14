@@ -222,5 +222,9 @@ export default {
             .catch(() => {
                 alert("Ha ocurrido un error recuperando el albarán");
             });
+    },
+    disassociateInvoice(id) {
+        var deliveryNote = {invoice: ""};
+        return HttpClient.patch(`${DELIVERY_NOTE_RESOURCE}/${id}`,deliveryNote);
     }
 }
