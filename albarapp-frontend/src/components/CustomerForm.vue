@@ -17,7 +17,7 @@
       <v-text-field
         v-model="form.customer.alias"
         :readonly="readonly"
-        :counter="40"
+        :counter="80"
         :rules="aliasRules"
         label="Nombre Comercial *"
         required
@@ -102,7 +102,7 @@ export default {
     ],
     aliasRules: [
       v => !!v || "El alias es obligatorio",
-      v => (v && v.length <= 40) || "El alias debe tener menos de 40 caracteres"
+      v => (v && v.length <= 80) || "El nombre comercial debe tener menos de 80 caracteres"
     ],
     emailRules: [v => !v || /.+@.+\..+/.test(v) || "E-mail no válido"],
     fiscalIdRules: [
