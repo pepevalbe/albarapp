@@ -234,6 +234,7 @@ export default {
       this.form.invoice = await InvoiceService.getWithCustomerAndTotal(
         this.invoiceId
       );
+      this.form.invoice.total = this.form.invoice.total.toFixed(2);
       this.parseDatePick();
       this.loading = false;
     },
