@@ -98,11 +98,11 @@ export default {
     nameRules: [
       v => !!v || "El nombre es obligatorio",
       v =>
-        (v && v.length <= 40) || "El nombre debe tener menos de 80 caracteres"
+        (v && v.length <= 80) || "El nombre debe tener menos de 80 caracteres"
     ],
     aliasRules: [
       v => !!v || "El alias es obligatorio",
-      v => (v && v.length <= 20) || "El alias debe tener menos de 40 caracteres"
+      v => (v && v.length <= 40) || "El alias debe tener menos de 40 caracteres"
     ],
     emailRules: [v => !v || /.+@.+\..+/.test(v) || "E-mail no válido"],
     fiscalIdRules: [

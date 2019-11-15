@@ -68,12 +68,10 @@
                 </v-card-text>
                 <v-card-actions>
                   <v-layout text-center wrap>
-                    <v-flex xs12 class="mb-3">
+                    <v-flex xs12 class="mb-4">
                       <v-btn @click="showCustomer(item)">
                         <v-icon dark>mdi-account-card-details</v-icon>
                       </v-btn>
-                    </v-flex>
-                    <v-flex xs12>
                       <v-btn @click="updateCustomer(item)">
                         <v-icon dark>mdi-pencil</v-icon>
                       </v-btn>
