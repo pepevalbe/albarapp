@@ -5,13 +5,13 @@
     <div class="mb-10"></div>
     <v-layout text-center wrap class="pt-10">
       <v-flex xs12>
+        <v-btn class="mr-4" to="/product-list/">Volver</v-btn>
         <v-btn
           :disabled="!form.valid"
           color="success"
           class="mr-4"
           @click="updateProduct()"
         >Actualizar</v-btn>
-        <v-btn to="/product-list/">Volver</v-btn>
       </v-flex>
     </v-layout>
     <v-snackbar v-model="snackbar">

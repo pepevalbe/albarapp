@@ -144,13 +144,13 @@
     </v-form>
     <v-layout text-center wrap class="pt-10">
       <v-flex xs12>
+        <v-btn class="mr-4" to="/invoice-list/">Volver</v-btn>
         <v-btn
           :disabled="!form.valid"
           color="success"
           class="mr-4"
           @click="updateInvoice()"
         >Actualizar</v-btn>
-        <v-btn to="/invoice-list/">Volver</v-btn>
       </v-flex>
     </v-layout>
     <v-snackbar v-model="snackbar">

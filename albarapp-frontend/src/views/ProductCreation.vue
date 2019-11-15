@@ -4,9 +4,9 @@
     <div class="mb-3"></div>
     <v-layout text-center wrap class="pt-10">
       <v-flex xs12>
-        <v-btn :disabled="!form.valid" color="success" class="mr-4" @click="createProduct()">Crear</v-btn>
+        <v-btn class="mr-4" to="/product-list/">Volver</v-btn>
         <v-btn color="error" class="mr-4" @click="reset()">Borrar</v-btn>
-        <v-btn to="/product-list/">Volver</v-btn>
+        <v-btn :disabled="!form.valid" color="success" class="mr-4" @click="createProduct()">Crear</v-btn>
       </v-flex>
     </v-layout>
     <v-snackbar v-model="snackbar">
