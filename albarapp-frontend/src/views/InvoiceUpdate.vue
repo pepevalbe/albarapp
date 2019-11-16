@@ -57,7 +57,21 @@
           ></v-text-field>
         </v-col>
       </v-row>
-      <v-subheader class="title ml-1">Albaranes</v-subheader>
+      <v-row>
+        <v-col>
+          <v-subheader class="title ml-1">Albaranes</v-subheader>
+        </v-col>
+        <v-col>
+          <v-layout text-right wrap class="pt-2 mr-5">
+            <v-flex xs12>
+              <v-btn @click="showAssociateList()">
+                Asociar
+                <v-icon class="ml-2">mdi-link-variant-plus</v-icon>
+              </v-btn>
+            </v-flex>
+          </v-layout>
+        </v-col>
+      </v-row>
       <v-data-table
         :loading="loading"
         loading-text="Cargando... Por favor, espere"
@@ -157,14 +171,107 @@
       Factura actualizada correctamente
       <v-btn color="green" text @click="snackbar = false">Cerrar</v-btn>
     </v-snackbar>
-    <v-dialog v-model="dialog.show" max-width="600">
+    <v-dialog v-model="dialogDisassociate.show" max-width="600">
       <v-card>
         <v-card-title class="headline">¿Desasociar albarán?</v-card-title>
-        <v-card-text>Si sigue adelante deasociará el albarán A{{dialog.deliveryNote.id}} de la factura F{{dialog.invoice}}. Esto afectará a una factura ya emitida por lo que si ya ha sido presentada debería hacer una factura rectificativa.</v-card-text>
+        <v-card-text>Si sigue adelante deasociará el albarán A{{dialogDisassociate.deliveryNote.id}} de la factura F{{dialogDisassociate.invoice.id}}. Esto afectará a una factura ya emitida por lo que si ya ha sido presentada debería hacer una factura rectificativa.</v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="darken-1" text @click="dialog.show = false">Cancelar</v-btn>
+          <v-btn color="darken-1" text @click="dialogDisassociate.show = false">Cancelar</v-btn>
           <v-btn color="red darken-1" text @click="confirmDisassociate()">Entendido</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <v-dialog v-model="dialogConfirmAssociate.show" max-width="600">
+      <v-card>
+        <v-card-title class="headline">¿Asociar albarán?</v-card-title>
+        <v-card-text>Si sigue adelante asociará el albarán A{{dialogConfirmAssociate.deliveryNote.id}} a la factura F{{dialogConfirmAssociate.invoice.id}}. Esto afectará a una factura ya emitida por lo que si ya ha sido presentada debería hacer una factura rectificativa.</v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="darken-1" text @click="dialogConfirmAssociate.show = false">Cancelar</v-btn>
+          <v-btn color="red darken-1" text @click="confirmAssociate()">Entendido</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <v-dialog v-model="dialogAssociate.show" max-width="1200">
+      <v-card>
+        <v-data-table
+          :loading="loading"
+          loading-text="Cargando... Por favor, espere"
+          :headers="headers"
+          :items="dialogAssociate.deliveryNotes"
+        >
+          <template v-slot:body="{ items }">
+            <tbody v-if="!$vuetify.breakpoint.xsOnly">
+              <tr v-for="deliveryNote in items" :key="deliveryNote.deliveryNoteItemsHref">
+                <td>A{{deliveryNote.id}}</td>
+                <td>{{deliveryNote.auxDeliveryNoteNr}}</td>
+                <td>{{deliveryNote.dateFormatted}}</td>
+                <td>
+                  <span v-for="noteItem in deliveryNote.deliveryNoteItems" :key="noteItem.id">
+                    {{noteItem.quantity}} - {{noteItem.product.name}} - {{noteItem.price}} €
+                    <br />
+                  </span>
+                </td>
+                <td>{{deliveryNote.total.toFixed(2)}} €</td>
+                <td justify="center">
+                  <div class="text-xs-center">
+                    <v-btn class="ma-2" justify="center" @click="associate(deliveryNote)">
+                      <v-icon dark>mdi-link-variant</v-icon>
+                    </v-btn>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+            <tbody v-else>
+              <tr>
+                <v-card
+                  class="flex-content"
+                  outlined
+                  v-for="deliveryNote in items"
+                  :key="deliveryNote.id"
+                >
+                  <v-card-text>
+                    <span class="black--text">Nº Albarán:</span>
+                    A{{deliveryNote.id}}
+                    <br />
+                    <span class="black--text">Nº Pedido:</span>
+                    {{deliveryNote.auxDeliveryNoteNr}}
+                    <br />
+                    <span class="black--text">Fecha:</span>
+                    {{deliveryNote.dateFormatted}}
+                    <br />
+                    <span class="black--text">Productos:</span>
+                    <br />
+                    <span v-for="noteItem in deliveryNote.deliveryNoteItems" :key="noteItem.id">
+                      {{noteItem.quantity}} - {{noteItem.product.name}} - {{noteItem.price}} €
+                      <br />
+                    </span>
+                    <span class="black--text">Total:</span>
+                    {{deliveryNote.total.toFixed(2)}} €
+                    <br />
+                  </v-card-text>
+                  <v-card-actions>
+                    <v-layout text-center wrap>
+                      <v-flex xs12>
+                        <v-btn class="ma-2" justify="center" @click="associate(deliveryNote)">
+                          <v-icon dark>mdi-link-variant</v-icon>
+                        </v-btn>
+                      </v-flex>
+                    </v-layout>
+                  </v-card-actions>
+                </v-card>
+              </tr>
+            </tbody>
+          </template>
+        </v-data-table>
+        <v-spacer></v-spacer>
+        <v-card-actions>
+          <v-layout text-center wrap>
+            <v-flex xs12>
+              <v-btn color="darken-1" text @click="dialogAssociate.show = false">Cancelar</v-btn>
+            </v-flex>
+          </v-layout>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -215,10 +322,19 @@ export default {
       menuDatePicker: false,
       loading: false,
       snackbar: false,
-      dialog: {
+      dialogDisassociate: {
         show: false,
-        deliveryNote: "",
-        invoice: ""
+        deliveryNote: {},
+        invoice: {}
+      },
+      dialogAssociate: {
+        show: false,
+        deliveryNotes: []
+      },
+      dialogConfirmAssociate: {
+        show: false,
+        deliveryNote: {},
+        invoice: {}
       }
     };
   },
@@ -258,18 +374,44 @@ export default {
       this.form.invoice.issuedTimestamp = moment.format("x");
       this.menuDatePicker = false;
     },
+    async updateInvoice() {
+      await InvoiceService.update(this.form.invoice.id, this.form.invoice);
+      this.snackbar = true;
+      this.loadInvoice(this.invoiceId);
+    },
     disassociate(deliveryNote) {
-      this.dialog.deliveryNote = deliveryNote;
-      this.dialog.invoice = this.form.invoice.id;
-      this.dialog.show = true;
+      this.dialogDisassociate.deliveryNote = deliveryNote;
+      this.dialogDisassociate.invoice = this.form.invoice;
+      this.dialogDisassociate.show = true;
     },
     async confirmDisassociate() {
       await DeliveryNoteService.disassociateInvoice(
-        this.dialog.deliveryNote.id
+        this.dialogDisassociate.deliveryNote.id
       );
       this.snackbar = true;
       this.loadInvoice(this.invoiceId);
-      this.dialog.show = false;
+      this.dialogDisassociate.show = false;
+    },
+    async showAssociateList() {
+      this.dialogAssociate.show = true;
+      this.dialogAssociate.deliveryNotes = await DeliveryNoteService.findDeliveryNotesToBillWithCustomerAndTotal(
+        this.form.invoice.deliveryNotes[0].customer.code
+      );
+    },
+    associate(deliveryNote) {
+      this.dialogAssociate.show = false;
+      this.dialogConfirmAssociate.deliveryNote = deliveryNote;
+      this.dialogConfirmAssociate.invoice = this.form.invoice;
+      this.dialogConfirmAssociate.show = true;
+    },
+    async confirmAssociate() {
+      await DeliveryNoteService.associateInvoice(
+        this.dialogConfirmAssociate.deliveryNote.id,
+        this.dialogConfirmAssociate.invoice
+      );
+      this.snackbar = true;
+      this.loadInvoice(this.invoiceId);
+      this.dialogConfirmAssociate.show = false;
     }
   }
 };

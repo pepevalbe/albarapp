@@ -214,8 +214,27 @@ export default {
         return Promise.all(promises);
     },
     findDeliveryNotesToBill(customerCode, timestampFrom, timestampTo) {
-        return HttpClient.get(`${DELIVERY_NOTE_RESOURCE}/search/findDeliveryNotesToBill?customerCode=` +
-            + customerCode + `&timestampFrom=` + timestampFrom + `&timestampTo=` + timestampTo + `&size=1000`)
+
+        var params = {};
+        if (customerCode) {
+            params.customerCode = customerCode;
+        }
+        if (timestampFrom) {
+            params.timestampFrom = timestampFrom;
+        }
+        if (timestampTo) {
+            params.timestampTo = timestampTo;
+        }
+        params.page = 0;
+        params.size = 1000;
+
+        var queryString = Object.keys(params).map(function (key) {
+            return key + '=' + params[key]
+        }).join('&');
+
+        if (queryString != "") queryString = '?' + queryString;
+
+        return HttpClient.get(DELIVERY_NOTE_RESOURCE + '/search/findDeliveryNotesToBill' + queryString)
             .then(response => {
                 return response.data._embedded.deliveryNotes;
             })
@@ -223,8 +242,39 @@ export default {
                 alert("Ha ocurrido un error recuperando el albarán");
             });
     },
+    async findDeliveryNotesToBillWithCustomerAndTotal(customerCode, timestampFrom, timestampTo) {
+
+        var deliveryNotes = await this.findDeliveryNotesToBill(customerCode, timestampFrom, timestampTo);
+        var promises = [];
+
+        for (const deliveryNote of deliveryNotes) {
+            deliveryNote.dateFormatted = moment(deliveryNote.issuedTimestamp, "x").format("DD/MM/YYYY");
+            deliveryNote.date = moment(deliveryNote.issuedTimestamp, "x").format("YYYY-MM-DD");
+            promises.push(this.getCustomer(deliveryNote));
+            promises.push(this.getDeliveryNoteItems(deliveryNote));
+        }
+        await Promise.all(promises);
+        for (const deliveryNote of deliveryNotes) {
+            for (const deliveryNoteItem of deliveryNote.deliveryNoteItems) {
+                promises.push(this.getProducts(deliveryNoteItem));
+            }
+        }
+        await Promise.all(promises);
+        for (const deliveryNote of deliveryNotes) {
+            deliveryNote.total = 0;
+            for (const deliveryNoteItem of deliveryNote.deliveryNoteItems) {
+                deliveryNote.total += deliveryNoteItem.quantity * deliveryNoteItem.price * (1 + deliveryNoteItem.product.tax / 100);
+            }
+        }
+
+        return deliveryNotes;
+    },
     disassociateInvoice(id) {
-        var deliveryNote = {invoice: ""};
-        return HttpClient.patch(`${DELIVERY_NOTE_RESOURCE}/${id}`,deliveryNote);
+        var deliveryNote = { invoice: "" };
+        return HttpClient.patch(`${DELIVERY_NOTE_RESOURCE}/${id}`, deliveryNote);
+    },
+    associateInvoice(id, invoice) {
+        var deliveryNote = { invoice: invoice._links.self.href };
+        return HttpClient.patch(`${DELIVERY_NOTE_RESOURCE}/${id}`, deliveryNote);
     }
 }

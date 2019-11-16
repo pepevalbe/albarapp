@@ -117,6 +117,20 @@ export default {
             }
         }
         return Promise.all(promises);
+    },
+    update(id, invoice) {
+
+        var invoiceToUpdate = {
+            issuedTimestamp: invoice.issuedTimestamp
+        };
+        return HttpClient.patch(`${RESOURCE_NAME}/${id}`, invoiceToUpdate)
+            .then(response => {
+                return response.data;
+            })
+            .catch(() => {
+                alert("Ha ocurrido un error actualizando la factura");
+            });
+
     }
 
 }

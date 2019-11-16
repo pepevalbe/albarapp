@@ -14,9 +14,9 @@ import org.springframework.data.domain.Page;
 @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_USER')")
 public interface DeliveryNoteRepository extends PagingAndSortingRepository<DeliveryNote, Long> {
 
-	@Query("select dn from DeliveryNote dn where dn.customer.code = :customerCode and dn.issuedTimestamp >= :timestampFrom and dn.issuedTimestamp <= :timestampTo and dn.invoice is null")
-	Page<DeliveryNote> findDeliveryNotesToBill(@Param("customerCode") int customerCode,
-			@Param("timestampFrom") long timestampFrom, @Param("timestampTo") long timestampTo, Pageable pageable);
+	@Query("select dn from DeliveryNote dn where (:customerCode is null or dn.customer.code = :customerCode) and (:timestampFrom is null or dn.issuedTimestamp >= :timestampFrom) and (:timestampTo is null or dn.issuedTimestamp <= :timestampTo) and dn.invoice is null")
+	Page<DeliveryNote> findDeliveryNotesToBill(@Param("customerCode") Integer customerCode,
+			@Param("timestampFrom") Long timestampFrom, @Param("timestampTo") Long timestampTo, Pageable pageable);
 
 	@Query("select dn from DeliveryNote dn where (:customerCode is null or dn.customer.code = :customerCode) and (:timestampFrom is null or dn.issuedTimestamp >= :timestampFrom) and (:timestampTo is null or dn.issuedTimestamp <= :timestampTo)")
 	Page<DeliveryNote> findDeliveryNotes(@Param("customerCode") Integer customerCode,
