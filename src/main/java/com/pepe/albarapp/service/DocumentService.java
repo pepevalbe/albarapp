@@ -62,6 +62,12 @@ public class DocumentService {
 				acroForm.getField(INVOICE_ID_FIELD).setValue(String.valueOf(invoiceId));
 				acroForm.getField(DATE_FIELD).setValue(new Date(invoice.getIssuedTimestamp()).toString());
 				acroForm.getField(AMOUNT_FIELD).setValue(amount + "€");
+
+				// Make form fields not editable
+				for (PDField field : acroForm.getFields()) {
+					field.setReadOnly(true);
+				}
+
 			}
 			pdfDocument.save(outputStream);
 			pdfDocument.close();
