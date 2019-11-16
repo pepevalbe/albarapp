@@ -46,6 +46,11 @@
                   <v-icon dark>mdi-pencil</v-icon>
                 </v-btn>
               </td>
+              <td>
+                <v-btn @click="download(item)">
+                  <v-icon dark>mdi-cloud-download</v-icon>
+                </v-btn>
+              </td>
             </tr>
           </tbody>
           <tbody v-else>
@@ -68,8 +73,11 @@
                 <v-card-actions>
                   <v-layout text-center wrap>
                     <v-flex xs12>
-                      <v-btn @click="updateInvoice(item)">
+                      <v-btn class="mr-3" @click="updateInvoice(item)">
                         <v-icon dark>mdi-pencil</v-icon>
+                      </v-btn>
+                      <v-btn class="mr-3" @click="download(item)">
+                        <v-icon dark>mdi-cloud-download</v-icon>
                       </v-btn>
                     </v-flex>
                   </v-layout>
@@ -96,7 +104,8 @@ export default {
         { text: "Cliente", sortable: false, value: "alias" },
         { text: "Fecha de emisión", sortable: false, value: "dateFormatted" },
         { text: "Total", sortable: false, value: "total" },
-        { text: "", sortable: false, value: "update" }
+        { text: "", sortable: false, value: "update" },
+        { text: "", sortable: false, value: "download" }
       ],
       search: "",
       sortBy: "id",
@@ -115,6 +124,9 @@ export default {
         name: "InvoiceUpdate",
         params: { invoiceId: item.id }
       });
+    },
+    download(item){
+      InvoiceService.download(item.id);
     }
   }
 };

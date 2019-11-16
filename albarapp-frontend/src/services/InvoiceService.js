@@ -3,6 +3,7 @@ import moment from "moment";
 import DeliveryNoteService from "@/services/DeliveryNoteService.js";
 
 const RESOURCE_NAME = '/hateoas/invoices';
+const INVOICE_DOWNLOAD_ENDPOINT = '/api/invoice/download';
 
 export default {
     getAll() {
@@ -21,7 +22,7 @@ export default {
                 return response.data;
             })
             .catch(() => {
-                alert("Ha ocurrido un error recuperando la afactura");
+                alert("Ha ocurrido un error recuperando la factura");
             });
     },
     async getWithCustomerAndTotal(id) {
@@ -131,6 +132,18 @@ export default {
                 alert("Ha ocurrido un error actualizando la factura");
             });
 
+    },
+    download(id) {
+        return HttpClient.get(`${INVOICE_DOWNLOAD_ENDPOINT}/?invoiceId=${id}`)
+            .then(response => {
+                let blob = new Blob([response.data], { type: 'application/pdf' })
+                let link = document.createElement('a')
+                link.href = window.URL.createObjectURL(blob)
+                link.download = id+'.pdf';
+                link.click()
+            })
+            .catch(() => {
+                alert("Ha ocurrido un error descargando la factura");
+            });
     }
-
 }
