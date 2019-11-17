@@ -134,13 +134,18 @@ export default {
 
     },
     download(id) {
-        return HttpClient.get(`${INVOICE_DOWNLOAD_ENDPOINT}/?invoiceId=${id}`)
-            .then(response => {
-                let blob = new Blob([response.data], { type: 'application/pdf' })
-                let link = document.createElement('a')
-                link.href = window.URL.createObjectURL(blob)
-                link.download = id+'.pdf';
-                link.click()
+        return HttpClient.get(`${INVOICE_DOWNLOAD_ENDPOINT}/?invoiceId=${id}`,
+            {
+                responseType: 'arraybuffer',
+                headers: {
+                    'Accept': 'application/pdf'
+                }
+            }).then(response => {
+                let blob = new Blob([response.data], { type: 'application/pdf' });
+                let link = document.createElement('a');
+                link.href = window.URL.createObjectURL(blob);
+                link.download = id + '.pdf';
+                link.click();
             })
             .catch(() => {
                 alert("Ha ocurrido un error descargando la factura");
