@@ -8,7 +8,7 @@ INSERT INTO product(id, code, name, factory_price, tax) VALUES
 	(4, 4, 'Huevo S', 0.09, 0),
 	(5, 5, 'Huevo M - Estuche 10uds', 0.13, 0),
 	(6, 6, 'Huevo M - Estuche 6uds', 0.13, 0),
-	(7, 7, 'Gallina', 4, 6.5);
+	(7, 7, 'Gallina', 4, 3);
 	
 INSERT INTO customer(id, fiscal_id, code, name, alias, phone_number, email, address, province) VALUES
     (1, 'H35083187', 1, 'C.C Yumbo Centrum', 'jumbo', '928764196', 'info@yumbocentrum.com', 'Av. Estados Unidos, 54, 35100 Maspalomas, Las Palmas', 'Las Palmas'),
