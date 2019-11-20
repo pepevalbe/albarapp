@@ -11,15 +11,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
-import org.apache.pdfbox.pdmodel.interactive.form.PDField;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.ServletOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.util.Date;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 @Slf4j
@@ -32,104 +31,93 @@ public class DocumentService {
 	private static final String CUSTOMER_ADDRESS_FIELD = "customerAddress";
 	private static final String CUSTOMER_FISCAL_FIELD = "customerFiscalId";
 	private static final String CUSTOMER_PROVINCE_FIELD = "customerProvince";
-	private static final String ROW_DATE_FIELD = "rowDate";
-	private static final String ROW_QUANTITY_FIELD = "rowQuantity";
-	private static final String ROW_PRODUCT_FIELD = "rowProduct";
-	private static final String ROW_ORDER_FIELD = "rowOrder";
-	private static final String ROW_VAT_FIELD = "rowVat";
-	private static final String ROW_PRICE_FIELD = "rowPrice";
-	private static final String ROW_TOTAL_FIELD = "rowTotal";
+	private static final String ROW_DATE_FIELD = "rowDate.%d";
+	private static final String ROW_QUANTITY_FIELD = "rowQuantity.%d";
+	private static final String ROW_PRODUCT_FIELD = "rowProduct.%d";
+	private static final String ROW_ORDER_FIELD = "rowOrder.%d";
+	private static final String ROW_VAT_FIELD = "rowVat.%d";
+	private static final String ROW_PRICE_FIELD = "rowPrice.%d";
+	private static final String ROW_TOTAL_FIELD = "rowTotal.%d";
 	private static final String INVOICE_ID_FIELD = "invoiceId";
 	private static final String DATE_FIELD = "date";
 	private static final String GROSS_FIELD = "grossTotal";
 	private static final String DISCOUNT_FIELD = "discount";
-	private static final String VAT_0_FIELD = "vat0Total";
-	private static final String VAT_3_FIELD = "vat3Total";
+	private static final String VAT_FIELD = "vatTotal";
 	private static final String AMOUNT_FIELD = "amount";
+	private static final int MAX_ROW_NUMBER = 23;
+	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
 
 	@Autowired
 	private InvoiceRepository invoiceRepository;
 
-	public void generateInvoice(Long invoiceId, ServletOutputStream outputStream) {
+	public void generateInvoice(long invoiceId, ServletOutputStream outputStream) {
 		Invoice invoice = invoiceRepository.findById(invoiceId)
 				.orElseThrow(() -> new ApiException(ApiError.ApiError009));
 
-		SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
 
 		List<DeliveryNote> deliveryNotes = invoice.getDeliveryNotes();
 
-		if (deliveryNotes.size() == 0 || deliveryNotes.size() > 23) {
+		if (deliveryNotes.size() == 0 || deliveryNotes.size() > MAX_ROW_NUMBER) {
 			throw new ApiException(ApiError.ApiError009);
 		}
 
 		Customer customer = deliveryNotes.get(0).getCustomer();
-		Double amount = deliveryNotes.stream().flatMap(deliveryNote -> deliveryNote.getDeliveryNoteItems().stream())
-				.map(deliveryNoteItem -> deliveryNoteItem.getPrice() * deliveryNoteItem.getQuantity())
-				.mapToDouble(value -> value).sum();
 
 		try {
 			PDDocument pdfDocument = PDDocument.load(new File(TEMPLATE_PDF_DOCUMENT));
 			PDDocumentCatalog docCatalog = pdfDocument.getDocumentCatalog();
 			PDAcroForm acroForm = docCatalog.getAcroForm();
 
-			if (acroForm != null) {
+			setDocumentHeader(acroForm, customer, invoice);
 
-				acroForm.getField(CUSTOMER_FIELD).setValue(customer.getName());
-				acroForm.getField(CUSTOMER_CODE_FIELD).setValue(String.valueOf(customer.getCode()));
-				acroForm.getField(CUSTOMER_ADDRESS_FIELD).setValue(customer.getAddress());
-				acroForm.getField(CUSTOMER_FISCAL_FIELD).setValue(customer.getFiscalId());
-				acroForm.getField(CUSTOMER_PROVINCE_FIELD).setValue(customer.getProvince());
-				acroForm.getField(INVOICE_ID_FIELD).setValue("F" + String.valueOf(invoiceId));
-				acroForm.getField(DATE_FIELD).setValue(dateFormat.format(new Date(invoice.getIssuedTimestamp())));
-
-				int rowCounter = 0;
-				double grossTotal = 0;
-				double netTotal = 0;
-				double vat3Total = 0;
-				for (DeliveryNote deliveryNote : deliveryNotes) {
-					for (DeliveryNoteItem deliveryNoteItem : deliveryNote.getDeliveryNoteItems()) {
-
-						double partialGross = deliveryNoteItem.getQuantity() * deliveryNoteItem.getPrice();
-						grossTotal += partialGross;
-						if (deliveryNoteItem.getProduct().getTax() == 3f) {
-							vat3Total += 0.03 * partialGross;
-						}
-
-						acroForm.getField(ROW_DATE_FIELD + "." + String.valueOf(rowCounter))
-								.setValue(dateFormat.format(new Date(deliveryNote.getIssuedTimestamp())));
-						acroForm.getField(ROW_QUANTITY_FIELD + "." + String.valueOf(rowCounter))
-								.setValue(String.valueOf(deliveryNoteItem.getQuantity()));
-						acroForm.getField(ROW_PRODUCT_FIELD + "." + String.valueOf(rowCounter))
-								.setValue(deliveryNoteItem.getProduct().getName());
-						acroForm.getField(ROW_ORDER_FIELD + "." + String.valueOf(rowCounter))
-								.setValue(deliveryNote.getAuxDeliveryNoteNr());
-						acroForm.getField(ROW_VAT_FIELD + "." + String.valueOf(rowCounter))
-								.setValue(String.format("%,.1f", deliveryNoteItem.getProduct().getTax()) + " %");
-						acroForm.getField(ROW_PRICE_FIELD + "." + String.valueOf(rowCounter))
-								.setValue(String.format("%,.2f", deliveryNoteItem.getPrice()) + " €");
-						acroForm.getField(ROW_TOTAL_FIELD + "." + String.valueOf(rowCounter))
-								.setValue(String.format("%,.2f", partialGross) + " €");
-						rowCounter++;
-					}
+			double grossTotal = 0;
+			double vatTotal = 0;
+			int rowCounter = 0;
+			for (DeliveryNote deliveryNote : deliveryNotes) {
+				for (DeliveryNoteItem deliveryNoteItem : deliveryNote.getDeliveryNoteItems()) {
+					double partialGross = deliveryNoteItem.getQuantity() * deliveryNoteItem.getPrice();
+					grossTotal += partialGross;
+					vatTotal += partialGross * deliveryNoteItem.getProduct().getTax() * 0.01f;
+					setDocumentRow(acroForm, rowCounter, deliveryNoteItem);
+					rowCounter++;
 				}
-
-				acroForm.getField(GROSS_FIELD).setValue(String.format("%,.2f", grossTotal) + " €");
-				acroForm.getField(DISCOUNT_FIELD).setValue(String.format("%d", 0) + " %");
-				acroForm.getField(VAT_0_FIELD).setValue(String.format("%,.2f", 0f) + " €");
-				acroForm.getField(VAT_3_FIELD).setValue(String.format("%,.2f", vat3Total) + " €");
-				acroForm.getField(AMOUNT_FIELD).setValue(String.format("%,.2f", grossTotal+vat3Total) + " €");
-
-				// Make form fields not editable
-				for (PDField field : acroForm.getFields()) {
-					field.setReadOnly(true);
-				}
-
 			}
+
+			setDocumentFooter(acroForm, grossTotal, vatTotal);
+
+			acroForm.getFields().forEach(pdField -> pdField.setReadOnly(true));    // Make form fields not editable
 			pdfDocument.save(outputStream);
 			pdfDocument.close();
 		} catch (IOException e) {
 			log.error(e.getMessage(), e);
 			throw new ApiException(ApiError.ApiError001);
 		}
+	}
+
+	private void setDocumentHeader(PDAcroForm form, Customer customer, Invoice invoice) throws IOException {
+		form.getField(CUSTOMER_FIELD).setValue(customer.getName());
+		form.getField(CUSTOMER_CODE_FIELD).setValue(String.valueOf(customer.getCode()));
+		form.getField(CUSTOMER_ADDRESS_FIELD).setValue(customer.getAddress());
+		form.getField(CUSTOMER_FISCAL_FIELD).setValue(customer.getFiscalId());
+		form.getField(CUSTOMER_PROVINCE_FIELD).setValue(customer.getProvince());
+		form.getField(INVOICE_ID_FIELD).setValue("F" + invoice.getId());
+		form.getField(DATE_FIELD).setValue(DATE_FORMAT.format(new Date(invoice.getIssuedTimestamp())));
+	}
+
+	private void setDocumentRow(PDAcroForm form, int row, DeliveryNoteItem deliveryNoteItem) throws IOException {
+		form.getField(String.format(ROW_DATE_FIELD, row)).setValue(DATE_FORMAT.format(new Date(deliveryNoteItem.getDeliveryNote().getIssuedTimestamp())));
+		form.getField(String.format(ROW_QUANTITY_FIELD, row)).setValue(String.valueOf(deliveryNoteItem.getQuantity()));
+		form.getField(String.format(ROW_PRODUCT_FIELD, row)).setValue(deliveryNoteItem.getProduct().getName());
+		form.getField(String.format(ROW_ORDER_FIELD, row)).setValue(deliveryNoteItem.getDeliveryNote().getAuxDeliveryNoteNr());
+		form.getField(String.format(ROW_VAT_FIELD, row)).setValue(String.format("%,.1f", deliveryNoteItem.getProduct().getTax()) + " %");
+		form.getField(String.format(ROW_PRICE_FIELD, row)).setValue(String.format("%,.2f", deliveryNoteItem.getPrice()) + " €");
+		form.getField(String.format(ROW_TOTAL_FIELD, row)).setValue(String.format("%,.2f", deliveryNoteItem.getQuantity() * deliveryNoteItem.getPrice()) + " €");
+	}
+
+	private void setDocumentFooter(PDAcroForm form, double grossTotal, double vatTotal) throws IOException {
+		form.getField(GROSS_FIELD).setValue(String.format("%,.2f", grossTotal) + " €");
+		form.getField(DISCOUNT_FIELD).setValue(String.format("%d", 0) + " %");
+		form.getField(VAT_FIELD).setValue(String.format("%,.2f", vatTotal) + " €");
+		form.getField(AMOUNT_FIELD).setValue(String.format("%,.2f", grossTotal + vatTotal) + " €");
 	}
 }
