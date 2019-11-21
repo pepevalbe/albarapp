@@ -1,6 +1,7 @@
 import HttpClient from '@/services/HttpClient.js';
 
 const CUSTOMER_RESOURCE = '/hateoas/customers';
+const CUSTOMER_COMPLETE_RESOURCE = '/api/customers';
 const CUSTOMER_PRODUCT_PRICE_RELATION = '/customerProductPrices';
 const CUSTOMER_PRODUCT_PRICE_RESOURCE = '/hateoas/customerProductPrices';
 
@@ -14,7 +15,6 @@ export default {
         alert("Ha ocurrido un error recuperando los clientes");
       });
   },
-
   get(id) {
     return HttpClient.get(`${CUSTOMER_RESOURCE}/${id}`)
       .then(response => {
@@ -24,7 +24,16 @@ export default {
         alert("Ha ocurrido un error recuperando el cliente");
       });
   },
-  async getAllWithPrices() {
+  getAllWithPrices() {
+    return HttpClient.get(CUSTOMER_COMPLETE_RESOURCE)
+      .then(response => {
+        return response.data;
+      })
+      .catch(() => {
+        alert("Ha ocurrido un error recuperando los clientes con sus precios");
+      });
+  },
+  /*async getAllWithPrices() {
     var customers = await this.getAll();
     var promises = [];
     var service = this;
@@ -35,7 +44,7 @@ export default {
     })
     await Promise.all(promises);
     return customers;
-  },
+  },*/
   getCustomerProductPrices(id) {
     return HttpClient.get(`${CUSTOMER_RESOURCE}/${id}${CUSTOMER_PRODUCT_PRICE_RELATION}`)
       .then(response => {
