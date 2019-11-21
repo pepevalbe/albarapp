@@ -63,12 +63,8 @@ export default {
   },
   methods: {
     async updateCustomer() {
-      await CustomerService.update(
-        this.customerId,
-        this.form.customer,
-        this.productPrices,
-        this.productPricesOriginal
-      );
+      this.form.customer.customerProductPrices = this.productPrices;
+      await CustomerService.update(this.customerId, this.form.customer);
       this.snackbar = true;
       this.productPrices = await CustomerService.getCustomerProductPrices(
         this.customerId

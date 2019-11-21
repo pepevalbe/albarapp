@@ -48,7 +48,8 @@ export default {
   }),
   methods: {
     async createCustomer() {
-      await CustomerService.create(this.form.customer, this.productPrices);
+      this.form.customer.customerProductPrices = this.productPrices;
+      await CustomerService.create(this.form.customer);
       this.snackbar = true;
       this.reset();
     },

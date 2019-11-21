@@ -3,7 +3,6 @@ import HttpClient from '@/services/HttpClient.js';
 const CUSTOMER_RESOURCE = '/hateoas/customers';
 const CUSTOMER_COMPLETE_RESOURCE = '/api/customers';
 const CUSTOMER_PRODUCT_PRICE_RELATION = '/customerProductPrices';
-const CUSTOMER_PRODUCT_PRICE_RESOURCE = '/hateoas/customerProductPrices';
 
 export default {
   getAll() {
@@ -91,30 +90,7 @@ export default {
       });
   },
 
-  /*create(customer, productPrices) {
-    return HttpClient.post(CUSTOMER_RESOURCE, customer)
-      .then(response => {
-        productPrices.forEach(function (item) {
-          var customerProductPrice = {
-            offeredPrice: item.price,
-            customer: response.data._links.self.href,
-            product: item.product._links.self.href
-          };
-          HttpClient.post(CUSTOMER_PRODUCT_PRICE_RESOURCE, customerProductPrice)
-            .catch(() => {
-              alert("Ha ocurrido un error creando los precios");
-            })
-        })
-      })
-      .catch(() => {
-        alert("Ha ocurrido un error creando el cliente");
-      });
-  },*/
-
-  create(customer, productPrices) {
-
-    customer.customerProductPrices = productPrices;
-
+  create(customer) {
     return HttpClient.post(CUSTOMER_COMPLETE_RESOURCE, customer)
       .then(response => {
         return response;
@@ -124,9 +100,7 @@ export default {
       });
   },
 
-  async update(id, customer, productPrices, productPricesOriginal) {
-    var promises = [];
-    customer.customerProductPrices = productPrices;
+  update(id, customer) {
     return HttpClient.put(`${CUSTOMER_COMPLETE_RESOURCE}/${id}`, customer)
       .then((response) => {
         return response;
@@ -135,41 +109,6 @@ export default {
         alert("Ha ocurrido un error actualizando el cliente");
       });
   },
-
-  /*async update(id, customer, productPrices, productPricesOriginal) {
-    var promises = [];
-    var promisePut = HttpClient.put(`${CUSTOMER_RESOURCE}/${id}`, customer)
-      .then(() => {
-        var productPricesToDelete = productPricesOriginal.filter(
-          f => !productPrices.includes(f)
-        );
-        var productPricesToInsert = productPrices.filter(
-          f => !productPricesOriginal.includes(f)
-        );
-        productPricesToDelete.forEach(element => {
-          promises.push(HttpClient.delete(element.productPriceHref)
-            .catch(() => {
-              alert("Ha ocurrido un error actualizando los precios");
-            }));
-        });
-        productPricesToInsert.forEach(element => {
-          var customerProductPrice = {
-            offeredPrice: element.price,
-            customer: customer._links.self.href,
-            product: element.product._links.self.href
-          };
-          promises.push(HttpClient.post(CUSTOMER_PRODUCT_PRICE_RESOURCE, customerProductPrice)
-            .catch(() => {
-              alert("Ha ocurrido un error actualizando los precios");
-            }));
-        });
-      })
-      .catch(() => {
-        alert("Ha ocurrido un error actualizando el cliente");
-      })
-    await promisePut;
-    return Promise.all(promises);
-  },*/
 
   createNoPrices(data) {
     return HttpClient.post(CUSTOMER_RESOURCE, data)
