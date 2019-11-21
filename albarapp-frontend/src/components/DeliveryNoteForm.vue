@@ -334,7 +334,7 @@ export default {
         });
         vm.productCode = vm.products[index].code;
         vm.product = vm.products[index];
-        vm.price = vm.customerPrices[0].price;
+        vm.price = vm.customerPrices[0].offeredPrice;
       }
       this.$nextTick(this.$refs.quantity.focus);
     },
