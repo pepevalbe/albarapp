@@ -1,6 +1,7 @@
 import HttpClient from '@/services/HttpClient.js';
 
 const CUSTOMER_RESOURCE = '/hateoas/customers';
+const CUSTOMER_COMPLETE_RESOURCE = '/api/customers';
 const CUSTOMER_PRODUCT_PRICE_RELATION = '/customerProductPrices';
 const CUSTOMER_PRODUCT_PRICE_RESOURCE = '/hateoas/customerProductPrices';
 
@@ -14,7 +15,6 @@ export default {
         alert("Ha ocurrido un error recuperando los clientes");
       });
   },
-
   get(id) {
     return HttpClient.get(`${CUSTOMER_RESOURCE}/${id}`)
       .then(response => {
@@ -24,7 +24,16 @@ export default {
         alert("Ha ocurrido un error recuperando el cliente");
       });
   },
-  async getAllWithPrices() {
+  getAllWithPrices() {
+    return HttpClient.get(CUSTOMER_COMPLETE_RESOURCE)
+      .then(response => {
+        return response.data;
+      })
+      .catch(() => {
+        alert("Ha ocurrido un error recuperando los clientes con sus precios");
+      });
+  },
+  /*async getAllWithPrices() {
     var customers = await this.getAll();
     var promises = [];
     var service = this;
@@ -35,7 +44,7 @@ export default {
     })
     await Promise.all(promises);
     return customers;
-  },
+  },*/
   getCustomerProductPrices(id) {
     return HttpClient.get(`${CUSTOMER_RESOURCE}/${id}${CUSTOMER_PRODUCT_PRICE_RELATION}`)
       .then(response => {
@@ -48,7 +57,7 @@ export default {
         ) {
           var productPrice = {
             product: {},
-            price:
+            offeredPrice:
               response.data._embedded.customerProductPrices[i].offeredPrice,
             productPriceHref:
               response.data._embedded.customerProductPrices[i]._links.self
@@ -82,7 +91,7 @@ export default {
       });
   },
 
-  create(customer, productPrices) {
+  /*create(customer, productPrices) {
     return HttpClient.post(CUSTOMER_RESOURCE, customer)
       .then(response => {
         productPrices.forEach(function (item) {
@@ -100,9 +109,34 @@ export default {
       .catch(() => {
         alert("Ha ocurrido un error creando el cliente");
       });
+  },*/
+
+  create(customer, productPrices) {
+
+    customer.customerProductPrices = productPrices;
+
+    return HttpClient.post(CUSTOMER_COMPLETE_RESOURCE, customer)
+      .then(response => {
+        return response;
+      })
+      .catch(() => {
+        alert("Ha ocurrido un error creando el cliente");
+      });
   },
 
   async update(id, customer, productPrices, productPricesOriginal) {
+    var promises = [];
+    customer.customerProductPrices = productPrices;
+    return HttpClient.put(`${CUSTOMER_COMPLETE_RESOURCE}/${id}`, customer)
+      .then((response) => {
+        return response;
+      })
+      .catch(() => {
+        alert("Ha ocurrido un error actualizando el cliente");
+      });
+  },
+
+  /*async update(id, customer, productPrices, productPricesOriginal) {
     var promises = [];
     var promisePut = HttpClient.put(`${CUSTOMER_RESOURCE}/${id}`, customer)
       .then(() => {
@@ -135,7 +169,7 @@ export default {
       })
     await promisePut;
     return Promise.all(promises);
-  },
+  },*/
 
   createNoPrices(data) {
     return HttpClient.post(CUSTOMER_RESOURCE, data)

@@ -40,7 +40,7 @@
             <tbody>
               <tr v-for="item in productPrices" :key="item.productId">
                 <td>{{ item.product.name }}</td>
-                <td>{{ item.price }} €</td>
+                <td>{{ item.offeredPrice }} €</td>
                 <td justify="center" v-if="!readonly">
                   <div class="text-xs-center">
                     <v-btn
@@ -86,7 +86,7 @@ export default {
       if (!this.sameProduct()) {
         this.productPrices.push({
           product: vm.product,
-          price: vm.price
+          offeredPrice: vm.price
         });
         vm.product = undefined;
         vm.price = 0;

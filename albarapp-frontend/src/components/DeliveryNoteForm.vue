@@ -295,7 +295,7 @@ export default {
       if (index === -1) {
         this.price = this.product.factoryPrice;
       } else {
-        this.price = this.customerPrices[index].price;
+        this.price = this.customerPrices[index].offeredPrice;
       }
     },
     addDeliveryNoteItem() {

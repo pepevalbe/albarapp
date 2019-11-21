@@ -1,6 +1,7 @@
 import HttpClient from '@/services/HttpClient.js';
 import moment from "moment";
 
+const CUSTOMER_RESOURCE = 'hateoas/customers';
 const DELIVERY_NOTE_RESOURCE = '/hateoas/deliveryNotes';
 const DELIVERY_NOTE_ITEM_RESOURCE = '/hateoas/deliveryNoteItems';
 
@@ -146,10 +147,12 @@ export default {
 
         var promises = [];
 
+        var customerHref = `${CUSTOMER_RESOURCE}/${deliveryNote.customer.id}`;
+
         var deliveryNoteToCreate = {
             auxDeliveryNoteNr: deliveryNote.dateauxDeliveryNoteNr,
             issuedTimestamp: deliveryNote.issuedTimestamp,
-            customer: deliveryNote.customer._links.self.href
+            customer: customerHref
         };
 
         var promisePost = HttpClient.post(DELIVERY_NOTE_RESOURCE, deliveryNoteToCreate).then(response => {
@@ -173,11 +176,12 @@ export default {
 
     async update(id, deliveryNote, deliveryNoteItems, deliveryNoteItemsOriginal) {
         var promises = [];
+        var customerHref = `${CUSTOMER_RESOURCE}/${deliveryNote.customer.id}`;
 
         var deliveryNoteToUpdate = {
             auxDeliveryNoteNr: deliveryNote.auxDeliveryNoteNr,
             issuedTimestamp: deliveryNote.issuedTimestamp,
-            customer: deliveryNote.customer._links.self.href
+            customer: customerHref
         };
 
         var promisePut = HttpClient.patch(`${DELIVERY_NOTE_RESOURCE}/${id}`, deliveryNoteToUpdate)
