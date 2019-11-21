@@ -32,7 +32,7 @@ public class CustomerService {
 	@Autowired
 	private DeliveryNoteItemRepository deliveryNoteItemRepository;
 
-	@Transactional
+	@Transactional(readOnly = true)
 	public List<Customer> getAllCustomers() {
 
 		return customerRepository.findAll();

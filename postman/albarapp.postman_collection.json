@@ -124,6 +124,36 @@
 			"response": []
 		},
 		{
+			"name": "/api/profile Copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f3cdf1d1-61e6-4f71-979f-092b18be39bb",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/api/profile",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"profile"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "/api/send-invitation",
 			"request": {
 				"method": "POST",
@@ -320,6 +350,99 @@
 					"path": [
 						"api",
 						"deliveryNotes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/api/invoice/download",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"token\" : \"50094f13-428d-4b60-b6b4-ce6effac173c\",\n\t\"name\" : \"Pepe\",\n\t\"surname\" : \"Valverde\",\n\t\"password\" : \"patata\"\n\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/invoice/download?invoiceId=201800000",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"invoice",
+						"download"
+					],
+					"query": [
+						{
+							"key": "invoiceId",
+							"value": "201800000"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/api/invoice/download/multiple",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"token\" : \"50094f13-428d-4b60-b6b4-ce6effac173c\",\n\t\"name\" : \"Pepe\",\n\t\"surname\" : \"Valverde\",\n\t\"password\" : \"patata\"\n\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/invoice/download/multiple?invoiceId1=201800000&invoiceId2=201800001",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"invoice",
+						"download",
+						"multiple"
+					],
+					"query": [
+						{
+							"key": "invoiceId1",
+							"value": "201800000"
+						},
+						{
+							"key": "invoiceId2",
+							"value": "201800001"
+						}
 					]
 				}
 			},
