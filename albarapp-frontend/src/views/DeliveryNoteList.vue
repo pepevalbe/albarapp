@@ -75,6 +75,9 @@
         </template>
       </v-data-table>
     </v-card>
+    <v-overlay v-if="spinnerLoading" :value="true">
+      <v-progress-circular indeterminate color="primary"></v-progress-circular>
+    </v-overlay>
   </v-flex>
 </template>
 
@@ -113,7 +116,8 @@ export default {
           dateFrom: "",
           dateTo: ""
         }
-      }
+      },
+      spinnerLoading: false
     };
   },
   async mounted() {
@@ -136,6 +140,7 @@ export default {
   methods: {
     async listDeliveryNotes() {
       this.loading = true;
+      this.showSpinner();
       var response = await DeliveryNoteService.getAllWithCustomerAndTotal(
         this.filter,
         this.options
@@ -143,6 +148,7 @@ export default {
       this.deliveryNotes = response.deliveryNotes;
       this.totalItems = response.page.totalElements;
       this.loading = false;
+      this.closeSpinner();
     },
     updateDeliveryNote(item) {
       this.$router.push({

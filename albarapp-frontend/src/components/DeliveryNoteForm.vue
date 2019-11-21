@@ -159,6 +159,9 @@
       {{snackbarMessage}}
       <v-btn color="error" text @click="snackbar = false">Cerrar</v-btn>
     </v-snackbar>
+    <v-overlay v-if="spinnerLoading" :value="true">
+      <v-progress-circular indeterminate color="primary"></v-progress-circular>
+    </v-overlay>
   </v-container>
 </template>
 
@@ -189,7 +192,8 @@ export default {
       v =>
         (v && v > 0 && v <= 99999) ||
         "El código debe tener un máximo de 5 dígitos"
-    ]
+    ],
+    spinnerLoading: false
   }),
   props: {
     form: Object
@@ -208,7 +212,9 @@ export default {
   },
   methods: {
     async listCustomers() {
+      this.showSpinner();
       this.customers = await CustomerService.getAllWithPrices();
+      this.closeSpinner();
     },
     async listProducts() {
       this.products = await ProductService.getAll();

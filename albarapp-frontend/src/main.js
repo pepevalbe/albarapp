@@ -54,6 +54,12 @@ Vue.mixin({
       } else {
         alert('Ha ocurrido un error, por favor inténtelo de nuevo más adelante')
       }
+    },
+    showSpinner() {
+      this.spinnerLoading = true;
+    },
+    closeSpinner() {
+      this.spinnerLoading = false;
     }
   }
 })
