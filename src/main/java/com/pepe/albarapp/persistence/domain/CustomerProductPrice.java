@@ -1,5 +1,6 @@
 package com.pepe.albarapp.persistence.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -18,6 +19,7 @@ public class CustomerProductPrice {
 	@Column(nullable = false)
 	private double offeredPrice;
 
+	@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name = "customer_id")
 	private Customer customer;

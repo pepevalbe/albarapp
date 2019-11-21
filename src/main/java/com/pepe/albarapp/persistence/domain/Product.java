@@ -1,5 +1,6 @@
 package com.pepe.albarapp.persistence.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -28,6 +29,7 @@ public class Product {
 	@Column(nullable = false)
 	private double tax;
 
+	@JsonIgnore
 	@OneToMany(mappedBy = "product")
 	private Set<CustomerProductPrice> customerProductPrices;
 

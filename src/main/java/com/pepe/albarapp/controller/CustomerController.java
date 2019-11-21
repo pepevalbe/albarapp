@@ -28,11 +28,16 @@ public class CustomerController {
 	@Autowired
 	private DocumentService documentService;
 
+	@GetMapping(CUSTOMERS_ENDPOINT)
+	public ResponseEntity getCustomers() {
+		return ResponseEntity.ok(customerService.getAllCustomers());
+	}
+
 	@PostMapping(CUSTOMERS_ENDPOINT)
 	public ResponseEntity postCustomer(@RequestBody Customer customer) {
 
 		customer.setId(null);
-		Customer persistedCustomer = customerService.persistCustomer(customer);
+		customerService.persistCustomer(customer);
 
 		return ResponseEntity.ok().build();
 	}

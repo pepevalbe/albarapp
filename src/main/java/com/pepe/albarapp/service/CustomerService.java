@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -30,6 +31,12 @@ public class CustomerService {
 
 	@Autowired
 	private DeliveryNoteItemRepository deliveryNoteItemRepository;
+
+	@Transactional
+	public List<Customer> getAllCustomers() {
+
+		return customerRepository.findAll();
+	}
 
 	@Transactional
 	public Customer persistCustomer(Customer customer) {
