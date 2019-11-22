@@ -2,7 +2,7 @@
   <v-flex align-self-start>
     <CustomerForm :form="form" :readonly="true"></CustomerForm>
     <div class="mb-3"></div>
-    <CustomerPriceTable :productPrices="productPrices" :readonly="true"></CustomerPriceTable>
+    <CustomerPriceTable :customerProductPrices="customerProductPrices" :readonly="true"></CustomerPriceTable>
     <div class="mb-10"></div>
     <v-layout text-center wrap>
       <v-flex xs12>
@@ -37,14 +37,14 @@ export default {
         phoneNumber: ""
       }
     },
-    productPrices: []
+    customerProductPrices: []
   }),
   props: {
     customerId: String
   },
   async created() {
     this.form.customer = await CustomerService.get(this.customerId);
-    this.productPrices = await CustomerService.getCustomerProductPrices(
+    this.customerProductPrices = await CustomerService.getCustomerProductPrices(
       this.customerId
     );
   }

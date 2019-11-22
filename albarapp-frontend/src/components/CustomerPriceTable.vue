@@ -38,7 +38,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="item in productPrices" :key="item.productId">
+              <tr v-for="item in customerProductPrices" :key="item.product.id">
                 <td>{{ item.product.name }}</td>
                 <td>{{ item.offeredPrice }} €</td>
                 <td justify="center" v-if="!readonly">
@@ -74,7 +74,7 @@ export default {
     price: 0
   }),
   props: {
-    productPrices: Array,
+    customerProductPrices: Array,
     readonly: Boolean
   },
   async created() {
@@ -84,7 +84,7 @@ export default {
     addPrice() {
       var vm = this;
       if (!this.sameProduct()) {
-        this.productPrices.push({
+        this.customerProductPrices.push({
           product: vm.product,
           offeredPrice: vm.price
         });
@@ -96,14 +96,14 @@ export default {
       var vm = this;
       return (
         vm.product &&
-        vm.productPrices.some(
+        vm.customerProductPrices.some(
           product => product.product.code === vm.product.code
         )
       );
     },
     removePrice(price) {
-      this.productPrices.splice(
-        this.productPrices.findIndex(item => item === price),
+      this.customerProductPrices.splice(
+        this.customerProductPrices.findIndex(item => item === price),
         1
       );
     }

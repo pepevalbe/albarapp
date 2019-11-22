@@ -75,7 +75,7 @@
         </template>
       </v-data-table>
     </v-card>
-    <v-overlay v-if="spinnerLoading" :value="true">
+    <v-overlay v-if="spinner.loading" :value="true">
       <v-progress-circular indeterminate color="primary"></v-progress-circular>
     </v-overlay>
   </v-flex>
@@ -117,7 +117,10 @@ export default {
           dateTo: ""
         }
       },
-      spinnerLoading: false
+      spinner: {
+        loading: false,
+        counter: 0
+      }
     };
   },
   async mounted() {

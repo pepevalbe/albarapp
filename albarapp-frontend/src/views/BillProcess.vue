@@ -141,6 +141,9 @@
       Creadas {{numberInvoicesCreated}} facturas correctamente
       <v-btn color="success" text @click="snackbar = false">Cerrar</v-btn>
     </v-snackbar>
+    <v-overlay v-if="spinner.loading" :value="true">
+      <v-progress-circular indeterminate color="primary"></v-progress-circular>
+    </v-overlay>
   </v-container>
 </template>
 
@@ -159,7 +162,11 @@ export default {
       issuedDate: "",
       issuedDateFormatted: "",
       customerCodeFrom: "",
-      customerCodeTo: ""
+      customerCodeTo: "",
+      spinner: {
+        loading: false,
+        counter: 0
+      }
     },
     menuDateFromPicker: false,
     menuDateToPicker: false,
@@ -184,6 +191,7 @@ export default {
   }),
   methods: {
     async createInvoices() {
+      this.showSpinner();
       await InvoiceService.createList(
         this.form.customerCodeFrom,
         this.form.customerCodeTo,
@@ -195,6 +203,7 @@ export default {
         this.snackbar = true;
         this.$refs.form.reset();
       });
+      this.closeSpinner();
     },
     parseDateFromPick() {
       var moment = this.$moment(this.form.dateFrom, "YYYY-MM-DD", true);
@@ -210,6 +219,9 @@ export default {
       if (moment.isValid()) {
         this.form.dateFrom = moment.format("YYYY-MM-DD");
         this.form.dateFromFormatted = moment.format("DD/MM/YYYY");
+      } else {
+        this.form.dateFrom = "";
+        this.form.dateFromFormatted = "";
       }
     },
     parseDateToPick() {
@@ -226,6 +238,9 @@ export default {
       if (moment.isValid()) {
         this.form.dateTo = moment.format("YYYY-MM-DD");
         this.form.dateToFormatted = moment.format("DD/MM/YYYY");
+      } else {
+        this.form.dateTo = "";
+        this.form.dateToFormatted = "";
       }
     },
     parseIssuedDatePick() {
@@ -242,6 +257,9 @@ export default {
       if (moment.isValid()) {
         this.form.issuedDate = moment.format("YYYY-MM-DD");
         this.form.issuedDateFormatted = moment.format("DD/MM/YYYY");
+      } else {
+        this.form.issuedDate = "";
+        this.form.issuedDateFormatted = "";
       }
     }
   }

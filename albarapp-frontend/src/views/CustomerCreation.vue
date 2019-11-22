@@ -2,7 +2,7 @@
   <v-flex align-self-start>
     <CustomerForm v-bind:form="form" ref="form"></CustomerForm>
     <div class="mb-3"></div>
-    <CustomerPriceTable v-bind:productPrices="productPrices"></CustomerPriceTable>
+    <CustomerPriceTable v-bind:customerProductPrices="customerProductPrices"></CustomerPriceTable>
     <div class="mb-10"></div>
     <v-layout text-center wrap class="pt-10">
       <v-flex xs12>
@@ -43,19 +43,19 @@ export default {
         phoneNumber: ""
       }
     },
-    productPrices: [],
+    customerProductPrices: [],
     snackbar: false
   }),
   methods: {
     async createCustomer() {
-      this.form.customer.customerProductPrices = this.productPrices;
+      this.form.customer.customerProductPrices = this.customerProductPrices;
       await CustomerService.create(this.form.customer);
       this.snackbar = true;
       this.reset();
     },
     reset() {
       this.$refs.form.reset();
-      this.productPrices = [];
+      this.customerProductPrices = [];
     }
   }
 };

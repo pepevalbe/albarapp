@@ -56,10 +56,12 @@ Vue.mixin({
       }
     },
     showSpinner() {
-      this.spinnerLoading = true;
+      this.spinner.counter++;
+      if (this.spinner.counter) this.spinner.loading = true;
     },
     closeSpinner() {
-      this.spinnerLoading = false;
+      this.spinner.counter--;
+      if (!this.spinner.counter) this.spinner.loading = false;
     }
   }
 })

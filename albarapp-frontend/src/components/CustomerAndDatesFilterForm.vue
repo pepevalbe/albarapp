@@ -80,6 +80,9 @@
         </v-col>
       </v-row>
     </v-form>
+    <v-overlay v-if="spinner.loading" :value="true">
+      <v-progress-circular indeterminate color="primary"></v-progress-circular>
+    </v-overlay>
   </v-container>
 </template>
 <script>
@@ -106,17 +109,23 @@ export default {
     dateFromFormatted: "",
     dateToFormatted: "",
     menuDateFromPicker: false,
-    menuDateToPicker: false
+    menuDateToPicker: false,
+    spinner: {
+      loading: false,
+      counter: 0
+    }
   }),
   created() {
     this.listCustomers();
   },
   methods: {
     async listCustomers() {
+      this.showSpinner();
       this.customers = await CustomerService.getAll();
       this.customers.forEach(function(element) {
         element.alias = element.code + " - " + element.alias;
       });
+      this.closeSpinner();
     },
     selectCustomerByCode() {
       var vm = this;

@@ -2,7 +2,7 @@
   <v-flex align-self-start>
     <CustomerForm :form="form"></CustomerForm>
     <div class="mb-3"></div>
-    <CustomerPriceTable :productPrices="productPrices"></CustomerPriceTable>
+    <CustomerPriceTable :customerProductPrices="customerProductPrices"></CustomerPriceTable>
     <div class="mb-10"></div>
     <v-layout text-center wrap class="pt-10">
       <v-flex xs12>
@@ -47,7 +47,7 @@ export default {
         phoneNumber: ""
       }
     },
-    productPrices: [],
+    customerProductPrices: [],
     productPricesOriginal: [],
     snackbar: false
   }),
@@ -56,20 +56,18 @@ export default {
   },
   async created() {
     this.form.customer = await CustomerService.get(this.customerId);
-    this.productPrices = await CustomerService.getCustomerProductPrices(
+    this.customerProductPrices = await CustomerService.getCustomerProductPrices(
       this.customerId
     );
-    this.productPricesOriginal = Array.from(this.productPrices);
   },
   methods: {
     async updateCustomer() {
-      this.form.customer.customerProductPrices = this.productPrices;
+      this.form.customer.customerProductPrices = this.customerProductPrices;
       await CustomerService.update(this.customerId, this.form.customer);
       this.snackbar = true;
-      this.productPrices = await CustomerService.getCustomerProductPrices(
+      this.customerProductPrices = await CustomerService.getCustomerProductPrices(
         this.customerId
       );
-      this.productPricesOriginal = Array.from(this.productPrices);
     }
   }
 };
