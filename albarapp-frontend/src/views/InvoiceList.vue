@@ -25,14 +25,12 @@
         ></v-text-field>
       </v-card-title>
       <v-data-table
-        :loading="!invoices || invoices.length == 0"
+        :loading="loading"
         loading-text="Cargando... Por favor, espere"
         :headers="headers"
         :items="invoices"
-        :search="search"
-        :sort-by.sync="sortBy"
-        :sort-desc.sync="descending"
-        :items-per-page="15"
+        :server-items-length="totalItems"
+        :options.sync="options"
       >
         <template v-slot:body="{ items }">
           <tbody v-if="!$vuetify.breakpoint.xsOnly">
@@ -95,7 +93,7 @@
 import InvoiceService from "@/services/InvoiceService.js";
 
 export default {
-  name: "InvoiceService",
+  name: "InvoiceList",
   data: () => {
     return {
       invoices: [],
@@ -109,15 +107,32 @@ export default {
       ],
       search: "",
       sortBy: "id",
+      options: {},
+      loading: true,
+      totalItems: 0,
       descending: false
     };
   },
-  async created() {
+  async mounted() {
     await this.listInvoices();
+  },
+  watch: {
+    options: {
+      handler() {
+        this.listInvoices();
+      },
+      deep: true
+    }
   },
   methods: {
     async listInvoices() {
-      this.invoices = await InvoiceService.getAllWithCustomerAndTotal();
+      this.loading = true;
+      var response = await InvoiceService.getAllWithCustomerAndTotal(
+        this.options
+      );
+      this.invoices = response.invoices;
+      this.totalItems = response.page.totalElements;
+      this.loading = false;
     },
     updateInvoice(item) {
       this.$router.push({
@@ -125,7 +140,7 @@ export default {
         params: { invoiceId: item.id }
       });
     },
-    download(item){
+    download(item) {
       InvoiceService.download(item.id);
     }
   }

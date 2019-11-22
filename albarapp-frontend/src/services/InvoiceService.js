@@ -7,10 +7,27 @@ const INVOICE_DOWNLOAD_ENDPOINT = '/api/invoice/download';
 const INVOICE_BILL_ENDPOINT = '/api/invoice/bill';
 
 export default {
-    getAll() {
-        return HttpClient.get(RESOURCE_NAME)
+    getAll(options) {
+
+        var params = {};
+
+        if (options) {
+            if (options.page) params.page = options.page - 1;
+            if (options.itemsPerPage) params.size = options.itemsPerPage;
+        }
+
+        var queryString = Object.keys(params).map(function (key) {
+            return key + '=' + params[key]
+        }).join('&');
+
+        if (queryString != "") queryString = '?' + queryString;
+
+        return HttpClient.get(RESOURCE_NAME + queryString)
             .then(response => {
-                return response.data._embedded.invoices;
+                return {
+                    invoices: response.data._embedded.invoices,
+                    page: response.data.page
+                }
             })
             .catch(() => {
                 alert("Ha ocurrido un error recuperando las facturas");
@@ -58,9 +75,10 @@ export default {
         Object.assign(deliveryNote, await DeliveryNoteService.getWithCustomerAndTotal(deliveryNote.id));
     },
 
-    async getAllWithCustomerAndTotal() {
+    async getAllWithCustomerAndTotal(options) {
         var promises = [];
-        var invoices = await this.getAll();
+        var response = await this.getAll(options);
+        var invoices = response.invoices;
         for (const invoice of invoices) {
             invoice.dateFormatted = moment(invoice.issuedTimestamp, "x").format("DD/MM/YYYY");
             invoice.date = moment(invoice.issuedTimestamp, "x").format("YYYY-MM-DD");
@@ -79,7 +97,7 @@ export default {
                 invoice.total += deliveryNote.deliveryNoteTotal.value;
             }
         }
-        return invoices;
+        return response;
     },
     async create(invoice, deliveryNotes) {
 
@@ -104,7 +122,7 @@ export default {
         return Promise.all(promises);
     },
     async createList(customerCodeFrom, customerCodeTo, timestampFrom, timestampTo, issuedTimestamp) {
-       
+
         var params = {
             customerCodeFrom: customerCodeFrom,
             customerCodeTo: customerCodeTo,
