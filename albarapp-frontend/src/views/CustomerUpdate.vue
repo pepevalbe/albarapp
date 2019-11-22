@@ -19,6 +19,9 @@
       Cliente actualizado correctamente
       <v-btn color="green" text @click="snackbar = false">Cerrar</v-btn>
     </v-snackbar>
+    <v-overlay v-if="spinner.loading" :value="true">
+      <v-progress-circular indeterminate color="primary"></v-progress-circular>
+    </v-overlay>
   </v-flex>
 </template>
 
@@ -49,21 +52,29 @@ export default {
     },
     customerProductPrices: [],
     productPricesOriginal: [],
-    snackbar: false
+    snackbar: false,
+    spinner: {
+      loading: false,
+      counter: 0
+    }
   }),
   props: {
     customerId: String
   },
   async created() {
+    this.showSpinner();
     this.form.customer = await CustomerService.get(this.customerId);
     this.customerProductPrices = await CustomerService.getCustomerProductPrices(
       this.customerId
     );
+    this.closeSpinner();
   },
   methods: {
     async updateCustomer() {
       this.form.customer.customerProductPrices = this.customerProductPrices;
+      this.showSpinner();
       await CustomerService.update(this.customerId, this.form.customer);
+      this.closeSpinner();
       this.snackbar = true;
       this.customerProductPrices = await CustomerService.getCustomerProductPrices(
         this.customerId

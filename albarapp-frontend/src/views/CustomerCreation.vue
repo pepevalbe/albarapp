@@ -15,6 +15,9 @@
       Cliente creado correctamente
       <v-btn color="green" text @click="snackbar = false">Cerrar</v-btn>
     </v-snackbar>
+    <v-overlay v-if="spinner.loading" :value="true">
+      <v-progress-circular indeterminate color="primary"></v-progress-circular>
+    </v-overlay>
   </v-flex>
 </template>
 
@@ -44,12 +47,18 @@ export default {
       }
     },
     customerProductPrices: [],
-    snackbar: false
+    snackbar: false,
+    spinner: {
+      loading: false,
+      counter: 0
+    }
   }),
   methods: {
     async createCustomer() {
       this.form.customer.customerProductPrices = this.customerProductPrices;
+      this.showSpinner();
       await CustomerService.create(this.form.customer);
+      this.closeSpinner();
       this.snackbar = true;
       this.reset();
     },

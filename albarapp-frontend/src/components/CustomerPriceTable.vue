@@ -60,6 +60,9 @@
         </v-simple-table>
       </v-col>
     </v-row>
+    <v-overlay v-if="spinner.loading" :value="true">
+      <v-progress-circular indeterminate color="primary"></v-progress-circular>
+    </v-overlay>
   </v-container>
 </template>
 
@@ -71,14 +74,20 @@ export default {
   data: () => ({
     products: [],
     product: undefined,
-    price: 0
+    price: 0,
+    spinner: {
+      loading: false,
+      counter: 0
+    }
   }),
   props: {
     customerProductPrices: Array,
     readonly: Boolean
   },
   async created() {
+    this.showSpinner();
     this.products = await ProductService.getAll();
+    this.closeSpinner();
   },
   methods: {
     addPrice() {

@@ -84,6 +84,9 @@
         </template>
       </v-data-table>
     </v-card>
+    <v-overlay v-if="spinner.loading" :value="true">
+      <v-progress-circular indeterminate color="primary"></v-progress-circular>
+    </v-overlay>
   </v-flex>
 </template>
 
@@ -105,11 +108,17 @@ export default {
       ],
       search: "",
       sortBy: "code",
-      descending: false
+      descending: false,
+      spinner: {
+        loading: false,
+        counter: 0
+      }
     };
   },
   async created() {
+    this.showSpinner();
     this.customers = await CustomerService.getAll();
+    this.closeSpinner();
   },
   methods: {
     showCustomer(item) {

@@ -9,6 +9,9 @@
         <v-btn to="/customer-list/">Volver</v-btn>
       </v-flex>
     </v-layout>
+    <v-overlay v-if="spinner.loading" :value="true">
+      <v-progress-circular indeterminate color="primary"></v-progress-circular>
+    </v-overlay>
   </v-flex>
 </template>
 
@@ -37,16 +40,22 @@ export default {
         phoneNumber: ""
       }
     },
-    customerProductPrices: []
+    customerProductPrices: [],
+    spinner: {
+      loading: false,
+      counter: 0
+    }
   }),
   props: {
     customerId: String
   },
   async created() {
+    this.showSpinner();
     this.form.customer = await CustomerService.get(this.customerId);
     this.customerProductPrices = await CustomerService.getCustomerProductPrices(
       this.customerId
     );
+    this.closeSpinner();
   }
 };
 </script>
