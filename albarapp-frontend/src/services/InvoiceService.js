@@ -4,6 +4,7 @@ import DeliveryNoteService from "@/services/DeliveryNoteService.js";
 
 const RESOURCE_NAME = '/hateoas/invoices';
 const INVOICE_DOWNLOAD_ENDPOINT = '/api/invoice/download';
+const INVOICE_BILL_ENDPOINT = '/api/invoice/bill';
 
 export default {
     getAll() {
@@ -103,21 +104,28 @@ export default {
         return Promise.all(promises);
     },
     async createList(customerCodeFrom, customerCodeTo, timestampFrom, timestampTo, issuedTimestamp) {
-        var promises = [];
-        for (var i = customerCodeFrom; i <= customerCodeTo; i++) {
-            var deliveryNotesToBill = await DeliveryNoteService.findDeliveryNotesToBill(
-                i,
-                timestampFrom,
-                timestampTo
-            );
-            if (deliveryNotesToBill && deliveryNotesToBill.length) {
-                var invoice = {
-                    issuedTimestamp: issuedTimestamp
-                };
-                promises.push(this.create(invoice, deliveryNotesToBill));
-            }
-        }
-        return Promise.all(promises);
+       
+        var params = {
+            customerCodeFrom: customerCodeFrom,
+            customerCodeTo: customerCodeTo,
+            timestampFrom: timestampFrom,
+            timestampTo: timestampTo,
+            issuedTimestamp, issuedTimestamp
+        };
+
+        var queryString = Object.keys(params).map(function (key) {
+            return key + '=' + params[key]
+        }).join('&');
+
+        if (queryString != "") queryString = '?' + queryString;
+
+        return HttpClient.post(INVOICE_BILL_ENDPOINT + queryString)
+            .then(response => {
+                return response.data;
+            })
+            .catch(() => {
+                alert("Ha ocurrido un error facturando los albaranes");
+            });
     },
     update(id, invoice) {
 

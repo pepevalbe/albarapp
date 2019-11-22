@@ -162,16 +162,16 @@ export default {
       issuedDate: "",
       issuedDateFormatted: "",
       customerCodeFrom: "",
-      customerCodeTo: "",
-      spinner: {
-        loading: false,
-        counter: 0
-      }
+      customerCodeTo: ""
     },
     menuDateFromPicker: false,
     menuDateToPicker: false,
     menuIssuedDatePicker: false,
     snackbar: false,
+    spinner: {
+      loading: false,
+      counter: 0
+    },
     numberInvoicesCreated: "",
     codeFromRules: [
       v => !!v || "El código es obligatorio",

@@ -3,11 +3,14 @@ package com.pepe.albarapp.controller;
 import com.pepe.albarapp.api.error.ApiError;
 import com.pepe.albarapp.api.error.ApiException;
 import com.pepe.albarapp.service.DocumentService;
+import com.pepe.albarapp.service.InvoiceService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -17,11 +20,15 @@ import java.util.Arrays;
 @RestController
 public class InvoiceController {
 
+	private final static String INVOICE_BILL_ENDPOINT = "/api/invoice/bill";
 	private final static String INVOICE_DOWNLOAD_ENDPOINT = "/api/invoice/download";
 	private final static String INVOICE_DOWNLOAD_MULTIPLE_ENDPOINT = "/api/invoice/download/multiple";
 
 	@Autowired
 	private DocumentService documentService;
+
+	@Autowired
+	private InvoiceService invoiceService;
 
 	@GetMapping(INVOICE_DOWNLOAD_ENDPOINT)
 	public void downloadInvoice(@RequestParam Long invoiceId, HttpServletResponse response) {
@@ -47,4 +54,12 @@ public class InvoiceController {
 			throw new ApiException(ApiError.ApiError001);
 		}
 	}
+
+	@PostMapping(INVOICE_BILL_ENDPOINT)
+	public ResponseEntity billProcess(@RequestParam Integer customerCodeFrom, @RequestParam Integer customerCodeTo, @RequestParam Long timestampFrom, @RequestParam Long timestampTo, @RequestParam Long issuedTimestamp) {
+
+		return ResponseEntity.ok(invoiceService.billProcess(customerCodeFrom, customerCodeTo, timestampFrom, timestampTo, issuedTimestamp));
+
+	}
+
 }
