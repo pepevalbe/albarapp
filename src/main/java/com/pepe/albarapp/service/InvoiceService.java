@@ -1,56 +1,54 @@
 package com.pepe.albarapp.service;
 
-import com.pepe.albarapp.persistence.domain.*;
-import com.pepe.albarapp.persistence.repository.*;
+import com.pepe.albarapp.persistence.domain.Customer;
+import com.pepe.albarapp.persistence.domain.DeliveryNote;
+import com.pepe.albarapp.persistence.domain.Invoice;
+import com.pepe.albarapp.persistence.repository.DeliveryNoteRepository;
+import com.pepe.albarapp.persistence.repository.InvoiceRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Page;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 public class InvoiceService {
 
 	@Autowired
-    private InvoiceRepository invoiceRepository;
-    
+	private InvoiceRepository invoiceRepository;
+
 	@Autowired
-    private DeliveryNoteRepository deliveryNoteRepository;
+	private DeliveryNoteRepository deliveryNoteRepository;
 
-    @Transactional
-    public List<Invoice> billProcess(Integer customerCodeFrom, Integer customerCodeTo, Long timestampFrom, Long timestampTo, Long issuedTimestamp) {
+	@Transactional
+	public List<Invoice> billProcess(Integer customerCodeFrom, Integer customerCodeTo, Long timestampFrom, Long timestampTo, Long issuedTimestamp) {
 
-        // Create list of invoices created
-        ArrayList<Invoice> invoicesCreated = new ArrayList<Invoice>();
-        // Set pagination to a first page of 1000 elements
-        Pageable pageable = PageRequest.of(0, 1000);
+		List<Invoice> createdInvoices = new ArrayList<>();
 
-        // Iterate over all customer codes
-        for (int i=customerCodeFrom;i<=customerCodeTo;i++) {
+		// Find delivery notes for the requested customerCode and timestamp range
+		List<DeliveryNote> deliveryNotesToBill = deliveryNoteRepository.findByCustomerCodeBetweenAndIssuedTimestampBetweenAndInvoiceIsNull(customerCodeFrom, customerCodeTo, timestampFrom, timestampTo);
 
-            // Find delivery notes for this customerCode that has not yet been billed
-            Page<DeliveryNote> deliveryNotesToBill = deliveryNoteRepository.findDeliveryNotesToBill(i, timestampFrom, timestampTo, pageable);
+		// Get delivery notes by customer
+		Map<Customer, List<DeliveryNote>> deliveryNotesByCustomer = deliveryNotesToBill.stream()
+				.collect(Collectors.groupingBy(DeliveryNote::getCustomer));
 
-            if (deliveryNotesToBill.getNumberOfElements() != 0) {
-                // Create a new invoice and persist it
-                Invoice invoice = new Invoice();
-                invoice.setIssuedTimestamp(issuedTimestamp);
-                Invoice persistedInvoice = invoiceRepository.save(invoice);
-                invoicesCreated.add(persistedInvoice);
+		// Create invoice for each customer
+		deliveryNotesByCustomer.forEach((customer, deliveryNotes) -> {
+			Invoice invoice = new Invoice();
+			invoice.setIssuedTimestamp(issuedTimestamp);
+			Invoice createdInvoice = invoiceRepository.save(invoice);
+			createdInvoices.add(createdInvoice);
+			deliveryNotes.forEach(deliveryNote -> deliveryNote.setInvoice(createdInvoice));
+		});
 
-                // Set all delivery notes found relation to the created invoice
-                deliveryNotesToBill.getContent().forEach(deliveryNote -> deliveryNote.setInvoice(persistedInvoice));
-                deliveryNoteRepository.saveAll(deliveryNotesToBill.getContent());
-            }
-        }
-
-        return invoicesCreated;
-
-    }
+		// Update all delivery notes
+		deliveryNoteRepository.saveAll(deliveryNotesByCustomer.values().stream().flatMap(Collection::stream).collect(Collectors.toList()));
+		return createdInvoices;
+	}
 }

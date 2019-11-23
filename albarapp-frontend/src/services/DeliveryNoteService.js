@@ -25,7 +25,7 @@ export default {
 
         if (queryString != "") queryString = '?' + queryString;
 
-        return HttpClient.get(DELIVERY_NOTE_RESOURCE + '/search/findDeliveryNotes' + queryString)
+        return HttpClient.get(DELIVERY_NOTE_RESOURCE + '/search/filterByCustomerCodeAndTimestampRange' + queryString)
             .then(response => {
                 return {
                     deliveryNotes: response.data._embedded.deliveryNotes,
@@ -217,17 +217,11 @@ export default {
         await promisePut;
         return Promise.all(promises);
     },
-    findDeliveryNotesToBill(customerCode, timestampFrom, timestampTo) {
+    findDeliveryNotesToBill(customerCode) {
 
         var params = {};
         if (customerCode) {
             params.customerCode = customerCode;
-        }
-        if (timestampFrom) {
-            params.timestampFrom = timestampFrom;
-        }
-        if (timestampTo) {
-            params.timestampTo = timestampTo;
         }
         params.page = 0;
         params.size = 1000;
@@ -238,7 +232,7 @@ export default {
 
         if (queryString != "") queryString = '?' + queryString;
 
-        return HttpClient.get(DELIVERY_NOTE_RESOURCE + '/search/findDeliveryNotesToBill' + queryString)
+        return HttpClient.get(DELIVERY_NOTE_RESOURCE + '/search/findByCustomerCodeAndInvoiceIsNull' + queryString)
             .then(response => {
                 return response.data._embedded.deliveryNotes;
             })
@@ -246,9 +240,9 @@ export default {
                 alert("Ha ocurrido un error recuperando el albarán");
             });
     },
-    async findDeliveryNotesToBillWithCustomerAndTotal(customerCode, timestampFrom, timestampTo) {
+    async findDeliveryNotesToBillWithCustomerAndTotal(customerCode) {
 
-        var deliveryNotes = await this.findDeliveryNotesToBill(customerCode, timestampFrom, timestampTo);
+        var deliveryNotes = await this.findDeliveryNotesToBill(customerCode);
         var promises = [];
 
         for (const deliveryNote of deliveryNotes) {

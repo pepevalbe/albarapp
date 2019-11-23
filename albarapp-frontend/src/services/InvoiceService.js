@@ -128,7 +128,7 @@ export default {
             customerCodeTo: customerCodeTo,
             timestampFrom: timestampFrom,
             timestampTo: timestampTo,
-            issuedTimestamp, issuedTimestamp
+            issuedTimestamp
         };
 
         var queryString = Object.keys(params).map(function (key) {
