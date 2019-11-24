@@ -6,8 +6,11 @@ import com.pepe.albarapp.persistence.domain.*;
 import com.pepe.albarapp.persistence.repository.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.Set;
@@ -65,6 +68,11 @@ public class CustomerService {
 
 		log.info("Customer created/updated: " + persistedCustomer.getId());
 		return persistedCustomer;
+	}
+
+	@Transactional(readOnly = true)
+	public Page<DeliveryNote> getDeliveryNotes(@RequestParam Integer customerCode, @RequestParam Long timestampFrom, @RequestParam Long timestampTo, @RequestParam Pageable pageable) {
+		return deliveryNoteRepository.filterByCustomerCodeAndTimestampRange(customerCode, timestampFrom, timestampTo, pageable);
 	}
 
 	@Transactional

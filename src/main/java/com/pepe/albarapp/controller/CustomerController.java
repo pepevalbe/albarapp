@@ -4,8 +4,13 @@ import com.pepe.albarapp.persistence.domain.Customer;
 import com.pepe.albarapp.persistence.domain.DeliveryNote;
 import com.pepe.albarapp.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 public class CustomerController {
@@ -17,7 +22,7 @@ public class CustomerController {
 	private CustomerService customerService;
 
 	@GetMapping(CUSTOMERS_ENDPOINT)
-	public ResponseEntity getCustomers() {
+	public ResponseEntity<List<Customer>> getCustomers() {
 		return ResponseEntity.ok(customerService.getAllCustomers());
 	}
 
@@ -37,6 +42,17 @@ public class CustomerController {
 		customerService.persistCustomer(customer);
 
 		return ResponseEntity.ok().build();
+	}
+
+	@GetMapping(DELIVERY_NOTES_ENDPOINT)
+	public ResponseEntity<Page<DeliveryNote>> getDeliveryNotes(@RequestParam @Nullable Integer customerCode,
+															   @RequestParam @Nullable Long timestampFrom,
+															   @RequestParam @Nullable Long timestampTo,
+															   Pageable pageable) {
+
+		System.out.println(pageable.getPageNumber());
+		System.out.println(pageable.getPageSize());
+		return ResponseEntity.ok(customerService.getDeliveryNotes(customerCode, timestampFrom, timestampTo, pageable));
 	}
 
 	@PostMapping(DELIVERY_NOTES_ENDPOINT)
