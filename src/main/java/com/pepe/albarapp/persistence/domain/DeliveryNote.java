@@ -45,4 +45,16 @@ public class DeliveryNote {
 	public int hashCode() {
 		return Objects.hash(id);
 	}
+
+	public double getTotal() {
+		return getGrossTotal() + getTaxTotal();
+	}
+
+	public double getGrossTotal() {
+		return deliveryNoteItems.stream().mapToDouble(DeliveryNoteItem::getGrossTotal).sum();
+	}
+
+	public double getTaxTotal() {
+		return deliveryNoteItems.stream().mapToDouble(DeliveryNoteItem::getTaxTotal).sum();
+	}
 }

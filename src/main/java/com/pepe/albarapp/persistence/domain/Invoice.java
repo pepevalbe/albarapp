@@ -22,6 +22,10 @@ public class Invoice {
 	@OneToMany(mappedBy = "invoice")
 	private List<DeliveryNote> deliveryNotes;
 
+	@ManyToOne
+	@JoinColumn(name = "customer_id")
+	private Customer customer;
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
@@ -33,5 +37,17 @@ public class Invoice {
 	@Override
 	public int hashCode() {
 		return Objects.hash(id);
+	}
+
+	public double getTotal() {
+		return getGrossTotal() + getTaxTotal();
+	}
+
+	public double getGrossTotal() {
+		return deliveryNotes.stream().mapToDouble(DeliveryNote::getGrossTotal).sum();
+	}
+
+	public double getTaxTotal() {
+		return deliveryNotes.stream().mapToDouble(DeliveryNote::getTaxTotal).sum();
 	}
 }

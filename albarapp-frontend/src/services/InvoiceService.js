@@ -3,8 +3,8 @@ import moment from "moment";
 import DeliveryNoteService from "@/services/DeliveryNoteService.js";
 
 const RESOURCE_NAME = '/hateoas/invoices';
-const INVOICE_DOWNLOAD_ENDPOINT = '/api/invoice/download';
-const INVOICE_BILL_ENDPOINT = '/api/invoice/bill';
+const INVOICE_DOWNLOAD_ENDPOINT = '/api/invoices/download';
+const INVOICE_BILL_ENDPOINT = '/api/invoices/bill';
 
 export default {
     getAll(options) {

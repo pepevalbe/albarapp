@@ -41,4 +41,16 @@ public class DeliveryNoteItem {
 	public int hashCode() {
 		return Objects.hash(id);
 	}
+
+	public double getTotal() {
+		return getGrossTotal() + getTaxTotal();
+	}
+
+	public double getGrossTotal() {
+		return quantity * price;
+	}
+
+	public double getTaxTotal() {
+		return quantity * price * product.getTax();
+	}
 }

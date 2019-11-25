@@ -2,15 +2,18 @@ package com.pepe.albarapp.service;
 
 import com.pepe.albarapp.api.error.ApiError;
 import com.pepe.albarapp.api.error.ApiException;
-import com.pepe.albarapp.persistence.domain.*;
-import com.pepe.albarapp.persistence.repository.*;
+import com.pepe.albarapp.persistence.domain.Customer;
+import com.pepe.albarapp.persistence.domain.CustomerProductPrice;
+import com.pepe.albarapp.persistence.domain.Product;
+import com.pepe.albarapp.persistence.repository.CustomerProductPriceRepository;
+import com.pepe.albarapp.persistence.repository.CustomerRepository;
+import com.pepe.albarapp.persistence.repository.ProductRepository;
+import com.pepe.albarapp.service.dto.CustomerDto;
+import com.pepe.albarapp.service.mapping.CustomerMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.Set;
@@ -24,77 +27,98 @@ public class CustomerService {
 	private CustomerRepository customerRepository;
 
 	@Autowired
-	private ProductRepository productRepository;
-
-	@Autowired
 	private CustomerProductPriceRepository customerProductPriceRepository;
 
 	@Autowired
-	private DeliveryNoteRepository deliveryNoteRepository;
+	private ProductRepository productRepository;
 
 	@Autowired
-	private DeliveryNoteItemRepository deliveryNoteItemRepository;
+	private CustomerMapper customerMapper;
 
 	@Transactional(readOnly = true)
-	public List<Customer> getAllCustomers() {
+	public List<CustomerDto> getAllCustomers() {
 
-		return customerRepository.findAll();
+		return customerRepository.findAll().stream().map(customerMapper::map).collect(Collectors.toList());
+	}
+
+	@Transactional(readOnly = true)
+	public List<CustomerDto> findCustomersByAlias(String alias) {
+
+		return customerRepository.findByAliasContaining(alias).stream().map(customerMapper::map).collect(Collectors.toList());
+	}
+
+	@Transactional(readOnly = true)
+	public boolean isExistingCustomerCode(int code) {
+
+		return customerRepository.findByCode(code).isPresent();
 	}
 
 	@Transactional
-	public Customer persistCustomer(Customer customer) {
+	public CustomerDto createCustomer(CustomerDto customerDto) {
+
+		if (customerRepository.findByCode(customerDto.getCode()).isPresent()) {
+			throw new ApiException(ApiError.ApiError010);
+		}
 
 		// Get products id list for further check
 		Set<String> productIds = productRepository.findAll().stream().map(Product::getId).collect(Collectors.toSet());
 
 		// Check customer product prices relations
-		for (CustomerProductPrice customerProductPrice : customer.getCustomerProductPrices()) {
-			if (!productIds.contains(customerProductPrice.getProduct().getId())) {
+		customerDto.getCustomerProductPrices().forEach(customerProductPriceDto -> {
+			if (!productIds.contains(customerProductPriceDto.getProductId())) {
 				throw new ApiException(ApiError.ApiError006);
 			}
-		}
+		});
 
-		// Delete all customer product price if customer already exists
-		if (customer.getId() != null) {
-			customerProductPriceRepository.deleteByCustomerId(customer.getId());
-		}
-
-		// Create or update customer
-		Customer persistedCustomer = customerRepository.save(customer);
+		// Create customer
+		Customer createdCustomer = customerRepository.save(customerMapper.map(customerDto));
 
 		// Create customer product prices
-		customer.getCustomerProductPrices().forEach(customerProductPrice -> customerProductPrice.setCustomer(persistedCustomer));
-		customerProductPriceRepository.saveAll(customer.getCustomerProductPrices());
+		List<CustomerProductPrice> customerProductPrices = customerDto.getCustomerProductPrices().stream()
+				.map(customerProductPriceDto -> {
+					CustomerProductPrice customerProductPrice = customerMapper.map(customerProductPriceDto);
+					customerProductPrice.setCustomer(createdCustomer);
+					return customerProductPrice;
+				}).collect(Collectors.toList());
 
-		log.info("Customer created/updated: " + persistedCustomer.getId());
-		return persistedCustomer;
-	}
+		customerProductPriceRepository.saveAll(customerProductPrices);
 
-	@Transactional(readOnly = true)
-	public Page<DeliveryNote> getDeliveryNotes(@RequestParam Integer customerCode, @RequestParam Long timestampFrom, @RequestParam Long timestampTo, @RequestParam Pageable pageable) {
-		return deliveryNoteRepository.filterByCustomerCodeAndTimestampRange(customerCode, timestampFrom, timestampTo, pageable);
+		log.info("Customer created: " + createdCustomer.getId());
+		return customerMapper.map(createdCustomer);
 	}
 
 	@Transactional
-	public DeliveryNote persistDeliveryNote(DeliveryNote deliveryNote) {
+	public CustomerDto updateCustomer(CustomerDto customerDto) {
+
+		customerRepository.findById(customerDto.getId()).orElseThrow(() -> new ApiException(ApiError.ApiError006));
 
 		// Get products id list for further check
 		Set<String> productIds = productRepository.findAll().stream().map(Product::getId).collect(Collectors.toSet());
 
-		// Check delivery note items relations
-		for (DeliveryNoteItem deliveryNoteItem : deliveryNote.getDeliveryNoteItems()) {
-			if (!productIds.contains(deliveryNoteItem.getProduct().getId())) {
+		// Check customer product prices relations
+		customerDto.getCustomerProductPrices().forEach(customerProductPriceDto -> {
+			if (!productIds.contains(customerProductPriceDto.getProductId())) {
 				throw new ApiException(ApiError.ApiError006);
 			}
-		}
+		});
 
-		// Create delivery note and items
-		DeliveryNote createdDeliveryNote = deliveryNoteRepository.save(deliveryNote);
-		deliveryNote.getDeliveryNoteItems().forEach(deliveryNoteItem -> deliveryNoteItem.setDeliveryNote(createdDeliveryNote));
-		deliveryNoteItemRepository.saveAll(deliveryNote.getDeliveryNoteItems());
+		// Delete all previous customer product price
+		customerProductPriceRepository.deleteByCustomerId(customerDto.getId());
 
-		log.info("DeliveryNote created/updated: " + deliveryNote.getId());
-		return createdDeliveryNote;
+		// Update customer
+		Customer persistedCustomer = customerRepository.save(customerMapper.map(customerDto));
+
+		// Create customer product prices
+		List<CustomerProductPrice> customerProductPrices = customerDto.getCustomerProductPrices().stream()
+				.map(customerProductPriceDto -> {
+					CustomerProductPrice customerProductPrice = customerMapper.map(customerProductPriceDto);
+					customerProductPrice.setCustomer(persistedCustomer);
+					return customerProductPrice;
+				}).collect(Collectors.toList());
+
+		customerProductPriceRepository.saveAll(customerProductPrices);
+
+		log.info("Customer updated: " + persistedCustomer.getId());
+		return customerMapper.map(persistedCustomer);
 	}
-
 }

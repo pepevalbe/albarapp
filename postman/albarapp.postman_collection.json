@@ -217,6 +217,169 @@
 			"response": []
 		},
 		{
+			"name": "/hateoas/invoices",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f3cdf1d1-61e6-4f71-979f-092b18be39bb",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/hateoas/invoices",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"hateoas",
+						"invoices"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/hateoas/deliveryNotes",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f3cdf1d1-61e6-4f71-979f-092b18be39bb",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/hateoas/deliveryNotes",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"hateoas",
+						"deliveryNotes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/api/customers",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f3cdf1d1-61e6-4f71-979f-092b18be39bb",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/api/customers",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"customers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/api/customers?alias=",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f3cdf1d1-61e6-4f71-979f-092b18be39bb",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/api/customers?alias=jumbo",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"customers"
+					],
+					"query": [
+						{
+							"key": "alias",
+							"value": "jumbo"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/api/customers/check-code",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f3cdf1d1-61e6-4f71-979f-092b18be39bb",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/api/customers/check-code?code=1",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"customers",
+						"check-code"
+					],
+					"query": [
+						{
+							"key": "code",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "/api/customers",
 			"event": [
 				{
@@ -242,7 +405,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n  \"fiscalId\": \"H88888888\",\r\n  \"code\": 888,\r\n  \"name\": \"C.C Yumbo Centrum\",\r\n  \"alias\": \"jumbo\",\r\n  \"phoneNumber\": \"928764196\",\r\n  \"email\": \"info@yumbocentrum.com\",\r\n  \"address\": \"Av. Estados Unidos, 54, 35100 Maspalomas, Las Palmas\",\r\n  \"province\": \"Las Palmas\",\r\n  \"customerProductPrices\" : [\r\n  \t{\r\n  \t\t\"offeredPrice\" : 0.12,\r\n  \t\t\"product\" : { \"id\" : \"1\" }\r\n  \t},\r\n  \t{\r\n  \t\t\"offeredPrice\" : 0.13,\r\n  \t\t\"product\" : { \"id\" : \"2\" }\r\n  \t}\r\n  ]\r\n}",
+					"raw": "{\r\n  \"fiscalId\": \"H88888888\",\r\n  \"code\": 888,\r\n  \"name\": \"C.C Yumbo Centrum\",\r\n  \"alias\": \"jumbo\",\r\n  \"phoneNumber\": \"928764196\",\r\n  \"email\": \"info@yumbocentrum.com\",\r\n  \"address\": \"Av. Estados Unidos, 54, 35100 Maspalomas, Las Palmas\",\r\n  \"province\": \"Las Palmas\",\r\n  \"customerProductPrices\" : [\r\n  \t{\r\n  \t\t\"offeredPrice\" : 0.12,\r\n  \t\t\"productId\" : \"1\"\r\n  \t},\r\n  \t{\r\n  \t\t\"offeredPrice\" : 0.13,\r\n  \t\t\"productId\" :  \"2\"\r\n  \t}\r\n  ]\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -288,7 +451,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n  \"fiscalId\": \"H35083187\",\r\n  \"code\": 1,\r\n  \"name\": \"Nombre Jumbo Actualizado\",\r\n  \"alias\": \"jumbo\",\r\n  \"phoneNumber\": \"928764196\",\r\n  \"email\": \"info@yumbocentrum.com\",\r\n  \"address\": \"Av. Estados Unidos, 54, 35100 Maspalomas, Las Palmas\",\r\n  \"province\": \"Las Palmas\",\r\n  \"customerProductPrices\" : [\r\n  \t{\r\n  \t\t\"offeredPrice\" : 0.12,\r\n  \t\t\"product\" : { \"id\" : \"1\" }\r\n  \t},\r\n  \t{\r\n  \t\t\"offeredPrice\" : 0.13,\r\n  \t\t\"product\" : { \"id\" : \"2\" }\r\n  \t}\r\n  ]\r\n}",
+					"raw": "{\r\n  \"fiscalId\": \"H35083187\",\r\n  \"code\": 1,\r\n  \"name\": \"Nombre Jumbo Actualizado\",\r\n  \"alias\": \"jumbo\",\r\n  \"phoneNumber\": \"928764196\",\r\n  \"email\": \"info@yumbocentrum.com\",\r\n  \"address\": \"Av. Estados Unidos, 54, 35100 Maspalomas, Las Palmas\",\r\n  \"province\": \"Las Palmas\",\r\n  \"customerProductPrices\" : [\r\n  \t{\r\n  \t\t\"offeredPrice\" : 0.12,\r\n  \t\t\"productId\" : \"1\"\r\n  \t},\r\n  \t{\r\n  \t\t\"offeredPrice\" : 0.13,\r\n  \t\t\"productId\" :  \"2\"\r\n  \t}\r\n  ]\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -324,6 +487,65 @@
 				}
 			],
 			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{host}}/api/deliveryNotes?customerCode=&timestampFrom=&timestampTo=&page=&size=",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"deliveryNotes"
+					],
+					"query": [
+						{
+							"key": "customerCode",
+							"value": ""
+						},
+						{
+							"key": "timestampFrom",
+							"value": ""
+						},
+						{
+							"key": "timestampTo",
+							"value": ""
+						},
+						{
+							"key": "page",
+							"value": ""
+						},
+						{
+							"key": "size",
+							"value": ""
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/api/deliveryNotes",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f3cdf1d1-61e6-4f71-979f-092b18be39bb",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
 				"method": "POST",
 				"header": [
 					{
@@ -335,7 +557,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"auxDeliveryNoteNr\": 31416,\r\n    \"issuedTimestamp\": 1569173243000,\r\n    \"customer\" : {\r\n    \t\"id\" : \"1\"\r\n    },\r\n    \"deliveryNoteItems\": [\r\n    \t{\r\n    \t\t\"quantity\" : 2,\r\n    \t\t\"price\" : 0.4,\r\n    \t\t\"product\" : { \"id\" : \"1\" }\r\n    \t},\r\n    \t{\r\n    \t\t\"quantity\" : 5,\r\n    \t\t\"price\" : 1.1,\r\n    \t\t\"product\" : { \"id\" : \"2\" }\r\n    \t}\r\n\t]\r\n}",
+					"raw": "{\r\n    \"auxDeliveryNoteNr\": 31416,\r\n    \"issuedTimestamp\": 1569173243000,\r\n    \"customerId\" : \"1\",\r\n    \"deliveryNoteItems\": [\r\n    \t{\r\n    \t\t\"quantity\" : 2,\r\n    \t\t\"price\" : 0.4,\r\n    \t\t\"productId\" : \"1\"\r\n    \t},\r\n    \t{\r\n    \t\t\"quantity\" : 5,\r\n    \t\t\"price\" : 1.1,\r\n    \t\t\"productId\" : \"2\"\r\n    \t}\r\n\t]\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -350,6 +572,125 @@
 					"path": [
 						"api",
 						"deliveryNotes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/api/invoices",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f3cdf1d1-61e6-4f71-979f-092b18be39bb",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{host}}/api/invoices?customerCode=&timestampFrom=&timestampTo=&page=&size=",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"invoices"
+					],
+					"query": [
+						{
+							"key": "customerCode",
+							"value": ""
+						},
+						{
+							"key": "timestampFrom",
+							"value": ""
+						},
+						{
+							"key": "timestampTo",
+							"value": ""
+						},
+						{
+							"key": "page",
+							"value": ""
+						},
+						{
+							"key": "size",
+							"value": ""
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/api/invoices/bill",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f3cdf1d1-61e6-4f71-979f-092b18be39bb",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{host}}/api/invoices/bill?customerCodeFrom=0&customerCodeTo=99999&timestampFrom=0&timestampTo=9999999999999&issuedTimestamp=0",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"invoices",
+						"bill"
+					],
+					"query": [
+						{
+							"key": "customerCodeFrom",
+							"value": "0"
+						},
+						{
+							"key": "customerCodeTo",
+							"value": "99999"
+						},
+						{
+							"key": "timestampFrom",
+							"value": "0"
+						},
+						{
+							"key": "timestampTo",
+							"value": "9999999999999"
+						},
+						{
+							"key": "issuedTimestamp",
+							"value": "0"
+						}
 					]
 				}
 			},
@@ -424,7 +765,7 @@
 					}
 				},
 				"url": {
-					"raw": "{{host}}/api/invoice/download/multiple?invoiceId1=201800000&invoiceId2=201800001",
+					"raw": "{{host}}/api/invoice/download/multiple?invoiceId=201800000&invoiceId=201800001",
 					"host": [
 						"{{host}}"
 					],
@@ -436,11 +777,11 @@
 					],
 					"query": [
 						{
-							"key": "invoiceId1",
+							"key": "invoiceId",
 							"value": "201800000"
 						},
 						{
-							"key": "invoiceId2",
+							"key": "invoiceId",
 							"value": "201800001"
 						}
 					]

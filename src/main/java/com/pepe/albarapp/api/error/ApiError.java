@@ -14,7 +14,8 @@ public enum ApiError {
 	ApiError006("006", 400, "Bad input parameters", "Parámetros de entrada incorrectos"),
 	ApiError007("007", 400, "Bad invitation", "Invitación no encontrada"),
 	ApiError008("008", 400, "Invitation expired", "La invitación ha caducado"),
-	ApiError009("009", 400, "Invoice generation error", "Ha ocurrido un error generando la factura");
+	ApiError009("009", 400, "Invoice generation error", "Ha ocurrido un error generando la factura"),
+	ApiError010("010", 409, "Customer code already exist", "El código de cliente ya existe");
 
 	final String errorCode;
 	@JsonIgnore

@@ -19,7 +19,6 @@ public class CustomerProductPrice {
 	@Column(nullable = false)
 	private double offeredPrice;
 
-	@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name = "customer_id")
 	private Customer customer;
