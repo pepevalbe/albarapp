@@ -2,7 +2,10 @@
   <v-flex align-self-start>
     <CustomerForm :form="form"></CustomerForm>
     <div class="mb-3"></div>
-    <CustomerPriceTable :customerProductPrices="customerProductPrices"></CustomerPriceTable>
+    <CustomerPriceTable
+      v-if="form.customer.customerProductPrices"
+      :customerProductPrices="form.customer.customerProductPrices"
+    ></CustomerPriceTable>
     <div class="mb-10"></div>
     <v-layout text-center wrap class="pt-10">
       <v-flex xs12>
@@ -47,11 +50,10 @@ export default {
         fiscalId: "",
         address: "",
         province: "",
-        phoneNumber: ""
+        phoneNumber: "",
+        customerProductPrices: []
       }
     },
-    customerProductPrices: [],
-    productPricesOriginal: [],
     snackbar: false,
     spinner: {
       loading: false,
@@ -64,14 +66,13 @@ export default {
   async created() {
     this.showSpinner();
     this.form.customer = await CustomerService.get(this.customerId);
-    this.customerProductPrices = await CustomerService.getCustomerProductPrices(
+    this.form.customer.customerProductPrices = await CustomerService.getCustomerProductPrices(
       this.customerId
     );
     this.closeSpinner();
   },
   methods: {
     async updateCustomer() {
-      this.form.customer.customerProductPrices = this.customerProductPrices;
       this.showSpinner();
       await CustomerService.update(this.customerId, this.form.customer);
       this.closeSpinner();
