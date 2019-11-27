@@ -15,6 +15,7 @@
         :loading="loading"
         loading-text="Cargando... Por favor, espere"
         :headers="headers"
+        :footer-props="footerProps"
         :items="deliveryNotes"
         :server-items-length="totalItems"
         :options.sync="options"
@@ -24,12 +25,12 @@
             <tr v-for="item in items" :key="item.deliveryNoteItemsHref">
               <td>A{{item.id}}</td>
               <td>
-                <span v-if="item.invoice">F{{item.invoice.id}}</span>
+                <span v-if="item.invoiceId">F{{item.invoiceId}}</span>
               </td>
               <td>{{item.auxDeliveryNoteNr}}</td>
-              <td>{{item.customer.alias}}</td>
-              <td>{{item.dateFormatted}}</td>
-              <td>{{item.total.toFixed(2)}} €</td>
+              <td>{{item.customerAlias}}</td>
+              <td>{{dateFormatted(item.issuedTimestamp)}}</td>
+              <td>{{currencyFormatted(item.total)}}</td>
               <td>
                 <v-btn @click="updateDeliveryNote(item)">
                   <v-icon dark>mdi-pencil</v-icon>
@@ -45,19 +46,19 @@
                   A{{item.id}}
                   <br />
                   <span class="black--text">Nº Factura:</span>
-                  <span v-if="item.invoice">F{{item.invoice.id}}</span>
+                  <span v-if="item.invoiceId">F{{item.invoiceId}}</span>
                   <br />
                   <span class="black--text">Nº Albarán auxiliar:</span>
                   {{item.auxDeliveryNoteNr}}
                   <br />
                   <span class="black--text">Cliente:</span>
-                  {{item.customer.alias}}
+                  {{item.customerAlias}}
                   <br />
                   <span class="black--text">Fecha:</span>
-                  {{item.dateFormatted}}
+                  {{dateFormatted(item.issuedTimestamp)}}
                   <br />
                   <span class="black--text">Total:</span>
-                  {{item.total.toFixed(2)}} €
+                  {{currencyFormatted(item.total)}}
                   <br />
                 </v-card-text>
                 <v-card-actions>
@@ -102,10 +103,14 @@ export default {
           value: "auxDeliveryNoteNr"
         },
         { text: "Cliente", sortable: false, value: "alias" },
-        { text: "Fecha", sortable: false, value: "dateFormatted" },
+        { text: "Fecha", sortable: false, value: "issuedTimestamp" },
         { text: "Total", sortable: false, value: "total" },
         { text: "", sortable: false, value: "update" }
       ],
+      footerProps: {
+        itemsPerPageOptions: [10, 20, 30, 40, 50],
+        showFirstLastPage: true
+      },
       options: {},
       loading: true,
       totalItems: 0,
@@ -149,7 +154,7 @@ export default {
         this.options
       );
       this.deliveryNotes = response.deliveryNotes;
-      this.totalItems = response.page.totalElements;
+      this.totalItems = response.totalElements;
       this.loading = false;
       this.closeSpinner();
     },
@@ -157,6 +162,15 @@ export default {
       this.$router.push({
         name: "DeliveryNoteUpdate",
         params: { deliveryNoteId: item.id }
+      });
+    },
+    dateFormatted(timestamp) {
+      return this.$moment(timestamp, "x").format("DD/MM/YYYY");
+    },
+    currencyFormatted(value) {
+      return value.toLocaleString("es-ES", {
+        style: "currency",
+        currency: "EUR"
       });
     }
   }

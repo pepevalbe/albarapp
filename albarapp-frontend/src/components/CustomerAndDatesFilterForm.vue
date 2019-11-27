@@ -1,85 +1,95 @@
 <template>
   <v-container>
-    <v-form ref="form" v-model="form.valid">
-      <v-row>
-        <v-col cols="12" md="6">
-          <v-autocomplete
-            v-model="form.customer"
-            label="Alias cliente"
-            :items="customers"
-            item-text="alias"
-            return-object
-            clearable
-            no-data-text="Sin coincidencias"
-            v-on:change="selectCustomerByAlias()"
-          ></v-autocomplete>
-        </v-col>
-        <v-col cols="12" md="3">
-          <v-menu
-            ref="menuDatePicker"
-            v-model="menuDateFromPicker"
-            :close-on-content-click="false"
-            transition="scale-transition"
-            offset-y
-            max-width="290px"
-            min-width="290px"
-          >
-            <template v-slot:activator="{ on }">
-              <v-text-field
-                v-model="dateFromFormatted"
-                ref="dateText"
-                label="Fecha"
-                hint="Formato: ddMMaaaa"
-                persistent-hint
-                @focus="$event.target.select()"
-                prepend-icon="mdi-calendar"
-                @blur="parseDateFromText()"
-                v-on="on"
-              ></v-text-field>
-            </template>
-            <v-date-picker
-              v-model="form.dateFrom"
-              no-title
-              @input="parseDateFromPick()"
-              locale="es-ES"
-              first-day-of-week="1"
-            ></v-date-picker>
-          </v-menu>
-        </v-col>
-        <v-col cols="12" md="3">
-          <v-menu
-            ref="menuDatePicker"
-            v-model="menuDateToPicker"
-            :close-on-content-click="false"
-            transition="scale-transition"
-            offset-y
-            max-width="290px"
-            min-width="290px"
-          >
-            <template v-slot:activator="{ on }">
-              <v-text-field
-                v-model="dateToFormatted"
-                ref="dateText"
-                label="Fecha"
-                hint="Formato: ddMMaaaa"
-                persistent-hint
-                @focus="$event.target.select()"
-                prepend-icon="mdi-calendar"
-                @blur="parseDateToText()"
-                v-on="on"
-              ></v-text-field>
-            </template>
-            <v-date-picker
-              v-model="form.dateTo"
-              no-title
-              @input="parseDateToPick()"
-              locale="es-ES"
-              first-day-of-week="1"
-            ></v-date-picker>
-          </v-menu>
-        </v-col>
-      </v-row>
-    </v-form>
+    <v-expansion-panels>
+      <v-expansion-panel>
+        <v-expansion-panel-header>
+          <v-subheader>Filtrar</v-subheader>
+        </v-expansion-panel-header>
+        <v-expansion-panel-content>
+          <v-form ref="form" v-model="form.valid">
+            <v-row>
+              <v-col cols="12" md="6">
+                <v-autocomplete
+                  v-model="form.customer"
+                  label="Cliente"
+                  :items="customers"
+                  item-text="alias"
+                  return-object
+                  clearable
+                  no-data-text="Sin coincidencias"
+                  v-on:change="selectCustomerByAlias()"
+                ></v-autocomplete>
+              </v-col>
+              <v-col cols="12" md="3">
+                <v-menu
+                  ref="menuDatePicker"
+                  v-model="menuDateFromPicker"
+                  :close-on-content-click="false"
+                  transition="scale-transition"
+                  offset-y
+                  max-width="290px"
+                  min-width="290px"
+                >
+                  <template v-slot:activator="{ on }">
+                    <v-text-field
+                      v-model="dateFromFormatted"
+                      ref="dateText"
+                      label="Desde"
+                      hint="Formato: ddMMaaaa"
+                      persistent-hint
+                      @focus="$event.target.select()"
+                      prepend-icon="mdi-calendar"
+                      @blur="parseDateFromText()"
+                      v-on="on"
+                    ></v-text-field>
+                  </template>
+                  <v-date-picker
+                    v-model="form.dateFrom"
+                    no-title
+                    @input="parseDateFromPick()"
+                    locale="es-ES"
+                    first-day-of-week="1"
+                  ></v-date-picker>
+                </v-menu>
+              </v-col>
+              <v-col cols="12" md="3">
+                <v-menu
+                  ref="menuDatePicker"
+                  v-model="menuDateToPicker"
+                  :close-on-content-click="false"
+                  transition="scale-transition"
+                  offset-y
+                  max-width="290px"
+                  min-width="290px"
+                >
+                  <template v-slot:activator="{ on }">
+                    <v-text-field
+                      v-model="dateToFormatted"
+                      ref="dateText"
+                      label="Hasta"
+                      hint="Formato: ddMMaaaa"
+                      persistent-hint
+                      @focus="$event.target.select()"
+                      prepend-icon="mdi-calendar"
+                      @blur="parseDateToText()"
+                      v-on="on"
+                    ></v-text-field>
+                  </template>
+                  <v-date-picker
+                    v-model="form.dateTo"
+                    no-title
+                    @input="parseDateToPick()"
+                    locale="es-ES"
+                    first-day-of-week="1"
+                  ></v-date-picker>
+                </v-menu>
+              </v-col>
+            </v-row>
+          </v-form>
+        </v-expansion-panel-content>
+      </v-expansion-panel>
+    </v-expansion-panels>
+
     <v-overlay v-if="spinner.loading" :value="true">
       <v-progress-circular indeterminate color="primary"></v-progress-circular>
     </v-overlay>

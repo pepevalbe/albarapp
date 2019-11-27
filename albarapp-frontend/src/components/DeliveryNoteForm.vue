@@ -294,7 +294,7 @@ export default {
       var index = -1;
       if (this.customerPrices) {
         index = this.customerPrices.findIndex(function(element) {
-          return element.product.code == vm.productCode;
+          return element.productId == vm.product.id;
         });
       }
       if (index === -1) {
@@ -319,7 +319,8 @@ export default {
 
       this.quantity = "";
       this.product = {};
-      (this.productCode = ""), (this.price = "");
+      this.productCode = "";
+      this.price = "";
       this.$nextTick(() => this.$refs.createbutton.$el.focus());
     },
     moveToDate() {
@@ -335,7 +336,7 @@ export default {
       if (this.customerPrices && this.customerPrices.length > 0) {
         var vm = this;
         var index = this.products.findIndex(function(element) {
-          return element.code == vm.customerPrices[0].product.code;
+          return element.id == vm.customerPrices[0].productId;
         });
         vm.productCode = vm.products[index].code;
         vm.product = vm.products[index];

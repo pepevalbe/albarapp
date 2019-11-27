@@ -3,39 +3,10 @@ import moment from "moment";
 
 const CUSTOMER_RESOURCE = 'hateoas/customers';
 const DELIVERY_NOTE_RESOURCE = '/hateoas/deliveryNotes';
+const DELIVERY_NOTES_COMPLETE_ENDPOINT = '/api/deliveryNotes';
 const DELIVERY_NOTE_ITEM_RESOURCE = '/hateoas/deliveryNoteItems';
 
 export default {
-    getAll(filter, options) {
-        var params = {};
-        if (filter && filter.form) {
-            if (filter.form.customer && filter.form.customer.code)
-                params.customerCode = filter.form.customer.code;
-            if (filter.form.dateFrom) params.timestampFrom = moment(filter.form.dateFrom, "YYYY-MM-DD").format('x');
-            if (filter.form.dateTo) params.timestampTo = moment(filter.form.dateTo, "YYYY-MM-DD").format('x');
-        }
-        if (options) {
-            if (options.page) params.page = options.page - 1;
-            if (options.itemsPerPage) params.size = options.itemsPerPage;
-        }
-
-        var queryString = Object.keys(params).map(function (key) {
-            return key + '=' + params[key]
-        }).join('&');
-
-        if (queryString != "") queryString = '?' + queryString;
-
-        return HttpClient.get(DELIVERY_NOTE_RESOURCE + '/search/filterByCustomerCodeAndTimestampRange' + queryString)
-            .then(response => {
-                return {
-                    deliveryNotes: response.data._embedded.deliveryNotes,
-                    page: response.data.page
-                };
-            })
-            .catch(() => {
-                alert("Ha ocurrido un error recuperando los albaranes");
-            });
-    },
     get(id) {
         return HttpClient.get(`${DELIVERY_NOTE_RESOURCE}/${id}`)
             .then(response => {
@@ -45,7 +16,6 @@ export default {
                 alert("Ha ocurrido un error recuperando el albarán");
             });
     },
-
     getCustomer(deliveryNote) {
         return HttpClient.get(deliveryNote._links.customer.href)
             .then(response => {
@@ -87,30 +57,34 @@ export default {
             });
     },
     async getAllWithCustomerAndTotal(filter, options) {
-        var promises = [];
-        var response = await this.getAll(filter, options);
-        var deliveryNotes = response.deliveryNotes;
-        for (const deliveryNote of deliveryNotes) {
-            deliveryNote.dateFormatted = moment(deliveryNote.issuedTimestamp, "x").format("DD/MM/YYYY");
-            deliveryNote.date = moment(deliveryNote.issuedTimestamp, "x").format("YYYY-MM-DD");
-            promises.push(this.getCustomer(deliveryNote));
-            promises.push(this.getInvoice(deliveryNote));
-            promises.push(this.getDeliveryNoteItems(deliveryNote));
+        var params = {};
+        if (filter && filter.form) {
+            if (filter.form.customer && filter.form.customer.code)
+                params.customerCode = filter.form.customer.code;
+            if (filter.form.dateFrom) params.timestampFrom = moment(filter.form.dateFrom, "YYYY-MM-DD").format('x');
+            if (filter.form.dateTo) params.timestampTo = moment(filter.form.dateTo, "YYYY-MM-DD").format('x');
         }
-        await Promise.all(promises);
-        for (const deliveryNote of deliveryNotes) {
-            for (const deliveryNoteItem of deliveryNote.deliveryNoteItems) {
-                promises.push(this.getProducts(deliveryNoteItem));
-            }
+        if (options) {
+            if (options.page) params.page = options.page - 1;
+            if (options.itemsPerPage) params.size = options.itemsPerPage;
         }
-        await Promise.all(promises);
-        for (const deliveryNote of deliveryNotes) {
-            deliveryNote.total = 0;
-            for (const deliveryNoteItem of deliveryNote.deliveryNoteItems) {
-                deliveryNote.total += deliveryNoteItem.quantity * deliveryNoteItem.price * (1 + deliveryNoteItem.product.tax / 100);
-            }
-        }
-        return response;
+
+        var queryString = Object.keys(params).map(function (key) {
+            return key + '=' + params[key]
+        }).join('&');
+
+        if (queryString != "") queryString = '?' + queryString;
+
+        return HttpClient.get(DELIVERY_NOTES_COMPLETE_ENDPOINT + queryString)
+            .then(response => {
+                return {
+                    deliveryNotes: response.data.content,
+                    totalElements: response.data.totalElements
+                };
+            })
+            .catch(() => {
+                alert("Ha ocurrido un error recuperando los albaranes");
+            });
     },
     async getWithCustomerAndTotal(id) {
         var promises = [];
@@ -142,36 +116,26 @@ export default {
         }
         return deliveryNote;
     },
-
+    
     async create(deliveryNote, deliveryNoteItems) {
 
-        var promises = [];
-
-        var customerHref = `${CUSTOMER_RESOURCE}/${deliveryNote.customer.id}`;
-
-        var deliveryNoteToCreate = {
+        var deliveryNoteDto = {
             auxDeliveryNoteNr: deliveryNote.dateauxDeliveryNoteNr,
             issuedTimestamp: deliveryNote.issuedTimestamp,
-            customer: customerHref
+            customerId: deliveryNote.customer.id,
+            deliveryNoteItems: []
         };
 
-        var promisePost = HttpClient.post(DELIVERY_NOTE_RESOURCE, deliveryNoteToCreate).then(response => {
-            for (var i = 0; i < deliveryNoteItems.length; i++) {
-                var item = deliveryNoteItems[i];
-                var deliveryNoteItem = {
-                    quantity: item.quantity,
-                    price: item.price,
-                    product: item.product._links.self.href,
-                    deliveryNote: response.data._links.self.href
-                };
-                promises.push(
-                    HttpClient.post(DELIVERY_NOTE_ITEM_RESOURCE, deliveryNoteItem)
-                );
-            }
-        });
+        for (const deliveryNoteItem of deliveryNoteItems) {
+            var deliveryNoteItemDto = {
+                quantity: deliveryNoteItem.quantity,
+                price: deliveryNoteItem.price,
+                productId: deliveryNoteItem.product.id
+            };
+            deliveryNoteDto.deliveryNoteItems.push(deliveryNoteItemDto);
+        }
 
-        await promisePost;
-        return Promise.all(promises);
+        return HttpClient.post(DELIVERY_NOTES_COMPLETE_ENDPOINT, deliveryNoteDto);
     },
 
     async update(id, deliveryNote, deliveryNoteItems, deliveryNoteItemsOriginal) {
