@@ -3,7 +3,7 @@
     <v-expansion-panels>
       <v-expansion-panel>
         <v-expansion-panel-header>
-          <v-subheader>Filtrar</v-subheader>
+          <span class="subtitle-1 font-italic font-weight-light">Filtrar resultados</span>
         </v-expansion-panel-header>
         <v-expansion-panel-content>
           <v-form ref="form" v-model="form.valid">
