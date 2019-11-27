@@ -66,8 +66,10 @@ export default {
   async created() {
     this.showSpinner();
     this.form.customer = await CustomerService.get(this.customerId);
-    this.form.customer.customerProductPrices = await CustomerService.getCustomerProductPrices(
-      this.customerId
+    this.$set(
+      this.form.customer,
+      "customerProductPrices",
+      await CustomerService.getCustomerProductPrices(this.customerId)
     );
     this.closeSpinner();
   },
@@ -77,8 +79,10 @@ export default {
       await CustomerService.update(this.customerId, this.form.customer);
       this.closeSpinner();
       this.snackbar = true;
-      this.customerProductPrices = await CustomerService.getCustomerProductPrices(
-        this.customerId
+      this.$set(
+        this.form.customer,
+        "customerProductPrices",
+        await CustomerService.getCustomerProductPrices(this.customerId)
       );
     }
   }
