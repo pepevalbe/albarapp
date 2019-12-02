@@ -77,6 +77,9 @@
         </template>
       </v-data-table>
     </v-card>
+    <v-overlay v-if="spinner.loading" :value="true">
+      <v-progress-circular indeterminate color="primary"></v-progress-circular>
+    </v-overlay>
   </v-flex>
 </template>
 
@@ -113,7 +116,10 @@ export default {
           dateTo: ""
         }
       },
-      descending: false
+      spinner: {
+        loading: false,
+        counter: 0
+      }
     };
   },
   async mounted() {
@@ -136,6 +142,7 @@ export default {
   methods: {
     async listInvoices() {
       this.loading = true;
+      this.showSpinner();
       var response = await InvoiceService.getAllWithCustomerAndTotal(
         this.filter,
         this.options
@@ -143,6 +150,7 @@ export default {
       this.invoices = response.invoices;
       this.totalItems = response.totalElements;
       this.loading = false;
+      this.closeSpinner();
     },
     updateInvoice(item) {
       this.$router.push({
