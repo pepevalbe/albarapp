@@ -19,6 +19,7 @@
         :loading="loading"
         loading-text="Cargando... Por favor, espere"
         :headers="headers"
+        :footer-props="footerProps"
         :items="invoices"
         :server-items-length="totalItems"
         :options.sync="options"
@@ -103,8 +104,10 @@ export default {
         { text: "", sortable: false, value: "update" },
         { text: "", sortable: false, value: "download" }
       ],
-      search: "",
-      sortBy: "id",
+      footerProps: {
+        itemsPerPageOptions: [10, 20, 30, 40, 50],
+        showFirstLastPage: true
+      },
       options: {},
       loading: true,
       totalItems: 0,

@@ -275,6 +275,9 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <v-overlay v-if="spinner.loading" :value="true">
+      <v-progress-circular indeterminate color="primary"></v-progress-circular>
+    </v-overlay>
   </v-flex>
 </template>
 
@@ -335,6 +338,10 @@ export default {
         show: false,
         deliveryNote: {},
         invoice: {}
+      },
+      spinner: {
+        loading: false,
+        counter: 0
       }
     };
   },
@@ -346,6 +353,7 @@ export default {
   },
   methods: {
     async loadInvoice() {
+      this.showSpinner();
       this.loading = true;
       this.form.invoice = await InvoiceService.getWithCustomerAndTotal(
         this.invoiceId
@@ -353,6 +361,7 @@ export default {
       this.form.invoice.total = this.form.invoice.total.toFixed(2);
       this.parseDatePick();
       this.loading = false;
+      this.closeSpinner();
     },
     parseDateText() {
       var moment = this.$moment(
@@ -375,9 +384,11 @@ export default {
       this.menuDatePicker = false;
     },
     async updateInvoice() {
+      this.showSpinner();
       await InvoiceService.update(this.form.invoice.id, this.form.invoice);
       this.snackbar = true;
       this.loadInvoice(this.invoiceId);
+      this.closeSpinner();
     },
     disassociate(deliveryNote) {
       this.dialogDisassociate.deliveryNote = deliveryNote;
@@ -393,10 +404,12 @@ export default {
       this.dialogDisassociate.show = false;
     },
     async showAssociateList() {
+      this.showSpinner();
       this.dialogAssociate.show = true;
       this.dialogAssociate.deliveryNotes = await DeliveryNoteService.findDeliveryNotesToBillWithCustomerAndTotal(
         this.form.invoice.deliveryNotes[0].customer.code
       );
+      this.closeSpinner();
     },
     associate(deliveryNote) {
       this.dialogAssociate.show = false;
@@ -405,6 +418,7 @@ export default {
       this.dialogConfirmAssociate.show = true;
     },
     async confirmAssociate() {
+      this.showSpinner();
       await DeliveryNoteService.associateInvoice(
         this.dialogConfirmAssociate.deliveryNote.id,
         this.dialogConfirmAssociate.invoice
@@ -412,6 +426,7 @@ export default {
       this.snackbar = true;
       this.loadInvoice(this.invoiceId);
       this.dialogConfirmAssociate.show = false;
+      this.closeSpinner();
     }
   }
 };
