@@ -135,6 +135,11 @@ export default {
       this.customers.forEach(function(element) {
         element.alias = element.code + " - " + element.alias;
       });
+      this.customers.sort(function(a,b){
+        if (a.code < b.code) return -1;
+        if (a.code > b.code) return 1;
+        if (a.code == b.code) return 0;
+      })
       this.closeSpinner();
     },
     selectCustomerByCode() {
