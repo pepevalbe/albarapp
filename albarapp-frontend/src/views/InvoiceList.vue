@@ -13,17 +13,8 @@
       </v-flex>
     </v-layout>
     <v-card>
-      <v-card-title>
-        Listado de facturas
-        <div class="flex-grow-1"></div>
-        <v-text-field
-          v-model="search"
-          append-icon="mdi-magnify"
-          label="Buscar ..."
-          single-line
-          hide-details
-        ></v-text-field>
-      </v-card-title>
+      <v-card-title>Listado de facturas</v-card-title>
+      <CustomerAndDatesFilterForm v-bind:form="filter.form" />
       <v-data-table
         :loading="loading"
         loading-text="Cargando... Por favor, espere"
@@ -36,9 +27,9 @@
           <tbody v-if="!$vuetify.breakpoint.xsOnly">
             <tr v-for="item in items" :key="item.id">
               <td>F{{item.id}}</td>
-              <td>{{item.deliveryNotes[0].customer.alias}}</td>
-              <td>{{item.dateFormatted}}</td>
-              <td>{{item.total.toFixed(2)}} €</td>
+              <td>{{item.customerAlias}}</td>
+              <td>{{dateFormatted(item.issuedTimestamp)}}</td>
+              <td>{{currencyFormatted(item.total)}}</td>
               <td>
                 <v-btn @click="updateInvoice(item)">
                   <v-icon dark>mdi-pencil</v-icon>
@@ -59,13 +50,13 @@
                   F{{item.id}}
                   <br />
                   <span class="black--text">Cliente:</span>
-                  {{item.deliveryNotes[0].customer.alias}}
+                  {{item.customerAlias}}
                   <br />
                   <span class="black--text">Fecha:</span>
-                  {{item.dateFormatted}}
+                  {{dateFormatted(item.issuedTimestamp)}}
                   <br />
                   <span class="black--text">Total:</span>
-                  {{item.total.toFixed(2)}} €
+                  {{currencyFormatted(item.total)}}
                   <br />
                 </v-card-text>
                 <v-card-actions>
@@ -91,15 +82,19 @@
 
 <script>
 import InvoiceService from "@/services/InvoiceService.js";
+import CustomerAndDatesFilterForm from "@/components/CustomerAndDatesFilterForm";
 
 export default {
   name: "InvoiceList",
+  components: {
+    CustomerAndDatesFilterForm
+  },
   data: () => {
     return {
       invoices: [],
       headers: [
         { text: "Nº Factura", sortable: true, value: "id" },
-        { text: "Cliente", sortable: false, value: "alias" },
+        { text: "Cliente", sortable: false, value: "customerAlias" },
         { text: "Fecha de emisión", sortable: false, value: "dateFormatted" },
         { text: "Total", sortable: false, value: "total" },
         { text: "", sortable: false, value: "update" },
@@ -110,6 +105,14 @@ export default {
       options: {},
       loading: true,
       totalItems: 0,
+      filter: {
+        form: {
+          valid: false,
+          customer: {},
+          dateFrom: "",
+          dateTo: ""
+        }
+      },
       descending: false
     };
   },
@@ -122,22 +125,38 @@ export default {
         this.listInvoices();
       },
       deep: true
+    },
+    filter: {
+      handler() {
+        this.listInvoices();
+      },
+      deep: true
     }
   },
   methods: {
     async listInvoices() {
       this.loading = true;
       var response = await InvoiceService.getAllWithCustomerAndTotal(
+        this.filter,
         this.options
       );
       this.invoices = response.invoices;
-      this.totalItems = response.page.totalElements;
+      this.totalItems = response.totalElements;
       this.loading = false;
     },
     updateInvoice(item) {
       this.$router.push({
         name: "InvoiceUpdate",
         params: { invoiceId: item.id }
+      });
+    },
+    dateFormatted(timestamp) {
+      return this.$moment(timestamp, "x").format("DD/MM/YYYY");
+    },
+    currencyFormatted(value) {
+      return value.toLocaleString("es-ES", {
+        style: "currency",
+        currency: "EUR"
       });
     },
     download(item) {

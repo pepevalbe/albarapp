@@ -4,6 +4,7 @@ import DeliveryNoteService from "@/services/DeliveryNoteService.js";
 
 const RESOURCE_NAME = '/hateoas/invoices';
 const INVOICE_DOWNLOAD_ENDPOINT = '/api/invoices/download';
+const INVOICE_COMPLETE_ENDPOINT = '/api/invoices';
 const INVOICE_BILL_ENDPOINT = '/api/invoices/bill';
 
 export default {
@@ -74,37 +75,43 @@ export default {
     async getDeliveryNoteItemsAndCustomer(deliveryNote) {
         Object.assign(deliveryNote, await DeliveryNoteService.getWithCustomerAndTotal(deliveryNote.id));
     },
+    getAllWithCustomerAndTotal(filter, options) {
+        var params = {};
+        if (filter && filter.form) {
+            if (filter.form.customer && filter.form.customer.code)
+                params.customerCode = filter.form.customer.code;
+            if (filter.form.dateFrom) params.timestampFrom = moment(filter.form.dateFrom, "YYYY-MM-DD").format('x');
+            if (filter.form.dateTo) params.timestampTo = moment(filter.form.dateTo, "YYYY-MM-DD").format('x');
+        }
+        if (options) {
+            if (options.page) params.page = options.page - 1;
+            if (options.itemsPerPage) params.size = options.itemsPerPage;
+        }
 
-    async getAllWithCustomerAndTotal(options) {
-        var promises = [];
-        var response = await this.getAll(options);
-        var invoices = response.invoices;
-        for (const invoice of invoices) {
-            invoice.dateFormatted = moment(invoice.issuedTimestamp, "x").format("DD/MM/YYYY");
-            invoice.date = moment(invoice.issuedTimestamp, "x").format("YYYY-MM-DD");
-            promises.push(this.getDeliveryNotes(invoice));
-        }
-        await Promise.all(promises);
-        for (const invoice of invoices) {
-            for (const deliveryNote of invoice.deliveryNotes) {
-                promises.push(this.getDeliveryNoteItemsAndCustomer(deliveryNote));
-            }
-        }
-        await Promise.all(promises);
-        for (const invoice of invoices) {
-            invoice.total = 0;
-            for (const deliveryNote of invoice.deliveryNotes) {
-                invoice.total += deliveryNote.deliveryNoteTotal.value;
-            }
-        }
-        return response;
+        var queryString = Object.keys(params).map(function (key) {
+            return key + '=' + params[key]
+        }).join('&');
+
+        if (queryString != "") queryString = '?' + queryString;
+
+        return HttpClient.get(INVOICE_COMPLETE_ENDPOINT + queryString)
+            .then(response => {
+                return {
+                    invoices: response.data.content,
+                    totalElements: response.data.totalElements
+                };
+            })
+            .catch(() => {
+                alert("Ha ocurrido un error recuperando los albaranes");
+            });
     },
     async create(invoice, deliveryNotes) {
 
         var promises = [];
 
         var invoiceToCreate = {
-            issuedTimestamp: invoice.issuedTimestamp
+            issuedTimestamp: invoice.issuedTimestamp,
+            customer: deliveryNotes[0].customer._links.self.href
         };
 
         // Refactorizar usando DeliveryNoteService

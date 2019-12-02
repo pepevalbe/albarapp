@@ -99,6 +99,7 @@ public class InvoiceService {
 		deliveryNotesByCustomer.forEach((customer, deliveryNotes) -> {
 			Invoice invoice = new Invoice();
 			invoice.setIssuedTimestamp(issuedTimestamp);
+			invoice.setCustomer(customer);
 			invoice.setDeliveryNotes(deliveryNotes);
 			Invoice createdInvoice = invoiceRepository.save(invoice);
 			createdInvoices.add(createdInvoice);
