@@ -96,14 +96,14 @@ export default {
       deliveryNotes: [],
       headers: [
         { text: "Nº Albarán", sortable: true, value: "id" },
-        { text: "Nº Factura", sortable: true, value: "invoiceId" },
+        { text: "Nº Factura", sortable: true, value: "invoice.id" },
         {
           text: "Nº pedido",
           sortable: false,
           value: "auxDeliveryNoteNr"
         },
-        { text: "Cliente", sortable: false, value: "alias" },
-        { text: "Fecha", sortable: false, value: "issuedTimestamp" },
+        { text: "Cliente", sortable: true, value: "customer.code" },
+        { text: "Fecha", sortable: true, value: "issuedTimestamp" },
         { text: "Total", sortable: false, value: "total" },
         { text: "", sortable: false, value: "update" }
       ],

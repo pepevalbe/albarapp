@@ -98,8 +98,8 @@ export default {
       invoices: [],
       headers: [
         { text: "Nº Factura", sortable: true, value: "id" },
-        { text: "Cliente", sortable: false, value: "customerAlias" },
-        { text: "Fecha de emisión", sortable: false, value: "dateFormatted" },
+        { text: "Cliente", sortable: true, value: "customer.code" },
+        { text: "Fecha de emisión", sortable: true, value: "issuedTimestamp" },
         { text: "Total", sortable: false, value: "total" },
         { text: "", sortable: false, value: "update" },
         { text: "", sortable: false, value: "download" }

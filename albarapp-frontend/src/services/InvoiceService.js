@@ -86,6 +86,10 @@ export default {
         if (options) {
             if (options.page) params.page = options.page - 1;
             if (options.itemsPerPage) params.size = options.itemsPerPage;
+            if (options.sortBy && options.sortBy.length) {
+                var direction = options.sortDesc[0]?'desc':'asc';
+                params.sort = options.sortBy + ',' + direction;
+            }
         }
 
         var queryString = Object.keys(params).map(function (key) {
