@@ -137,6 +137,7 @@ export default {
     },
     filter: {
       handler() {
+        this.options.page = 1;
         this.listInvoices();
       },
       deep: true
