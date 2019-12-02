@@ -33,6 +33,7 @@
                   <template v-slot:activator="{ on }">
                     <v-text-field
                       v-model="dateFromFormatted"
+                      clearable
                       ref="dateText"
                       label="Desde"
                       hint="Formato: ddMMaaaa"
@@ -40,6 +41,7 @@
                       @focus="$event.target.select()"
                       prepend-icon="mdi-calendar"
                       @blur="parseDateFromText()"
+                      @click:clear="form.dateFrom = ''"
                       v-on="on"
                     ></v-text-field>
                   </template>
@@ -65,6 +67,7 @@
                   <template v-slot:activator="{ on }">
                     <v-text-field
                       v-model="dateToFormatted"
+                      clearable
                       ref="dateText"
                       label="Hasta"
                       hint="Formato: ddMMaaaa"
@@ -72,6 +75,7 @@
                       @focus="$event.target.select()"
                       prepend-icon="mdi-calendar"
                       @blur="parseDateToText()"
+                      @click:clear="form.dateTo = ''"
                       v-on="on"
                     ></v-text-field>
                   </template>
