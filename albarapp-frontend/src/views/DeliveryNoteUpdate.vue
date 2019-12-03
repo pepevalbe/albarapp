@@ -5,6 +5,9 @@
       Albarán modificado correctamente
       <v-btn color="success" text @click="snackbar = false">Cerrar</v-btn>
     </v-snackbar>
+    <v-overlay v-if="spinner.loading" :value="true">
+      <v-progress-circular indeterminate color="primary"></v-progress-circular>
+    </v-overlay>
   </v-flex>
 </template>
 
@@ -29,7 +32,11 @@ export default {
         deliveryNoteTotal: { value: 0 }
       }
     },
-    snackbar: false
+    snackbar: false,
+    spinner: {
+      loading: false,
+      counter: 0
+    }
   }),
   props: {
     deliveryNoteId: Number
@@ -39,6 +46,7 @@ export default {
   },
   methods: {
     async loadDeliveryNote() {
+      this.showSpinner();
       var deliveryNote = await DeliveryNoteService.getWithCustomerAndTotal(
         this.deliveryNoteId
       );
@@ -50,6 +58,7 @@ export default {
       this.deliveryNoteItemsOriginal = Array.from(
         this.form.deliveryNote.deliveryNoteItems
       );
+      this.closeSpinner();
     },
     reset() {
       this.$refs.form.reset();
