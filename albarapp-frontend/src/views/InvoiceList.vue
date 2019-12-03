@@ -2,6 +2,10 @@
   <v-flex align-self-start>
     <v-layout text-right wrap class="pt-2 pb-5 mr-5">
       <v-flex xs12>
+        <v-btn @click="downloadList()" :disabled="!selectedInvoices.length" class="ml-2 mt-2">
+          Descargar seleccionadas
+          <v-icon class="ml-2">mdi-download-multiple</v-icon>
+        </v-btn>
         <v-btn to="/invoice-bill-process/" class="ml-2 mt-2">
           Facturar albaranes
           <v-icon class="ml-2">mdi-animation</v-icon>
@@ -9,10 +13,6 @@
         <v-btn to="/" class="ml-2 mt-2">
           Nuevo
           <v-icon class="ml-2">mdi-plus-circle</v-icon>
-        </v-btn>
-        <v-btn @click="downloadList()" :disabled="!selectedInvoices.length" class="ml-2 mt-2">
-          Descargar seleccionadas
-          <v-icon class="ml-2">mdi-download-multiple</v-icon>
         </v-btn>
       </v-flex>
     </v-layout>
