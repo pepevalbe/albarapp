@@ -8,6 +8,7 @@ import com.pepe.albarapp.persistence.domain.DeliveryNoteItem;
 import com.pepe.albarapp.persistence.domain.Invoice;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.interactive.form.PDField;
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
 
 import java.io.File;
@@ -16,6 +17,7 @@ import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Iterator;
 
 @Slf4j
 public class InvoiceDocument {
@@ -78,7 +80,9 @@ public class InvoiceDocument {
 
 		setDocumentFooter(pdfForm, grossTotal, vatTotal);
 
-		pdfForm.getFields().forEach(pdField -> pdField.setReadOnly(true));    // Make form fields not editable
+		// Make form fields not editable
+		Iterator<PDField> pDFeldIterator = pdfForm.getFieldIterator();
+		while (pDFeldIterator.hasNext()) pDFeldIterator.next().setReadOnly(true);
 
 		try {
 			pdfDocument.save(outputStream);

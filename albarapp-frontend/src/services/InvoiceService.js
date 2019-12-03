@@ -4,6 +4,7 @@ import DeliveryNoteService from "@/services/DeliveryNoteService.js";
 
 const RESOURCE_NAME = '/hateoas/invoices';
 const INVOICE_DOWNLOAD_ENDPOINT = '/api/invoices/download';
+const INVOICE_LIST_DOWNLOAD_ENDPOINT = '/api/invoices/download/multiple';
 const INVOICE_COMPLETE_ENDPOINT = '/api/invoices';
 const INVOICE_BILL_ENDPOINT = '/api/invoices/bill';
 
@@ -187,5 +188,23 @@ export default {
             .catch(() => {
                 alert("Ha ocurrido un error descargando la factura");
             });
+    },
+    downloadList(ids) {
+        return HttpClient.get(`${INVOICE_LIST_DOWNLOAD_ENDPOINT}/?invoiceId=${ids}`,
+        {
+            responseType: 'arraybuffer',
+            headers: {
+                'Accept': 'application/octet-stream'
+            }
+        }).then(response => {
+            let blob = new Blob([response.data], { type: 'application/octet-stream' });
+            let link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = 'invoices_' + moment().format("DDMMYYYY") + '.zip';
+            link.click();
+        })
+        .catch(() => {
+            alert("Ha ocurrido un error descargando la factura");
+        });
     }
 }

@@ -136,6 +136,7 @@
         @click="createInvoices()"
       >Facturar</v-btn>
       <v-btn to="/invoice-list/">Volver</v-btn>
+      <v-btn @click="downloadList()">Prueba descarga ZIP</v-btn>
     </v-row>
     <v-snackbar v-model="snackbar">
       Creadas {{numberInvoicesCreated}} facturas correctamente
@@ -200,6 +201,7 @@ export default {
         this.$moment(this.form.issuedDateFormatted, "DD/MM/YYYY").format("x")
       ).then(values => {
         this.numberInvoicesCreated = values.length;
+        InvoiceService.downloadList(values.map(dto => dto.id));
         this.snackbar = true;
         this.$refs.form.reset();
       });
