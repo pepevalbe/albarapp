@@ -144,7 +144,7 @@ export default {
       totalItems: 0,
       filter: {
         form: {
-          valid: false,
+          valid: true,
           customer: {},
           dateFrom: "",
           dateTo: ""
