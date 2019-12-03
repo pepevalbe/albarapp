@@ -136,7 +136,6 @@
         @click="createInvoices()"
       >Facturar</v-btn>
       <v-btn to="/invoice-list/">Volver</v-btn>
-      <v-btn @click="downloadList()">Prueba descarga ZIP</v-btn>
     </v-row>
     <v-snackbar v-model="snackbar">
       Creadas {{numberInvoicesCreated}} facturas correctamente
@@ -193,18 +192,18 @@ export default {
   methods: {
     async createInvoices() {
       this.showSpinner();
-      await InvoiceService.createList(
+      var invoicesCreated = await InvoiceService.createList(
         this.form.customerCodeFrom,
         this.form.customerCodeTo,
         this.$moment(this.form.dateFromFormatted, "DD/MM/YYYY").format("x"),
         this.$moment(this.form.dateToFormatted, "DD/MM/YYYY").format("x"),
         this.$moment(this.form.issuedDateFormatted, "DD/MM/YYYY").format("x")
-      ).then(values => {
-        this.numberInvoicesCreated = values.length;
-        InvoiceService.downloadList(values.map(dto => dto.id));
-        this.snackbar = true;
-        this.$refs.form.reset();
-      });
+      );
+      this.numberInvoicesCreated = invoicesCreated.length;
+      if (invoicesCreated.length)
+        await InvoiceService.downloadList(invoicesCreated.map(dto => dto.id));
+      this.snackbar = true;
+      this.$refs.form.reset();
       this.closeSpinner();
     },
     parseDateFromPick() {
