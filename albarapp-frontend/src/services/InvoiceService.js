@@ -195,7 +195,8 @@ export default {
             responseType: 'arraybuffer',
             headers: {
                 'Accept': 'application/octet-stream'
-            }
+            },
+            timeout: 120000
         }).then(response => {
             let blob = new Blob([response.data], { type: 'application/octet-stream' });
             let link = document.createElement('a');
