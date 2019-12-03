@@ -206,8 +206,10 @@ export default {
     download(item) {
       InvoiceService.download(item.id);
     },
-    downloadList() {
-      InvoiceService.downloadList(this.selectedInvoices.map(dto => dto.id));
+    async downloadList() {
+      this.showSpinner();
+      await InvoiceService.downloadList(this.selectedInvoices.map(dto => dto.id));
+      this.closeSpinner();
     }
   }
 };
