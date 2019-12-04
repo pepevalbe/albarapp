@@ -30,7 +30,7 @@ public class DeliveryNote {
 	@JoinColumn(name = "invoice_id")
 	private Invoice invoice;
 
-	@OneToMany(mappedBy = "deliveryNote", fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "deliveryNote")
 	private List<DeliveryNoteItem> deliveryNoteItems;
 
 	@Override

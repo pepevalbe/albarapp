@@ -19,7 +19,7 @@ public class Invoice {
 	@Column(nullable = false)
 	private long issuedTimestamp;
 
-	@OneToMany(mappedBy = "invoice", fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "invoice")
 	private List<DeliveryNote> deliveryNotes;
 
 	@ManyToOne
