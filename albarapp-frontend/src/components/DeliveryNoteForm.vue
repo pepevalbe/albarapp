@@ -142,7 +142,7 @@
       <v-layout text-center wrap class="pt-10">
         <v-flex xs12>
           <v-row class="ml-5" justify="center">
-            <v-btn class="mr-4" to="/delivery-note-list/">Volver</v-btn>
+            <v-btn class="mr-4" @click="$router.back()">Volver</v-btn>
             <v-btn color="error" v-if="form.create" class="mr-4" @click="reset()">Borrar</v-btn>
             <v-btn
               ref="createbutton"
@@ -345,7 +345,9 @@ export default {
       this.$nextTick(this.$refs.quantity.focus);
     },
     moveToProductCode() {
-      this.$nextTick(this.$refs.productCode.focus);
+      if (this.quantity) {
+        this.$nextTick(this.$refs.productCode.focus);
+      }
     },
     moveToPrice() {
       this.$nextTick(this.$refs.price.focus);

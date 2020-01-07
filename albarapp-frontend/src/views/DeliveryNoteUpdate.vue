@@ -39,7 +39,7 @@ export default {
     }
   }),
   props: {
-    deliveryNoteId: Number
+    deliveryNoteId: String
   },
   created() {
     this.loadDeliveryNote();

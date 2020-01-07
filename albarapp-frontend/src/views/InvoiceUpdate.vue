@@ -93,6 +93,13 @@
               <td>{{deliveryNote.deliveryNoteTotal.value.toFixed(2)}} €</td>
               <td justify="center">
                 <div class="text-xs-center">
+                  <v-btn class="ma-2" justify="center" @click="editDeliveryNote(deliveryNote)">
+                    <v-icon dark>mdi-pencil</v-icon>
+                  </v-btn>
+                </div>
+              </td>
+              <td justify="center">
+                <div class="text-xs-center">
                   <v-btn
                     class="ma-2"
                     justify="center"
@@ -138,6 +145,9 @@
                 <v-card-actions>
                   <v-layout text-center wrap>
                     <v-flex xs12>
+                      <v-btn class="ma-2" justify="center" @click="editDeliveryNote(deliveryNote)">
+                        <v-icon dark>mdi-pencil</v-icon>
+                      </v-btn>
                       <v-btn
                         class="ma-2"
                         justify="center"
@@ -158,7 +168,7 @@
     </v-form>
     <v-layout text-center wrap class="pt-10">
       <v-flex xs12>
-        <v-btn class="mr-4" to="/invoice-list/">Volver</v-btn>
+        <v-btn class="mr-4" @click="$router.back()">Volver</v-btn>
         <v-btn
           :disabled="!form.valid"
           color="success"
@@ -319,6 +329,7 @@ export default {
           value: "deliveryNoteItems"
         },
         { text: "Total", sortable: false, value: "total" },
+        { text: "", sortable: false, value: "edit" },
         { text: "", sortable: false, value: "disassociate" }
       ],
       dateFormatted: "",
@@ -346,7 +357,7 @@ export default {
     };
   },
   props: {
-    invoiceId: Number
+    invoiceId: String
   },
   created() {
     this.loadInvoice();
@@ -394,6 +405,12 @@ export default {
       this.dialogDisassociate.deliveryNote = deliveryNote;
       this.dialogDisassociate.invoice = this.form.invoice;
       this.dialogDisassociate.show = true;
+    },
+    editDeliveryNote(deliveryNote) {
+      this.$router.push({
+        name: "DeliveryNoteUpdate",
+        params: { deliveryNoteId: deliveryNote.id.toString() }
+      });
     },
     async confirmDisassociate() {
       await DeliveryNoteService.disassociateInvoice(

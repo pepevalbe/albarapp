@@ -9,7 +9,7 @@
     <div class="mb-10"></div>
     <v-layout text-center wrap class="pt-10">
       <v-flex xs12>
-        <v-btn class="mr-4" to="/customer-list/">Volver</v-btn>
+        <v-btn class="mr-4" @click="$router.back()">Volver</v-btn>
         <v-btn
           :disabled="!form.valid"
           color="success"

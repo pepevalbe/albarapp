@@ -42,7 +42,7 @@ export default new Router({
       meta: { headerName: "Nuevo producto" }
     },
     {
-      path: "/product-update/",
+      path: "/product-update/:productId",
       component: () => import("@/views/ProductUpdate"),
       props: true,
       name: "ProductUpdate",
@@ -61,14 +61,14 @@ export default new Router({
       meta: { headerName: "Nuevo cliente" }
     },
     {
-      path: "/customer-detail/",
+      path: "/customer-detail/:customerId",
       component: () => import("@/views/CustomerDetail"),
       props: true,
       name: "CustomerDetail",
       meta: { headerName: "Detalle de cliente" }
     },
     {
-      path: "/customer-update/",
+      path: "/customer-update/:customerId",
       component: () => import("@/views/CustomerUpdate"),
       props: true,
       name: "CustomerUpdate",
@@ -87,7 +87,7 @@ export default new Router({
       meta: { headerName: "Nuevo albarán" }
     },
     {
-      path: "/delivery-note-update/",
+      path: "/delivery-note-update/:deliveryNoteId",
       component: () => import("@/views/DeliveryNoteUpdate"),
       props: true,
       name: "DeliveryNoteUpdate",
@@ -100,7 +100,7 @@ export default new Router({
       meta: { headerName: "Facturas" }
     },
     {
-      path: "/invoice-update/",
+      path: "/invoice-update/:invoiceId",
       component: () => import("@/views/InvoiceUpdate"),
       props: true,
       name: "InvoiceUpdate",

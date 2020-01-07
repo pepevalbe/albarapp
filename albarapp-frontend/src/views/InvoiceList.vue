@@ -191,7 +191,7 @@ export default {
     updateInvoice(item) {
       this.$router.push({
         name: "InvoiceUpdate",
-        params: { invoiceId: item.id }
+        params: { invoiceId: item.id.toString() }
       });
     },
     dateFormatted(timestamp) {

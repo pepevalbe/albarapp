@@ -162,7 +162,7 @@ export default {
     updateDeliveryNote(item) {
       this.$router.push({
         name: "DeliveryNoteUpdate",
-        params: { deliveryNoteId: item.id }
+        params: { deliveryNoteId: item.id.toString() }
       });
     },
     dateFormatted(timestamp) {

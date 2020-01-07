@@ -10,7 +10,7 @@
     <div class="mb-10"></div>
     <v-layout text-center wrap>
       <v-flex xs12>
-        <v-btn to="/customer-list/">Volver</v-btn>
+        <v-btn @click="$router.back()">Volver</v-btn>
       </v-flex>
     </v-layout>
     <v-overlay v-if="spinner.loading" :value="true">
