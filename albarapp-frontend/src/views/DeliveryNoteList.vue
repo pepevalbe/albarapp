@@ -30,6 +30,12 @@
               <td>{{item.auxDeliveryNoteNr}}</td>
               <td>{{item.customerAlias}}</td>
               <td>{{dateFormatted(item.issuedTimestamp)}}</td>
+              <td>
+                <span v-for="(noteItem,index) in item.deliveryNoteItems" :key="index">
+                  {{noteItem.quantity}} - {{noteItem.productName}} - {{noteItem.price}} €
+                  <br />
+                </span>
+              </td>
               <td>{{currencyFormatted(item.total)}}</td>
               <td>
                 <v-btn @click="updateDeliveryNote(item)">
@@ -57,6 +63,10 @@
                   <span class="black--text">Fecha:</span>
                   {{dateFormatted(item.issuedTimestamp)}}
                   <br />
+                  <span v-for="(noteItem,index) in item.deliveryNoteItems" :key="index">
+                    {{noteItem.quantity}} - {{noteItem.productName}} - {{noteItem.price}} €
+                    <br />
+                  </span>
                   <span class="black--text">Total:</span>
                   {{currencyFormatted(item.total)}}
                   <br />
@@ -104,6 +114,7 @@ export default {
         },
         { text: "Cliente", sortable: true, value: "customer.code" },
         { text: "Fecha", sortable: true, value: "issuedTimestamp" },
+        { text: "Productos", sortable: false, value: "products" },
         { text: "Total", sortable: false, value: "total" },
         { text: "", sortable: false, value: "update" }
       ],

@@ -21,11 +21,14 @@ public interface InvoiceMapper {
 	@Mapping(source = "invoice.id", target = "invoiceId")
 	@Mapping(source = "total", target = "total")
 	@Mapping(ignore = true, target = "customerId")
-	@Mapping(ignore = true, target = "deliveryNoteItems")
 	DeliveryNoteDto map(DeliveryNote deliveryNote);
 
 	@Mapping(source = "customerId", target = "customer.id")
 	DeliveryNote map(DeliveryNoteDto deliveryNoteDto);
+
+	@Mapping(source = "product.name", target = "productName")
+	@Mapping(ignore = true, target = "productId")
+	DeliveryNoteItemDto map(DeliveryNoteItem deliveryNoteItem);
 
 	@Mapping(source = "productId", target = "product.id")
 	DeliveryNoteItem map(DeliveryNoteItemDto deliveryNoteItemDto);
