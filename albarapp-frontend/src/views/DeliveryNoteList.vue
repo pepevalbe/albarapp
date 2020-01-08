@@ -111,13 +111,22 @@ export default {
         itemsPerPageOptions: [10, 20, 30, 40, 50],
         showFirstLastPage: true
       },
-      options: {},
+      options: {
+        page: 1,
+        itemsPerPage: 10,
+        sortBy: [],
+        sortDesc: [],
+        groupBy: [],
+        groupDesc: [],
+        mustSort: false,
+        multiSort: false
+      },
       loading: true,
       totalItems: 0,
       filter: {
         form: {
           valid: true,
-          customer: {},
+          customerCode: "",
           dateFrom: "",
           dateTo: ""
         }
@@ -128,23 +137,25 @@ export default {
       }
     };
   },
-  async mounted() {
-    await this.listDeliveryNotes();
-  },
-  watch: {
-    options: {
-      handler() {
-        this.listDeliveryNotes();
-      },
-      deep: true
-    },
-    filter: {
-      handler() {
-        this.options.page = 1;
-        this.listDeliveryNotes();
-      },
-      deep: true
+  async created() {
+    if (this.$route.query) {
+      if (this.$route.query.customerCode)
+        this.filter.form.customerCode = this.$route.query.customerCode;
+      if (this.$route.query.from)
+        this.filter.form.dateFrom = this.$route.query.from;
+      if (this.$route.query.to) this.filter.form.dateTo = this.$route.query.to;
+      if (this.$route.query.page)
+        this.options.page = Number(this.$route.query.page);
+      if (this.$route.query.itemsPerPage)
+        this.options.itemsPerPage = Number(this.$route.query.itemsPerPage);
+      if (this.$route.query.sortBy)
+        this.options.sortBy[0] = this.$route.query.sortBy;
+      if (this.$route.query.sortDesc)
+        this.options.sortDesc[0] = this.$route.query.sortDesc;
     }
+    await this.listDeliveryNotes();
+    this.$watch("options", this.listDeliveryNotes, { deep: true });
+    this.$watch("filter", this.listDeliveryNotes, { deep: true });
   },
   methods: {
     async listDeliveryNotes() {
@@ -158,6 +169,7 @@ export default {
       this.totalItems = response.totalElements;
       this.loading = false;
       this.closeSpinner();
+      this.updateURL();
     },
     updateDeliveryNote(item) {
       this.$router.push({
@@ -173,6 +185,24 @@ export default {
         style: "currency",
         currency: "EUR"
       });
+    },
+    updateURL() {
+      var query = {};
+      if (this.filter.form.customerCode)
+        query.customerCode = this.filter.form.customerCode;
+      if (this.filter.form.dateFrom) query.from = this.filter.form.dateFrom;
+      if (this.filter.form.dateTo) query.to = this.filter.form.dateTo;
+      if (this.options.page) query.page = this.options.page;
+      if (this.options.itemsPerPage)
+        query.itemsPerPage = this.options.itemsPerPage;
+      if (this.options.sortBy) query.sortBy = this.options.sortBy[0];
+      if (this.options.sortDesc) query.sortDesc = this.options.sortDesc[0];
+      this.$router
+        .push({
+          path: this.$route.path,
+          query: query
+        })
+        .catch(err => {});
     }
   }
 };

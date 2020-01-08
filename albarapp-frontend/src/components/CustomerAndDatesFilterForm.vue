@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <v-expansion-panels>
+    <v-expansion-panels v-model="panelsExpanded">
       <v-expansion-panel>
         <v-expansion-panel-header>
           <span class="subtitle-1 font-italic font-weight-light">Filtrar resultados</span>
@@ -10,7 +10,7 @@
             <v-row>
               <v-col cols="12" md="6">
                 <v-autocomplete
-                  v-model="form.customer"
+                  v-model="customer"
                   label="Cliente"
                   :items="customers"
                   item-text="alias"
@@ -107,12 +107,13 @@ export default {
   props: {
     form: {
       valid: Boolean,
-      customer: Object,
+      customerCode: String,
       dateFrom: String,
       dateTo: String
     }
   },
   data: () => ({
+    panelsExpanded: null,
     customerCode: "",
     customerCodeRules: [
       v =>
@@ -120,6 +121,7 @@ export default {
         "El código debe tener un máximo de 5 dígitos"
     ],
     customers: [],
+    customer: {},
     dateFromFormatted: "",
     dateToFormatted: "",
     menuDateFromPicker: false,
@@ -131,6 +133,11 @@ export default {
   }),
   created() {
     this.listCustomers();
+    if (this.form.dateFrom) this.parseDateFromPick();
+    if (this.form.dateTo) this.parseDateToPick();
+    if (this.form.dateTo || this.form.dateFrom || this.form.customerCode) {
+      this.panelsExpanded = 0;
+    }
   },
   methods: {
     async listCustomers() {
@@ -139,36 +146,39 @@ export default {
       this.customers.forEach(function(element) {
         element.alias = element.code + " - " + element.alias;
       });
-      this.customers.sort(function(a,b){
+      this.customers.sort(function(a, b) {
         if (a.code < b.code) return -1;
         if (a.code > b.code) return 1;
         if (a.code == b.code) return 0;
-      })
+      });
+      this.selectCustomerByCode();
       this.closeSpinner();
     },
     selectCustomerByCode() {
       var vm = this;
-      if (this.customerCode != "" && this.customerCode != null) {
+      if (this.form.customerCode != "" && this.form.customerCode != null) {
         var index = this.customers.findIndex(function(element) {
-          return element.code == vm.customerCode;
+          return element.code == vm.form.customerCode;
         });
         if (index === -1) {
           this.snackbar = true;
           this.snackbarMessage = "No existe ningún cliente con ese código";
           this.$nextTick(this.$refs.customerCode.focus);
         } else {
-          this.form.customer = this.customers[index];
+          this.customer = this.customers[index];
         }
       }
     },
     selectCustomerByAlias() {
       if (
-        this.form.customer != {} &&
-        this.form.customer != null &&
-        this.form.customer != undefined &&
-        this.form.customer.code != null
+        this.customer != {} &&
+        this.customer != null &&
+        this.customer != undefined &&
+        this.customer.code != null
       ) {
-        this.customerCode = this.form.customer.code;
+        this.form.customerCode = this.customer.code;
+      } else {
+        this.form.customerCode = null;
       }
       return false;
     },

@@ -1,10 +1,13 @@
  <template>
   <div>
     <v-app>
-      <WebHeader v-bind:currentStateHeaderName="currentRouteHeaderName" v-bind:currentState="currentRouteName" />
+      <WebHeader
+        v-bind:currentStateHeaderName="currentRouteHeaderName"
+        v-bind:currentState="currentRouteName"
+      />
       <v-content>
         <v-container>
-          <router-view :key="$route.fullPath"></router-view>
+          <router-view :key="$route.path"></router-view>
         </v-container>
       </v-content>
       <WebFooter />
@@ -29,7 +32,7 @@ export default {
     },
     currentRouteName() {
       return this.$route.name;
-    },
+    }
   }
 };
 </script>

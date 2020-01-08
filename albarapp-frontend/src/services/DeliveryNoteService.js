@@ -59,8 +59,7 @@ export default {
     async getAllWithCustomerAndTotal(filter, options) {
         var params = {};
         if (filter && filter.form) {
-            if (filter.form.customer && filter.form.customer.code)
-                params.customerCode = filter.form.customer.code;
+            if (filter.form.customerCode) params.customerCode = filter.form.customerCode;
             if (filter.form.dateFrom) params.timestampFrom = moment(filter.form.dateFrom, "YYYY-MM-DD").format('x');
             if (filter.form.dateTo) params.timestampTo = moment(filter.form.dateTo, "YYYY-MM-DD").format('x');
         }
@@ -68,7 +67,7 @@ export default {
             if (options.page) params.page = options.page - 1;
             if (options.itemsPerPage) params.size = options.itemsPerPage;
             if (options.sortBy && options.sortBy.length) {
-                var direction = options.sortDesc[0]?'desc':'asc';
+                var direction = options.sortDesc[0] ? 'desc' : 'asc';
                 params.sort = options.sortBy + ',' + direction;
             }
         }
@@ -120,7 +119,7 @@ export default {
         }
         return deliveryNote;
     },
-    
+
     async create(deliveryNote, deliveryNoteItems) {
 
         var deliveryNoteDto = {

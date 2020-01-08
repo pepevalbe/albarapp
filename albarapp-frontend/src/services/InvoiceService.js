@@ -79,8 +79,7 @@ export default {
     getAllWithCustomerAndTotal(filter, options) {
         var params = {};
         if (filter && filter.form) {
-            if (filter.form.customer && filter.form.customer.code)
-                params.customerCode = filter.form.customer.code;
+            if (filter.form.customerCode) params.customerCode = filter.form.customerCode;
             if (filter.form.dateFrom) params.timestampFrom = moment(filter.form.dateFrom, "YYYY-MM-DD").format('x');
             if (filter.form.dateTo) params.timestampTo = moment(filter.form.dateTo, "YYYY-MM-DD").format('x');
         }
@@ -88,7 +87,7 @@ export default {
             if (options.page) params.page = options.page - 1;
             if (options.itemsPerPage) params.size = options.itemsPerPage;
             if (options.sortBy && options.sortBy.length) {
-                var direction = options.sortDesc[0]?'desc':'asc';
+                var direction = options.sortDesc[0] ? 'desc' : 'asc';
                 params.sort = options.sortBy + ',' + direction;
             }
         }
@@ -191,21 +190,21 @@ export default {
     },
     downloadList(ids) {
         return HttpClient.get(`${INVOICE_LIST_DOWNLOAD_ENDPOINT}/?invoiceId=${ids}`,
-        {
-            responseType: 'arraybuffer',
-            headers: {
-                'Accept': 'application/octet-stream'
-            },
-            timeout: 120000
-        }).then(response => {
-            let blob = new Blob([response.data], { type: 'application/octet-stream' });
-            let link = document.createElement('a');
-            link.href = window.URL.createObjectURL(blob);
-            link.download = 'invoices_' + moment().format("DDMMYYYY") + '.zip';
-            link.click();
-        })
-        .catch(() => {
-            alert("Ha ocurrido un error descargando la factura");
-        });
+            {
+                responseType: 'arraybuffer',
+                headers: {
+                    'Accept': 'application/octet-stream'
+                },
+                timeout: 120000
+            }).then(response => {
+                let blob = new Blob([response.data], { type: 'application/octet-stream' });
+                let link = document.createElement('a');
+                link.href = window.URL.createObjectURL(blob);
+                link.download = 'invoices_' + moment().format("DDMMYYYY") + '.zip';
+                link.click();
+            })
+            .catch(() => {
+                alert("Ha ocurrido un error descargando la factura");
+            });
     }
 }

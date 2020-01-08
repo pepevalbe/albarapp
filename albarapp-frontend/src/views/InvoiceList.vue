@@ -145,7 +145,7 @@ export default {
       filter: {
         form: {
           valid: true,
-          customer: {},
+          customerCode: "",
           dateFrom: "",
           dateTo: ""
         }
@@ -156,23 +156,25 @@ export default {
       }
     };
   },
-  async mounted() {
-    await this.listInvoices();
-  },
-  watch: {
-    options: {
-      handler() {
-        this.listInvoices();
-      },
-      deep: true
-    },
-    filter: {
-      handler() {
-        this.options.page = 1;
-        this.listInvoices();
-      },
-      deep: true
+  async created() {
+    if (this.$route.query) {
+      if (this.$route.query.customerCode)
+        this.filter.form.customerCode = this.$route.query.customerCode;
+      if (this.$route.query.from)
+        this.filter.form.dateFrom = this.$route.query.from;
+      if (this.$route.query.to) this.filter.form.dateTo = this.$route.query.to;
+      if (this.$route.query.page)
+        this.options.page = Number(this.$route.query.page);
+      if (this.$route.query.itemsPerPage)
+        this.options.itemsPerPage = Number(this.$route.query.itemsPerPage);
+      if (this.$route.query.sortBy)
+        this.options.sortBy[0] = this.$route.query.sortBy;
+      if (this.$route.query.sortDesc)
+        this.options.sortDesc[0] = this.$route.query.sortDesc;
     }
+    await this.listInvoices();
+    this.$watch("options", this.listInvoices, { deep: true });
+    this.$watch("filter", this.listInvoices, { deep: true });
   },
   methods: {
     async listInvoices() {
@@ -187,6 +189,7 @@ export default {
       this.totalItems = response.totalElements;
       this.loading = false;
       this.closeSpinner();
+      this.updateURL();
     },
     updateInvoice(item) {
       this.$router.push({
@@ -208,8 +211,28 @@ export default {
     },
     async downloadList() {
       this.showSpinner();
-      await InvoiceService.downloadList(this.selectedInvoices.map(dto => dto.id));
+      await InvoiceService.downloadList(
+        this.selectedInvoices.map(dto => dto.id)
+      );
       this.closeSpinner();
+    },
+    updateURL() {
+      var query = {};
+      if (this.filter.form.customerCode)
+        query.customerCode = this.filter.form.customerCode;
+      if (this.filter.form.dateFrom) query.from = this.filter.form.dateFrom;
+      if (this.filter.form.dateTo) query.to = this.filter.form.dateTo;
+      if (this.options.page) query.page = this.options.page;
+      if (this.options.itemsPerPage)
+        query.itemsPerPage = this.options.itemsPerPage;
+      if (this.options.sortBy) query.sortBy = this.options.sortBy[0];
+      if (this.options.sortDesc) query.sortDesc = this.options.sortDesc[0];
+      this.$router
+        .push({
+          path: this.$route.path,
+          query: query
+        })
+        .catch(err => {});
     }
   }
 };
