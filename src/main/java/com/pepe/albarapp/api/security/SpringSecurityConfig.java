@@ -37,6 +37,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 				.addFilter(new JWTAuthorizationFilter(authenticationManager(), signingKey));
 
 		http.authorizeRequests().antMatchers("/hateoas/**", "/api/**").hasAnyRole(UserRole.roles());
+		http.authorizeRequests().antMatchers("/user-creation").permitAll();
 		//http.headers().frameOptions().sameOrigin();	      // Needed for H2 console
 		//http.authorizeRequests().anyRequest().permitAll();  // Permit all requests
 	}
