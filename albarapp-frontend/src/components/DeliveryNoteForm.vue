@@ -330,6 +330,7 @@ export default {
     },
     moveToAuxDeliveryNoteNr() {
       this.$nextTick(this.$refs.auxDeliveryNoteNr.focus);
+      this.menuDatePicker = false;
     },
     moveToQuantity() {
       // We load default product and productPrice for this customer
@@ -381,7 +382,6 @@ export default {
         this.form.deliveryNote.date = moment.format("YYYY-MM-DD");
         this.dateFormatted = moment.format("DD/MM/YYYY");
         this.form.deliveryNote.issuedTimestamp = moment.format("x");
-        this.menuDatePicker = false;
       } else {
         this.$nextTick(this.$refs.dateText.focus);
       }
