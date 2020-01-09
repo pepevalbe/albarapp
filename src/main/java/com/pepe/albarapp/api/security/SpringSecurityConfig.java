@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -25,21 +26,23 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 
 		/*
-		 * Disable use of cookies
-		 * Activate CORS configuration with default values and disable CSRF filter
-		 * Add authentication and authorization filter
-		 * Authorize /hateoas and /api requests to any role
+		 * Disable use of cookies Activate CORS configuration with default values and
+		 * disable CSRF filter Add authentication and authorization filter Authorize
+		 * /hateoas and /api requests to any role
 		 */
 
-		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-				.and().cors().and().csrf().disable()
-				.addFilter(new JWTAuthenticationFilter(authenticationManager(), signingKey))
+		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().cors().and().csrf()
+				.disable().addFilter(new JWTAuthenticationFilter(authenticationManager(), signingKey))
 				.addFilter(new JWTAuthorizationFilter(authenticationManager(), signingKey));
 
 		http.authorizeRequests().antMatchers("/hateoas/**", "/api/**").hasAnyRole(UserRole.roles());
-		http.authorizeRequests().antMatchers("/user-creation").permitAll();
-		//http.headers().frameOptions().sameOrigin();	      // Needed for H2 console
-		//http.authorizeRequests().anyRequest().permitAll();  // Permit all requests
+		// http.headers().frameOptions().sameOrigin(); // Needed for H2 console
+		// http.authorizeRequests().anyRequest().permitAll(); // Permit all requests
+	}
+
+	@Override
+	public void configure(WebSecurity web) throws Exception {
+		web.ignoring().antMatchers("/user-creation");
 	}
 
 	@Override
