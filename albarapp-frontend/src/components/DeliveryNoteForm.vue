@@ -56,7 +56,7 @@
             <v-date-picker
               v-model="form.deliveryNote.date"
               no-title
-              @input="parseDatePick()"
+              @input="datePickedOnCalendar()"
               locale="es-ES"
               first-day-of-week="1"
             ></v-date-picker>
@@ -384,6 +384,10 @@ export default {
       } else {
         this.$nextTick(this.$refs.dateText.focus);
       }
+    },
+    datePickedOnCalendar() {
+      this.parseDatePick();
+      this.moveToAuxDeliveryNoteNr();
     },
     parseDatePick() {
       var moment = this.$moment(

@@ -232,7 +232,7 @@ export default {
           path: this.$route.path,
           query: query
         })
-        .catch(err => {});
+        .catch(() => {});
     }
   }
 };
