@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_USER')")
 public interface InvoiceRepository extends PagingAndSortingRepository<Invoice, Long> {
 
-	@Query("select i from Invoice i where (:customerCode is null or i.customer.code = :customerCode) and (:timestampFrom is null or i.issuedTimestamp >= :timestampFrom) and (:timestampTo is null or i.issuedTimestamp <= :timestampTo)")
+	@Query(value = "select distinct i from Invoice i join fetch i.deliveryNotes where (:customerCode is null or i.customer.code = :customerCode) and (:timestampFrom is null or i.issuedTimestamp >= :timestampFrom) and (:timestampTo is null or i.issuedTimestamp <= :timestampTo)", 
+	countQuery = "select distinct count(i) from Invoice i where (:customerCode is null or i.customer.code = :customerCode) and (:timestampFrom is null or i.issuedTimestamp >= :timestampFrom) and (:timestampTo is null or i.issuedTimestamp <= :timestampTo)")
 	Page<Invoice> filterByCustomerCodeAndTimestampRange(@Param("customerCode") Integer customerCode, @Param("timestampFrom") Long timestampFrom, @Param("timestampTo") Long timestampTo, Pageable pageable);
 }
