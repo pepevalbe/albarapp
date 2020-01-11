@@ -139,7 +139,16 @@ export default {
         itemsPerPageOptions: [10, 20, 30, 40, 50],
         showFirstLastPage: true
       },
-      options: {},
+      options: {
+        page: 1,
+        itemsPerPage: 10,
+        sortBy: [],
+        sortDesc: [],
+        groupBy: [],
+        groupDesc: [],
+        mustSort: false,
+        multiSort: false
+      },
       loading: true,
       totalItems: 0,
       filter: {
