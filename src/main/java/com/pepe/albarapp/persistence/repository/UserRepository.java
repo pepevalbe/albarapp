@@ -8,8 +8,13 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import java.util.Optional;
 
 @CrossOrigin(origins = "http://localhost:8080")
+@PreAuthorize("hasRole('ROLE_ADMIN')")
 public interface UserRepository extends CrudRepository<User, String> {
 
 	@PreAuthorize("hasRole('ROLE_ADMIN') or #email == authentication.name")
 	Optional<User> findByEmail(String email);
+
+	@PreAuthorize("hasRole('ROLE_REGISTRY')")
+	@Override
+	<S extends User> S save(S s);
 }

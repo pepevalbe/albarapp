@@ -25,13 +25,17 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 
 		/*
-		 * Disable use of cookies Activate CORS configuration with default values and
-		 * disable CSRF filter Add authentication and authorization filter Authorize
-		 * /hateoas and /api requests to any role
+		 * Disable use of cookies
+		 * Activate CORS configuration with default values
+		 * Disable CSRF filter
+		 * Add authentication and authorization filter
+		 * Authorize /hateoas and /api requests to any role
 		 */
 
-		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().cors().and().csrf()
-				.disable().addFilter(new JWTAuthenticationFilter(authenticationManager(), signingKey))
+		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+				.and().cors()
+				.and().csrf().disable()
+				.addFilter(new JWTAuthenticationFilter(authenticationManager(), signingKey))
 				.addFilter(new JWTAuthorizationFilter(authenticationManager(), signingKey));
 
 		http.authorizeRequests().antMatchers("/hateoas/**", "/api/**").hasAnyRole(UserRole.roles());

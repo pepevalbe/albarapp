@@ -8,6 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,6 +20,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.security.Principal;
+import java.util.Collections;
 
 @RestController
 public class UserController {
@@ -33,6 +38,11 @@ public class UserController {
 
 	@PostMapping(USER_ENDPOINT)
 	public ResponseEntity<User> createUser(@RequestBody RegistrationDto registrationDto) {
+
+		// Add authentication with ROLE_REGISTRY authority
+		GrantedAuthority authority = new SimpleGrantedAuthority("ROLE_REGISTRY");
+		AnonymousAuthenticationToken authentication = new AnonymousAuthenticationToken("registry", "anonymous", Collections.singleton(authority));
+		SecurityContextHolder.getContext().setAuthentication(authentication);
 
 		return ResponseEntity.ok(userService.createUser(registrationDto));
 	}
