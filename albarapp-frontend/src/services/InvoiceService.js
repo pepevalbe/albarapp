@@ -76,7 +76,7 @@ export default {
     async getDeliveryNoteItemsAndCustomer(deliveryNote) {
         Object.assign(deliveryNote, await DeliveryNoteService.getWithCustomerAndTotal(deliveryNote.id));
     },
-    getAllWithCustomerAndTotal(filter, options) {
+    getAllWithCustomerAndTotal(filter, options, timeout) {
         var params = {};
         if (filter && filter.form) {
             if (filter.form.customerCode) params.customerCode = filter.form.customerCode;
@@ -98,7 +98,11 @@ export default {
 
         if (queryString != "") queryString = '?' + queryString;
 
-        return HttpClient.get(INVOICE_COMPLETE_ENDPOINT + queryString)
+        var HttpClientOptions = timeout ? {
+            timeout: timeout
+        } : null;
+
+        return HttpClient.get(INVOICE_COMPLETE_ENDPOINT + queryString, HttpClientOptions)
             .then(response => {
                 return {
                     invoices: response.data.content,

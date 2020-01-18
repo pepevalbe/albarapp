@@ -83,9 +83,12 @@ public class InvoiceService {
 	public Page<InvoiceDto> getInvoices(@RequestParam Integer customerCode, @RequestParam Long timestampFrom,
 			@RequestParam Long timestampTo, Pageable pageable) {
 
-		return invoiceRepository
-				.filterByCustomerCodeAndTimestampRange(customerCode, timestampFrom, timestampTo, pageable)
-				.map(invoiceMapper::map);
+		return invoiceRepository.filterByCustomerCodeAndTimestampRange(customerCode, timestampFrom, timestampTo,
+				pageable);
+		/*
+		 * return invoiceRepository .filterByCustomerCodeAndTimestampRange(customerCode,
+		 * timestampFrom, timestampTo, pageable) .map(invoiceMapper::map);
+		 */
 	}
 
 	@Transactional
