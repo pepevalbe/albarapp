@@ -64,12 +64,14 @@ export default {
       this.$refs.form.reset();
     },
     async updateDeliveryNote() {
+      this.showSpinner();
       await DeliveryNoteService.update(
         this.deliveryNoteId,
         this.form.deliveryNote,
         this.form.deliveryNote.deliveryNoteItems,
         this.deliveryNoteItemsOriginal
       );
+      this.closeSpinner();
       this.snackbar = true;
       this.loadDeliveryNote();
     }

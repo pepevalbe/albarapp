@@ -206,7 +206,14 @@ export default {
     }
     await this.listInvoices();
     this.$watch("options", this.listInvoices, { deep: true });
-    this.$watch("filter", this.listInvoices, { deep: true });
+    this.$watch(
+      "filter",
+      function() {
+        if (this.options.page != 1) this.options.page = 1;
+        else this.listInvoices();
+      },
+      { deep: true }
+    );
   },
   methods: {
     async listInvoices() {

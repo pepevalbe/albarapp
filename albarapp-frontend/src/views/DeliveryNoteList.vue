@@ -166,7 +166,14 @@ export default {
     }
     await this.listDeliveryNotes();
     this.$watch("options", this.listDeliveryNotes, { deep: true });
-    this.$watch("filter", this.listDeliveryNotes, { deep: true });
+    this.$watch(
+      "filter",
+      function() {
+        if (this.options.page != 1) this.options.page = 1;
+        else this.listDeliveryNotes();
+      },
+      { deep: true }
+    );
   },
   methods: {
     async listDeliveryNotes() {

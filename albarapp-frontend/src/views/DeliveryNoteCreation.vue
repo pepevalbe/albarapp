@@ -5,6 +5,9 @@
       Albarán creado correctamente
       <v-btn color="success" text @click="snackbar = false">Cerrar</v-btn>
     </v-snackbar>
+    <v-overlay v-if="spinner.loading" :value="true">
+      <v-progress-circular indeterminate color="primary"></v-progress-circular>
+    </v-overlay>
   </v-flex>
 </template>
 
@@ -32,7 +35,11 @@ export default {
       deliveryNoteItems: [],
       deliveryNoteTotal: { value: 0 }
     },
-    snackbar: false
+    snackbar: false,
+    spinner: {
+      loading: false,
+      counter: 0
+    }
   }),
   mounted() {
     this.setDateToday();
@@ -46,10 +53,12 @@ export default {
       this.$refs.form.reset();
     },
     async createDeliveryNote() {
+      this.showSpinner();
       await DeliveryNoteService.create(
         this.form.deliveryNote,
         this.form.deliveryNote.deliveryNoteItems
       );
+      this.closeSpinner();
       this.reset();
       this.snackbar = true;
     }
