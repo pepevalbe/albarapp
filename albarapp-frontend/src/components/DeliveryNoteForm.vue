@@ -371,6 +371,7 @@ export default {
     },
     createDeliveryNote() {
       this.$emit("saveClicked");
+      this.$nextTick(this.$refs.customerCode.focus);
     },
     parseDateText() {
       var moment = this.$moment(
