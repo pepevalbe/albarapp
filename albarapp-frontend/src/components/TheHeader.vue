@@ -5,7 +5,7 @@
       <v-app-bar-nav-icon @click="toggleNavDrawer"></v-app-bar-nav-icon>
       <v-toolbar-title class="headline text-uppercase">
         <a href="/">Albarapp</a>
-        <span class="font-weight-light">- {{currentStateHeaderName}}</span>
+        <span class="font-weight-light"> - {{currentStateHeaderName}}</span>
       </v-toolbar-title>
     </v-app-bar>
     <v-dialog

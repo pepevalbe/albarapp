@@ -36,3 +36,8 @@ export default {
   }
 };
 </script>
+<style>
+button:focus {
+  background-color: #b5e7a0 !important;
+}
+</style>
