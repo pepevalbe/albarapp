@@ -82,6 +82,7 @@ export default {
             if (filter.form.customerCode) params.customerCode = filter.form.customerCode;
             if (filter.form.dateFrom) params.timestampFrom = moment(filter.form.dateFrom, "YYYY-MM-DD").format('x');
             if (filter.form.dateTo) params.timestampTo = moment(filter.form.dateTo, "YYYY-MM-DD").format('x');
+            if (filter.products.productCodes && filter.products.productCodes.length) params.productCodes = filter.products.productCodes;
         }
         if (options) {
             if (options.page) params.page = options.page - 1;

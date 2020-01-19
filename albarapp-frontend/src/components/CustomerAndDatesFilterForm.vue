@@ -1,9 +1,9 @@
 <template>
   <v-container>
-    <v-expansion-panels v-model="panelsExpanded">
+    <v-expansion-panels v-model="panelsExpanded" :dark="!(!form.dateFrom && !form.dateTo && !form.customerCode)">
       <v-expansion-panel>
         <v-expansion-panel-header>
-          <span class="subtitle-1 font-italic font-weight-light">Filtrar resultados</span>
+          <span class="subtitle-1 font-italic font-weight-light">Filtrar por cliente y fechas</span>
         </v-expansion-panel-header>
         <v-expansion-panel-content>
           <v-form ref="form" v-model="form.valid">
@@ -135,9 +135,6 @@ export default {
     this.listCustomers();
     if (this.form.dateFrom) this.parseDateFromPick();
     if (this.form.dateTo) this.parseDateToPick();
-    if (this.form.dateTo || this.form.dateFrom || this.form.customerCode) {
-      this.panelsExpanded = 0;
-    }
   },
   methods: {
     async listCustomers() {

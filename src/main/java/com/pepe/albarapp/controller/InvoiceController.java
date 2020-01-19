@@ -44,9 +44,10 @@ public class InvoiceController {
 	public ResponseEntity<Page<InvoiceDto>> getInvoices(@RequestParam @Nullable Integer customerCode,
 														@RequestParam @Nullable Long timestampFrom,
 														@RequestParam @Nullable Long timestampTo,
+														@RequestParam @Nullable List<Integer> productCodes,
 														Pageable pageable) {
 
-		return ResponseEntity.ok(invoiceService.getInvoices(customerCode, timestampFrom, timestampTo, pageable));
+		return ResponseEntity.ok(invoiceService.getInvoices(customerCode, timestampFrom, timestampTo, productCodes, pageable));
 	}
 
 	@PostMapping(INVOICE_BILL_ENDPOINT)

@@ -22,7 +22,14 @@
     </v-layout>
     <v-card>
       <v-card-title>Listado de facturas</v-card-title>
-      <CustomerAndDatesFilterForm v-bind:form="filter.form" />
+      <v-row>
+        <v-col cols="12" md="9">
+          <CustomerAndDatesFilterForm v-bind:form="filter.form" />
+        </v-col>
+        <v-col cols="12" md="3">
+          <ProductFilter :products="filter.products" />
+        </v-col>
+      </v-row>
       <v-data-table
         :loading="loading"
         loading-text="Cargando... Por favor, espere"
@@ -122,11 +129,13 @@
 import InvoiceService from "@/services/InvoiceService.js";
 import ExportService from "@/services/ExportService.js";
 import CustomerAndDatesFilterForm from "@/components/CustomerAndDatesFilterForm";
+import ProductFilter from "@/components/ProductFilter";
 
 export default {
   name: "InvoiceList",
   components: {
-    CustomerAndDatesFilterForm
+    CustomerAndDatesFilterForm,
+    ProductFilter
   },
   data: () => {
     return {
@@ -162,6 +171,9 @@ export default {
           customerCode: "",
           dateFrom: "",
           dateTo: ""
+        },
+        products: {
+          productCodes: []
         }
       },
       spinner: {
@@ -177,6 +189,12 @@ export default {
       if (this.$route.query.from)
         this.filter.form.dateFrom = this.$route.query.from;
       if (this.$route.query.to) this.filter.form.dateTo = this.$route.query.to;
+      if (this.$route.query.productCodes) {
+        var productCodes = this.$route.query.productCodes.split(",");
+        productCodes.forEach(productCode => {
+          this.filter.products.productCodes.push(Number(productCode));
+        });
+      }
       if (this.$route.query.page)
         this.options.page = Number(this.$route.query.page);
       if (this.$route.query.itemsPerPage)
@@ -236,6 +254,11 @@ export default {
         query.customerCode = this.filter.form.customerCode;
       if (this.filter.form.dateFrom) query.from = this.filter.form.dateFrom;
       if (this.filter.form.dateTo) query.to = this.filter.form.dateTo;
+      if (
+        this.filter.products.productCodes &&
+        this.filter.products.productCodes.length
+      )
+        query.productCodes = this.filter.products.productCodes.toString();
       if (this.options.page) query.page = this.options.page;
       if (this.options.itemsPerPage)
         query.itemsPerPage = this.options.itemsPerPage;
@@ -273,10 +296,12 @@ export default {
         filename += "_cliente_" + this.filter.form.customerCode;
       if (this.filter.form.dateFrom)
         filename +=
-          "_desde_" + this.$moment(this.filter.form.dateFrom).format("DD/MM/YYYY");
+          "_desde_" +
+          this.$moment(this.filter.form.dateFrom).format("DD/MM/YYYY");
       if (this.filter.form.dateTo)
         filename +=
-          "_hasta_" + this.$moment(this.filter.form.dateTo).format("DD/MM/YYYY");
+          "_hasta_" +
+          this.$moment(this.filter.form.dateTo).format("DD/MM/YYYY");
       filename += ".csv";
       ExportService.downloadCSV(csvData, filename);
 

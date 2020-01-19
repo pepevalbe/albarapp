@@ -36,9 +36,9 @@ export default {
 
         var localFilename = filename || 'Facturas.csv';
 
-        if (!csv.match(/^data:text\/csv/i)) {
+        //if (!csv.match(/^data:text\/csv/i)) {
             csv = 'data:text/csv;charset=utf-8,' + csv;
-        }
+        //}
 
         var data = encodeURI(csv);
         link = document.createElement('a');
@@ -52,9 +52,12 @@ export default {
         var prettyInvoices = [];
         invoices.forEach(invoice => {
             prettyInvoices.push({
-                "Número de factura": "F" + invoice.id,
+                "Numero de factura": "F" + invoice.id,
                 "Fecha": moment(invoice.issuedTimestamp).format("DD/MM/YYYY"),
-                "Cliente": invoice.customerAlias,
+                "Cliente razon social": invoice.customerName,
+                "Cliente NIF": invoice.customerFiscalId,
+                "Cliente alias": invoice.customerAlias,
+                "Cantidad producto": invoice.productQuantity,
                 "Total": invoice.total.toLocaleString("es-ES", {
                     style: "currency",
                     currency: "EUR"

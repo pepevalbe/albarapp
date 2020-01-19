@@ -3,6 +3,8 @@ package com.pepe.albarapp.persistence.repository;
 import com.pepe.albarapp.persistence.domain.Invoice;
 import com.pepe.albarapp.service.dto.InvoiceDto;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
@@ -19,6 +21,7 @@ public interface InvoiceRepository extends PagingAndSortingRepository<Invoice, L
 	countQuery = "select distinct count(i) from Invoice i where (:customerCode is null or i.customer.code = :customerCode) and (:timestampFrom is null or i.issuedTimestamp >= :timestampFrom) and (:timestampTo is null or i.issuedTimestamp <= :timestampTo)")
 	Page<Invoice> filterByCustomerCodeAndTimestampRange(@Param("customerCode") Integer customerCode, @Param("timestampFrom") Long timestampFrom, @Param("timestampTo") Long timestampTo, Pageable pageable);*/
 
-	@Query("select new com.pepe.albarapp.service.dto.InvoiceDto(i.id, i.issuedTimestamp, i.customer.id, i.customer.alias, SUM(dni.quantity*dni.price*(1+dni.product.tax/100))) from Invoice i inner join i.deliveryNotes dn inner join dn.deliveryNoteItems dni group by i.id")
-	Page<InvoiceDto> filterByCustomerCodeAndTimestampRange(@Param("customerCode") Integer customerCode, @Param("timestampFrom") Long timestampFrom, @Param("timestampTo") Long timestampTo, Pageable pageable);
+	@Query("select new com.pepe.albarapp.service.dto.InvoiceDto(i.id, i.issuedTimestamp, i.customer.id, i.customer.alias, i.customer.name, i.customer.fiscalId, SUM(dni.quantity*dni.price*(1+dni.product.tax/100)), SUM(dni.quantity)) from Invoice i inner join i.deliveryNotes dn inner join dn.deliveryNoteItems dni where (:customerCode is null or i.customer.code = :customerCode) and (:timestampFrom is null or i.issuedTimestamp >= :timestampFrom) and (:timestampTo is null or i.issuedTimestamp <= :timestampTo) and ((:productCodes) is null or dni.product.code in (:productCodes)) group by i.id")
+	Page<InvoiceDto> filterByCustomerCodeAndTimestampRange(@Param("customerCode") Integer customerCode, @Param("timestampFrom") Long timestampFrom, @Param("timestampTo") Long timestampTo, @Param("productCodes") List<Integer> productCodes, Pageable pageable);
+	//, List<String> productCodes
 }

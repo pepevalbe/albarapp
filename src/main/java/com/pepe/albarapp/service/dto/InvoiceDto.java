@@ -16,5 +16,9 @@ public class InvoiceDto {
 	private long issuedTimestamp;
 	private String customerId;
 	private String customerAlias;
+	private String customerName;
+	private String customerFiscalId;
 	private double total;
+	private long productQuantity;
+
 }
