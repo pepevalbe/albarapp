@@ -18,7 +18,7 @@
                     <v-list-item-title v-text="product.name"></v-list-item-title>
                   </v-list-item-content>
                   <v-list-item-action>
-                    <v-checkbox :input-value="active" :true-value="product.code" @click="toggle" color="black"></v-checkbox>
+                    <v-checkbox :input-value="active" :true-value="product.code" color="black"></v-checkbox>
                   </v-list-item-action>
                 </template>
               </v-list-item>

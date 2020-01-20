@@ -83,16 +83,13 @@ public class InvoiceService {
 	public Page<InvoiceDto> getInvoices(@RequestParam Integer customerCode, @RequestParam Long timestampFrom,
 			@RequestParam Long timestampTo, @RequestParam List<Integer> productCodes, Pageable pageable) {
 
-		/*ArrayList<Integer> productCodes = new ArrayList<Integer>();
-		productCodes.add(1);
-		productCodes.add(2);*/
+		if (productCodes != null && productCodes.size() > 0)
+			return invoiceRepository.filterByCustomerCodeAndTimestampRangeAndProducts(customerCode, timestampFrom,
+					timestampTo, productCodes, pageable);
+		else
+			return invoiceRepository.filterByCustomerCodeAndTimestampRange(customerCode, timestampFrom, timestampTo,
+					pageable);
 
-		return invoiceRepository.filterByCustomerCodeAndTimestampRange(customerCode, timestampFrom, timestampTo,
-				productCodes, pageable);
-		/*
-		 * return invoiceRepository .filterByCustomerCodeAndTimestampRange(customerCode,
-		 * timestampFrom, timestampTo, pageable) .map(invoiceMapper::map);
-		 */
 	}
 
 	@Transactional
