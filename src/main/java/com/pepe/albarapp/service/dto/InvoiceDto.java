@@ -15,6 +15,7 @@ public class InvoiceDto {
 	private Long id;
 	private long issuedTimestamp;
 	private String customerId;
+	private int customerCode;
 	private String customerAlias;
 	private String customerName;
 	private String customerFiscalId;

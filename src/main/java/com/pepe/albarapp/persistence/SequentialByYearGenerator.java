@@ -29,10 +29,10 @@ public class SequentialByYearGenerator implements IdentifierGenerator {
 			localDate = Instant.ofEpochMilli(issuedTimestamp).atZone(ZoneId.systemDefault()).toLocalDate();
 		}
 		//Get first Id of current year
-		long firstId = localDate.getYear() * 100000L;
+		long firstId = localDate.getYear() * 100000L + 1;
 
 		//Get first Id of next year
-		long firstIdNextYear = (localDate.getYear() + 1) * 100000L;
+		long firstIdNextYear = (localDate.getYear() + 1) * 100000L + 1;
 
 		// Get latest Id of current year
 		String query = String.format("select max(%s) from %s where id < %s", idColumnName, tableName, Long.toString(firstIdNextYear));
