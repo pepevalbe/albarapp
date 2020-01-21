@@ -13,7 +13,7 @@
                 v-for="product in totalProducts"
                 :key="product.code"
               >
-                <template v-slot:default="{ active, toggle }">
+                <template v-slot:default="{ active }">
                   <v-list-item-content>
                     <v-list-item-title v-text="product.name"></v-list-item-title>
                   </v-list-item-content>

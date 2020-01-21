@@ -18,6 +18,8 @@ export default {
         result += keys.join(localColumnDelimiter);
         result += localLineDelimiter;
 
+        var vm = this;
+
         data.forEach(function (item) {
             ctr = 0;
             keys.forEach(function (key) {
@@ -36,14 +38,9 @@ export default {
 
         var localFilename = filename || 'Facturas.csv';
 
-        //if (!csv.match(/^data:text\/csv/i)) {
-            //csv = 'data:text/csv;charset=utf-8,' + csv;
-            csv = 'data:text/csv;charset=ansi,' + csv;
-        //}
-
         var data = encodeURI(csv);
         link = document.createElement('a');
-        link.setAttribute('href', data);
+        link.setAttribute('href', "data:text/csv;charset=utf-8,%EF%BB%BF" + data);
         link.setAttribute('download', localFilename);
         document.body.appendChild(link); // Required for FF
         link.click();
