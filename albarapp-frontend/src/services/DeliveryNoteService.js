@@ -123,7 +123,7 @@ export default {
     async create(deliveryNote, deliveryNoteItems) {
 
         var deliveryNoteDto = {
-            auxDeliveryNoteNr: deliveryNote.dateauxDeliveryNoteNr,
+            auxDeliveryNoteNr: deliveryNote.auxDeliveryNoteNr,
             issuedTimestamp: deliveryNote.issuedTimestamp,
             customerId: deliveryNote.customer.id,
             deliveryNoteItems: []
