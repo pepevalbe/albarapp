@@ -46,7 +46,7 @@ export default {
   },
   methods: {
     setDateToday() {
-      this.form.deliveryNote.date = this.$moment().format("YYYY-MM-DD");
+      this.form.deliveryNote.date = this.$moment.utc().format("YYYY-MM-DD");
       this.$refs.form.parseDatePick();
     },
     reset() {

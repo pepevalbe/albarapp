@@ -183,12 +183,12 @@ export default {
       this.form.customer = {};
     },
     parseDateFromPick() {
-      var moment = this.$moment(this.form.dateFrom, "YYYY-MM-DD", true);
+      var moment = this.$moment.utc(this.form.dateFrom, "YYYY-MM-DD", true);
       this.dateFromFormatted = moment.format("DD/MM/YYYY");
       this.menuDateFromPicker = false;
     },
     parseDateFromText() {
-      var moment = this.$moment(
+      var moment = this.$moment.utc(
         this.dateFromFormatted,
         ["DDMMYYYY", "DD/MM/YYYY"],
         true
@@ -202,12 +202,12 @@ export default {
       }
     },
     parseDateToPick() {
-      var moment = this.$moment(this.form.dateTo, "YYYY-MM-DD", true);
+      var moment = this.$moment.utc(this.form.dateTo, "YYYY-MM-DD", true);
       this.dateToFormatted = moment.format("DD/MM/YYYY");
       this.menuDateToPicker = false;
     },
     parseDateToText() {
-      var moment = this.$moment(
+      var moment = this.$moment.utc(
         this.dateToFormatted,
         ["DDMMYYYY", "DD/MM/YYYY"],
         true

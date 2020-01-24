@@ -374,7 +374,7 @@ export default {
       this.$nextTick(this.$refs.customerCode.focus);
     },
     parseDateText() {
-      var moment = this.$moment(
+      var moment = this.$moment.utc(
         this.dateFormatted,
         ["DDMMYYYY", "DD/MM/YYYY"],
         true
@@ -392,7 +392,7 @@ export default {
       this.moveToAuxDeliveryNoteNr();
     },
     parseDatePick() {
-      var moment = this.$moment(
+      var moment = this.$moment.utc(
         this.form.deliveryNote.date,
         "YYYY-MM-DD",
         true

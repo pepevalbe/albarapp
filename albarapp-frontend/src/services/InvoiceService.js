@@ -54,12 +54,12 @@ export default {
         }
         await Promise.all(promises);
         invoice.total = 0;
-        invoice.dateFormatted = moment(invoice.issuedTimestamp, "x").format("DD/MM/YYYY");
-        invoice.date = moment(invoice.issuedTimestamp, "x").format("YYYY-MM-DD");
+        invoice.dateFormatted = moment.utc(invoice.issuedTimestamp, "x").format("DD/MM/YYYY");
+        invoice.date = moment.utc(invoice.issuedTimestamp, "x").format("YYYY-MM-DD");
         for (const deliveryNote of invoice.deliveryNotes) {
             invoice.total += deliveryNote.deliveryNoteTotal.value;
-            deliveryNote.date = moment(deliveryNote.issuedTimestamp, "x").format("YYYY-MM-DD");
-            deliveryNote.dateFormatted = moment(deliveryNote.issuedTimestamp, "x").format("DD/MM/YYYY");
+            deliveryNote.date = moment.utc(deliveryNote.issuedTimestamp, "x").format("YYYY-MM-DD");
+            deliveryNote.dateFormatted = moment.utc(deliveryNote.issuedTimestamp, "x").format("DD/MM/YYYY");
         }
         return invoice;
     },
@@ -80,8 +80,8 @@ export default {
         var params = {};
         if (filter && filter.form) {
             if (filter.form.customerCode) params.customerCode = filter.form.customerCode;
-            if (filter.form.dateFrom) params.timestampFrom = moment(filter.form.dateFrom, "YYYY-MM-DD").format('x');
-            if (filter.form.dateTo) params.timestampTo = moment(filter.form.dateTo, "YYYY-MM-DD").format('x');
+            if (filter.form.dateFrom) params.timestampFrom = moment.utc(filter.form.dateFrom, "YYYY-MM-DD").format('x');
+            if (filter.form.dateTo) params.timestampTo = moment.utc(filter.form.dateTo, "YYYY-MM-DD").format('x');
             if (filter.products.productCodes && filter.products.productCodes.length) params.productCodes = filter.products.productCodes;
         }
         if (options) {
@@ -205,7 +205,7 @@ export default {
                 let blob = new Blob([response.data], { type: 'application/octet-stream' });
                 let link = document.createElement('a');
                 link.href = window.URL.createObjectURL(blob);
-                link.download = 'invoices_' + moment().format("DDMMYYYY") + '.zip';
+                link.download = 'invoices_' + moment.utc().format("DDMMYYYY") + '.zip';
                 link.click();
             })
             .catch(() => {

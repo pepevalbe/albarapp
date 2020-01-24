@@ -195,9 +195,9 @@ export default {
       var invoicesCreated = await InvoiceService.createList(
         this.form.customerCodeFrom,
         this.form.customerCodeTo,
-        this.$moment(this.form.dateFromFormatted, "DD/MM/YYYY").format("x"),
-        this.$moment(this.form.dateToFormatted, "DD/MM/YYYY").format("x"),
-        this.$moment(this.form.issuedDateFormatted, "DD/MM/YYYY").format("x")
+        this.$moment.utc(this.form.dateFromFormatted, "DD/MM/YYYY").format("x"),
+        this.$moment.utc(this.form.dateToFormatted, "DD/MM/YYYY").format("x"),
+        this.$moment.utc(this.form.issuedDateFormatted, "DD/MM/YYYY").format("x")
       );
       this.numberInvoicesCreated = invoicesCreated.length;
       if (invoicesCreated.length)
@@ -207,12 +207,12 @@ export default {
       this.closeSpinner();
     },
     parseDateFromPick() {
-      var moment = this.$moment(this.form.dateFrom, "YYYY-MM-DD", true);
+      var moment = this.$moment.utc(this.form.dateFrom, "YYYY-MM-DD", true);
       this.form.dateFromFormatted = moment.format("DD/MM/YYYY");
       this.menuDateFromPicker = false;
     },
     parseDateFromText() {
-      var moment = this.$moment(
+      var moment = this.$moment.utc(
         this.form.dateFromFormatted,
         ["DDMMYYYY", "DD/MM/YYYY"],
         true
@@ -226,12 +226,12 @@ export default {
       }
     },
     parseDateToPick() {
-      var moment = this.$moment(this.form.dateTo, "YYYY-MM-DD", true);
+      var moment = this.$moment.utc(this.form.dateTo, "YYYY-MM-DD", true);
       this.form.dateToFormatted = moment.format("DD/MM/YYYY");
       this.menuDateToPicker = false;
     },
     parseDateToText() {
-      var moment = this.$moment(
+      var moment = this.$moment.utc(
         this.form.dateToFormatted,
         ["DDMMYYYY", "DD/MM/YYYY"],
         true
@@ -245,12 +245,12 @@ export default {
       }
     },
     parseIssuedDatePick() {
-      var moment = this.$moment(this.form.issuedDate, "YYYY-MM-DD", true);
+      var moment = this.$moment.utc(this.form.issuedDate, "YYYY-MM-DD", true);
       this.form.issuedDateFormatted = moment.format("DD/MM/YYYY");
       this.menuIssuedDatePicker = false;
     },
     parseIssuedDateText() {
-      var moment = this.$moment(
+      var moment = this.$moment.utc(
         this.form.issuedDateFormatted,
         ["DDMMYYYY", "DD/MM/YYYY"],
         true

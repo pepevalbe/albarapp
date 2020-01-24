@@ -237,7 +237,7 @@ export default {
       });
     },
     dateFormatted(timestamp) {
-      return this.$moment(timestamp, "x").format("DD/MM/YYYY");
+      return this.$moment.utc(timestamp, "x").format("DD/MM/YYYY");
     },
     currencyFormatted(value) {
       return value.toLocaleString("es-ES", {
@@ -304,11 +304,11 @@ export default {
       if (this.filter.form.dateFrom)
         filename +=
           "_desde_" +
-          this.$moment(this.filter.form.dateFrom).format("DD/MM/YYYY");
+          this.$moment.utc(this.filter.form.dateFrom).format("DD/MM/YYYY");
       if (this.filter.form.dateTo)
         filename +=
           "_hasta_" +
-          this.$moment(this.filter.form.dateTo).format("DD/MM/YYYY");
+          this.$moment.utc(this.filter.form.dateTo).format("DD/MM/YYYY");
       filename += ".csv";
       ExportService.downloadCSV(csvData, filename);
 

@@ -196,7 +196,7 @@ export default {
       });
     },
     dateFormatted(timestamp) {
-      return this.$moment(timestamp, "x").format("DD/MM/YYYY");
+      return this.$moment.utc(timestamp, "x").format("DD/MM/YYYY");
     },
     currencyFormatted(value) {
       return value.toLocaleString("es-ES", {

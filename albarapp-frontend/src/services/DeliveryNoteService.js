@@ -60,8 +60,8 @@ export default {
         var params = {};
         if (filter && filter.form) {
             if (filter.form.customerCode) params.customerCode = filter.form.customerCode;
-            if (filter.form.dateFrom) params.timestampFrom = moment(filter.form.dateFrom, "YYYY-MM-DD").format('x');
-            if (filter.form.dateTo) params.timestampTo = moment(filter.form.dateTo, "YYYY-MM-DD").format('x');
+            if (filter.form.dateFrom) params.timestampFrom = moment.utc(filter.form.dateFrom, "YYYY-MM-DD").format('x');
+            if (filter.form.dateTo) params.timestampTo = moment.utc(filter.form.dateTo, "YYYY-MM-DD").format('x');
         }
         if (options) {
             if (options.page) params.page = options.page - 1;
@@ -98,7 +98,7 @@ export default {
                 promises.push(this.getCustomer(deliveryNote));
                 deliveryNote.deliveryNoteItems = [];
                 promises.push(this.getDeliveryNoteItems(deliveryNote));
-                deliveryNote.date = moment(deliveryNote.issuedTimestamp, "x").format("YYYY-MM-DD");
+                deliveryNote.date = moment.utc(deliveryNote.issuedTimestamp, "x").format("YYYY-MM-DD");
                 deliveryNote.valid = false;
                 deliveryNote.deliveryNoteTotal = { value: 0 };
             })
@@ -213,8 +213,8 @@ export default {
         var promises = [];
 
         for (const deliveryNote of deliveryNotes) {
-            deliveryNote.dateFormatted = moment(deliveryNote.issuedTimestamp, "x").format("DD/MM/YYYY");
-            deliveryNote.date = moment(deliveryNote.issuedTimestamp, "x").format("YYYY-MM-DD");
+            deliveryNote.dateFormatted = moment.utc(deliveryNote.issuedTimestamp, "x").format("DD/MM/YYYY");
+            deliveryNote.date = moment.utc(deliveryNote.issuedTimestamp, "x").format("YYYY-MM-DD");
             promises.push(this.getCustomer(deliveryNote));
             promises.push(this.getDeliveryNoteItems(deliveryNote));
         }

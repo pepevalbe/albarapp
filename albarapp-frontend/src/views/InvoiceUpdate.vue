@@ -375,7 +375,7 @@ export default {
       this.closeSpinner();
     },
     parseDateText() {
-      var moment = this.$moment(
+      var moment = this.$moment.utc(
         this.dateFormatted,
         ["DDMMYYYY", "DD/MM/YYYY"],
         true
@@ -389,7 +389,7 @@ export default {
       }
     },
     parseDatePick() {
-      var moment = this.$moment(this.form.invoice.date, "YYYY-MM-DD", true);
+      var moment = this.$moment.utc(this.form.invoice.date, "YYYY-MM-DD", true);
       this.dateFormatted = moment.format("DD/MM/YYYY");
       this.form.invoice.issuedTimestamp = moment.format("x");
       this.menuDatePicker = false;
