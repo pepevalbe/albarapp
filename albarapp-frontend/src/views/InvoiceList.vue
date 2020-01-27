@@ -68,6 +68,11 @@
                   <v-icon dark>mdi-file-pdf</v-icon>
                 </v-btn>
               </td>
+              <td>
+                <v-btn @click="exportEDI(item)">
+                  <v-icon dark>mdi-xml</v-icon>
+                </v-btn>
+              </td>
             </tr>
           </tbody>
           <tbody v-else>
@@ -110,6 +115,9 @@
                       <v-btn class="mr-3" @click="download(item)">
                         <v-icon dark>mdi-file-pdf</v-icon>
                       </v-btn>
+                      <v-btn class="mr-3" @click="exportEDI(item)">
+                        <v-icon dark>mdi-xml</v-icon>
+                      </v-btn>
                     </v-flex>
                   </v-layout>
                 </v-card-actions>
@@ -147,7 +155,8 @@ export default {
         { text: "Fecha de emisión", sortable: true, value: "issuedTimestamp" },
         { text: "Total", sortable: false, value: "total" },
         { text: "", sortable: false, value: "update" },
-        { text: "", sortable: false, value: "download" }
+        { text: "", sortable: false, value: "download" },
+        { text: "", sortable: false, value: "exportEDI" }
       ],
       footerProps: {
         itemsPerPageOptions: [10, 20, 30, 40, 50],
@@ -247,6 +256,9 @@ export default {
     },
     download(item) {
       InvoiceService.download(item.id);
+    },
+    exportEDI(invoice) {
+      ExportService.exportEDI(invoice.id);
     },
     async downloadList() {
       this.showSpinner();
