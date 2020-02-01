@@ -1,6 +1,9 @@
 <template>
   <v-container>
-    <v-expansion-panels v-model="panelsExpanded" :dark="!(!form.dateFrom && !form.dateTo && !form.customerCode)">
+    <v-expansion-panels
+      v-model="panelsExpanded"
+      :dark="!(!form.dateFrom && !form.dateTo && !form.customerCode)"
+    >
       <v-expansion-panel>
         <v-expansion-panel-header>
           <span class="subtitle-1 font-italic font-weight-light">Filtrar por cliente y fechas</span>
@@ -18,7 +21,18 @@
                   clearable
                   no-data-text="Sin coincidencias"
                   v-on:change="selectCustomerByAlias()"
-                ></v-autocomplete>
+                >
+                  <template v-slot:prepend>
+                    <v-btn icon :disabled="!isPreviousPossible()" @click="selectPreviousCustomer()">
+                      <v-icon>mdi-chevron-left</v-icon>
+                    </v-btn>
+                  </template>
+                  <template v-slot:append-outer>
+                    <v-btn icon :disabled="!isNextPossible()" @click="selectNextCustomer()">
+                      <v-icon>mdi-chevron-right</v-icon>
+                    </v-btn>
+                  </template>
+                </v-autocomplete>
               </v-col>
               <v-col cols="12" md="3">
                 <v-menu
@@ -181,6 +195,36 @@ export default {
     },
     clearCustomer() {
       this.form.customer = {};
+    },
+    isNextPossible() {
+      if (
+        this.customer &&
+        this.customer.code &&
+        this.customers &&
+        this.customers.length &&
+        this.customers.indexOf(this.customer) != this.customers.length - 1
+      )
+        return true;
+      else return false;
+    },
+    isPreviousPossible() {
+      if (
+        this.customer &&
+        this.customer.code &&
+        this.customers &&
+        this.customers.length &&
+        this.customers.indexOf(this.customer) != 0
+      )
+        return true;
+      else return false;
+    },
+    selectNextCustomer() {
+      this.customer = this.customers[this.customers.indexOf(this.customer) + 1];
+      this.selectCustomerByAlias();
+    },
+    selectPreviousCustomer() {
+      this.customer = this.customers[this.customers.indexOf(this.customer) - 1];
+      this.selectCustomerByAlias();
     },
     parseDateFromPick() {
       var moment = this.$moment.utc(this.form.dateFrom, "YYYY-MM-DD", true);
