@@ -119,12 +119,12 @@ export default {
         { text: "", sortable: false, value: "update" }
       ],
       footerProps: {
-        itemsPerPageOptions: [10, 20, 30, 40, 50],
+        itemsPerPageOptions: [15, 30, 45, 60, 75],
         showFirstLastPage: true
       },
       options: {
         page: 1,
-        itemsPerPage: 10,
+        itemsPerPage: 15,
         sortBy: [],
         sortDesc: [],
         groupBy: [],
