@@ -35,7 +35,7 @@
         loading-text="Cargando... Por favor, espere"
         show-select
         v-model="selectedInvoices"
-        :headers="headers"
+        :headers="getHeaders()"
         :footer-props="footerProps"
         :items="invoices"
         item-key="id"
@@ -148,16 +148,8 @@ export default {
   data: () => {
     return {
       invoices: [],
+      netTotal: 0,
       selectedInvoices: [],
-      headers: [
-        { text: "Nº Factura", sortable: true, value: "id" },
-        { text: "Cliente", sortable: true, value: "customer.code" },
-        { text: "Fecha de emisión", sortable: true, value: "issuedTimestamp" },
-        { text: "Total", sortable: false, value: "total" },
-        { text: "", sortable: false, value: "update" },
-        { text: "", sortable: false, value: "download" },
-        { text: "", sortable: false, value: "exportEDI" }
-      ],
       footerProps: {
         itemsPerPageOptions: [15, 30, 45, 60, 75],
         showFirstLastPage: true
@@ -233,6 +225,7 @@ export default {
         this.options
       );
       this.invoices = response.invoices;
+      this.netTotal = this.invoices.reduce((a, b) => a + (b.total || 0), 0);
       this.selectedInvoices = [];
       this.totalItems = response.totalElements;
       this.loading = false;
@@ -244,6 +237,22 @@ export default {
         name: "InvoiceUpdate",
         params: { invoiceId: item.id.toString() }
       });
+    },
+    getHeaders() {
+      var headers = [
+        { text: "Nº Factura", sortable: true, value: "id" },
+        { text: "Cliente", sortable: true, value: "customer.code" },
+        { text: "Fecha de emisión", sortable: true, value: "issuedTimestamp" },
+        {
+          text: "Total: " + this.currencyFormatted(this.netTotal),
+          sortable: false,
+          value: "total"
+        },
+        { text: "", sortable: false, value: "update" },
+        { text: "", sortable: false, value: "download" },
+        { text: "", sortable: false, value: "exportEDI" }
+      ];
+      return headers;
     },
     dateFormatted(timestamp) {
       return this.$moment.utc(timestamp, "x").format("DD/MM/YYYY");

@@ -14,7 +14,7 @@
       <v-data-table
         :loading="loading"
         loading-text="Cargando... Por favor, espere"
-        :headers="headers"
+        :headers="getHeaders()"
         :footer-props="footerProps"
         :items="deliveryNotes"
         :server-items-length="totalItems"
@@ -104,20 +104,7 @@ export default {
   data: () => {
     return {
       deliveryNotes: [],
-      headers: [
-        { text: "Nº Albarán", sortable: true, value: "id" },
-        { text: "Nº Factura", sortable: true, value: "invoice.id" },
-        {
-          text: "Nº pedido",
-          sortable: false,
-          value: "auxDeliveryNoteNr"
-        },
-        { text: "Cliente", sortable: true, value: "customer.code" },
-        { text: "Fecha", sortable: true, value: "issuedTimestamp" },
-        { text: "Productos", sortable: false, value: "products" },
-        { text: "Total", sortable: false, value: "total" },
-        { text: "", sortable: false, value: "update" }
-      ],
+      netTotal: 0,
       footerProps: {
         itemsPerPageOptions: [15, 30, 45, 60, 75],
         showFirstLastPage: true
@@ -184,6 +171,10 @@ export default {
         this.options
       );
       this.deliveryNotes = response.deliveryNotes;
+      this.netTotal = this.deliveryNotes.reduce(
+        (a, b) => a + (b.total || 0),
+        0
+      );
       this.totalItems = response.totalElements;
       this.loading = false;
       this.closeSpinner();
@@ -197,6 +188,27 @@ export default {
     },
     dateFormatted(timestamp) {
       return this.$moment.utc(timestamp, "x").format("DD/MM/YYYY");
+    },
+    getHeaders() {
+      var headers = [
+        { text: "Nº Albarán", sortable: true, value: "id" },
+        { text: "Nº Factura", sortable: true, value: "invoice.id" },
+        {
+          text: "Nº pedido",
+          sortable: false,
+          value: "auxDeliveryNoteNr"
+        },
+        { text: "Cliente", sortable: true, value: "customer.code" },
+        { text: "Fecha", sortable: true, value: "issuedTimestamp" },
+        { text: "Productos", sortable: false, value: "products" },
+        {
+          text: "Total: " + this.currencyFormatted(this.netTotal),
+          sortable: false,
+          value: "total"
+        },
+        { text: "", sortable: false, value: "update" }
+      ];
+      return headers;
     },
     currencyFormatted(value) {
       return value.toLocaleString("es-ES", {
