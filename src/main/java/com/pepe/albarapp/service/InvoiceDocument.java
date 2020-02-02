@@ -18,6 +18,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Iterator;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 @Slf4j
 public class InvoiceDocument {
@@ -65,14 +67,14 @@ public class InvoiceDocument {
 
 		setDocumentHeader(pdfForm, customer, invoice);
 
-		double grossTotal = 0;
-		double vatTotal = 0;
+		double grossTotal = 0d;
+		double vatTotal = 0d;
 		int rowCounter = 0;
 		for (DeliveryNote deliveryNote : deliveryNotes) {
 			for (DeliveryNoteItem deliveryNoteItem : deliveryNote.getDeliveryNoteItems()) {
 				double partialGross = deliveryNoteItem.getQuantity() * deliveryNoteItem.getPrice();
 				grossTotal += partialGross;
-				vatTotal += partialGross * deliveryNoteItem.getProduct().getTax() * 0.01f;
+				vatTotal += partialGross * deliveryNoteItem.getProduct().getTax() * 0.01d;
 				setDocumentRow(pdfForm, rowCounter, deliveryNoteItem);
 				rowCounter++;
 			}
@@ -111,13 +113,15 @@ public class InvoiceDocument {
 
 	private static void setDocumentRow(PDAcroForm form, int row, DeliveryNoteItem deliveryNoteItem) {
 		try {
+			BigDecimal rowTotal = new BigDecimal(deliveryNoteItem.getQuantity() * deliveryNoteItem.getPrice());
+			rowTotal = rowTotal.setScale(2, RoundingMode.HALF_UP);
 			form.getField(String.format(ROW_DATE_FIELD, row)).setValue(DATE_FORMAT.format(new Date(deliveryNoteItem.getDeliveryNote().getIssuedTimestamp())));
 			form.getField(String.format(ROW_QUANTITY_FIELD, row)).setValue(String.valueOf(deliveryNoteItem.getQuantity()));
 			form.getField(String.format(ROW_PRODUCT_FIELD, row)).setValue(deliveryNoteItem.getProduct().getName());
 			form.getField(String.format(ROW_ORDER_FIELD, row)).setValue(deliveryNoteItem.getDeliveryNote().getAuxDeliveryNoteNr());
 			form.getField(String.format(ROW_VAT_FIELD, row)).setValue(String.format("%,.1f", deliveryNoteItem.getProduct().getTax()) + " %");
 			form.getField(String.format(ROW_PRICE_FIELD, row)).setValue(String.format("%,.2f", deliveryNoteItem.getPrice()) + " €");
-			form.getField(String.format(ROW_TOTAL_FIELD, row)).setValue(String.format("%,.2f", deliveryNoteItem.getQuantity() * deliveryNoteItem.getPrice()) + " €");
+			form.getField(String.format(ROW_TOTAL_FIELD, row)).setValue(rowTotal.toString() + " €");
 		} catch (IOException e) {
 			log.error(e.getMessage(), e);
 			log.error("Error filling invoice row " + row);
@@ -127,10 +131,14 @@ public class InvoiceDocument {
 
 	private static void setDocumentFooter(PDAcroForm form, double grossTotal, double vatTotal) {
 		try {
+			BigDecimal taxTotal = new BigDecimal(vatTotal);
+			taxTotal = taxTotal.setScale(2, RoundingMode.HALF_UP);
+			BigDecimal netTotal = new BigDecimal(grossTotal + vatTotal);
+			netTotal = netTotal.setScale(2, RoundingMode.HALF_UP);
 			form.getField(GROSS_FIELD).setValue(String.format("%,.2f", grossTotal) + " €");
 			form.getField(DISCOUNT_FIELD).setValue(String.format("%d", 0) + " %");
-			form.getField(VAT_FIELD).setValue(String.format("%,.2f", vatTotal) + " €");
-			form.getField(AMOUNT_FIELD).setValue(String.format("%,.2f", grossTotal + vatTotal) + " €");
+			form.getField(VAT_FIELD).setValue(taxTotal.toString() + " €");
+			form.getField(AMOUNT_FIELD).setValue(netTotal.toString() + " €");
 		} catch (IOException e) {
 			log.error(e.getMessage(), e);
 			log.error("Error filling footer");
