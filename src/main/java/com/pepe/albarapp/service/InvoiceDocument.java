@@ -67,14 +67,21 @@ public class InvoiceDocument {
 
 		setDocumentHeader(pdfForm, customer, invoice);
 
-		double grossTotal = 0d;
-		double vatTotal = 0d;
+		//double grossTotal = 0d;
+		BigDecimal grossTotal = new BigDecimal(0);
+		//double vatTotal = 0d;
+		BigDecimal vatTotal = new BigDecimal(0);
 		int rowCounter = 0;
 		for (DeliveryNote deliveryNote : deliveryNotes) {
 			for (DeliveryNoteItem deliveryNoteItem : deliveryNote.getDeliveryNoteItems()) {
-				double partialGross = deliveryNoteItem.getQuantity() * deliveryNoteItem.getPrice();
-				grossTotal += partialGross;
-				vatTotal += partialGross * deliveryNoteItem.getProduct().getTax() * 0.01d;
+				BigDecimal quantity = new BigDecimal(deliveryNoteItem.getQuantity());
+				BigDecimal price = new BigDecimal(Double.toString(deliveryNoteItem.getPrice()));
+				BigDecimal partialGross = quantity.multiply(price);
+				grossTotal = grossTotal.add(partialGross);
+				BigDecimal taxProduct = new BigDecimal(Double.toString(deliveryNoteItem.getProduct().getTax()));
+				BigDecimal vatRow = taxProduct.multiply(new BigDecimal("0.01"));
+				BigDecimal partialVat = partialGross.multiply(vatRow);
+				vatTotal = vatTotal.add(partialVat);
 				setDocumentRow(pdfForm, rowCounter, deliveryNoteItem);
 				rowCounter++;
 			}
@@ -113,7 +120,9 @@ public class InvoiceDocument {
 
 	private static void setDocumentRow(PDAcroForm form, int row, DeliveryNoteItem deliveryNoteItem) {
 		try {
-			BigDecimal rowTotal = new BigDecimal(deliveryNoteItem.getQuantity() * deliveryNoteItem.getPrice());
+			BigDecimal quantity = new BigDecimal(deliveryNoteItem.getQuantity());
+			BigDecimal price = new BigDecimal(Double.toString(deliveryNoteItem.getPrice()));
+			BigDecimal rowTotal = quantity.multiply(price);
 			rowTotal = rowTotal.setScale(2, RoundingMode.HALF_UP);
 			form.getField(String.format(ROW_DATE_FIELD, row)).setValue(DATE_FORMAT.format(new Date(deliveryNoteItem.getDeliveryNote().getIssuedTimestamp())));
 			form.getField(String.format(ROW_QUANTITY_FIELD, row)).setValue(String.valueOf(deliveryNoteItem.getQuantity()));
@@ -129,15 +138,14 @@ public class InvoiceDocument {
 		}
 	}
 
-	private static void setDocumentFooter(PDAcroForm form, double grossTotal, double vatTotal) {
+	private static void setDocumentFooter(PDAcroForm form, BigDecimal grossTotal, BigDecimal vatTotal) {
 		try {
-			BigDecimal taxTotal = new BigDecimal(vatTotal);
-			taxTotal = taxTotal.setScale(2, RoundingMode.HALF_UP);
-			BigDecimal netTotal = new BigDecimal(grossTotal + vatTotal);
+			vatTotal = vatTotal.setScale(2, RoundingMode.HALF_UP);
+			BigDecimal netTotal = grossTotal.add(vatTotal);
 			netTotal = netTotal.setScale(2, RoundingMode.HALF_UP);
 			form.getField(GROSS_FIELD).setValue(String.format("%,.2f", grossTotal) + " €");
 			form.getField(DISCOUNT_FIELD).setValue(String.format("%d", 0) + " %");
-			form.getField(VAT_FIELD).setValue(taxTotal.toString() + " €");
+			form.getField(VAT_FIELD).setValue(vatTotal.toString() + " €");
 			form.getField(AMOUNT_FIELD).setValue(netTotal.toString() + " €");
 		} catch (IOException e) {
 			log.error(e.getMessage(), e);
