@@ -44,7 +44,7 @@ export default {
         link = document.createElement('a');
         link.setAttribute('href', "data:text/csv;charset=utf-8,%EF%BB%BF" + data);
         link.setAttribute('download', localFilename);
-        document.body.appendChild(link); // Required for FF
+        document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
     },
@@ -82,14 +82,14 @@ export default {
         var amount = doc.createElement("amount");
         totalAmount.appendChild(amount);
         amount.setAttribute("currencyISOcode", "EUR");
-        amount.innerHTML = invoice.total.toLocaleString("en-EN", { style: "decimal" });
+        amount.innerHTML = invoice.total.toLocaleString("en-EN", { useGrouping: false });
 
         var baseAmount = doc.createElement("baseAmount");
         root.appendChild(baseAmount);
         amount = doc.createElement("amount");
         baseAmount.appendChild(amount);
         amount.setAttribute("currencyISOcode", "EUR");
-        amount.innerHTML = invoice.total.toLocaleString("en-EN", { style: "decimal" });
+        amount.innerHTML = invoice.total.toLocaleString("en-EN", { useGrouping: false });
 
         var igicTax = doc.createElement("IGICTax");
         igicTax.setAttribute("percentage", "0");
@@ -99,14 +99,14 @@ export default {
         amount = doc.createElement("amount");
         totalAmount.appendChild(amount);
         amount.setAttribute("currencyISOcode", "EUR");
-        amount.innerHTML = invoice.total.toLocaleString("en-EN", { style: "decimal" });
+        amount.innerHTML = invoice.total.toLocaleString("en-EN", { useGrouping: false });
 
         baseAmount = doc.createElement("baseAmount");
         igicTax.appendChild(baseAmount);
         amount = doc.createElement("amount");
         baseAmount.appendChild(amount);
         amount.setAttribute("currencyISOcode", "EUR");
-        amount.innerHTML = invoice.total.toLocaleString("en-EN", { style: "decimal" });
+        amount.innerHTML = invoice.total.toLocaleString("en-EN", { useGrouping: false });
         igicTax.appendChild(baseAmount);
         igicTax.appendChild(totalAmount);
 
@@ -122,7 +122,7 @@ export default {
         amount = doc.createElement("amount");
         payableAmount.appendChild(amount);
         amount.setAttribute("currencyISOcode", "EUR");
-        amount.innerHTML = invoice.total.toLocaleString("en-EN", { style: "decimal" });
+        amount.innerHTML = invoice.total.toLocaleString("en-EN", { useGrouping: false });
 
         await InvoiceService.getDeliveryNotes(invoice);
         var index = 0;
@@ -190,7 +190,7 @@ export default {
                 amount = doc.createElement("amount");
                 baseAmount.appendChild(amount);
                 amount.setAttribute("currencyISOcode", "EUR");
-                amount.innerHTML = total.toLocaleString("en-EN", { style: "decimal" });
+                amount.innerHTML = total.toLocaleString("en-EN", { useGrouping: false });
                 taxAmount = doc.createElement("taxAmount");
                 igicTax.appendChild(taxAmount);
                 amount = doc.createElement("amount");
@@ -203,8 +203,8 @@ export default {
                 amount = doc.createElement("amount");
                 lineItemAmount.appendChild(amount);
                 amount.setAttribute("currencyISOcode", "EUR");
-                amount.innerHTML = total.toLocaleString("en-EN", { style: "decimal" });
-                amount.innerHTML = total.toLocaleString("en-EN", { style: "decimal" });
+                amount.innerHTML = total.toLocaleString("en-EN", { useGrouping: false });
+                amount.innerHTML = total.toLocaleString("en-EN", { useGrouping: false });
 
                 index++;
             }
@@ -212,16 +212,16 @@ export default {
 
         var xml = new XMLSerializer().serializeToString(doc.getElementById("root"));
 
-        xml = xml.replace('<root id="root">',"");
-        xml = xml.replace('</root>',"");
+        xml = xml.replace('<root id="root">', "");
+        xml = xml.replace('</root>', "");
 
         var link;
-        var localFilename = 'Factura.xml';
+        var localFilename = 'Fra_'+ invoiceId + '.xml';
         var data = encodeURI(xml);
         link = document.createElement('a');
         link.setAttribute('href', "data:text/xml;charset=utf-8,%EF%BB%BF" + data);
         link.setAttribute('download', localFilename);
-        document.body.appendChild(link); // Required for FF
+        document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
     }
