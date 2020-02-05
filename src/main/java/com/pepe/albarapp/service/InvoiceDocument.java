@@ -17,6 +17,8 @@ import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Comparator;
+import java.util.stream.Collectors;
 import java.util.Iterator;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -50,6 +52,12 @@ public class InvoiceDocument {
 
 		List<DeliveryNote> deliveryNotes = invoice.getDeliveryNotes();
 
+		// Compare by date then by id
+		Comparator<DeliveryNote> compareByDateAndId = Comparator.comparing(DeliveryNote::getIssuedTimestamp)
+				.thenComparing(DeliveryNote::getId);
+
+		deliveryNotes = deliveryNotes.stream().sorted(compareByDateAndId).collect(Collectors.toList());
+
 		if (deliveryNotes.size() == 0 || deliveryNotes.size() > MAX_ROW_NUMBER) {
 			log.error("Invoice is too large or empty");
 			throw new ApiException(ApiError.ApiError009);
@@ -67,13 +75,15 @@ public class InvoiceDocument {
 
 		setDocumentHeader(pdfForm, customer, invoice);
 
-		//double grossTotal = 0d;
 		BigDecimal grossTotal = new BigDecimal(0);
-		//double vatTotal = 0d;
 		BigDecimal vatTotal = new BigDecimal(0);
 		int rowCounter = 0;
 		for (DeliveryNote deliveryNote : deliveryNotes) {
-			for (DeliveryNoteItem deliveryNoteItem : deliveryNote.getDeliveryNoteItems()) {
+			// Compare by productCode
+			Comparator<DeliveryNoteItem> compareByProductCode = Comparator.comparing(d -> d.getProduct().getCode());
+			List<DeliveryNoteItem> deliveryNoteItems = deliveryNote.getDeliveryNoteItems().stream()
+					.sorted(compareByProductCode).collect(Collectors.toList());
+			for (DeliveryNoteItem deliveryNoteItem : deliveryNoteItems) {
 				BigDecimal quantity = new BigDecimal(deliveryNoteItem.getQuantity());
 				BigDecimal price = new BigDecimal(Double.toString(deliveryNoteItem.getPrice()));
 				BigDecimal partialGross = quantity.multiply(price);
@@ -91,7 +101,8 @@ public class InvoiceDocument {
 
 		// Make form fields not editable
 		Iterator<PDField> pDFeldIterator = pdfForm.getFieldIterator();
-		while (pDFeldIterator.hasNext()) pDFeldIterator.next().setReadOnly(true);
+		while (pDFeldIterator.hasNext())
+			pDFeldIterator.next().setReadOnly(true);
 
 		try {
 			pdfDocument.save(outputStream);
@@ -124,12 +135,17 @@ public class InvoiceDocument {
 			BigDecimal price = new BigDecimal(Double.toString(deliveryNoteItem.getPrice()));
 			BigDecimal rowTotal = quantity.multiply(price);
 			rowTotal = rowTotal.setScale(2, RoundingMode.HALF_UP);
-			form.getField(String.format(ROW_DATE_FIELD, row)).setValue(DATE_FORMAT.format(new Date(deliveryNoteItem.getDeliveryNote().getIssuedTimestamp())));
-			form.getField(String.format(ROW_QUANTITY_FIELD, row)).setValue(String.valueOf(deliveryNoteItem.getQuantity()));
+			form.getField(String.format(ROW_DATE_FIELD, row))
+					.setValue(DATE_FORMAT.format(new Date(deliveryNoteItem.getDeliveryNote().getIssuedTimestamp())));
+			form.getField(String.format(ROW_QUANTITY_FIELD, row))
+					.setValue(String.valueOf(deliveryNoteItem.getQuantity()));
 			form.getField(String.format(ROW_PRODUCT_FIELD, row)).setValue(deliveryNoteItem.getProduct().getName());
-			form.getField(String.format(ROW_ORDER_FIELD, row)).setValue(deliveryNoteItem.getDeliveryNote().getAuxDeliveryNoteNr());
-			form.getField(String.format(ROW_VAT_FIELD, row)).setValue(String.format("%,.1f", deliveryNoteItem.getProduct().getTax()) + " %");
-			form.getField(String.format(ROW_PRICE_FIELD, row)).setValue(String.format("%,.2f", deliveryNoteItem.getPrice()) + " €");
+			form.getField(String.format(ROW_ORDER_FIELD, row))
+					.setValue(deliveryNoteItem.getDeliveryNote().getAuxDeliveryNoteNr());
+			form.getField(String.format(ROW_VAT_FIELD, row))
+					.setValue(String.format("%,.1f", deliveryNoteItem.getProduct().getTax()) + " %");
+			form.getField(String.format(ROW_PRICE_FIELD, row))
+					.setValue(String.format("%,.2f", deliveryNoteItem.getPrice()) + " €");
 			form.getField(String.format(ROW_TOTAL_FIELD, row)).setValue(rowTotal.toString() + " €");
 		} catch (IOException e) {
 			log.error(e.getMessage(), e);
