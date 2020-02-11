@@ -20,8 +20,6 @@ export default {
         result += keys.join(localColumnDelimiter);
         result += localLineDelimiter;
 
-        var vm = this;
-
         data.forEach(function (item) {
             ctr = 0;
             keys.forEach(function (key) {
@@ -164,7 +162,7 @@ export default {
                 lineItem.appendChild(freeText);
                 freeText.setAttribute("type", "AAI");
                 freeText.setAttribute("language", "ES");
-                var text = doc.createElement("text");
+                text = doc.createElement("text");
                 freeText.appendChild(text);
                 text.innerHTML = auxDeliveryNr;
 

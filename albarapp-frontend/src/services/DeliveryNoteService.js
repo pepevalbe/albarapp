@@ -56,6 +56,16 @@ export default {
                 alert("Ha ocurrido un error recuperando los productos de las líneas de albarán");
             });
     },
+    delete(deliveryNote) {
+        return HttpClient.delete(`${DELIVERY_NOTES_COMPLETE_ENDPOINT}`, { data: deliveryNote }
+        )
+            .then(response => {
+                return response.data;
+            })
+            .catch(() => {
+                alert("Ha ocurrido un error eliminando el albarán");
+            });
+    },
     async getAllWithCustomerAndTotal(filter, options) {
         var params = {};
         if (filter && filter.form) {

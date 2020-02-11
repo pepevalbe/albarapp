@@ -145,7 +145,7 @@ public class InvoiceDocument {
 			form.getField(String.format(ROW_VAT_FIELD, row))
 					.setValue(String.format("%,.1f", deliveryNoteItem.getProduct().getTax()) + " %");
 			form.getField(String.format(ROW_PRICE_FIELD, row))
-					.setValue(String.format("%,.2f", deliveryNoteItem.getPrice()) + " €");
+					.setValue(price.toString() + " €");
 			form.getField(String.format(ROW_TOTAL_FIELD, row)).setValue(rowTotal.toString() + " €");
 		} catch (IOException e) {
 			log.error(e.getMessage(), e);

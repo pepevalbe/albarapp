@@ -42,6 +42,11 @@
                   <v-icon dark>mdi-pencil</v-icon>
                 </v-btn>
               </td>
+              <td>
+                <v-btn v-if="!item.invoiceId" color="red" dark @click="openDeleteDialog(item)">
+                  <v-icon dark>mdi-delete</v-icon>
+                </v-btn>
+              </td>
             </tr>
           </tbody>
           <tbody v-else>
@@ -77,6 +82,14 @@
                       <v-btn @click="updateDeliveryNote(item)">
                         <v-icon dark>mdi-pencil</v-icon>
                       </v-btn>
+                      <v-btn
+                        v-if="!item.invoiceId"
+                        color="red"
+                        dark
+                        @click="openDeleteDialog(item)"
+                      >
+                        <v-icon dark>mdi-delete</v-icon>
+                      </v-btn>
                     </v-flex>
                   </v-layout>
                 </v-card-actions>
@@ -89,6 +102,21 @@
     <v-overlay v-if="spinner.loading" :value="true">
       <v-progress-circular indeterminate color="primary"></v-progress-circular>
     </v-overlay>
+    <v-dialog v-model="dialogDelete.show" max-width="600">
+      <v-card>
+        <v-card-title class="headline">¿Eliminar albarán?</v-card-title>
+        <v-card-text>Si sigue adelante eliminará el albarán A{{dialogDelete.deliveryNote.id}}. Este proceso es irreversible.</v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="darken-1" text @click="dialogDelete.show = false">Cancelar</v-btn>
+          <v-btn
+            color="red darken-1"
+            text
+            @click="deleteDeliveryNote(dialogDelete.deliveryNote)"
+          >Confirmar</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-flex>
 </template>
 
@@ -132,6 +160,10 @@ export default {
       spinner: {
         loading: false,
         counter: 0
+      },
+      dialogDelete: {
+        show: false,
+        deliveryNote: {}
       }
     };
   },
@@ -185,6 +217,17 @@ export default {
         name: "DeliveryNoteUpdate",
         params: { deliveryNoteId: item.id.toString() }
       });
+    },
+    openDeleteDialog(item) {
+      this.dialogDelete.deliveryNote = item;
+      this.dialogDelete.show = true;
+    },
+    async deleteDeliveryNote(item) {
+      this.dialogDelete.show = false;
+      this.showSpinner();
+      await DeliveryNoteService.delete(item);
+      this.closeSpinner();
+      this.listDeliveryNotes();
     },
     dateFormatted(timestamp) {
       return this.$moment.utc(timestamp, "x").format("DD/MM/YYYY");

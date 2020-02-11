@@ -79,6 +79,18 @@ public class InvoiceService {
 		return invoiceMapper.map(createdDeliveryNote);
 	}
 
+	@Transactional
+	public DeliveryNoteDto deleteDeliveryNote(DeliveryNoteDto deliveryNoteDto) {
+
+		Optional<DeliveryNote> deliveryNote = deliveryNoteRepository.findById(deliveryNoteDto.getId());
+		if (deliveryNote.isPresent()) {
+			List<DeliveryNoteItem> deliveryNoteItems = deliveryNoteItemRepository.findByDeliveryNote(deliveryNote.get());
+			deliveryNoteItemRepository.deleteAll(deliveryNoteItems);
+			deliveryNoteRepository.delete(deliveryNote.get());
+		}
+		return deliveryNoteDto;
+	}
+
 	@Transactional(readOnly = true)
 	public Page<InvoiceDto> getInvoices(@RequestParam Integer customerCode, @RequestParam Long timestampFrom,
 			@RequestParam Long timestampTo, @RequestParam List<Integer> productCodes, Pageable pageable) {
