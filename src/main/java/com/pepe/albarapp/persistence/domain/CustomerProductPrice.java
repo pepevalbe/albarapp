@@ -1,6 +1,5 @@
 package com.pepe.albarapp.persistence.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 

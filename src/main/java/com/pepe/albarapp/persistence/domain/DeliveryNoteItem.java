@@ -51,6 +51,6 @@ public class DeliveryNoteItem {
 	}
 
 	public double getTaxTotal() {
-		return quantity * price * product.getTax()/100;
+		return quantity * price * product.getTax() / 100;
 	}
 }

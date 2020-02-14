@@ -1,7 +1,7 @@
 package com.pepe.albarapp.persistence.repository;
 
-import com.pepe.albarapp.persistence.domain.DeliveryNoteItem;
 import com.pepe.albarapp.persistence.domain.DeliveryNote;
+import com.pepe.albarapp.persistence.domain.DeliveryNoteItem;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -12,6 +12,5 @@ import java.util.List;
 @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_USER')")
 public interface DeliveryNoteItemRepository extends CrudRepository<DeliveryNoteItem, String> {
 
-    public List<DeliveryNoteItem> findByDeliveryNote(DeliveryNote deliveryNote);
-
+	List<DeliveryNoteItem> findByDeliveryNote(DeliveryNote deliveryNote);
 }

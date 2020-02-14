@@ -1,16 +1,15 @@
 package com.pepe.albarapp.persistence;
 
+import com.pepe.albarapp.persistence.domain.DeliveryNote;
+import com.pepe.albarapp.persistence.domain.Invoice;
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.id.IdentifierGenerator;
 
-import com.pepe.albarapp.persistence.domain.Invoice;
-import com.pepe.albarapp.persistence.domain.DeliveryNote;
-
 import java.io.Serializable;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.time.Instant;
 
 public class SequentialByYearGenerator implements IdentifierGenerator {
 

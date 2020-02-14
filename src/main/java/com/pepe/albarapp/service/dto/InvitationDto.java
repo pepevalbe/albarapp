@@ -5,6 +5,6 @@ import lombok.Data;
 @Data
 public class InvitationDto {
 
-    private String email;
-    private String role;
+	private String email;
+	private String role;
 }

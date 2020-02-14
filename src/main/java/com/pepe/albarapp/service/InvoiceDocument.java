@@ -8,20 +8,18 @@ import com.pepe.albarapp.persistence.domain.DeliveryNoteItem;
 import com.pepe.albarapp.persistence.domain.Invoice;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.interactive.form.PDField;
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Comparator;
-import java.util.stream.Collectors;
-import java.util.Iterator;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.SimpleDateFormat;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 public class InvoiceDocument {
@@ -50,21 +48,19 @@ public class InvoiceDocument {
 
 	public static void generate(Invoice invoice, OutputStream outputStream) {
 
-		List<DeliveryNote> deliveryNotes = invoice.getDeliveryNotes();
+		// Get delivery notes ordered by date then by id
+		List<DeliveryNote> deliveryNotes = invoice.getDeliveryNotes().stream()
+				.sorted(Comparator.comparing(DeliveryNote::getIssuedTimestamp).thenComparing(DeliveryNote::getId))
+				.collect(Collectors.toList());
 
-		// Compare by date then by id
-		Comparator<DeliveryNote> compareByDateAndId = Comparator.comparing(DeliveryNote::getIssuedTimestamp)
-				.thenComparing(DeliveryNote::getId);
 
-		deliveryNotes = deliveryNotes.stream().sorted(compareByDateAndId).collect(Collectors.toList());
-
-		if (deliveryNotes.size() == 0 || deliveryNotes.size() > MAX_ROW_NUMBER) {
+		if (deliveryNotes.isEmpty() || deliveryNotes.size() > MAX_ROW_NUMBER) {
 			log.error("Invoice is too large or empty");
 			throw new ApiException(ApiError.ApiError009);
 		}
 
 		Customer customer = deliveryNotes.get(0).getCustomer();
-		PDDocument pdfDocument = null;
+		PDDocument pdfDocument;
 		try {
 			pdfDocument = PDDocument.load(new File(TEMPLATE_PDF_DOCUMENT));
 		} catch (IOException e) {
@@ -79,10 +75,11 @@ public class InvoiceDocument {
 		BigDecimal vatTotal = new BigDecimal(0);
 		int rowCounter = 0;
 		for (DeliveryNote deliveryNote : deliveryNotes) {
-			// Compare by productCode
-			Comparator<DeliveryNoteItem> compareByProductCode = Comparator.comparing(d -> d.getProduct().getCode());
+			// Get delivery notes sorted by productCode
 			List<DeliveryNoteItem> deliveryNoteItems = deliveryNote.getDeliveryNoteItems().stream()
-					.sorted(compareByProductCode).collect(Collectors.toList());
+					.sorted(Comparator.comparing(d -> d.getProduct().getCode()))
+					.collect(Collectors.toList());
+
 			for (DeliveryNoteItem deliveryNoteItem : deliveryNoteItems) {
 				BigDecimal quantity = new BigDecimal(deliveryNoteItem.getQuantity());
 				BigDecimal price = new BigDecimal(Double.toString(deliveryNoteItem.getPrice()));
@@ -100,9 +97,7 @@ public class InvoiceDocument {
 		setDocumentFooter(pdfForm, grossTotal, vatTotal);
 
 		// Make form fields not editable
-		Iterator<PDField> pDFeldIterator = pdfForm.getFieldIterator();
-		while (pDFeldIterator.hasNext())
-			pDFeldIterator.next().setReadOnly(true);
+		pdfForm.getFieldIterator().forEachRemaining(pdField -> pdField.setReadOnly(true));
 
 		try {
 			pdfDocument.save(outputStream);

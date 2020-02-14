@@ -25,10 +25,10 @@ import java.util.Collections;
 @RestController
 public class UserController {
 
-	private final static String USER_ENDPOINT = "/user-creation";
-	private final static String PROFILE = "/api/profile";
-	private final static String INVITATION_ENDPOINT = "/api/send-invitation";
-	private final static String QUESTION = "/api/question";
+	private static final String USER_ENDPOINT = "/user-creation";
+	private static final String PROFILE = "/api/profile";
+	private static final String INVITATION_ENDPOINT = "/api/send-invitation";
+	private static final String QUESTION = "/api/question";
 
 	@Value("${albarapp.trivia_url}")
 	private String triviaUrl;

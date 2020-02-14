@@ -17,8 +17,8 @@ import java.util.Arrays;
 @RestController
 public class DocumentController {
 
-	private final static String INVOICE_DOWNLOAD_ENDPOINT = "/api/invoices/download";
-	private final static String INVOICE_DOWNLOAD_MULTIPLE_ENDPOINT = "/api/invoices/download/multiple";
+	private static final String INVOICE_DOWNLOAD_ENDPOINT = "/api/invoices/download";
+	private static final String INVOICE_DOWNLOAD_MULTIPLE_ENDPOINT = "/api/invoices/download/multiple";
 
 	@Autowired
 	private DocumentService documentService;

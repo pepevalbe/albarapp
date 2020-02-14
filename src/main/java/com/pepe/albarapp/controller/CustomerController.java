@@ -12,8 +12,8 @@ import java.util.List;
 @RestController
 public class CustomerController {
 
-	private final static String CUSTOMERS_ENDPOINT = "/api/customers";
-	private final static String CUSTOMERS_CHECK_CODE_ENDPOINT = "/api/customers/check-code";
+	private static final  String CUSTOMERS_ENDPOINT = "/api/customers";
+	private static final  String CUSTOMERS_CHECK_CODE_ENDPOINT = "/api/customers/check-code";
 
 	@Autowired
 	private CustomerService customerService;

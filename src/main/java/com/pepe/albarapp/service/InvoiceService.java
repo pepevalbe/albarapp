@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.Comparator;
 
 @Slf4j
 @Service
@@ -44,7 +43,7 @@ public class InvoiceService {
 
 	@Transactional(readOnly = true)
 	public Page<DeliveryNoteDto> getDeliveryNotes(@RequestParam Integer customerCode, @RequestParam Long timestampFrom,
-			@RequestParam Long timestampTo, Pageable pageable) {
+												  @RequestParam Long timestampTo, Pageable pageable) {
 		return deliveryNoteRepository
 				.filterByCustomerCodeAndTimestampRange(customerCode, timestampFrom, timestampTo, pageable)
 				.map(invoiceMapper::map);
@@ -93,41 +92,32 @@ public class InvoiceService {
 
 	@Transactional(readOnly = true)
 	public Page<InvoiceDto> getInvoices(@RequestParam Integer customerCode, @RequestParam Long timestampFrom,
-			@RequestParam Long timestampTo, @RequestParam List<Integer> productCodes, Pageable pageable) {
+										@RequestParam Long timestampTo, @RequestParam List<Integer> productCodes, Pageable pageable) {
 
-		if (productCodes != null && productCodes.size() > 0)
-			return invoiceRepository.filterByCustomerCodeAndTimestampRangeAndProducts(customerCode, timestampFrom,
-					timestampTo, productCodes, pageable);
-		else
-			return invoiceRepository.filterByCustomerCodeAndTimestampRange(customerCode, timestampFrom, timestampTo,
-					pageable);
-
+		if (productCodes != null && !productCodes.isEmpty()) {
+			return invoiceRepository.filterByCustomerCodeAndTimestampRangeAndProducts(customerCode, timestampFrom, timestampTo, productCodes, pageable);
+		} else {
+			return invoiceRepository.filterByCustomerCodeAndTimestampRange(customerCode, timestampFrom, timestampTo, pageable);
+		}
 	}
 
 	@Transactional
 	public List<InvoiceDto> billProcess(Integer customerCodeFrom, Integer customerCodeTo, Long timestampFrom,
-			Long timestampTo, Long issuedTimestamp) {
+										Long timestampTo, Long issuedTimestamp) {
 
 		List<Invoice> createdInvoices = new ArrayList<>();
 
 		// Find delivery notes for the requested customerCode and timestamp range
-		List<DeliveryNote> deliveryNotesToBill = deliveryNoteRepository
-				.findByCustomerCodeBetweenAndIssuedTimestampBetweenAndInvoiceIsNull(customerCodeFrom, customerCodeTo,
-						timestampFrom, timestampTo);
+		List<DeliveryNote> deliveryNotesToBill = deliveryNoteRepository.
+				findByCustomerCodeBetweenAndIssuedTimestampBetweenAndInvoiceIsNull(customerCodeFrom, customerCodeTo, timestampFrom, timestampTo);
 
 		// Get delivery notes by customer
 		Map<Customer, List<DeliveryNote>> deliveryNotesByCustomer = deliveryNotesToBill.stream()
 				.collect(Collectors.groupingBy(DeliveryNote::getCustomer));
 
-		Comparator<Customer> customerComparator = new Comparator<Customer>() {
-			@Override
-			public int compare(Customer c1, Customer c2) {
-				return Integer.valueOf(c1.getCode()).compareTo(c2.getCode());
-			}
-		};
 		Map<Customer, List<DeliveryNote>> deliveryNotesByCustomerSorted = deliveryNotesByCustomer.entrySet().stream()
-				.sorted(Map.Entry.comparingByKey(customerComparator)).collect(Collectors.toMap(Map.Entry::getKey,
-						Map.Entry::getValue, (oldValue, newValue) -> oldValue, LinkedHashMap::new));
+				.sorted(Map.Entry.comparingByKey(Comparator.comparingInt(Customer::getCode)))
+				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (oldValue, newValue) -> oldValue, LinkedHashMap::new));
 
 		// Create invoice for each customer
 		deliveryNotesByCustomerSorted.forEach((customer, deliveryNotes) -> {
@@ -141,12 +131,10 @@ public class InvoiceService {
 		});
 
 		// Update all delivery notes
-		deliveryNoteRepository.saveAll(
-				deliveryNotesByCustomer.values().stream().flatMap(Collection::stream).collect(Collectors.toList()));
+		deliveryNoteRepository.saveAll(deliveryNotesByCustomer.values().stream().flatMap(Collection::stream).collect(Collectors.toList()));
 
 		ApiLog.updateElapsedTime();
-		log.info(String.format("%s invoices created from %s delivery notes: ", createdInvoices.size(),
-				deliveryNotesByCustomer.values().size()));
+		log.info(String.format("%s invoices created from %s delivery notes: ", createdInvoices.size(), deliveryNotesByCustomer.values().size()));
 		return createdInvoices.stream().map(invoiceMapper::map).collect(Collectors.toList());
 	}
 }
