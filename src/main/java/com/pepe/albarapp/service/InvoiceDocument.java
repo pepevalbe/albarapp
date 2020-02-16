@@ -20,6 +20,8 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.Locale;
+import java.text.NumberFormat;
 
 @Slf4j
 public class InvoiceDocument {
@@ -40,19 +42,22 @@ public class InvoiceDocument {
 	private static final String INVOICE_ID_FIELD = "invoiceId";
 	private static final String DATE_FIELD = "date";
 	private static final String GROSS_FIELD = "grossTotal";
-	private static final String DISCOUNT_FIELD = "discount";
 	private static final String VAT_FIELD = "vatTotal";
 	private static final String AMOUNT_FIELD = "amount";
-	private static final int MAX_ROW_NUMBER = 23;
+	private static final int MAX_ROW_NUMBER = 29;
 	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
+	private static final NumberFormat NUMBER_FORMAT = NumberFormat.getInstance(new Locale("es", "ES"));
+	private static final NumberFormat VAT_FORMAT = NumberFormat.getInstance(new Locale("es", "ES"));
 
 	public static void generate(Invoice invoice, OutputStream outputStream) {
+
+		// Used for price and totals
+		NUMBER_FORMAT.setMinimumFractionDigits(2);
 
 		// Get delivery notes ordered by date then by id
 		List<DeliveryNote> deliveryNotes = invoice.getDeliveryNotes().stream()
 				.sorted(Comparator.comparing(DeliveryNote::getIssuedTimestamp).thenComparing(DeliveryNote::getId))
 				.collect(Collectors.toList());
-
 
 		if (deliveryNotes.isEmpty() || deliveryNotes.size() > MAX_ROW_NUMBER) {
 			log.error("Invoice is too large or empty");
@@ -127,6 +132,7 @@ public class InvoiceDocument {
 	private static void setDocumentRow(PDAcroForm form, int row, DeliveryNoteItem deliveryNoteItem) {
 		try {
 			BigDecimal quantity = new BigDecimal(deliveryNoteItem.getQuantity());
+			BigDecimal vat = new BigDecimal(deliveryNoteItem.getProduct().getTax());
 			BigDecimal price = new BigDecimal(Double.toString(deliveryNoteItem.getPrice()));
 			BigDecimal rowTotal = quantity.multiply(price);
 			rowTotal = rowTotal.setScale(2, RoundingMode.HALF_UP);
@@ -137,11 +143,9 @@ public class InvoiceDocument {
 			form.getField(String.format(ROW_PRODUCT_FIELD, row)).setValue(deliveryNoteItem.getProduct().getName());
 			form.getField(String.format(ROW_ORDER_FIELD, row))
 					.setValue(deliveryNoteItem.getDeliveryNote().getAuxDeliveryNoteNr());
-			form.getField(String.format(ROW_VAT_FIELD, row))
-					.setValue(String.format("%,.1f", deliveryNoteItem.getProduct().getTax()) + " %");
-			form.getField(String.format(ROW_PRICE_FIELD, row))
-					.setValue(price.toString() + " €");
-			form.getField(String.format(ROW_TOTAL_FIELD, row)).setValue(rowTotal.toString() + " €");
+			form.getField(String.format(ROW_VAT_FIELD, row)).setValue(VAT_FORMAT.format(vat) + " %");
+			form.getField(String.format(ROW_PRICE_FIELD, row)).setValue(NUMBER_FORMAT.format(price) + " €");
+			form.getField(String.format(ROW_TOTAL_FIELD, row)).setValue(NUMBER_FORMAT.format(rowTotal) + " €");
 		} catch (IOException e) {
 			log.error(e.getMessage(), e);
 			log.error("Error filling invoice row " + row);
@@ -151,13 +155,13 @@ public class InvoiceDocument {
 
 	private static void setDocumentFooter(PDAcroForm form, BigDecimal grossTotal, BigDecimal vatTotal) {
 		try {
-			vatTotal = vatTotal.setScale(2, RoundingMode.HALF_UP);
 			BigDecimal netTotal = grossTotal.add(vatTotal);
+			vatTotal = vatTotal.setScale(2, RoundingMode.HALF_UP);
 			netTotal = netTotal.setScale(2, RoundingMode.HALF_UP);
-			form.getField(GROSS_FIELD).setValue(String.format("%,.2f", grossTotal) + " €");
-			form.getField(DISCOUNT_FIELD).setValue(String.format("%d", 0) + " %");
-			form.getField(VAT_FIELD).setValue(vatTotal.toString() + " €");
-			form.getField(AMOUNT_FIELD).setValue(netTotal.toString() + " €");
+			grossTotal = grossTotal.setScale(2, RoundingMode.HALF_UP);
+			form.getField(GROSS_FIELD).setValue(NUMBER_FORMAT.format(grossTotal) + " €");
+			form.getField(VAT_FIELD).setValue(NUMBER_FORMAT.format(vatTotal) + " €");
+			form.getField(AMOUNT_FIELD).setValue(NUMBER_FORMAT.format(netTotal) + " €");
 		} catch (IOException e) {
 			log.error(e.getMessage(), e);
 			log.error("Error filling footer");

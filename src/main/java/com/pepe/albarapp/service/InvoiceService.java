@@ -105,30 +105,27 @@ public class InvoiceService {
 	public List<InvoiceDto> billProcess(Integer customerCodeFrom, Integer customerCodeTo, Long timestampFrom,
 										Long timestampTo, Long issuedTimestamp) {
 
-		List<Invoice> createdInvoices = new ArrayList<>();
-
 		// Find delivery notes for the requested customerCode and timestamp range
 		List<DeliveryNote> deliveryNotesToBill = deliveryNoteRepository.
 				findByCustomerCodeBetweenAndIssuedTimestampBetweenAndInvoiceIsNull(customerCodeFrom, customerCodeTo, timestampFrom, timestampTo);
 
-		// Get delivery notes by customer
+		// Group delivery notes by customer
 		Map<Customer, List<DeliveryNote>> deliveryNotesByCustomer = deliveryNotesToBill.stream()
 				.collect(Collectors.groupingBy(DeliveryNote::getCustomer));
 
-		Map<Customer, List<DeliveryNote>> deliveryNotesByCustomerSorted = deliveryNotesByCustomer.entrySet().stream()
-				.sorted(Map.Entry.comparingByKey(Comparator.comparingInt(Customer::getCode)))
-				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (oldValue, newValue) -> oldValue, LinkedHashMap::new));
-
-		// Create invoice for each customer
-		deliveryNotesByCustomerSorted.forEach((customer, deliveryNotes) -> {
-			Invoice invoice = new Invoice();
-			invoice.setIssuedTimestamp(issuedTimestamp);
-			invoice.setCustomer(customer);
-			invoice.setDeliveryNotes(deliveryNotes);
-			Invoice createdInvoice = invoiceRepository.save(invoice);
-			createdInvoices.add(createdInvoice);
-			deliveryNotes.forEach(deliveryNote -> deliveryNote.setInvoice(createdInvoice));
-		});
+		// Create invoice for each customer, ordered by ascending customer code
+		List<Invoice> createdInvoices = deliveryNotesByCustomer.keySet().stream()
+				.sorted(Comparator.comparingInt(Customer::getCode))
+				.map(customer -> {
+					Invoice invoice = new Invoice();
+					invoice.setIssuedTimestamp(issuedTimestamp);
+					invoice.setCustomer(customer);
+					invoice.setDeliveryNotes(deliveryNotesByCustomer.get(customer));
+					Invoice createdInvoice = invoiceRepository.save(invoice);
+					deliveryNotesByCustomer.get(customer).forEach(deliveryNote -> deliveryNote.setInvoice(createdInvoice));
+					return createdInvoice;
+				})
+				.collect(Collectors.toList());
 
 		// Update all delivery notes
 		deliveryNoteRepository.saveAll(deliveryNotesByCustomer.values().stream().flatMap(Collection::stream).collect(Collectors.toList()));
