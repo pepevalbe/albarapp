@@ -15,9 +15,10 @@ import java.util.List;
 @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_USER')")
 public interface DeliveryNoteRepository extends PagingAndSortingRepository<DeliveryNote, Long> {
 
-	//@Query(value = "select distinct dn from DeliveryNote dn join fetch dn.deliveryNoteItems where (:customerCode is null or dn.customer.code = :customerCode) and (:timestampFrom is null or dn.issuedTimestamp >= :timestampFrom) and (:timestampTo is null or dn.issuedTimestamp <= :timestampTo)",
-	//countQuery = "select distinct count(dn) from DeliveryNote dn where (:customerCode is null or dn.customer.code = :customerCode) and (:timestampFrom is null or dn.issuedTimestamp >= :timestampFrom) and (:timestampTo is null or dn.issuedTimestamp <= :timestampTo)")
-	@Query("select distinct dn from DeliveryNote dn where (:customerCode is null or dn.customer.code = :customerCode) and (:timestampFrom is null or dn.issuedTimestamp >= :timestampFrom) and (:timestampTo is null or dn.issuedTimestamp <= :timestampTo)")
+	@Query("select dn from DeliveryNote dn where " +
+			"(:customerCode is null or dn.customer.code = :customerCode) and " +
+			"(:timestampFrom is null or dn.issuedTimestamp >= :timestampFrom) and " +
+			"(:timestampTo is null or dn.issuedTimestamp <= :timestampTo)")
 	Page<DeliveryNote> filterByCustomerCodeAndTimestampRange(@Param("customerCode") Integer customerCode, @Param("timestampFrom") Long timestampFrom, @Param("timestampTo") Long timestampTo, Pageable pageable);
 
 	Page<DeliveryNote> findByCustomerCodeAndInvoiceIsNull(Integer customerCode, Pageable pageable);
