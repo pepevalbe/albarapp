@@ -1,9 +1,10 @@
-package com.pepe.albarapp.service;
+package com.pepe.albarapp.service.document;
 
 import com.pepe.albarapp.api.error.ApiError;
 import com.pepe.albarapp.api.error.ApiException;
 import com.pepe.albarapp.persistence.domain.Invoice;
 import com.pepe.albarapp.persistence.repository.InvoiceRepository;
+import com.pepe.albarapp.service.document.pdf.PdfInvoice;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,13 +25,13 @@ public class DocumentService {
 	@Autowired
 	private InvoiceRepository invoiceRepository;
 
-	public void generateInvoice(long invoiceId, ServletOutputStream outputStream) {
+	public void generatePdfInvoice(long invoiceId, ServletOutputStream outputStream) {
 		Invoice invoice = invoiceRepository.findById(invoiceId).orElseThrow(() -> new ApiException(ApiError.ApiError009));
 
-		InvoiceDocument.generate(invoice, outputStream);
+		PdfInvoice.generate(invoice, outputStream);
 	}
 
-	public void generateMultipleInvoices(List<Long> invoiceIds, ServletOutputStream outputStream) throws IOException {
+	public void generateMultiplePdfInvoices(List<Long> invoiceIds, ServletOutputStream outputStream) throws IOException {
 
 		ZipOutputStream zipOut = new ZipOutputStream(outputStream);
 
@@ -38,7 +39,7 @@ public class DocumentService {
 			Invoice invoice = invoiceRepository.findById(invoiceId).orElseThrow(() -> new ApiException(ApiError.ApiError009));
 
 			File tempFile = new File("temp");
-			InvoiceDocument.generate(invoice, new FileOutputStream(tempFile));
+			PdfInvoice.generate(invoice, new FileOutputStream(tempFile));
 			FileInputStream fis = new FileInputStream(tempFile);
 			ZipEntry zipEntry = new ZipEntry(invoiceId + ".pdf");
 			zipOut.putNextEntry(zipEntry);

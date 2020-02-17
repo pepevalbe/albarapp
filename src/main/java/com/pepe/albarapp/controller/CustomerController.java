@@ -12,14 +12,15 @@ import java.util.List;
 @RestController
 public class CustomerController {
 
-	private static final  String CUSTOMERS_ENDPOINT = "/api/customers";
-	private static final  String CUSTOMERS_CHECK_CODE_ENDPOINT = "/api/customers/check-code";
+	private static final String CUSTOMERS_ENDPOINT = "/api/customers";
+	private static final String CUSTOMERS_CHECK_CODE_ENDPOINT = "/api/customers/check-code";
 
 	@Autowired
 	private CustomerService customerService;
 
 	@GetMapping(CUSTOMERS_ENDPOINT)
 	public ResponseEntity<List<CustomerDto>> getCustomers(@RequestParam @Nullable String alias) {
+
 		if (alias != null) {
 			ResponseEntity.ok(customerService.findCustomersByAlias(alias));
 		}
@@ -28,6 +29,7 @@ public class CustomerController {
 
 	@GetMapping(CUSTOMERS_CHECK_CODE_ENDPOINT)
 	public ResponseEntity<Boolean> isCustomerCodeExisting(@RequestParam Integer code) {
+
 		return ResponseEntity.ok(customerService.isExistingCustomerCode(code));
 	}
 

@@ -20,5 +20,4 @@ public class InvoiceDto {
 	private String customerFiscalId;
 	private double total;
 	private long productQuantity;
-
 }

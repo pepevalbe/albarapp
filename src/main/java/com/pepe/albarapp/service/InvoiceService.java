@@ -79,15 +79,16 @@ public class InvoiceService {
 	}
 
 	@Transactional
-	public DeliveryNoteDto deleteDeliveryNote(DeliveryNoteDto deliveryNoteDto) {
+	public boolean deleteDeliveryNote(DeliveryNoteDto deliveryNoteDto) {
 
 		Optional<DeliveryNote> deliveryNote = deliveryNoteRepository.findById(deliveryNoteDto.getId());
 		if (deliveryNote.isPresent()) {
 			List<DeliveryNoteItem> deliveryNoteItems = deliveryNoteItemRepository.findByDeliveryNote(deliveryNote.get());
 			deliveryNoteItemRepository.deleteAll(deliveryNoteItems);
 			deliveryNoteRepository.delete(deliveryNote.get());
+			return true;
 		}
-		return deliveryNoteDto;
+		return false;
 	}
 
 	@Transactional(readOnly = true)

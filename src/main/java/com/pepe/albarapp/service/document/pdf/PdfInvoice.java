@@ -1,4 +1,4 @@
-package com.pepe.albarapp.service;
+package com.pepe.albarapp.service.document.pdf;
 
 import com.pepe.albarapp.api.error.ApiError;
 import com.pepe.albarapp.api.error.ApiException;
@@ -24,7 +24,7 @@ import java.util.Locale;
 import java.text.NumberFormat;
 
 @Slf4j
-public class InvoiceDocument {
+public class PdfInvoice {
 
 	private static final String TEMPLATE_PDF_DOCUMENT = "template.pdf";
 	private static final String CUSTOMER_FIELD = "customer";
@@ -169,6 +169,6 @@ public class InvoiceDocument {
 		}
 	}
 
-	private InvoiceDocument() {
+	private PdfInvoice() {
 	}
 }

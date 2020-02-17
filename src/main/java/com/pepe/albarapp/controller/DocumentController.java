@@ -2,7 +2,7 @@ package com.pepe.albarapp.controller;
 
 import com.pepe.albarapp.api.error.ApiError;
 import com.pepe.albarapp.api.error.ApiException;
-import com.pepe.albarapp.service.DocumentService;
+import com.pepe.albarapp.service.document.DocumentService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,9 +24,9 @@ public class DocumentController {
 	private DocumentService documentService;
 
 	@GetMapping(INVOICE_DOWNLOAD_ENDPOINT)
-	public void downloadInvoice(@RequestParam Long invoiceId, HttpServletResponse response) {
+	public void downloadPdfInvoice(@RequestParam Long invoiceId, HttpServletResponse response) {
 		try {
-			documentService.generateInvoice(invoiceId, response.getOutputStream());
+			documentService.generatePdfInvoice(invoiceId, response.getOutputStream());
 			response.setContentType("application/pdf; filename=Invoice.pdf");
 			response.flushBuffer();
 		} catch (IOException e) {
@@ -36,9 +36,9 @@ public class DocumentController {
 	}
 
 	@GetMapping(INVOICE_DOWNLOAD_MULTIPLE_ENDPOINT)
-	public void downloadMultipleInvoice(@RequestParam Long[] invoiceId, HttpServletResponse response) {
+	public void downloadMultiplePdfInvoices(@RequestParam Long[] invoiceId, HttpServletResponse response) {
 		try {
-			documentService.generateMultipleInvoices(Arrays.asList(invoiceId), response.getOutputStream());
+			documentService.generateMultiplePdfInvoices(Arrays.asList(invoiceId), response.getOutputStream());
 			response.setContentType("application/octet-stream");
 			response.setHeader("Content-Disposition", "attachment; filename=invoices.zip");
 			response.flushBuffer();

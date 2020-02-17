@@ -26,7 +26,8 @@ public class InvoiceController {
 
 	@GetMapping(DELIVERY_NOTES_ENDPOINT)
 	public ResponseEntity<Page<DeliveryNoteDto>> getDeliveryNotes(@RequestParam @Nullable Integer customerCode,
-																  @RequestParam @Nullable Long timestampFrom, @RequestParam @Nullable Long timestampTo, Pageable pageable) {
+																  @RequestParam @Nullable Long timestampFrom,
+																  @RequestParam @Nullable Long timestampTo, Pageable pageable) {
 
 		return ResponseEntity.ok(invoiceService.getDeliveryNotes(customerCode, timestampFrom, timestampTo, pageable));
 	}
@@ -38,27 +39,27 @@ public class InvoiceController {
 	}
 
 	@DeleteMapping(DELIVERY_NOTES_ENDPOINT)
-	public ResponseEntity deleteDeliveryNote(@RequestBody DeliveryNoteDto deliveryNoteDto) {
+	public ResponseEntity<Void> deleteDeliveryNote(@RequestBody DeliveryNoteDto deliveryNoteDto) {
 
-		invoiceService.deleteDeliveryNote(deliveryNoteDto);
-		return ResponseEntity.ok().build();
+		return invoiceService.deleteDeliveryNote(deliveryNoteDto) ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
 	}
 
 	@GetMapping(INVOICE_ENDPOINT)
 	public ResponseEntity<Page<InvoiceDto>> getInvoices(@RequestParam @Nullable Integer customerCode,
-														@RequestParam @Nullable Long timestampFrom, @RequestParam @Nullable Long timestampTo,
+														@RequestParam @Nullable Long timestampFrom,
+														@RequestParam @Nullable Long timestampTo,
 														@RequestParam @Nullable List<Integer> productCodes, Pageable pageable) {
 
-		return ResponseEntity
-				.ok(invoiceService.getInvoices(customerCode, timestampFrom, timestampTo, productCodes, pageable));
+		return ResponseEntity.ok(invoiceService.getInvoices(customerCode, timestampFrom, timestampTo, productCodes, pageable));
 	}
 
 	@PostMapping(INVOICE_BILL_ENDPOINT)
 	public ResponseEntity<List<InvoiceDto>> billProcess(@RequestParam Integer customerCodeFrom,
-														@RequestParam Integer customerCodeTo, @RequestParam Long timestampFrom, @RequestParam Long timestampTo,
+														@RequestParam Integer customerCodeTo,
+														@RequestParam Long timestampFrom,
+														@RequestParam Long timestampTo,
 														@RequestParam Long issuedTimestamp) {
 
-		return ResponseEntity.ok(invoiceService.billProcess(customerCodeFrom, customerCodeTo, timestampFrom,
-				timestampTo, issuedTimestamp));
+		return ResponseEntity.ok(invoiceService.billProcess(customerCodeFrom, customerCodeTo, timestampFrom, timestampTo, issuedTimestamp));
 	}
 }
