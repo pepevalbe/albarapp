@@ -4,6 +4,7 @@ import com.pepe.albarapp.api.error.ApiError;
 import com.pepe.albarapp.api.error.ApiException;
 import com.pepe.albarapp.persistence.domain.Invoice;
 import com.pepe.albarapp.persistence.repository.InvoiceRepository;
+import com.pepe.albarapp.service.document.aecoc.AecocInvoice;
 import com.pepe.albarapp.service.document.pdf.PdfInvoice;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,11 @@ public class DocumentService {
 
 	@Autowired
 	private InvoiceRepository invoiceRepository;
+
+	public AecocInvoice generateAecocInvoice(long invoiceId) {
+
+		return invoiceRepository.findById(invoiceId).map(AecocInvoice::build).orElseThrow(() -> new ApiException(ApiError.ApiError009));
+	}
 
 	public void generatePdfInvoice(long invoiceId, ServletOutputStream outputStream) {
 		Invoice invoice = invoiceRepository.findById(invoiceId).orElseThrow(() -> new ApiException(ApiError.ApiError009));

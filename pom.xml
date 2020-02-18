@@ -22,6 +22,7 @@
         <jjwt.version>0.9.1</jjwt.version>
         <apache.commons-text.version>1.8</apache.commons-text.version>
         <pdfbox.version>2.0.18</pdfbox.version>
+        <jackson-xml.version>2.10.2</jackson-xml.version>
     </properties>
 
     <dependencies>
@@ -85,6 +86,11 @@
             <groupId>org.apache.pdfbox</groupId>
             <artifactId>pdfbox</artifactId>
             <version>${pdfbox.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-xml</artifactId>
+            <version>${jackson-xml.version}</version>
         </dependency>
     </dependencies>
 
