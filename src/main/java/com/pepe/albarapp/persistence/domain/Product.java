@@ -29,6 +29,9 @@ public class Product {
 	@Column(nullable = false)
 	private double tax;
 
+	@Column
+	private String aecocGtin;    // Optional product AECOC additional info
+
 	@JsonIgnore
 	@OneToMany(mappedBy = "product")
 	private Set<CustomerProductPrice> customerProductPrices;

@@ -1,6 +1,8 @@
 package com.pepe.albarapp.service.document.aecoc.lineitem;
 
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import com.pepe.albarapp.api.error.ApiError;
+import com.pepe.albarapp.api.error.ApiException;
 import com.pepe.albarapp.persistence.domain.DeliveryNoteItem;
 import com.pepe.albarapp.service.document.aecoc.Amount;
 import com.pepe.albarapp.service.document.aecoc.IgicTax;
@@ -12,7 +14,7 @@ public class LineItem {
 	@JacksonXmlProperty(isAttribute = true)
 	private String number;
 
-	private final ItemID itemID = new ItemID("08420000000015");
+	private ItemID itemID;
 	private Description description;
 	private Invoiced invoiced;
 	private Text freeText;
@@ -23,6 +25,10 @@ public class LineItem {
 	private Amount lineItemAmount;
 
 	public LineItem(DeliveryNoteItem item) {
+		if (item.getProduct().getAecocGtin() == null) {
+			throw new ApiException(ApiError.ApiError011);
+		}
+		itemID = new ItemID(item.getProduct().getAecocGtin());
 		description = new Description(item.getProduct().getName());
 		invoiced = new Invoiced(item.getQuantity());
 		String auxDeliveryNoteNr = item.getDeliveryNote().getAuxDeliveryNoteNr();

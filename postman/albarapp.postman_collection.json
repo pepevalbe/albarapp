@@ -63,6 +63,9 @@
 		{
 			"name": "/create-user",
 			"request": {
+				"auth": {
+					"type": "noauth"
+				},
 				"method": "POST",
 				"header": [
 					{
@@ -697,6 +700,50 @@
 			"response": []
 		},
 		{
+			"name": "/api/invoices/aecoc",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"token\" : \"50094f13-428d-4b60-b6b4-ce6effac173c\",\n\t\"name\" : \"Pepe\",\n\t\"surname\" : \"Valverde\",\n\t\"password\" : \"patata\"\n\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/invoices/aecoc?invoiceId=201800000",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"invoices",
+						"aecoc"
+					],
+					"query": [
+						{
+							"key": "invoiceId",
+							"value": "201800000"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "/api/invoice/download",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
@@ -721,13 +768,13 @@
 					}
 				},
 				"url": {
-					"raw": "{{host}}/api/invoice/download?invoiceId=201800000",
+					"raw": "{{host}}/api/invoices/download?invoiceId=201800000",
 					"host": [
 						"{{host}}"
 					],
 					"path": [
 						"api",
-						"invoice",
+						"invoices",
 						"download"
 					],
 					"query": [
@@ -765,13 +812,13 @@
 					}
 				},
 				"url": {
-					"raw": "{{host}}/api/invoice/download/multiple?invoiceId=201800000&invoiceId=201800001",
+					"raw": "{{host}}/api/invoices/download/multiple?invoiceId=201800000&invoiceId=201800001",
 					"host": [
 						"{{host}}"
 					],
 					"path": [
 						"api",
-						"invoice",
+						"invoices",
 						"download",
 						"multiple"
 					],

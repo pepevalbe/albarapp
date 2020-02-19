@@ -3,6 +3,10 @@ package com.pepe.albarapp.service.document.aecoc;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
+import com.pepe.albarapp.api.error.ApiError;
+import com.pepe.albarapp.api.error.ApiException;
+import com.pepe.albarapp.persistence.domain.Customer;
+import com.pepe.albarapp.persistence.domain.CustomerAecocInfo;
 import com.pepe.albarapp.persistence.domain.Invoice;
 import com.pepe.albarapp.service.document.aecoc.lineitem.LineItem;
 import lombok.Data;
@@ -48,16 +52,23 @@ public class AecocInvoice {
 
 	public static AecocInvoice build(Invoice invoice) {
 
+		Customer customer = invoice.getCustomer();
+		CustomerAecocInfo customerAecocInfo = customer.getCustomerAecocInfo();
+
+		if (customer.getAddress() == null || customerAecocInfo == null || !customerAecocInfo.isValid()) {
+			throw new ApiException(ApiError.ApiError011);
+		}
+
 		AecocInvoice aecocInvoice = new AecocInvoice();
 		aecocInvoice.typedEntityIdentification = new TypedEntityIdentification(invoice.getId(), AecocConstants.glnOwner, AecocConstants.partyNameOwner);
 		aecocInvoice.senderCorporateOffice = AecocConstants.corporateOfficeOwner;
-		aecocInvoice.receiverCorporateOffice = new CorporateOffice("glnBuyer", "nameBuyer", "VATregistrationNumber", "streetAndNumber", "cityName", "postCode");
+		aecocInvoice.receiverCorporateOffice = new CorporateOffice(customerAecocInfo.getReceiverCln(), customer.getName(), customer.getFiscalId(), customer.getAddress(), customer.getAddress(), customer.getAddress());
 		aecocInvoice.seller = AecocConstants.partyOwner;
-		aecocInvoice.buyer = new Party("glnBuyer", "nameBuyer");
-		aecocInvoice.shipParty = new Party("glnShip", "nameShip", "SHIP_TO");
-		aecocInvoice.payer = new Party("glnBuyer", "nameBuyer");
+		aecocInvoice.buyer = new Party(customerAecocInfo.getBuyerCln(), customerAecocInfo.getBuyerCln());
+		aecocInvoice.shipParty = new Party(customerAecocInfo.getShipCln(), customerAecocInfo.getShipCln(), "SHIP_TO");
+		aecocInvoice.payer = new Party(customerAecocInfo.getPayerCln(), customerAecocInfo.getPayerCln());
 		aecocInvoice.invoicer = AecocConstants.partyOwner;
-		aecocInvoice.invoicee = new Party("glnBuyer", "nameBuyer");
+		aecocInvoice.invoicee = new Party(customerAecocInfo.getInvoiceeCln(), customerAecocInfo.getInvoiceeCln());
 		aecocInvoice.totalAmount = new Amount(invoice.getGrossTotal() + invoice.getTaxTotal());
 		aecocInvoice.baseAmount = new Amount(invoice.getGrossTotal());
 		aecocInvoice.igicTax = new IgicTax(invoice.getGrossTotal(), invoice.getTaxTotal(), invoice.getTaxTotal() / invoice.getGrossTotal());

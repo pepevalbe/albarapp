@@ -40,6 +40,9 @@ public class Customer {
 	@Column
 	private String province;
 
+	@Embedded
+	private CustomerAecocInfo customerAecocInfo;        // Optional Customer AECOC additional info
+
 	@OneToMany(mappedBy = "customer")
 	private List<CustomerProductPrice> customerProductPrices;
 
