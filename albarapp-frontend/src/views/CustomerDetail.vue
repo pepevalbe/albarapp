@@ -1,18 +1,28 @@
 <template>
   <v-flex align-self-start>
-    <CustomerForm :form="form" :readonly="true"></CustomerForm>
-    <div class="mb-3"></div>
-    <CustomerPriceTable
-      v-if="form.customer.customerProductPrices"
-      :customerProductPrices="form.customer.customerProductPrices"
-      :readonly="true"
-    ></CustomerPriceTable>
-    <div class="mb-10"></div>
-    <v-layout text-center wrap>
-      <v-flex xs12>
-        <v-btn @click="$router.back()">Volver</v-btn>
-      </v-flex>
-    </v-layout>
+    <div v-if="!errorLoading">
+      <CustomerForm :form="form" :readonly="true"></CustomerForm>
+      <div class="mb-3"></div>
+      <CustomerPriceTable
+        v-if="form.customer.customerProductPrices"
+        :customerProductPrices="form.customer.customerProductPrices"
+        :readonly="true"
+      ></CustomerPriceTable>
+      <div class="mb-10"></div>
+      <v-layout text-center wrap>
+        <v-flex xs12>
+          <v-btn @click="$router.back()">Volver</v-btn>
+        </v-flex>
+      </v-layout>
+    </div>
+    <div v-if="errorLoading">
+      <v-row class="mb-2" justify="center">Error al obtener el cliente, por favor vuelva a cargar.</v-row>
+      <v-row justify="center">
+        <v-btn @click="loadCustomer()">
+          <v-icon dark>mdi-refresh</v-icon>
+        </v-btn>
+      </v-row>
+    </div>
     <v-overlay v-if="spinner.loading" :value="true">
       <v-progress-circular indeterminate color="primary"></v-progress-circular>
     </v-overlay>
@@ -42,10 +52,10 @@ export default {
         address: "",
         province: "",
         phoneNumber: "",
-        customerProductPrices: []
+        customerProductPrices: null
       }
     },
-
+    errorLoading: false,
     spinner: {
       loading: false,
       counter: 0
@@ -55,14 +65,25 @@ export default {
     customerId: String
   },
   async created() {
-    this.showSpinner();
-    this.form.customer = await CustomerService.get(this.customerId);
-    this.$set(
-      this.form.customer,
-      "customerProductPrices",
-      await CustomerService.getCustomerProductPrices(this.customerId)
-    );
-    this.closeSpinner();
+    this.loadCustomer();
+  },
+  methods: {
+    async loadCustomer() {
+      try {
+        this.showSpinner();
+        this.errorLoading = false;
+        this.form.customer = await CustomerService.get(this.customerId);
+        this.$set(
+          this.form.customer,
+          "customerProductPrices",
+          await CustomerService.getCustomerProductPrices(this.customerId)
+        );
+      } catch (e) {
+        this.errorLoading = true;
+      } finally {
+        this.closeSpinner();
+      }
+    }
   }
 };
 </script>

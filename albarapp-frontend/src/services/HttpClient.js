@@ -17,17 +17,19 @@ httpClient.interceptors.request.use(function (config) {
 httpClient.interceptors.response.use(function (response) {
     return response
 }, function (error) {
-    if (error.response.status === 401 ||
-        error.response.status === 403) {
+    if (error && error.response
+        && (error.response.status === 401 ||
+            error.response.status === 403)) {
         localStorage.clear();
         window.location.href = "/";
     } else if (
-        error.response.data != null &&
-        error.response.data.errorCode != null &&
-        error.response.data.errorMessage != null &&
+        error && error.response &&
+        error.response.data &&
+        error.response.data.errorCode &&
+        error.response.data.errorMessage &&
         error.response.data.errorCode !== '002') {
-        alert(error.response.data.errorCode + ' : ' + error.response.data.errorMessage)
+        return Promise.reject(error);
     }
-    return Promise.reject(error)
+    return Promise.reject(error);
 });
 export default httpClient;

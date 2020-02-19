@@ -2,7 +2,10 @@
   <v-flex align-self-start>
     <CustomerForm v-bind:form="form" ref="form"></CustomerForm>
     <div class="mb-3"></div>
-    <CustomerPriceTable v-if="form.customer.customerProductPrices" v-bind:customerProductPrices="form.customer.customerProductPrices"></CustomerPriceTable>
+    <CustomerPriceTable
+      v-if="form.customer.customerProductPrices"
+      v-bind:customerProductPrices="form.customer.customerProductPrices"
+    ></CustomerPriceTable>
     <div class="mb-10"></div>
     <v-layout text-center wrap class="pt-10">
       <v-flex xs12>
@@ -11,9 +14,9 @@
         <v-btn :disabled="!form.valid" color="success" class="mr-4" @click="createCustomer()">Crear</v-btn>
       </v-flex>
     </v-layout>
-    <v-snackbar v-model="snackbar">
-      Cliente creado correctamente
-      <v-btn color="green" text @click="snackbar = false">Cerrar</v-btn>
+    <v-snackbar v-model="snackbar.show" :color="snackbar.color">
+      {{snackbar.message}}
+      <v-btn text @click="snackbar.show=false">Cerrar</v-btn>
     </v-snackbar>
     <v-overlay v-if="spinner.loading" :value="true">
       <v-progress-circular indeterminate color="primary"></v-progress-circular>
@@ -47,8 +50,11 @@ export default {
         customerProductPrices: []
       }
     },
-
-    snackbar: false,
+    snackbar: {
+      show: false,
+      message: "",
+      color: ""
+    },
     spinner: {
       loading: false,
       counter: 0
@@ -56,11 +62,25 @@ export default {
   }),
   methods: {
     async createCustomer() {
-      this.showSpinner();
-      await CustomerService.create(this.form.customer);
-      this.closeSpinner();
-      this.snackbar = true;
-      this.reset();
+      try {
+        this.showSpinner();
+        await CustomerService.create(this.form.customer);
+        this.snackbar = {
+          show: true,
+          message: "Cliente creado correctamente",
+          color: "success"
+        };
+        this.reset();
+      } catch (e) {
+        this.snackbar = {
+          show: true,
+          message:
+            "No se ha podido crear el cliente, por favor vuelva a intentarlo.",
+          color: "error"
+        };
+      } finally {
+        this.closeSpinner();
+      }
     },
     reset() {
       this.$refs.form.reset();

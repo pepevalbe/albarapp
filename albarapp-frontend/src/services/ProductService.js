@@ -7,9 +7,6 @@ export default {
     return HttpClient.get(RESOURCE_NAME)
       .then(response => {
         return response.data._embedded.products;
-      })
-      .catch(() => {
-        alert("Ha ocurrido un error recuperando los productos");
       });
   },
 
@@ -17,9 +14,6 @@ export default {
     return HttpClient.get(`${RESOURCE_NAME}/${id}`)
       .then(response => {
         return response.data;
-      })
-      .catch(() => {
-        alert("Ha ocurrido un error recuperando el producto");
       });
   },
 
@@ -27,9 +21,6 @@ export default {
     return HttpClient.post(RESOURCE_NAME, data)
       .then(response => {
         return response.data;
-      })
-      .catch(() => {
-        alert("Ha ocurrido un error creando el producto");
       });
   },
 
@@ -37,16 +28,10 @@ export default {
     return HttpClient.put(`${RESOURCE_NAME}/${id}`, data)
       .then(response => {
         return response.data;
-      })
-      .catch(() => {
-        alert("Ha ocurrido un error actualizando el producto");
       });
   },
 
   delete(id) {
-    return HttpClient.delete(`${RESOURCE_NAME}/${id}`)
-      .catch(() => {
-        alert("Ha ocurrido un error borrando el producto");
-      });
+    return HttpClient.delete(`${RESOURCE_NAME}/${id}`);
   }
 };

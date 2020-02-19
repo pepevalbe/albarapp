@@ -9,18 +9,12 @@ export default {
     return HttpClient.get(CUSTOMER_RESOURCE)
       .then(response => {
         return response.data._embedded.customers;
-      })
-      .catch(() => {
-        alert("Ha ocurrido un error recuperando los clientes");
       });
   },
   get(id) {
     return HttpClient.get(`${CUSTOMER_RESOURCE}/${id}`)
       .then(response => {
         return response.data;
-      })
-      .catch(() => {
-        alert("Ha ocurrido un error recuperando el cliente");
       });
   },
   getAllWithPrices() {
@@ -36,9 +30,6 @@ export default {
     return HttpClient.get(item._links.product.href)
       .then(response => {
         item.product = response.data;
-      })
-      .catch(() => {
-        alert("Ha ocurrido un error recuperando el producto del precio");
       });
   },
   async getCustomerProductPrices(id) {
@@ -49,17 +40,15 @@ export default {
     for (const customerProductPrice of customerProductPrices) {
       promises.push(this.fetchProduct(customerProductPrice));
     }
-    await Promise.all(promises);
-    return customerProductPrices;
+    return Promise.all(promises).then(function () {
+      return customerProductPrices;
+    });
   },
   create(customer) {
     var customerDto = this.mapCustomerToDto(customer);
     return HttpClient.post(CUSTOMER_COMPLETE_RESOURCE, customerDto)
       .then(response => {
         return response;
-      })
-      .catch(() => {
-        alert("Ha ocurrido un error creando el cliente");
       });
   },
   update(id, customer) {
@@ -67,9 +56,6 @@ export default {
     return HttpClient.put(`${CUSTOMER_COMPLETE_RESOURCE}/${id}`, customerDto)
       .then((response) => {
         return response;
-      })
-      .catch(() => {
-        alert("Ha ocurrido un error actualizando el cliente");
       });
   },
   mapCustomerToDto(customer) {
