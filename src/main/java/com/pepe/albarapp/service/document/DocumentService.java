@@ -28,7 +28,7 @@ public class DocumentService {
 
 	public AecocInvoice generateAecocInvoice(long invoiceId) {
 
-		return invoiceRepository.findById(invoiceId).map(AecocInvoice::build).orElseThrow(() -> new ApiException(ApiError.ApiError009));
+		return invoiceRepository.findById(invoiceId).map(AecocInvoice::build).orElseThrow(() -> new ApiException(ApiError.ApiError011));
 	}
 
 	public void generatePdfInvoice(long invoiceId, ServletOutputStream outputStream) {

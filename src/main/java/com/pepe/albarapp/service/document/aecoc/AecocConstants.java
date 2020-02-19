@@ -1,5 +1,8 @@
 package com.pepe.albarapp.service.document.aecoc;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class AecocConstants {
 
 	public static String glnOwner;
@@ -12,6 +15,7 @@ public class AecocConstants {
 		String[] info = tokenizedInfo.split(";");
 
 		if (info.length != 6) {
+			log.error("Can not parse AECOC constants from tokenized info: " + tokenizedInfo);
 			throw new RuntimeException("Can not parse AECOC constants");
 		}
 
