@@ -49,14 +49,14 @@ public class AecocInvoice {
 	public static AecocInvoice build(Invoice invoice) {
 
 		AecocInvoice aecocInvoice = new AecocInvoice();
-		aecocInvoice.typedEntityIdentification = new TypedEntityIdentification(invoice.getId(), "", "nameOwner");
-		aecocInvoice.senderCorporateOffice = new CorporateOffice("glnOwner", "nameOwner", "VATregistrationNumber", "streetAndNumber", "cityName", "postCode");
+		aecocInvoice.typedEntityIdentification = new TypedEntityIdentification(invoice.getId(), AecocConstants.glnOwner, AecocConstants.partyNameOwner);
+		aecocInvoice.senderCorporateOffice = AecocConstants.corporateOfficeOwner;
 		aecocInvoice.receiverCorporateOffice = new CorporateOffice("glnBuyer", "nameBuyer", "VATregistrationNumber", "streetAndNumber", "cityName", "postCode");
-		aecocInvoice.seller = new Party("glnOwner", "nameOwner");
+		aecocInvoice.seller = AecocConstants.partyOwner;
 		aecocInvoice.buyer = new Party("glnBuyer", "nameBuyer");
 		aecocInvoice.shipParty = new Party("glnShip", "nameShip", "SHIP_TO");
 		aecocInvoice.payer = new Party("glnBuyer", "nameBuyer");
-		aecocInvoice.invoicer = new Party("glnOwner", "nameOwner");
+		aecocInvoice.invoicer = AecocConstants.partyOwner;
 		aecocInvoice.invoicee = new Party("glnBuyer", "nameBuyer");
 		aecocInvoice.totalAmount = new Amount(invoice.getGrossTotal() + invoice.getTaxTotal());
 		aecocInvoice.baseAmount = new Amount(invoice.getGrossTotal());

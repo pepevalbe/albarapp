@@ -38,7 +38,6 @@ public class DocumentController {
 	@ResponseBody
 	public void downloadAecocInvoice(@RequestParam Long invoiceId, HttpServletResponse response) {
 
-
 		try {
 			AecocInvoice aecocInvoice = documentService.generateAecocInvoice(invoiceId);
 			XML_MAPPER.writeValue(response.getOutputStream(), aecocInvoice);
