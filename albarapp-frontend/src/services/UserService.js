@@ -10,9 +10,6 @@ export default {
     return HttpClient.get(USER_PROFILE_URL)
       .then(response => {
         return response.data;
-      })
-      .catch(() => {
-        alert("Ha ocurrido un error recuperando el perfil");
       });
   },
 

@@ -6,15 +6,25 @@
     app
     v-model="drawer.value"
   >
-    <v-list-item>
-      <v-list-item-avatar>
-        <v-icon large>mdi-account-circle</v-icon>
-      </v-list-item-avatar>
-      <v-list-item-content>
-        <v-list-item-title class="title">{{profile.name}}</v-list-item-title>
-        <v-list-item-subtitle>{{parsedToken.sub}}</v-list-item-subtitle>
-      </v-list-item-content>
-    </v-list-item>
+    <div v-if="!errorLoading">
+      <v-list-item>
+        <v-list-item-avatar>
+          <v-icon large>mdi-account-circle</v-icon>
+        </v-list-item-avatar>
+        <v-list-item-content>
+          <v-list-item-title class="title">{{profile.name}}</v-list-item-title>
+          <v-list-item-subtitle>{{parsedToken.sub}}</v-list-item-subtitle>
+        </v-list-item-content>
+      </v-list-item>
+    </div>
+    <div v-if="errorLoading" class="mb-2 mt-2">
+      <v-row class="mb-2" justify="center">Error al obtener los datos de perfil</v-row>
+      <v-row justify="center">
+        <v-btn @click="loadProfile()">
+          <v-icon dark>mdi-refresh</v-icon>
+        </v-btn>
+      </v-row>
+    </div>
     <v-divider></v-divider>
     <v-list dense nav>
       <v-list-item link to="/">
@@ -84,12 +94,23 @@ export default {
   },
   data: () => {
     return {
-      profile: Object
+      profile: Object,
+      errorLoading: false
     };
   },
   async created() {
-    if (this.token) {
-      this.profile = await UserService.getProfile();
+    this.loadProfile();
+  },
+  methods: {
+    async loadProfile() {
+      if (this.token) {
+        try {
+          this.profile = await UserService.getProfile();
+          this.errorLoading = false;
+        } catch (e) {
+          this.errorLoading = true;
+        }
+      }
     }
   }
 };
