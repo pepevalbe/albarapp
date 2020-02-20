@@ -65,16 +65,32 @@
         :rules="phoneNumberRules"
         label="Teléfono"
       ></v-text-field>
+      <v-switch
+        @change="createDeleteAecoc"
+        :readonly="readonly"
+        v-model="form.switchAecoc"
+        label="Incluir información para facturación EDI AECOC"
+      ></v-switch>
+      <CustomerAECOCForm
+        v-if="form.switchAecoc"
+        :customerAecocInfo="form.customer.customerAecocInfo"
+        :readonly="readonly"
+      />
     </v-form>
   </v-container>
 </template>
 
 <script>
+import CustomerAECOCForm from "@/components/CustomerAECOCForm";
 export default {
   name: "CustomerForm",
+  components: {
+    CustomerAECOCForm
+  },
   props: {
     form: {
       valid: Boolean,
+      switchAecoc: Boolean,
       customer: {
         code: Number,
         name: String,
@@ -83,7 +99,8 @@ export default {
         fiscalId: String,
         address: String,
         province: String,
-        phoneNumber: String
+        phoneNumber: String,
+        customerAecocInfo: Object
       }
     },
     readonly: Boolean
@@ -102,7 +119,9 @@ export default {
     ],
     aliasRules: [
       v => !!v || "El alias es obligatorio",
-      v => (v && v.length <= 80) || "El nombre comercial debe tener menos de 80 caracteres"
+      v =>
+        (v && v.length <= 80) ||
+        "El nombre comercial debe tener menos de 80 caracteres"
     ],
     emailRules: [v => !v || /.+@.+\..+/.test(v) || "E-mail no válido"],
     fiscalIdRules: [
@@ -130,6 +149,19 @@ export default {
   methods: {
     reset: function() {
       this.$refs.form.reset();
+    },
+    createDeleteAecoc: function() {
+      if (this.form.switchAecoc) {
+        this.form.customer.customerAecocInfo = {
+          receiverCln: "",
+          buyerCln: "",
+          shipCln: "",
+          payerCln: "",
+          invoiceeCln: ""
+        };
+      } else {
+        this.form.customer.customerAecocInfo = null;
+      }
     }
   }
 };

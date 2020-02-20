@@ -38,6 +38,7 @@ export default {
   data: () => ({
     form: {
       valid: false,
+      switchAecoc: false,
       customer: {
         code: "",
         name: "",
@@ -47,6 +48,7 @@ export default {
         address: "",
         province: "",
         phoneNumber: "",
+        customerAecocInfo: null,
         customerProductPrices: []
       }
     },

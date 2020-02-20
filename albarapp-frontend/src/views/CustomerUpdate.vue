@@ -1,10 +1,10 @@
 <template>
   <v-flex align-self-start>
     <div v-if="!errorLoading">
-      <CustomerForm :form="form"></CustomerForm>
+      <CustomerForm :form="form" v-if="form.customer"></CustomerForm>
       <div class="mb-3"></div>
       <CustomerPriceTable
-        v-if="form.customer.customerProductPrices"
+        v-if="form.customer && form.customer.customerProductPrices"
         :customerProductPrices="form.customer.customerProductPrices"
       ></CustomerPriceTable>
       <div class="mb-10"></div>
@@ -52,17 +52,8 @@ export default {
   data: () => ({
     form: {
       valid: false,
-      customer: {
-        code: "",
-        name: "",
-        alias: "",
-        email: "",
-        fiscalId: "",
-        address: "",
-        province: "",
-        phoneNumber: "",
-        customerProductPrices: null
-      }
+      switchAecoc: false,
+      customer: null
     },
     errorLoading: false,
     snackbar: {
@@ -87,6 +78,7 @@ export default {
         this.showSpinner();
         this.errorLoading = false;
         this.form.customer = await CustomerService.get(this.customerId);
+        if (this.form.customer.customerAecocInfo) this.form.switchAecoc = true;
         this.$set(
           this.form.customer,
           "customerProductPrices",
