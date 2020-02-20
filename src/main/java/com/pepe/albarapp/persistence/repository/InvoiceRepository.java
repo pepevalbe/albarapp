@@ -16,9 +16,18 @@ import java.util.List;
 @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_USER')")
 public interface InvoiceRepository extends PagingAndSortingRepository<Invoice, Long> {
 
-	@Query("select new com.pepe.albarapp.service.dto.InvoiceDto(i.id, i.issuedTimestamp, i.customer.id, i.customer.code, i.customer.alias, i.customer.name, i.customer.fiscalId, SUM(dni.quantity*dni.price*(1+dni.product.tax/100)), SUM(dni.quantity)) from Invoice i inner join i.deliveryNotes dn inner join dn.deliveryNoteItems dni where (:customerCode is null or i.customer.code = :customerCode) and (:timestampFrom is null or i.issuedTimestamp >= :timestampFrom) and (:timestampTo is null or i.issuedTimestamp <= :timestampTo) group by i.id")
+	@Query("select new com.pepe.albarapp.service.dto.InvoiceDto(i.id, i.issuedTimestamp, i.customer.id, i.customer.code, i.customer.alias, i.customer.name, i.customer.fiscalId, SUM(dni.quantity*dni.price*(1+dni.product.tax/100)), SUM(dni.quantity)) " +
+			"from Invoice i inner join i.deliveryNotes dn inner join dn.deliveryNoteItems dni where " +
+			"(:customerCode is null or i.customer.code = :customerCode) and " +
+			"(:timestampFrom is null or i.issuedTimestamp >= :timestampFrom) and " +
+			"(:timestampTo is null or i.issuedTimestamp <= :timestampTo) group by i.id")
 	Page<InvoiceDto> filterByCustomerCodeAndTimestampRange(@Param("customerCode") Integer customerCode, @Param("timestampFrom") Long timestampFrom, @Param("timestampTo") Long timestampTo, Pageable pageable);
 
-	@Query("select new com.pepe.albarapp.service.dto.InvoiceDto(i.id, i.issuedTimestamp, i.customer.id, i.customer.code, i.customer.alias, i.customer.name, i.customer.fiscalId, SUM(dni.quantity*dni.price*(1+dni.product.tax/100)), SUM(dni.quantity)) from Invoice i inner join i.deliveryNotes dn inner join dn.deliveryNoteItems dni where (:customerCode is null or i.customer.code = :customerCode) and (:timestampFrom is null or i.issuedTimestamp >= :timestampFrom) and (:timestampTo is null or i.issuedTimestamp <= :timestampTo) and dni.product.code in (:productCodes) group by i.id")
+	@Query("select new com.pepe.albarapp.service.dto.InvoiceDto(i.id, i.issuedTimestamp, i.customer.id, i.customer.code, i.customer.alias, i.customer.name, i.customer.fiscalId, SUM(dni.quantity*dni.price*(1+dni.product.tax/100)), SUM(dni.quantity)) " +
+			"from Invoice i inner join i.deliveryNotes dn inner join dn.deliveryNoteItems dni where " +
+			"(:customerCode is null or i.customer.code = :customerCode) and " +
+			"(:timestampFrom is null or i.issuedTimestamp >= :timestampFrom) and " +
+			"(:timestampTo is null or i.issuedTimestamp <= :timestampTo) and " +
+			"dni.product.code in (:productCodes) group by i.id")
 	Page<InvoiceDto> filterByCustomerCodeAndTimestampRangeAndProducts(@Param("customerCode") Integer customerCode, @Param("timestampFrom") Long timestampFrom, @Param("timestampTo") Long timestampTo, @Param("productCodes") List<Integer> productCodes, Pageable pageable);
 }
