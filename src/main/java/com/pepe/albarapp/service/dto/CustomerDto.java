@@ -17,5 +17,6 @@ public class CustomerDto {
 	private String email;
 	private String address;
 	private String province;
+	private CustomerAecocInfoDto customerAecocInfo;
 	private List<CustomerProductPriceDto> customerProductPrices;
 }
