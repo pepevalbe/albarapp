@@ -10,17 +10,13 @@ public class Party {
 	private String identificationType;
 
 	private String gln;
-	@JacksonXmlProperty(localName = "PartyName")
-	private String partyName;
 
-	public Party(String gln, String partyName) {
+	public Party(String gln) {
 		this.gln = gln;
-		this.partyName = partyName;
 	}
 
-	public Party(String gln, String partyName, String identificationType) {
+	public Party(String gln, String identificationType) {
 		this.gln = gln;
-		this.partyName = partyName;
 		this.identificationType = identificationType;
 	}
 }

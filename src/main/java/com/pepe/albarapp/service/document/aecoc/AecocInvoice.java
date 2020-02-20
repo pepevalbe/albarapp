@@ -64,11 +64,11 @@ public class AecocInvoice {
 		aecocInvoice.senderCorporateOffice = AecocConstants.corporateOfficeOwner;
 		aecocInvoice.receiverCorporateOffice = new CorporateOffice(customerAecocInfo.getReceiverCln(), customer.getName(), customer.getFiscalId(), customer.getAddress(), customer.getAddress(), customer.getAddress());
 		aecocInvoice.seller = AecocConstants.partyOwner;
-		aecocInvoice.buyer = new Party(customerAecocInfo.getBuyerCln(), customerAecocInfo.getBuyerCln());
-		aecocInvoice.shipParty = new Party(customerAecocInfo.getShipCln(), customerAecocInfo.getShipCln(), "SHIP_TO");
-		aecocInvoice.payer = new Party(customerAecocInfo.getPayerCln(), customerAecocInfo.getPayerCln());
+		aecocInvoice.buyer = new Party(customerAecocInfo.getBuyerCln());
+		aecocInvoice.shipParty = new Party(customerAecocInfo.getShipCln(), "SHIP_TO");
+		aecocInvoice.payer = new Party(customerAecocInfo.getPayerCln());
 		aecocInvoice.invoicer = AecocConstants.partyOwner;
-		aecocInvoice.invoicee = new Party(customerAecocInfo.getInvoiceeCln(), customerAecocInfo.getInvoiceeCln());
+		aecocInvoice.invoicee = new Party(customerAecocInfo.getInvoiceeCln());
 		aecocInvoice.totalAmount = new Amount(invoice.getGrossTotal() + invoice.getTaxTotal());
 		aecocInvoice.baseAmount = new Amount(invoice.getGrossTotal());
 		aecocInvoice.igicTax = new IgicTax(invoice.getGrossTotal(), invoice.getTaxTotal(), invoice.getTaxTotal() / invoice.getGrossTotal());
