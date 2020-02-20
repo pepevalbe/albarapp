@@ -27,12 +27,12 @@ There are three maven profiles. You can build with any group of them:
 There are two spring profiles. You can specify the active profile with -Dspring.profiles.active
 - Development:
 
-        java -jar -Dspring.profiles.active=development target/albarapp-0.0.1-SNAPSHOT.jar
+        java -jar -Dspring.profiles.active=development target/albarapp-1.0.0.jar
         ./mvnw spring-boot:run -P development -Dspring-boot.run.profiles=development
 
 - Production:
 
-        java -jar -Dspring.profiles.active=production,frontend target/albarapp-0.0.1-SNAPSHOT.jar           
+        java -jar -Dspring.profiles.active=production,frontend target/albarapp-1.0.0.jar           
         ./mvnw spring-boot:run -P production,frontend -Dspring-boot.run.profiles=production
 
 - Frontend development (with hot reload). In albarap-frontend directory:
