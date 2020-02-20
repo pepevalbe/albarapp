@@ -32,6 +32,13 @@
         label="Tipo impositivo (%) *"
         required
       ></v-text-field>
+      <v-text-field
+        v-model="form.product.aecocGtin"
+        :counter="14"
+        type="number"
+        :rules="aecocGtinRules"
+        label="GTIN para facturas EDI AECOC"
+      ></v-text-field>
     </v-form>
   </v-container>
 </template>
@@ -46,7 +53,8 @@ export default {
         code: Number,
         name: String,
         factoryPrice: Number,
-        tax: Number
+        tax: Number,
+        aecocGtin: Number
       }
     }
   },
@@ -75,6 +83,9 @@ export default {
       v =>
         (v >= 0 && v <= 100) ||
         "El tipo impositivo debe ser menor que 100%, podemita"
+    ],
+    aecocGtinRules: [
+      v => !v || v.length <= 14 || "El GTIN debe tener menos de 14 caracteres"
     ]
   }),
   methods: {

@@ -6,7 +6,7 @@
       type="number"
       :counter="13"
       :rules="receiverClnRules"
-      label="GLN Receptor"
+      label="GLN Receptor *"
     ></v-text-field>
     <v-text-field
       v-model="customerAecocInfo.buyerCln"
@@ -14,7 +14,7 @@
       type="number"
       :counter="13"
       :rules="buyerClnRules"
-      label="GLN Comprador"
+      label="GLN Comprador *"
     ></v-text-field>
     <v-text-field
       v-model="customerAecocInfo.shipCln"
@@ -22,7 +22,7 @@
       type="number"
       :counter="13"
       :rules="shipClnRules"
-      label="GLN Punto de entrega"
+      label="GLN Punto de entrega *"
     ></v-text-field>
     <v-text-field
       v-model="customerAecocInfo.payerCln"
@@ -30,7 +30,7 @@
       type="number"
       :counter="13"
       :rules="payerClnRules"
-      label="GLN Pagador"
+      label="GLN Pagador *"
     ></v-text-field>
     <v-text-field
       v-model="customerAecocInfo.invoiceeCln"
@@ -38,7 +38,7 @@
       type="number"
       :counter="13"
       :rules="invoiceeClnRules"
-      label="GLN de a quién se factura"
+      label="GLN de a quién se factura *"
     ></v-text-field>
   </div>
 </template>
