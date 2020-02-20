@@ -13,7 +13,7 @@ permissions:
 hooks:
   AfterInstall:
     - location: scripts/build_app.sh
-      timeout: 180
+      timeout: 300
       runas: ec2-user
   ApplicationStart:
     - location: scripts/start_app.sh
