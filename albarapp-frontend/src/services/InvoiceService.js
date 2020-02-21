@@ -4,6 +4,7 @@ import DeliveryNoteService from "@/services/DeliveryNoteService.js";
 
 const RESOURCE_NAME = '/hateoas/invoices';
 const INVOICE_DOWNLOAD_ENDPOINT = '/api/invoices/download';
+const INVOICE_EDI_DOWNLOAD_ENDPOINT = '/api/invoices/aecoc';
 const INVOICE_LIST_DOWNLOAD_ENDPOINT = '/api/invoices/download/multiple';
 const INVOICE_COMPLETE_ENDPOINT = '/api/invoices';
 const INVOICE_BILL_ENDPOINT = '/api/invoices/bill';
@@ -187,6 +188,24 @@ export default {
                 let link = document.createElement('a');
                 link.href = window.URL.createObjectURL(blob);
                 link.download = id + '.pdf';
+                link.click();
+            })
+            .catch(() => {
+                alert("Ha ocurrido un error descargando la factura");
+            });
+    },
+    downloadEDI(id) {
+        return HttpClient.get(`${INVOICE_EDI_DOWNLOAD_ENDPOINT}/?invoiceId=${id}`,
+            {
+                responseType: 'arraybuffer',
+                headers: {
+                    'Accept': 'text/xml'
+                }
+            }).then(response => {
+                let blob = new Blob([response.data], { type: 'text/xml' });
+                let link = document.createElement('a');
+                link.href = window.URL.createObjectURL(blob);
+                link.download = id + '.xml';
                 link.click();
             })
             .catch(() => {

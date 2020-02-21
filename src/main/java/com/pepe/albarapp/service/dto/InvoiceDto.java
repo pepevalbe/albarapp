@@ -18,6 +18,7 @@ public class InvoiceDto {
 	private String customerAlias;
 	private String customerName;
 	private String customerFiscalId;
+	private Boolean isCustomerAecoc;
 	private double total;
 	private long productQuantity;
 }

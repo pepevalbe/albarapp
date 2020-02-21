@@ -69,7 +69,7 @@
                 </v-btn>
               </td>
               <td>
-                <v-btn @click="exportEDI(item)">
+                <v-btn v-if="item.isCustomerAecoc" @click="downloadEDI(item)">
                   <v-icon dark>mdi-xml</v-icon>
                 </v-btn>
               </td>
@@ -115,7 +115,7 @@
                       <v-btn class="mr-3" @click="download(item)">
                         <v-icon dark>mdi-file-pdf</v-icon>
                       </v-btn>
-                      <v-btn class="mr-3" @click="exportEDI(item)">
+                      <v-btn v-if="item.isCustomerAecoc" class="mr-3" @click="downloadEDI(item)">
                         <v-icon dark>mdi-xml</v-icon>
                       </v-btn>
                     </v-flex>
@@ -265,6 +265,9 @@ export default {
     },
     download(item) {
       InvoiceService.download(item.id);
+    },
+    downloadEDI(item) {
+      InvoiceService.downloadEDI(item.id);
     },
     exportEDI(invoice) {
       ExportService.exportEDI(invoice.id);
