@@ -17,9 +17,9 @@ import java.util.stream.Collectors;
 @Data
 @JacksonXmlRootElement(localName = "invoicxml")
 public class AecocInvoice {
-	@JacksonXmlProperty(isAttribute = true, localName = "xlmns:xsi")
+	@JacksonXmlProperty(isAttribute = true, localName = "xmlns:xsi")
 	private final String xmlns1 = "http://www.w3.org/2001/XMLSchema-instance";
-	@JacksonXmlProperty(isAttribute = true, localName = "xlmns:xsd")
+	@JacksonXmlProperty(isAttribute = true, localName = "xmlns:xsd")
 	private final String xmlns2 = "http://www.w3.org/2001/XMLSchema";
 	@JacksonXmlProperty(isAttribute = true)
 	private final String creationDate = "2019-12-31T00:00:00";
