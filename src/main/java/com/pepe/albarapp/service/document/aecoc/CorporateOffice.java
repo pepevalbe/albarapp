@@ -7,23 +7,8 @@ import lombok.Data;
 public class CorporateOffice {
 
 	private String gln;
-	@JacksonXmlProperty(localName = "PartyName")
-	private String partyName;
-	@JacksonXmlProperty(localName = "VATregistrationNumber")
-	private String vatRegistrationNumber;
-	@JacksonXmlProperty(localName = "StreetAndNumber")
-	private String streetAndNumber;
-	@JacksonXmlProperty(localName = "CityName")
-	private String cityName;
-	@JacksonXmlProperty(localName = "Postcode")
-	private String postcode;
 
-	public CorporateOffice(String gln, String partyName, String vatRegistrationNumber, String streetAndNumber, String cityName, String postcode) {
+	public CorporateOffice(String gln) {
 		this.gln = gln;
-		this.partyName = partyName;
-		this.vatRegistrationNumber = vatRegistrationNumber;
-		this.streetAndNumber = streetAndNumber;
-		this.cityName = cityName;
-		this.postcode = postcode;
 	}
 }

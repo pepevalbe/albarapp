@@ -4,7 +4,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.pepe.albarapp.api.error.ApiError;
 import com.pepe.albarapp.api.error.ApiException;
 import com.pepe.albarapp.persistence.domain.DeliveryNoteItem;
-import com.pepe.albarapp.service.document.aecoc.Amount;
+import com.pepe.albarapp.service.document.aecoc.AmountWrapper;
 import com.pepe.albarapp.service.document.aecoc.IgicTax;
 import lombok.Data;
 
@@ -18,11 +18,11 @@ public class LineItem {
 	private Description description;
 	private Invoiced invoiced;
 	private Text freeText;
-	private Amount netPrice;
-	private Amount grossPrice;
+	private AmountWrapper netPrice;
+	private AmountWrapper grossPrice;
 	@JacksonXmlProperty(localName = "IGICTax")
 	private IgicTax igicTax;
-	private Amount lineItemAmount;
+	private AmountWrapper lineItemAmount;
 
 	public LineItem(DeliveryNoteItem item) {
 		if (item.getProduct().getAecocGtin() == null) {
@@ -33,10 +33,10 @@ public class LineItem {
 		invoiced = new Invoiced(item.getQuantity());
 		String auxDeliveryNoteNr = item.getDeliveryNote().getAuxDeliveryNoteNr();
 		freeText = auxDeliveryNoteNr != null ? new Text(auxDeliveryNoteNr, "AAI") : null;
-		netPrice = new Amount(item.getPrice() * (1 + item.getProduct().getTax()));
-		grossPrice = new Amount(item.getPrice());
+		netPrice = new AmountWrapper(item.getPrice() * (1 + item.getProduct().getTax()));
+		grossPrice = new AmountWrapper(item.getPrice());
 		igicTax = new IgicTax(item.getGrossTotal(), item.getTaxTotal(), item.getProduct().getTax());
-		lineItemAmount = new Amount(item.getTotal());
+		lineItemAmount = new AmountWrapper(item.getTotal());
 	}
 
 	public void setOrder(int order) {

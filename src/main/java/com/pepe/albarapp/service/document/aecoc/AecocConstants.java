@@ -22,6 +22,6 @@ public class AecocConstants {
 		glnOwner = info[0];
 		partyNameOwner = info[1];
 		partyOwner = new Party(info[0]);
-		corporateOfficeOwner = new CorporateOffice(info[0], info[1], info[2], info[3], info[4], info[5]);
+		corporateOfficeOwner = new CorporateOffice(info[0]);
 	}
 }
