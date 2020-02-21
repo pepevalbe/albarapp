@@ -4,6 +4,8 @@ import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 
@@ -46,15 +48,15 @@ public class DeliveryNote {
 		return Objects.hash(id);
 	}
 
-	public double getTotal() {
-		return getGrossTotal() + getTaxTotal();
+	public BigDecimal getTotal() {
+		return getGrossTotal().add(getTaxTotal());
 	}
 
-	public double getGrossTotal() {
-		return deliveryNoteItems.stream().mapToDouble(DeliveryNoteItem::getGrossTotal).sum();
+	public BigDecimal getGrossTotal() {
+		return deliveryNoteItems.stream().map(DeliveryNoteItem::getGrossTotal).reduce(BigDecimal.ZERO, BigDecimal::add);
 	}
 
-	public double getTaxTotal() {
-		return deliveryNoteItems.stream().mapToDouble(DeliveryNoteItem::getTaxTotal).sum();
+	public BigDecimal getTaxTotal() {
+		return deliveryNoteItems.stream().map(DeliveryNoteItem::getTaxTotal).reduce(BigDecimal.ZERO, BigDecimal::add);
 	}
 }

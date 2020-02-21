@@ -4,6 +4,8 @@ import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+
+import java.math.BigDecimal;
 import java.util.Objects;
 
 @Entity
@@ -42,15 +44,15 @@ public class DeliveryNoteItem {
 		return Objects.hash(id);
 	}
 
-	public double getTotal() {
-		return getGrossTotal() + getTaxTotal();
+	public BigDecimal getTotal() {
+		return getGrossTotal().add(getTaxTotal());
 	}
 
-	public double getGrossTotal() {
-		return quantity * price;
+	public BigDecimal getGrossTotal() {
+		return new BigDecimal(quantity).multiply(new BigDecimal(price));
 	}
 
-	public double getTaxTotal() {
-		return quantity * price * product.getTax() / 100;
+	public BigDecimal getTaxTotal() {
+		return getGrossTotal().multiply(new BigDecimal(product.getTax())).multiply(new BigDecimal(0.01));
 	}
 }
