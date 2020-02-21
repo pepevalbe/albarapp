@@ -14,7 +14,7 @@ public class TypedEntityIdentification {
 
 	private EntityIdentification entityIdentification;
 
-	public TypedEntityIdentification(Long uniqueCreatorIdentification, String gln, String partyName) {
-		entityIdentification = new EntityIdentification(String.valueOf(uniqueCreatorIdentification), gln, partyName);
+	public TypedEntityIdentification(Long uniqueCreatorIdentification, String gln) {
+		entityIdentification = new EntityIdentification(String.valueOf(uniqueCreatorIdentification), gln);
 	}
 }

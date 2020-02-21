@@ -1,17 +1,19 @@
 package com.pepe.albarapp.service.document.aecoc.lineitem;
 
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlText;
+
 import lombok.Data;
 
 @Data
 public class Quantity {
 
-	@JacksonXmlProperty(isAttribute = true)
-	private final String unitOfMeasure = "PCE";
+    @JacksonXmlProperty(isAttribute = true)
+    private final String unitOfMeasure = "PCE";
     @JacksonXmlText
-	private String value;
+    private String value;
 
-	public Quantity(long value) {
-		this.value = String.valueOf(value);
-	}
+    public Quantity(long value) {
+        this.value = String.valueOf(value);
+    }
 }

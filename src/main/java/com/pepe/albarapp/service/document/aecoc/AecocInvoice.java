@@ -61,7 +61,7 @@ public class AecocInvoice {
 		}
 
 		AecocInvoice aecocInvoice = new AecocInvoice();
-		aecocInvoice.typedEntityIdentification = new TypedEntityIdentification(invoice.getId(), AecocConstants.glnOwner, AecocConstants.partyNameOwner);
+		aecocInvoice.typedEntityIdentification = new TypedEntityIdentification(invoice.getId(), AecocConstants.glnOwner);
 		aecocInvoice.senderCorporateOffice = AecocConstants.corporateOfficeOwner;
 		aecocInvoice.receiverCorporateOffice = new CorporateOffice(customerAecocInfo.getReceiverCln());
 		aecocInvoice.seller = AecocConstants.partyOwner;

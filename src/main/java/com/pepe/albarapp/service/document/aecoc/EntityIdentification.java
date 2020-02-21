@@ -8,8 +8,8 @@ public class EntityIdentification {
 	private String uniqueCreatorIdentification;
 	private Party contentOwner;
 
-	public EntityIdentification(String uniqueCreatorIdentification, String gln, String partyName) {
+	public EntityIdentification(String uniqueCreatorIdentification, String gln) {
 		this.uniqueCreatorIdentification = uniqueCreatorIdentification;
-		contentOwner = new Party(gln, partyName);
+		contentOwner = new Party(gln, null);
 	}
 }
