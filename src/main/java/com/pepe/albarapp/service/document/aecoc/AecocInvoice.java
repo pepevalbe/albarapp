@@ -70,11 +70,11 @@ public class AecocInvoice {
 		aecocInvoice.payer = new Party(customerAecocInfo.getPayerGln());
 		aecocInvoice.invoicer = AecocConstants.partyOwner;
 		aecocInvoice.invoicee = new Party(customerAecocInfo.getInvoiceeGln());
-		aecocInvoice.totalAmount = new AmountWrapper(invoice.getGrossTotal() + invoice.getTaxTotal());
+		aecocInvoice.totalAmount = new AmountWrapper(invoice.getGrossTotal().add(invoice.getTaxTotal()));
 		aecocInvoice.baseAmount = new AmountWrapper(invoice.getGrossTotal());
-		aecocInvoice.igicTax = new IgicTax(invoice.getGrossTotal(), invoice.getTaxTotal(), invoice.getTaxTotal() / invoice.getGrossTotal());
+		aecocInvoice.igicTax = new IgicTax(invoice.getGrossTotal(), invoice.getTaxTotal(), invoice.getTaxTotal().divide(invoice.getGrossTotal()));
 		aecocInvoice.taxAmount = new AmountWrapper(invoice.getTaxTotal());
-		aecocInvoice.payableAmount = new AmountWrapper(invoice.getGrossTotal() + invoice.getTaxTotal());
+		aecocInvoice.payableAmount = new AmountWrapper(invoice.getGrossTotal().add(invoice.getTaxTotal()));
 
 		aecocInvoice.lineItems = invoice.getDeliveryNotes().stream()
 				.flatMap(deliveryNote -> deliveryNote.getDeliveryNoteItems().stream().map(LineItem::new))

@@ -1,5 +1,7 @@
 package com.pepe.albarapp.service.document.aecoc.lineitem;
 
+import java.math.BigDecimal;
+
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.pepe.albarapp.api.error.ApiError;
 import com.pepe.albarapp.api.error.ApiException;
@@ -33,9 +35,9 @@ public class LineItem {
 		invoiced = new Invoiced(item.getQuantity());
 		String auxDeliveryNoteNr = item.getDeliveryNote().getAuxDeliveryNoteNr();
 		freeText = auxDeliveryNoteNr != null ? new Text(auxDeliveryNoteNr, "AAI") : null;
-		netPrice = new AmountWrapper(item.getPrice() * (1 + item.getProduct().getTax()));
-		grossPrice = new AmountWrapper(item.getPrice());
-		igicTax = new IgicTax(item.getGrossTotal(), item.getTaxTotal(), item.getProduct().getTax());
+		netPrice = new AmountWrapper(new BigDecimal(item.getPrice()).multiply(new BigDecimal(1).add(new BigDecimal(item.getProduct().getTax()))));
+		grossPrice = new AmountWrapper(new BigDecimal(item.getPrice()));
+		igicTax = new IgicTax(item.getGrossTotal(), item.getTaxTotal(), new BigDecimal(item.getProduct().getTax()));
 		lineItemAmount = new AmountWrapper(item.getTotal());
 	}
 
