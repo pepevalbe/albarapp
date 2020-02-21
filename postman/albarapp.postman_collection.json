@@ -700,7 +700,7 @@
 			"response": []
 		},
 		{
-			"name": "/api/invoices/aecoc",
+			"name": "/api/invoices/download/edi",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
@@ -724,95 +724,7 @@
 					}
 				},
 				"url": {
-					"raw": "{{host}}/api/invoices/aecoc?invoiceId=201800000",
-					"host": [
-						"{{host}}"
-					],
-					"path": [
-						"api",
-						"invoices",
-						"aecoc"
-					],
-					"query": [
-						{
-							"key": "invoiceId",
-							"value": "201800000"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "/api/invoice/download",
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "Content-Type",
-						"name": "Content-Type",
-						"type": "text",
-						"value": "application/json"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n\t\"token\" : \"50094f13-428d-4b60-b6b4-ce6effac173c\",\n\t\"name\" : \"Pepe\",\n\t\"surname\" : \"Valverde\",\n\t\"password\" : \"patata\"\n\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{host}}/api/invoices/download?invoiceId=201800000",
-					"host": [
-						"{{host}}"
-					],
-					"path": [
-						"api",
-						"invoices",
-						"download"
-					],
-					"query": [
-						{
-							"key": "invoiceId",
-							"value": "201800000"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "/api/invoice/download/multiple",
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "Content-Type",
-						"name": "Content-Type",
-						"type": "text",
-						"value": "application/json"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n\t\"token\" : \"50094f13-428d-4b60-b6b4-ce6effac173c\",\n\t\"name\" : \"Pepe\",\n\t\"surname\" : \"Valverde\",\n\t\"password\" : \"patata\"\n\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{host}}/api/invoices/download/multiple?invoiceId=201800000&invoiceId=201800001",
+					"raw": "{{host}}/api/invoices/download/edi?invoiceId=201800001",
 					"host": [
 						"{{host}}"
 					],
@@ -820,6 +732,97 @@
 						"api",
 						"invoices",
 						"download",
+						"edi"
+					],
+					"query": [
+						{
+							"key": "invoiceId",
+							"value": "201800001"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/api/invoice/download/pdf",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"token\" : \"50094f13-428d-4b60-b6b4-ce6effac173c\",\n\t\"name\" : \"Pepe\",\n\t\"surname\" : \"Valverde\",\n\t\"password\" : \"patata\"\n\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/invoices/download/pdf?invoiceId=201800000",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"invoices",
+						"download",
+						"pdf"
+					],
+					"query": [
+						{
+							"key": "invoiceId",
+							"value": "201800000"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/api/invoice/download/pdf/multiple",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"token\" : \"50094f13-428d-4b60-b6b4-ce6effac173c\",\n\t\"name\" : \"Pepe\",\n\t\"surname\" : \"Valverde\",\n\t\"password\" : \"patata\"\n\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/invoices/download/pdf/multiple?invoiceId=201800000&invoiceId=201800001",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"invoices",
+						"download",
+						"pdf",
 						"multiple"
 					],
 					"query": [

@@ -21,9 +21,9 @@ import java.util.Arrays;
 @RestController
 public class DocumentController {
 
-	private static final String INVOICE_AECOC_ENDPOINT = "/api/invoices/aecoc";
-	private static final String INVOICE_DOWNLOAD_ENDPOINT = "/api/invoices/download";
-	private static final String INVOICE_DOWNLOAD_MULTIPLE_ENDPOINT = "/api/invoices/download/multiple";
+	private static final String INVOICE_AECOC_ENDPOINT = "/api/invoices/download/edi";
+	private static final String INVOICE_DOWNLOAD_ENDPOINT = "/api/invoices/download/pdf";
+	private static final String INVOICE_DOWNLOAD_MULTIPLE_ENDPOINT = "/api/invoices/download/pdf/multiple";
 
 	private static final XmlMapper XML_MAPPER = new XmlMapper();
 

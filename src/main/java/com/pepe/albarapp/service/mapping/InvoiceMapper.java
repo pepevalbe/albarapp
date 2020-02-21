@@ -12,9 +12,6 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface InvoiceMapper {
 
-	@Mapping(source = "customer.alias", target = "customerAlias")
-	@Mapping(source = "total", target = "total")
-	@Mapping(ignore = true, target = "customerId")
 	InvoiceDto map(Invoice invoice);
 
 	@Mapping(source = "customer.alias", target = "customerAlias")

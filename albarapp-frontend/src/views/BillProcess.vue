@@ -201,7 +201,7 @@ export default {
       );
       this.numberInvoicesCreated = invoicesCreated.length;
       if (invoicesCreated.length)
-        await InvoiceService.downloadList(invoicesCreated.map(dto => dto.id));
+        await InvoiceService.downloadPdfMultiple(invoicesCreated.map(dto => dto.id));
       this.snackbar = true;
       this.$refs.form.reset();
       this.closeSpinner();

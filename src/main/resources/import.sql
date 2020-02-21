@@ -1,19 +1,19 @@
 INSERT INTO user(id, email, password, name, surname, role) VALUES ('0', 'admin@albarapp.com', '$2a$10$eB4FAVGW3ykdZCpofs1zwO.zKHup.Y6B21hPpWCbfqH1dyD8uhJHS', 'admin-name', 'admin-surname', 'ADMIN');
 INSERT INTO user(id, email, password, name, surname, role) VALUES ('1', 'user@albarapp.com', '$2a$10$1A6X0IvozT15pfnbeDGBVujKF70vthvAyIJvuAKdotFY/MOcfo0NO', 'user-name', 'user-surname', 'USER');
 
-INSERT INTO product(id, code, name, factory_price, tax) VALUES
-	(1, 1, 'Huevo XL', 0.15, 0),
-	(2, 2, 'Huevo L', 0.13, 0),
-	(3, 3, 'Huevo M', 0.11, 0),
-	(4, 4, 'Huevo S', 0.09, 0),
-	(5, 5, 'Huevo M - Estuche 10uds', 0.13, 0),
-	(6, 6, 'Huevo M - Estuche 6uds', 0.13, 0),
-	(7, 7, 'Gallina', 4, 3);
+INSERT INTO product(id, code, name, factory_price, tax, aecoc_gtin) VALUES
+	(1, 1, 'Huevo XL', 0.15, 0, '666666'),
+	(2, 2, 'Huevo L', 0.13, 0, '55555'),
+	(3, 3, 'Huevo M', 0.11, 0, '44444'),
+	(4, 4, 'Huevo S', 0.09, 0, '3333'),
+	(5, 5, 'Huevo M - Estuche 10uds', 0.13, 0, '2222'),
+	(6, 6, 'Huevo M - Estuche 6uds', 0.13, 0, '1111'),
+	(7, 7, 'Gallina', 4, 3, null);
 	
-INSERT INTO customer(id, fiscal_id, code, name, alias, phone_number, email, address, province) VALUES
-    (1, 'H35083187', 1, 'C.C Yumbo Centrum', 'jumbo', '928764196', 'info@yumbocentrum.com', 'Av. Estados Unidos, 54, 35100 Maspalomas, Las Palmas', 'Las Palmas'),
-    (2, 'B00000000', 2, 'Bar Lauremar', 'aldea', '928892141', null, 'Av. los Cardones, 21, 35470 La Aldea de San Nicolas de Tolentino', 'Las Palmas'),
-    (3, '80000000G', 3, 'Loco de Vecindario', 'loco', null, null, null, null);
+INSERT INTO customer(id, fiscal_id, code, name, alias, phone_number, email, address, province, receiver_gln, buyer_gln, ship_gln, payer_gln, invoicee_gln) VALUES
+    (1, 'H35083187', 1, 'C.C Yumbo Centrum', 'jumbo', '928764196', 'info@yumbocentrum.com', 'Av. Estados Unidos, 54, 35100 Maspalomas, Las Palmas', 'Las Palmas', null, null, null, null, null),
+    (2, 'B00000000', 2, 'Bar Lauremar', 'aldea', '928892141', null, 'Av. los Cardones, 21, 35470 La Aldea de San Nicolas de Tolentino', 'Las Palmas', '12345', '12345', '12345', '12345', '12345'),
+    (3, '80000000G', 3, 'Loco de Vecindario', 'loco', null, null, null, null, null, null, null, null, null);
 
 INSERT INTO customer_product_price(id, offered_price, customer_id, product_id) VALUES
     (1, 3.6, 1, 1),

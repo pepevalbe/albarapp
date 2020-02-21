@@ -1,43 +1,43 @@
 <template>
   <div>
     <v-text-field
-      v-model="customerAecocInfo.receiverCln"
+      v-model="customerAecocInfo.receiverGln"
       :readonly="readonly"
       type="number"
       :counter="13"
-      :rules="receiverClnRules"
+      :rules="receiverGlnRules"
       label="GLN Receptor *"
     ></v-text-field>
     <v-text-field
-      v-model="customerAecocInfo.buyerCln"
+      v-model="customerAecocInfo.buyerGln"
       :readonly="readonly"
       type="number"
       :counter="13"
-      :rules="buyerClnRules"
+      :rules="buyerGlnRules"
       label="GLN Comprador *"
     ></v-text-field>
     <v-text-field
-      v-model="customerAecocInfo.shipCln"
+      v-model="customerAecocInfo.shipGln"
       :readonly="readonly"
       type="number"
       :counter="13"
-      :rules="shipClnRules"
+      :rules="shipGlnRules"
       label="GLN Punto de entrega *"
     ></v-text-field>
     <v-text-field
-      v-model="customerAecocInfo.payerCln"
+      v-model="customerAecocInfo.payerGln"
       :readonly="readonly"
       type="number"
       :counter="13"
-      :rules="payerClnRules"
+      :rules="payerGlnRules"
       label="GLN Pagador *"
     ></v-text-field>
     <v-text-field
-      v-model="customerAecocInfo.invoiceeCln"
+      v-model="customerAecocInfo.invoiceeGln"
       :readonly="readonly"
       type="number"
       :counter="13"
-      :rules="invoiceeClnRules"
+      :rules="invoiceeGlnRules"
       label="GLN de a quién se factura *"
     ></v-text-field>
   </div>
@@ -48,40 +48,40 @@ export default {
   name: "CustomerAECOCForm",
   props: {
     customerAecocInfo: {
-      receiverCln: String,
-      buyerCln: String,
-      shipCln: String,
-      payerCln: String,
-      invoiceeCln: String
+      receiverGln: String,
+      buyerGln: String,
+      shipGln: String,
+      payerGln: String,
+      invoiceeGln: String
     },
     readonly: Boolean
   },
   data: () => ({
-    receiverClnRules: [
+    receiverGlnRules: [
       v => !!v || "El GLN del receptor es obligatorio",
       v =>
         (v && v >= 1 && v <= 9999999999999) ||
         "El GLN debe tener un máximo de 13 dígitos"
     ],
-    buyerClnRules: [
+    buyerGlnRules: [
       v => !!v || "El GLN del comprador es obligatorio",
       v =>
         (v && v >= 1 && v <= 9999999999999) ||
         "El GLN debe tener un máximo de 13 dígitos"
     ],
-    shipClnRules: [
+    shipGlnRules: [
       v => !!v || "El GLN del punto de entrega es obligatorio",
       v =>
         (v && v >= 1 && v <= 9999999999999) ||
         "El GLN debe tener un máximo de 13 dígitos"
     ],
-    payerClnRules: [
+    payerGlnRules: [
       v => !!v || "El GLN del pagador es obligatorio",
       v =>
         (v && v >= 1 && v <= 9999999999999) ||
         "El GLN debe tener un máximo de 13 dígitos"
     ],
-    invoiceeClnRules: [
+    invoiceeGlnRules: [
       v => !!v || "El GLN de a quién se factura es obligatorio",
       v =>
         (v && v >= 1 && v <= 9999999999999) ||

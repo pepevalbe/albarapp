@@ -3,11 +3,11 @@ import moment from "moment";
 import DeliveryNoteService from "@/services/DeliveryNoteService.js";
 
 const RESOURCE_NAME = '/hateoas/invoices';
-const INVOICE_DOWNLOAD_ENDPOINT = '/api/invoices/download';
-const INVOICE_EDI_DOWNLOAD_ENDPOINT = '/api/invoices/aecoc';
-const INVOICE_LIST_DOWNLOAD_ENDPOINT = '/api/invoices/download/multiple';
 const INVOICE_COMPLETE_ENDPOINT = '/api/invoices';
 const INVOICE_BILL_ENDPOINT = '/api/invoices/bill';
+const INVOICE_DOWNLOAD_EDI_ENDPOINT = '/api/invoices/download/edi';
+const INVOICE_DOWNLOAD_PDF_ENDPOINT = '/api/invoices/download/pdf';
+const INVOICE_DOWNLOAD_PDF_MULTIPLE_ENDPOINT = '/api/invoices/download/pdf/multiple';
 
 export default {
     getAll(options) {
@@ -176,26 +176,8 @@ export default {
             });
 
     },
-    download(id) {
-        return HttpClient.get(`${INVOICE_DOWNLOAD_ENDPOINT}/?invoiceId=${id}`,
-            {
-                responseType: 'arraybuffer',
-                headers: {
-                    'Accept': 'application/pdf'
-                }
-            }).then(response => {
-                let blob = new Blob([response.data], { type: 'application/pdf' });
-                let link = document.createElement('a');
-                link.href = window.URL.createObjectURL(blob);
-                link.download = id + '.pdf';
-                link.click();
-            })
-            .catch(() => {
-                alert("Ha ocurrido un error descargando la factura");
-            });
-    },
-    downloadEDI(id) {
-        return HttpClient.get(`${INVOICE_EDI_DOWNLOAD_ENDPOINT}/?invoiceId=${id}`,
+    downloadEdi(id) {
+        return HttpClient.get(`${INVOICE_DOWNLOAD_EDI_ENDPOINT}/?invoiceId=${id}`,
             {
                 responseType: 'arraybuffer',
                 headers: {
@@ -212,8 +194,26 @@ export default {
                 alert("Ha ocurrido un error descargando la factura");
             });
     },
-    downloadList(ids) {
-        return HttpClient.get(`${INVOICE_LIST_DOWNLOAD_ENDPOINT}/?invoiceId=${ids}`,
+    downloadPdf(id) {
+        return HttpClient.get(`${INVOICE_DOWNLOAD_PDF_ENDPOINT}/?invoiceId=${id}`,
+            {
+                responseType: 'arraybuffer',
+                headers: {
+                    'Accept': 'application/pdf'
+                }
+            }).then(response => {
+                let blob = new Blob([response.data], { type: 'application/pdf' });
+                let link = document.createElement('a');
+                link.href = window.URL.createObjectURL(blob);
+                link.download = id + '.pdf';
+                link.click();
+            })
+            .catch(() => {
+                alert("Ha ocurrido un error descargando la factura");
+            });
+    },
+    downloadPdfMultiple(ids) {
+        return HttpClient.get(`${INVOICE_DOWNLOAD_PDF_MULTIPLE_ENDPOINT}/?invoiceId=${ids}`,
             {
                 responseType: 'arraybuffer',
                 headers: {

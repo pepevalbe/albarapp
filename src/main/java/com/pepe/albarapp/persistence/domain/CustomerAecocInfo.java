@@ -8,17 +8,17 @@ import javax.persistence.Column;
 public class CustomerAecocInfo {
 
 	@Column
-	private String receiverCln;
+	private String receiverGln;
 	@Column
-	private String buyerCln;
+	private String buyerGln;
 	@Column
-	private String shipCln;
+	private String shipGln;
 	@Column
-	private String payerCln;
+	private String payerGln;
 	@Column
-	private String invoiceeCln;
+	private String invoiceeGln;
 
 	public boolean isValid() {
-		return receiverCln != null && buyerCln != null && shipCln != null && payerCln != null && invoiceeCln != null;
+		return receiverGln != null && buyerGln != null && shipGln != null && payerGln != null && invoiceeGln != null;
 	}
 }

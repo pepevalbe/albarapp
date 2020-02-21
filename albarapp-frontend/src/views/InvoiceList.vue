@@ -6,7 +6,7 @@
           Exportar a CSV
           <v-icon class="ml-2">mdi-google-spreadsheet</v-icon>
         </v-btn>
-        <v-btn @click="downloadList()" :disabled="!selectedInvoices.length" class="ml-2 mt-2">
+        <v-btn @click="downloadPdfMultiple()" :disabled="!selectedInvoices.length" class="ml-2 mt-2">
           Descargar seleccionadas
           <v-icon class="ml-2">mdi-download-multiple</v-icon>
         </v-btn>
@@ -64,12 +64,12 @@
                 </v-btn>
               </td>
               <td>
-                <v-btn @click="download(item)">
+                <v-btn @click="downloadPdf(item)">
                   <v-icon dark>mdi-file-pdf</v-icon>
                 </v-btn>
               </td>
               <td>
-                <v-btn v-if="item.isCustomerAecoc" @click="downloadEDI(item)">
+                <v-btn v-if="item.isAecocCustomer" @click="downloadEdi(item)">
                   <v-icon dark>mdi-xml</v-icon>
                 </v-btn>
               </td>
@@ -112,10 +112,10 @@
                       <v-btn class="mr-3" @click="updateInvoice(item)">
                         <v-icon dark>mdi-pencil</v-icon>
                       </v-btn>
-                      <v-btn class="mr-3" @click="download(item)">
+                      <v-btn class="mr-3" @click="downloadPdf(item)">
                         <v-icon dark>mdi-file-pdf</v-icon>
                       </v-btn>
-                      <v-btn v-if="item.isCustomerAecoc" class="mr-3" @click="downloadEDI(item)">
+                      <v-btn v-if="item.isCustomerAecoc" class="mr-3" @click="downloadEdi(item)">
                         <v-icon dark>mdi-xml</v-icon>
                       </v-btn>
                     </v-flex>
@@ -263,18 +263,18 @@ export default {
         currency: "EUR"
       });
     },
-    download(item) {
-      InvoiceService.download(item.id);
+    downloadPdf(item) {
+      InvoiceService.downloadPdf(item.id);
     },
-    downloadEDI(item) {
-      InvoiceService.downloadEDI(item.id);
+    downloadEdi(item) {
+      InvoiceService.downloadEdi(item.id);
     },
     exportEDI(invoice) {
       ExportService.exportEDI(invoice.id);
     },
-    async downloadList() {
+    async downloadPdfMultiple() {
       this.showSpinner();
-      await InvoiceService.downloadList(
+      await InvoiceService.downloadPdfMultiple(
         this.selectedInvoices.map(dto => dto.id)
       );
       this.closeSpinner();
