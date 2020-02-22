@@ -155,7 +155,7 @@ export default {
       this.showSpinner();
       this.customers = await CustomerService.getAll();
       this.customers.forEach(function(element) {
-        element.alias = element.code + " - " + element.alias;
+        element.alias = element.code + " - " + element.alias + " - " + element.name;
       });
       this.customers.sort(function(a, b) {
         if (a.code < b.code) return -1;

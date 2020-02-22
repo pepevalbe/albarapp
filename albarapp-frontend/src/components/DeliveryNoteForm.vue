@@ -217,6 +217,9 @@ export default {
     async listCustomers() {
       this.showSpinner();
       this.customers = await CustomerService.getAllWithPrices();
+      for (var customer of this.customers) {
+        customer.alias = customer.alias + " - " + customer.name;
+      }
       this.closeSpinner();
     },
     async listProducts() {
