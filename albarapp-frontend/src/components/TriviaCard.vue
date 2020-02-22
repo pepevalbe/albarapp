@@ -1,21 +1,36 @@
 <template>
-    <v-card v-if="questionReady" class="mt-2">
-      <v-card-title class="mb-4">
-        <v-icon large class="mr-2">mdi-comment-question</v-icon>
-        {{ question }}
-      </v-card-title>
-      <v-card-text v-for="(answer, index) in answers" :key="index">
-        <v-btn v-if="answerStatus[index] == 0" @click="checkAnswer(index)">{{ answer }}</v-btn>
-        <v-btn v-if="answerStatus[index] == 1" text>
-          {{ answer }}
-          <v-icon color="error" class="ml-4">mdi-close-circle</v-icon>
+  <v-container>
+    <div v-if="!errorLoading">
+      <v-card v-if="questionReady" class="mt-2">
+        <v-card-title class="mb-4">
+          <v-icon large class="mr-2">mdi-comment-question</v-icon>
+          {{ question }}
+        </v-card-title>
+        <v-card-text v-for="(answer, index) in answers" :key="index">
+          <v-btn v-if="answerStatus[index] == 0" @click="checkAnswer(index)">{{ answer }}</v-btn>
+          <v-btn v-if="answerStatus[index] == 1" text>
+            {{ answer }}
+            <v-icon color="error" class="ml-4">mdi-close-circle</v-icon>
+          </v-btn>
+          <v-btn v-if="answerStatus[index] == 2">
+            {{ answer }}
+            <v-icon color="success" class="ml-4">mdi-check-circle</v-icon>
+          </v-btn>
+        </v-card-text>
+      </v-card>
+    </div>
+    <div v-if="errorLoading">
+      <v-row
+        class="mb-2"
+        justify="center"
+      >Error al obtener las preguntas, por favor vuelva a cargar.</v-row>
+      <v-row justify="center">
+        <v-btn @click="getQuestion()">
+          <v-icon dark>mdi-refresh</v-icon>
         </v-btn>
-        <v-btn v-if="answerStatus[index] == 2">
-          {{ answer }}
-          <v-icon color="success" class="ml-4">mdi-check-circle</v-icon>
-        </v-btn>
-      </v-card-text>
-    </v-card>
+      </v-row>
+    </div>
+  </v-container>
 </template>
 
 <script>
@@ -27,18 +42,18 @@ export default {
     return {
       question: String,
       rightAnswer: String,
+      errorLoading: false,
       answers: [],
       answerStatus: [],
       questionReady: false
     };
   },
   created() {
-    if (this.token) {
-      this.getQuestion();
-    }
+    this.getQuestion();
   },
   methods: {
     getQuestion: function() {
+      this.errorLoading = false;
       HttpClient.get("api/trivia")
         .then(response => {
           var answers = [
@@ -57,7 +72,7 @@ export default {
           this.questionReady = true;
         })
         .catch(() => {
-          alert("Ha ocurrido un error generando preguntas");
+          this.errorLoading = true;
         });
     },
     checkAnswer: function(index) {
