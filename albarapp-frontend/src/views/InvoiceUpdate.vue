@@ -5,6 +5,16 @@
       <v-row justify="center">
         <v-col cols="12" md="2">
           <v-text-field
+            ref="invoiceId"
+            v-model="form.invoice.id"
+            type="text"
+            label="Número de factura"
+            required
+            readonly
+          ></v-text-field>
+        </v-col>
+        <v-col cols="12" md="2">
+          <v-text-field
             ref="customerAlias"
             v-model="form.invoice.deliveryNotes[0].customer.alias"
             type="text"
