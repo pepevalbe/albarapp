@@ -14,11 +14,11 @@ import java.util.List;
 public class StatisticsService {
 
 	private static final String TOTAL_CUSTOMERS = "Total clientes";
-	private static final String TOTAL_CUSTOMERS_QUERY = "select count(ID) from CUSTOMER";
+	private static final String TOTAL_CUSTOMERS_QUERY = "select count(ID) from customer";
 	private static final String TOTAL_INVOICES = "Total facturas";
-	private static final String TOTAL_INVOICES_QUERY = "select count(ID) from INVOICE";
+	private static final String TOTAL_INVOICES_QUERY = "select count(ID) from invoice";
 	private static final String TOTAL_DELIVERY_NOTES = "Total albaranes";
-	private static final String TOTAL_DELIVERY_NOTES_QUERY = "select count(ID) from DELIVERY_NOTE";
+	private static final String TOTAL_DELIVERY_NOTES_QUERY = "select count(ID) from delivery_note";
 	private static final String MOST_BILLED_CUSTOMER = "Cliente mayor facturación";
 	private static final String MOST_BILLED_CUSTOMER_QUERY = "select alias, SUM(quantity*price) as total FROM delivery_note dn INNER JOIN customer cus ON dn.customer_id = cus.id INNER JOIN delivery_note_item dni ON dni.delivery_note_id = dn.id GROUP BY cus.id ORDER BY total DESC LIMIT 1";
 
