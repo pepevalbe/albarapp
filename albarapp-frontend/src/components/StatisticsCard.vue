@@ -17,7 +17,7 @@
         justify="center"
       >Error al obtener las estadísticas, por favor vuelva a cargar.</v-row>
       <v-row justify="center">
-        <v-btn @click="getQuestion()">
+        <v-btn @click="getStatistics()">
           <v-icon dark>mdi-refresh</v-icon>
         </v-btn>
       </v-row>
