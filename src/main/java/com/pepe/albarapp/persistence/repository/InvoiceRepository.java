@@ -37,7 +37,7 @@ public interface InvoiceRepository extends PagingAndSortingRepository<Invoice, L
 			"(:customerCode is null or i.customer.code = :customerCode) and " +
 			"(:timestampFrom is null or i.issuedTimestamp >= :timestampFrom) and " +
 			"(:timestampTo is null or i.issuedTimestamp <= :timestampTo) and " +
-			"(:productCodes is null or dni.product.code in :productCodes) ";
+			"dni.product.code in :productCodes ";
 
 	@Query(value = "select i from Invoice i " +
 			"join fetch i.customer c " +
