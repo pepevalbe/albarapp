@@ -1,7 +1,6 @@
 package com.pepe.albarapp.persistence.repository;
 
 import com.pepe.albarapp.persistence.domain.Invoice;
-import com.pepe.albarapp.service.dto.InvoiceDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
@@ -16,18 +15,44 @@ import java.util.List;
 @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_USER')")
 public interface InvoiceRepository extends PagingAndSortingRepository<Invoice, Long> {
 
-	@Query("select new com.pepe.albarapp.service.dto.InvoiceDto(i.id, i.issuedTimestamp, i.customer.id, i.customer.code, i.customer.alias, i.customer.name, i.customer.fiscalId, case when (i.customer.customerAecocInfo is null) then false else true end, SUM(dni.quantity*dni.price*(1+dni.product.tax/100)), SUM(dni.quantity)) " +
-			"from Invoice i inner join i.deliveryNotes dn inner join dn.deliveryNoteItems dni where " +
+	String CUSTOMER_TIMESTAMP_CONDITION = " " +
 			"(:customerCode is null or i.customer.code = :customerCode) and " +
 			"(:timestampFrom is null or i.issuedTimestamp >= :timestampFrom) and " +
-			"(:timestampTo is null or i.issuedTimestamp <= :timestampTo) group by i.id")
-	Page<InvoiceDto> filterByCustomerCodeAndTimestampRange(@Param("customerCode") Integer customerCode, @Param("timestampFrom") Long timestampFrom, @Param("timestampTo") Long timestampTo, Pageable pageable);
+			"(:timestampTo is null or i.issuedTimestamp <= :timestampTo) ";
 
-	@Query("select new com.pepe.albarapp.service.dto.InvoiceDto(i.id, i.issuedTimestamp, i.customer.id, i.customer.code, i.customer.alias, i.customer.name, i.customer.fiscalId, case when (i.customer.customerAecocInfo is null) then false else true end, SUM(dni.quantity*dni.price*(1+dni.product.tax/100)), SUM(dni.quantity)) " +
-			"from Invoice i inner join i.deliveryNotes dn inner join dn.deliveryNoteItems dni where " +
+	@Query(value = "select i from Invoice i " +
+			"join fetch i.customer c " +
+			"join fetch i.deliveryNotes dn " +
+			"join fetch dn.deliveryNoteItems dni " +
+			"join fetch dni.product p " +
+			"where " + CUSTOMER_TIMESTAMP_CONDITION,
+			countQuery = "select count(i) from Invoice i where" + CUSTOMER_TIMESTAMP_CONDITION)
+	Page<Invoice> filterByCustomerCodeAndTimestampRange(
+			@Param("customerCode") Integer customerCode,
+			@Param("timestampFrom") Long timestampFrom,
+			@Param("timestampTo") Long timestampTo,
+			Pageable pageable);
+
+	String CUSTOMER_TIMESTAMP_PRODUCTS_CONDITION = " " +
 			"(:customerCode is null or i.customer.code = :customerCode) and " +
 			"(:timestampFrom is null or i.issuedTimestamp >= :timestampFrom) and " +
 			"(:timestampTo is null or i.issuedTimestamp <= :timestampTo) and " +
-			"dni.product.code in (:productCodes) group by i.id")
-	Page<InvoiceDto> filterByCustomerCodeAndTimestampRangeAndProducts(@Param("customerCode") Integer customerCode, @Param("timestampFrom") Long timestampFrom, @Param("timestampTo") Long timestampTo, @Param("productCodes") List<Integer> productCodes, Pageable pageable);
+			"(:productCodes is null or dni.product.code in :productCodes) ";
+
+	@Query(value = "select i from Invoice i " +
+			"join fetch i.customer c " +
+			"join fetch i.deliveryNotes dn " +
+			"join fetch dn.deliveryNoteItems dni " +
+			"join fetch dni.product p " +
+			"where " + CUSTOMER_TIMESTAMP_PRODUCTS_CONDITION,
+			countQuery = "select count(i) from Invoice i " +
+					"join i.deliveryNotes dn " +
+					"join dn.deliveryNoteItems dni " +
+					"where " + CUSTOMER_TIMESTAMP_PRODUCTS_CONDITION)
+	Page<Invoice> filterByCustomerCodeAndTimestampRangeAndProducts(
+			@Param("customerCode") Integer customerCode,
+			@Param("timestampFrom") Long timestampFrom,
+			@Param("timestampTo") Long timestampTo,
+			@Param("productCodes") List<Integer> productCodes,
+			Pageable pageable);
 }

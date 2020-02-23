@@ -98,7 +98,8 @@ public class InvoiceService {
 										@RequestParam Long timestampTo, @RequestParam List<Integer> productCodes, Pageable pageable) {
 
 		if (productCodes != null && !productCodes.isEmpty()) {
-			return invoiceRepository.filterByCustomerCodeAndTimestampRangeAndProducts(customerCode, timestampFrom, timestampTo, productCodes, pageable);
+			return invoiceRepository.filterByCustomerCodeAndTimestampRangeAndProducts(customerCode, timestampFrom, timestampTo, productCodes, pageable)
+					.map(invoiceMapper::map);
 		} else {
 			return invoiceRepository.filterByCustomerCodeAndTimestampRange(customerCode, timestampFrom, timestampTo, pageable)
 					.map(invoiceMapper::map);
