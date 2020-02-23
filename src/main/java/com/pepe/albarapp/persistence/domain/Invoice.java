@@ -5,8 +5,8 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Data
@@ -21,7 +21,7 @@ public class Invoice {
 	private long issuedTimestamp;
 
 	@OneToMany(mappedBy = "invoice")
-	private List<DeliveryNote> deliveryNotes;
+	private Set<DeliveryNote> deliveryNotes;
 
 	@ManyToOne
 	@JoinColumn(name = "customer_id")

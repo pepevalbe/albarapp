@@ -4,8 +4,8 @@ import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Data
@@ -44,7 +44,7 @@ public class Customer {
 	private CustomerAecocInfo customerAecocInfo;        // Optional Customer AECOC additional info
 
 	@OneToMany(mappedBy = "customer")
-	private List<CustomerProductPrice> customerProductPrices;
+	private Set<CustomerProductPrice> customerProductPrices;
 
 	@Override
 	public boolean equals(Object o) {

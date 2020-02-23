@@ -3,6 +3,7 @@ package com.pepe.albarapp.service;
 import com.pepe.albarapp.api.error.ApiError;
 import com.pepe.albarapp.api.error.ApiException;
 import com.pepe.albarapp.api.log.ApiLog;
+import com.pepe.albarapp.api.log.Log;
 import com.pepe.albarapp.persistence.domain.*;
 import com.pepe.albarapp.persistence.repository.DeliveryNoteItemRepository;
 import com.pepe.albarapp.persistence.repository.DeliveryNoteRepository;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Log
 @Slf4j
 @Service
 public class InvoiceService {
@@ -83,7 +85,7 @@ public class InvoiceService {
 
 		Optional<DeliveryNote> deliveryNote = deliveryNoteRepository.findById(deliveryNoteDto.getId());
 		if (deliveryNote.isPresent()) {
-			List<DeliveryNoteItem> deliveryNoteItems = deliveryNoteItemRepository.findByDeliveryNote(deliveryNote.get());
+			Set<DeliveryNoteItem> deliveryNoteItems = deliveryNoteItemRepository.findByDeliveryNote(deliveryNote.get());
 			deliveryNoteItemRepository.deleteAll(deliveryNoteItems);
 			deliveryNoteRepository.delete(deliveryNote.get());
 			return true;
@@ -98,7 +100,8 @@ public class InvoiceService {
 		if (productCodes != null && !productCodes.isEmpty()) {
 			return invoiceRepository.filterByCustomerCodeAndTimestampRangeAndProducts(customerCode, timestampFrom, timestampTo, productCodes, pageable);
 		} else {
-			return invoiceRepository.filterByCustomerCodeAndTimestampRange(customerCode, timestampFrom, timestampTo, pageable);
+			return invoiceRepository.filterByCustomerCodeAndTimestampRange(customerCode, timestampFrom, timestampTo, pageable)
+					.map(invoiceMapper::map);
 		}
 	}
 
@@ -107,12 +110,15 @@ public class InvoiceService {
 										Long timestampTo, Long issuedTimestamp) {
 
 		// Find delivery notes for the requested customerCode and timestamp range
-		List<DeliveryNote> deliveryNotesToBill = deliveryNoteRepository.
+		Set<DeliveryNote> deliveryNotesToBill = deliveryNoteRepository.
 				findByCustomerCodeBetweenAndIssuedTimestampBetweenAndInvoiceIsNull(customerCodeFrom, customerCodeTo, timestampFrom, timestampTo);
 
 		// Group delivery notes by customer
 		Map<Customer, List<DeliveryNote>> deliveryNotesByCustomer = deliveryNotesToBill.stream()
 				.collect(Collectors.groupingBy(DeliveryNote::getCustomer));
+
+		ApiLog.updateElapsedTime();
+		log.info(String.format("%s delivery notes retrieved grouped in to %s customers", deliveryNotesToBill.size(), deliveryNotesByCustomer.entrySet().size()));
 
 		// Create invoice for each customer, ordered by ascending customer code
 		List<Invoice> createdInvoices = deliveryNotesByCustomer.keySet().stream()
@@ -121,7 +127,7 @@ public class InvoiceService {
 					Invoice invoice = new Invoice();
 					invoice.setIssuedTimestamp(issuedTimestamp);
 					invoice.setCustomer(customer);
-					invoice.setDeliveryNotes(deliveryNotesByCustomer.get(customer));
+					invoice.setDeliveryNotes(new HashSet<>(deliveryNotesByCustomer.get(customer)));
 					Invoice createdInvoice = invoiceRepository.save(invoice);
 					deliveryNotesByCustomer.get(customer).forEach(deliveryNote -> deliveryNote.setInvoice(createdInvoice));
 					return createdInvoice;
@@ -132,7 +138,8 @@ public class InvoiceService {
 		deliveryNoteRepository.saveAll(deliveryNotesByCustomer.values().stream().flatMap(Collection::stream).collect(Collectors.toList()));
 
 		ApiLog.updateElapsedTime();
-		log.info(String.format("%s invoices created from %s delivery notes: ", createdInvoices.size(), deliveryNotesByCustomer.values().size()));
+		log.info(String.format("%s invoices created", createdInvoices.size()));
+
 		return createdInvoices.stream().map(invoiceMapper::map).collect(Collectors.toList());
 	}
 }
