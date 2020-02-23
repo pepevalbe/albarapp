@@ -20,7 +20,7 @@ public class StatisticsService {
 	private static final String TOTAL_DELIVERY_NOTES = "Total albaranes";
 	private static final String TOTAL_DELIVERY_NOTES_QUERY = "select count(ID) from DELIVERY_NOTE";
 	private static final String MOST_BILLED_CUSTOMER = "Cliente mayor facturación";
-	private static final String MOST_BILLED_CUSTOMER_QUERY = "select alias, SUM(quantity*price) as total FROM delivery_note INNER JOIN customer INNER JOIN delivery_note_item GROUP BY alias ORDER BY total DESC LIMIT 1";
+	private static final String MOST_BILLED_CUSTOMER_QUERY = "select alias, SUM(quantity*price) as total FROM delivery_note dn INNER JOIN customer cus ON dn.customer_id = cus.id INNER JOIN delivery_note_item dni ON dni.delivery_note_id = dn.id GROUP BY cus.id ORDER BY total DESC LIMIT 1";
 
 	@Autowired
 	JdbcTemplate jdbcTemplate;
