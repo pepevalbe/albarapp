@@ -53,6 +53,6 @@ public class DeliveryNoteItem {
 	}
 
 	public BigDecimal getTaxTotal() {
-		return getGrossTotal().multiply(new BigDecimal(product.getTax())).multiply(new BigDecimal(0.01));
+		return getGrossTotal().multiply(new BigDecimal(String.valueOf(product.getTax())).multiply(new BigDecimal("0.01")));
 	}
 }
