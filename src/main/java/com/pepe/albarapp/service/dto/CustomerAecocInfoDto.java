@@ -6,11 +6,10 @@ import lombok.Data;
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class CustomerAecocInfoDto {
-    
-    private String receiverGln;
-    private String buyerGln;
-    private String shipGln;
-    private String payerGln;
-    private String invoiceeGln;
 
+	private String receiverGln;
+	private String buyerGln;
+	private String shipGln;
+	private String payerGln;
+	private String invoiceeGln;
 }

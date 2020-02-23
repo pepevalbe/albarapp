@@ -41,7 +41,7 @@ public class Invoice {
 	}
 
 	public boolean isEdiInvoice() {
-		boolean isAecocCustomer = customer.getCustomerAecocInfo() != null && customer.getCustomerAecocInfo().isValid();
+		boolean isAecocCustomer = customer.getCustomerAecocInfo() != null;
 
 		boolean isValidProducts = deliveryNotes.stream()
 				.flatMap(deliveryNote -> deliveryNote.getDeliveryNoteItems().stream())

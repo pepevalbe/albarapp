@@ -3,22 +3,28 @@ package com.pepe.albarapp.persistence.domain;
 import lombok.Data;
 
 import javax.persistence.Column;
+import java.util.Objects;
 
 @Data
 public class CustomerAecocInfo {
 
 	@Column
-	private String receiverGln;
+	private final String receiverGln;
 	@Column
-	private String buyerGln;
+	private final String buyerGln;
 	@Column
-	private String shipGln;
+	private final String shipGln;
 	@Column
-	private String payerGln;
+	private final String payerGln;
 	@Column
-	private String invoiceeGln;
+	private final String invoiceeGln;
 
-	public boolean isValid() {
-		return receiverGln != null && buyerGln != null && shipGln != null && payerGln != null && invoiceeGln != null;
+	public CustomerAecocInfo(String receiverGln, String buyerGln, String shipGln, String payerGln, String invoiceeGln) {
+
+		this.receiverGln = Objects.requireNonNull(receiverGln);
+		this.buyerGln = Objects.requireNonNull(buyerGln);
+		this.shipGln = Objects.requireNonNull(shipGln);
+		this.payerGln = Objects.requireNonNull(payerGln);
+		this.invoiceeGln = Objects.requireNonNull(invoiceeGln);
 	}
 }

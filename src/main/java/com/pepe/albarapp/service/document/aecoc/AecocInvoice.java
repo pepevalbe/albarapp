@@ -56,7 +56,7 @@ public class AecocInvoice {
 		Customer customer = invoice.getCustomer();
 		CustomerAecocInfo customerAecocInfo = customer.getCustomerAecocInfo();
 
-		if (customer.getAddress() == null || customerAecocInfo == null || !customerAecocInfo.isValid()) {
+		if (customer.getAddress() == null || customerAecocInfo == null) {
 			throw new ApiException(ApiError.ApiError011);
 		}
 
