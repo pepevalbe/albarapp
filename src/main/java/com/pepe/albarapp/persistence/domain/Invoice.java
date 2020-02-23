@@ -4,7 +4,6 @@ import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
@@ -41,6 +40,16 @@ public class Invoice {
 		return Objects.hash(id);
 	}
 
+	public boolean isEdiInvoice() {
+		boolean isAecocCustomer = customer.getCustomerAecocInfo() != null && customer.getCustomerAecocInfo().isValid();
+
+		boolean isValidProducts = deliveryNotes.stream()
+				.flatMap(deliveryNote -> deliveryNote.getDeliveryNoteItems().stream())
+				.noneMatch(item -> item.getProduct().getAecocGtin() == null);
+
+		return isAecocCustomer && isValidProducts;
+	}
+
 	public BigDecimal getTotal() {
 		return getGrossTotal().add(getTaxTotal());
 	}
@@ -51,5 +60,12 @@ public class Invoice {
 
 	public BigDecimal getTaxTotal() {
 		return deliveryNotes.stream().map(DeliveryNote::getTaxTotal).reduce(BigDecimal.ZERO, BigDecimal::add);
+	}
+
+	public long getProductQuantity() {
+		return deliveryNotes.stream()
+				.flatMap(deliveryNote -> deliveryNote.getDeliveryNoteItems().stream())
+				.mapToLong(DeliveryNoteItem::getQuantity)
+				.sum();
 	}
 }

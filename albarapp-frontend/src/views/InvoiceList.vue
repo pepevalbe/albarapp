@@ -69,7 +69,7 @@
                 </v-btn>
               </td>
               <td>
-                <v-btn v-if="item.isAecocCustomer" @click="downloadEdi(item)">
+                <v-btn v-if="item.isEdiInvoice" @click="downloadEdi(item)">
                   <v-icon dark>mdi-xml</v-icon>
                 </v-btn>
               </td>

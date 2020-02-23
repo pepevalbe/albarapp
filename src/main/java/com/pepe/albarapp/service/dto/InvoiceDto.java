@@ -19,8 +19,8 @@ public class InvoiceDto {
 	private String customerAlias;
 	private String customerName;
 	private String customerFiscalId;
-	@JsonProperty(value="isAecocCustomer")
-	private boolean isAecocCustomer;
+	@JsonProperty(value = "isEdiInvoice")
+	private boolean isEdiInvoice;
 	private double total;
 	private long productQuantity;
 }
