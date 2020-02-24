@@ -3,7 +3,6 @@ package com.pepe.albarapp.service;
 import com.pepe.albarapp.api.error.ApiError;
 import com.pepe.albarapp.api.error.ApiException;
 import com.pepe.albarapp.api.log.ApiLog;
-import com.pepe.albarapp.api.log.Log;
 import com.pepe.albarapp.persistence.domain.*;
 import com.pepe.albarapp.persistence.repository.DeliveryNoteItemRepository;
 import com.pepe.albarapp.persistence.repository.DeliveryNoteRepository;
@@ -23,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Log
 @Slf4j
 @Service
 public class InvoiceService {
@@ -97,13 +95,7 @@ public class InvoiceService {
 	public Page<InvoiceDto> getInvoices(@RequestParam Integer customerCode, @RequestParam Long timestampFrom,
 										@RequestParam Long timestampTo, @RequestParam List<Integer> productCodes, Pageable pageable) {
 
-		if (productCodes != null && !productCodes.isEmpty()) {
-			return invoiceRepository.filterByCustomerCodeAndTimestampRangeAndProducts(customerCode, timestampFrom, timestampTo, productCodes, pageable)
-					.map(invoiceMapper::map);
-		} else {
-			return invoiceRepository.filterByCustomerCodeAndTimestampRange(customerCode, timestampFrom, timestampTo, pageable)
-					.map(invoiceMapper::map);
-		}
+		return invoiceRepository.filter(customerCode, timestampFrom, timestampTo, productCodes, pageable).map(invoiceMapper::map);
 	}
 
 	@Transactional
