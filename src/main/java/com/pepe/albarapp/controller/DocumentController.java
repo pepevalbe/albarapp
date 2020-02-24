@@ -4,6 +4,7 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 import com.pepe.albarapp.api.error.ApiError;
 import com.pepe.albarapp.api.error.ApiException;
+import com.pepe.albarapp.api.log.Log;
 import com.pepe.albarapp.service.document.DocumentService;
 import com.pepe.albarapp.service.document.aecoc.AecocInvoice;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +19,7 @@ import java.io.IOException;
 import java.util.Arrays;
 
 @Slf4j
+@Log
 @RestController
 public class DocumentController {
 

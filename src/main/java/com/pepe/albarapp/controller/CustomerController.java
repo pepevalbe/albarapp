@@ -1,5 +1,6 @@
 package com.pepe.albarapp.controller;
 
+import com.pepe.albarapp.api.log.Log;
 import com.pepe.albarapp.service.CustomerService;
 import com.pepe.albarapp.service.dto.CustomerDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Log
 @RestController
 public class CustomerController {
 

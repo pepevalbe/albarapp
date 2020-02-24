@@ -7,7 +7,7 @@ import org.springframework.boot.logging.LogLevel;
 
 public class ApiLog {
 
-	public static int apiLogLevel = 0;
+	public static int apiLogLevel = 2;
 
 	public static void startLoggingContext(String endpoint) {
 		MDC.put("timestamp", Long.toString(System.currentTimeMillis()));

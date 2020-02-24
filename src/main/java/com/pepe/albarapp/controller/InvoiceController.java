@@ -1,9 +1,9 @@
 package com.pepe.albarapp.controller;
 
+import com.pepe.albarapp.api.log.Log;
 import com.pepe.albarapp.service.InvoiceService;
 import com.pepe.albarapp.service.dto.DeliveryNoteDto;
 import com.pepe.albarapp.service.dto.InvoiceDto;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Slf4j
+@Log
 @RestController
 public class InvoiceController {
 

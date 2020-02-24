@@ -1,5 +1,6 @@
 package com.pepe.albarapp.controller;
 
+import com.pepe.albarapp.api.log.Log;
 import com.pepe.albarapp.persistence.domain.User;
 import com.pepe.albarapp.service.StatisticsService;
 import com.pepe.albarapp.service.UserService;
@@ -20,11 +21,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
-import java.io.IOException;
 import java.security.Principal;
 import java.util.Collections;
 import java.util.List;
 
+@Log
 @RestController
 public class UserController {
 

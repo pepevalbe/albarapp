@@ -1,7 +1,6 @@
 package com.pepe.albarapp.api.log;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -15,15 +14,13 @@ import java.io.IOException;
 	This filter is used to initialize logging context
 	doFilter is invoked for every http request
  */
+@Slf4j
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class LogFilter implements Filter {
 
-	private static final Logger logger = LoggerFactory.getLogger(LogFilter.class);
-
 	@Override
-	public void init(FilterConfig filterConfig) throws ServletException {
-		logger.debug("Initializing LogFilter");
+	public void init(FilterConfig filterConfig) {
 	}
 
 	@Override
@@ -32,12 +29,12 @@ public class LogFilter implements Filter {
 
 		HttpServletRequest httpRequest = (HttpServletRequest) request;
 		ApiLog.startLoggingContext(httpRequest.getMethod() + " " + httpRequest.getRequestURI());
-		logger.info("Incoming request");
+		log.debug("Incoming request");
 
 		chain.doFilter(request, response);
 
 		HttpServletResponse httpResponse = (HttpServletResponse) response;
 		ApiLog.updateElapsedTime();
-		logger.info("Response sent: " + httpResponse.getStatus());
+		log.debug("Response sent: " + httpResponse.getStatus());
 	}
 }
