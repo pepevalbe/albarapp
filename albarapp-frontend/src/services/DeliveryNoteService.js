@@ -11,18 +11,12 @@ export default {
         return HttpClient.get(`${DELIVERY_NOTE_RESOURCE}/${id}`)
             .then(response => {
                 return response.data;
-            })
-            .catch(() => {
-                alert("Ha ocurrido un error recuperando el albarán");
             });
     },
     getCustomer(deliveryNote) {
         return HttpClient.get(deliveryNote._links.customer.href)
             .then(response => {
                 deliveryNote.customer = response.data;
-            })
-            .catch(() => {
-                alert("Ha ocurrido un error recuperando el cliente del albarán");
             });
     },
     getInvoice(deliveryNote) {
@@ -42,28 +36,18 @@ export default {
         return HttpClient.get(deliveryNote._links.deliveryNoteItems.href)
             .then(response => {
                 deliveryNote.deliveryNoteItems = response.data._embedded.deliveryNoteItems;
-            })
-            .catch(() => {
-                alert("Ha ocurrido un error recuperando las líneas de albarán");
             });
     },
     getProducts(deliveryNoteItem) {
         return HttpClient.get(deliveryNoteItem._links.product.href)
             .then(response => {
                 deliveryNoteItem.product = response.data;
-            })
-            .catch(() => {
-                alert("Ha ocurrido un error recuperando los productos de las líneas de albarán");
             });
     },
     delete(deliveryNote) {
-        return HttpClient.delete(`${DELIVERY_NOTES_COMPLETE_ENDPOINT}`, { data: deliveryNote }
-        )
+        return HttpClient.delete(`${DELIVERY_NOTES_COMPLETE_ENDPOINT}`, { data: deliveryNote })
             .then(response => {
                 return response.data;
-            })
-            .catch(() => {
-                alert("Ha ocurrido un error eliminando el albarán");
             });
     },
     async getAllWithCustomerAndTotal(filter, options) {

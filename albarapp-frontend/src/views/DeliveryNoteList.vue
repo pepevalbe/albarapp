@@ -115,6 +115,10 @@
     <v-overlay v-if="spinner.loading" :value="true">
       <v-progress-circular indeterminate color="primary"></v-progress-circular>
     </v-overlay>
+    <v-snackbar v-model="snackbar.show" :color="snackbar.color">
+      {{snackbar.message}}
+      <v-btn text @click="snackbar.show=false">Cerrar</v-btn>
+    </v-snackbar>
     <v-dialog v-model="dialogDelete.show" max-width="600">
       <v-card>
         <v-card-title class="headline">¿Eliminar albarán?</v-card-title>
@@ -162,6 +166,11 @@ export default {
       },
       loading: true,
       errorLoading: false,
+      snackbar: {
+        show: false,
+        message: "",
+        color: ""
+      },
       totalItems: 0,
       filter: {
         form: {
@@ -243,11 +252,26 @@ export default {
       this.dialogDelete.show = true;
     },
     async deleteDeliveryNote(item) {
-      this.dialogDelete.show = false;
-      this.showSpinner();
-      await DeliveryNoteService.delete(item);
-      this.closeSpinner();
-      this.listDeliveryNotes();
+      try {
+        this.dialogDelete.show = false;
+        this.showSpinner();
+        await DeliveryNoteService.delete(item);
+        this.snackbar = {
+          show: true,
+          message: "Albarán eliminado correctamente",
+          color: "success"
+        };
+        this.listDeliveryNotes();
+      } catch {
+        this.snackbar = {
+          show: true,
+          message:
+            "No se ha podido eliminar el albarán, por favor vuelva a intentarlo.",
+          color: "error"
+        };
+      } finally {
+        this.closeSpinner();
+      }
     },
     dateFormatted(timestamp) {
       return this.$moment.utc(timestamp, "x").format("DD/MM/YYYY");
