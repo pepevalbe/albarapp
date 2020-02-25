@@ -1,160 +1,169 @@
 <template>
   <v-container>
-    <v-form ref="form" v-model="form.valid">
-      <v-row>
-        <v-col cols="12" md="2">
-          <v-text-field
-            ref="customerCode"
-            v-model="customerCode"
-            type="number"
-            :counter="5"
-            label="Código cliente"
-            :rules="customerCodeRules"
-            required
-            autofocus
-            @focus="$event.target.select()"
-            v-on:blur="selectCustomerByCode()"
-            v-on:input="clearCustomer()"
-            v-on:keypress.enter="moveToDate()"
-          ></v-text-field>
-        </v-col>
-        <v-col cols="12" md="6">
-          <v-autocomplete
-            v-model="form.deliveryNote.customer"
-            label="Alias cliente"
-            :items="customers"
-            item-text="alias"
-            return-object
-            no-data-text="Sin coincidencias"
-            v-on:change="selectCustomerByAlias()"
-          ></v-autocomplete>
-        </v-col>
-        <v-col cols="12" md="2">
-          <v-menu
-            ref="menuDatePicker"
-            v-model="menuDatePicker"
-            :close-on-content-click="false"
-            transition="scale-transition"
-            offset-y
-            max-width="290px"
-            min-width="290px"
-          >
-            <template v-slot:activator="{ on }">
-              <v-text-field
-                v-model="dateFormatted"
-                ref="dateText"
-                label="Fecha"
-                hint="Formato: ddMMaaaa"
-                persistent-hint
-                @focus="$event.target.select()"
-                prepend-icon="mdi-calendar"
-                @blur="parseDateText()"
-                v-on:keypress.enter="moveToAuxDeliveryNoteNr()"
-                v-on="on"
-              ></v-text-field>
-            </template>
-            <v-date-picker
-              v-model="form.deliveryNote.date"
-              no-title
-              @input="datePickedOnCalendar()"
-              locale="es-ES"
-              first-day-of-week="1"
-            ></v-date-picker>
-          </v-menu>
-        </v-col>
-        <v-col cols="12" md="2">
-          <v-text-field
-            ref="auxDeliveryNoteNr"
-            v-model="form.deliveryNote.auxDeliveryNoteNr"
-            type="number"
-            label="Nº Pedido"
-            @focus="$event.target.select()"
-            v-on:keypress.enter="moveToQuantity()"
-          ></v-text-field>
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col cols="12" md="2">
-          <v-text-field
-            ref="quantity"
-            v-model="quantity"
-            type="number"
-            label="Cantidad"
-            @focus="$event.target.select()"
-            v-on:keypress.enter="moveToProductCode()"
-          ></v-text-field>
-        </v-col>
-        <v-col cols="12" md="2">
-          <v-text-field
-            ref="productCode"
-            v-model="productCode"
-            type="number"
-            label="Código de producto"
-            @focus="$event.target.select()"
-            v-on:keypress.enter="selectProductByCode()"
-            v-on:blur="selectProductByCode()"
-            v-on:input="clearProduct()"
-          ></v-text-field>
-        </v-col>
-        <v-col cols="12" md="4">
-          <v-autocomplete
-            v-model="product"
-            label="Producto"
-            :items="products"
-            item-text="name"
-            return-object
-            no-data-text="Sin coincidencias"
-            v-on:change="selectProductByName()"
-          ></v-autocomplete>
-        </v-col>
-        <v-col cols="12" md="2">
-          <v-text-field
-            ref="price"
-            v-model="price"
-            type="number"
-            label="Precio"
-            @focus="$event.target.select()"
-            v-on:keypress.enter="moveToAddLine()"
-          ></v-text-field>
-        </v-col>
-        <v-col cols="12" md="2">
-          <v-flex text-xs-center align-center>
-            <v-btn
-              @click="addDeliveryNoteItem()"
-              ref="addLineButton"
-              v-bind:disabled="!noteItemToAdd()"
+    <div v-if="!errorLoading">
+      <v-form ref="form" v-model="form.valid">
+        <v-row>
+          <v-col cols="12" md="2">
+            <v-text-field
+              ref="customerCode"
+              v-model="customerCode"
+              type="number"
+              :counter="5"
+              label="Código cliente"
+              :rules="customerCodeRules"
+              required
+              autofocus
+              @focus="$event.target.select()"
+              v-on:blur="selectCustomerByCode()"
+              v-on:input="clearCustomer()"
+              v-on:keypress.enter="moveToDate()"
+            ></v-text-field>
+          </v-col>
+          <v-col cols="12" md="6">
+            <v-autocomplete
+              v-model="form.deliveryNote.customer"
+              label="Alias cliente"
+              :items="customers"
+              item-text="alias"
+              return-object
+              no-data-text="Sin coincidencias"
+              v-on:change="selectCustomerByAlias()"
+            ></v-autocomplete>
+          </v-col>
+          <v-col cols="12" md="2">
+            <v-menu
+              ref="menuDatePicker"
+              v-model="menuDatePicker"
+              :close-on-content-click="false"
+              transition="scale-transition"
+              offset-y
+              max-width="290px"
+              min-width="290px"
             >
-              <span>Añadir línea</span>
-            </v-btn>
+              <template v-slot:activator="{ on }">
+                <v-text-field
+                  v-model="dateFormatted"
+                  ref="dateText"
+                  label="Fecha"
+                  hint="Formato: ddMMaaaa"
+                  persistent-hint
+                  @focus="$event.target.select()"
+                  prepend-icon="mdi-calendar"
+                  @blur="parseDateText()"
+                  v-on:keypress.enter="moveToAuxDeliveryNoteNr()"
+                  v-on="on"
+                ></v-text-field>
+              </template>
+              <v-date-picker
+                v-model="form.deliveryNote.date"
+                no-title
+                @input="datePickedOnCalendar()"
+                locale="es-ES"
+                first-day-of-week="1"
+              ></v-date-picker>
+            </v-menu>
+          </v-col>
+          <v-col cols="12" md="2">
+            <v-text-field
+              ref="auxDeliveryNoteNr"
+              v-model="form.deliveryNote.auxDeliveryNoteNr"
+              type="number"
+              label="Nº Pedido"
+              @focus="$event.target.select()"
+              v-on:keypress.enter="moveToQuantity()"
+            ></v-text-field>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col cols="12" md="2">
+            <v-text-field
+              ref="quantity"
+              v-model="quantity"
+              type="number"
+              label="Cantidad"
+              @focus="$event.target.select()"
+              v-on:keypress.enter="moveToProductCode()"
+            ></v-text-field>
+          </v-col>
+          <v-col cols="12" md="2">
+            <v-text-field
+              ref="productCode"
+              v-model="productCode"
+              type="number"
+              label="Código de producto"
+              @focus="$event.target.select()"
+              v-on:keypress.enter="selectProductByCode()"
+              v-on:blur="selectProductByCode()"
+              v-on:input="clearProduct()"
+            ></v-text-field>
+          </v-col>
+          <v-col cols="12" md="4">
+            <v-autocomplete
+              v-model="product"
+              label="Producto"
+              :items="products"
+              item-text="name"
+              return-object
+              no-data-text="Sin coincidencias"
+              v-on:change="selectProductByName()"
+            ></v-autocomplete>
+          </v-col>
+          <v-col cols="12" md="2">
+            <v-text-field
+              ref="price"
+              v-model="price"
+              type="number"
+              label="Precio"
+              @focus="$event.target.select()"
+              v-on:keypress.enter="moveToAddLine()"
+            ></v-text-field>
+          </v-col>
+          <v-col cols="12" md="2">
+            <v-flex text-xs-center align-center>
+              <v-btn
+                @click="addDeliveryNoteItem()"
+                ref="addLineButton"
+                v-bind:disabled="!noteItemToAdd()"
+              >
+                <span>Añadir línea</span>
+              </v-btn>
+            </v-flex>
+          </v-col>
+        </v-row>
+        <v-row class="ml-5" justify="center">
+          <v-col cols="12" md="8">
+            <DeliveryNoteItemTable
+              :deliveryNoteItems="form.deliveryNote.deliveryNoteItems"
+              :deliveryNoteTotal="form.deliveryNote.deliveryNoteTotal"
+            ></DeliveryNoteItemTable>
+          </v-col>
+        </v-row>
+        <div class="mb-10"></div>
+        <v-layout text-center wrap class="pt-10">
+          <v-flex xs12>
+            <v-row class="ml-5" justify="center">
+              <v-btn class="mr-4" @click="$router.back()">Volver</v-btn>
+              <v-btn color="error" v-if="form.create" class="mr-4" @click="reset()">Borrar</v-btn>
+              <v-btn
+                ref="createbutton"
+                class="mr-4"
+                :disabled="!deliveryNoteValid()"
+                @click="createDeliveryNote()"
+                @keyup.left="moveToQuantity()"
+              >Guardar</v-btn>
+            </v-row>
           </v-flex>
-        </v-col>
+        </v-layout>
+      </v-form>
+    </div>
+    <div v-if="errorLoading">
+      <v-row class="mb-2" justify="center">Error al cargar la página, por favor vuelva a cargar.</v-row>
+      <v-row justify="center">
+        <v-btn @click="loadView()">
+          <v-icon dark>mdi-refresh</v-icon>
+        </v-btn>
       </v-row>
-
-      <v-row class="ml-5" justify="center">
-        <v-col cols="12" md="8">
-          <DeliveryNoteItemTable
-            :deliveryNoteItems="form.deliveryNote.deliveryNoteItems"
-            :deliveryNoteTotal="form.deliveryNote.deliveryNoteTotal"
-          ></DeliveryNoteItemTable>
-        </v-col>
-      </v-row>
-      <div class="mb-10"></div>
-      <v-layout text-center wrap class="pt-10">
-        <v-flex xs12>
-          <v-row class="ml-5" justify="center">
-            <v-btn class="mr-4" @click="$router.back()">Volver</v-btn>
-            <v-btn color="error" v-if="form.create" class="mr-4" @click="reset()">Borrar</v-btn>
-            <v-btn
-              ref="createbutton"
-              class="mr-4"
-              :disabled="!deliveryNoteValid()"
-              @click="createDeliveryNote()"
-              @keyup.left="moveToQuantity()"
-            >Guardar</v-btn>
-          </v-row>
-        </v-flex>
-      </v-layout>
-    </v-form>
+    </div>
     <v-snackbar v-model="snackbar">
       {{snackbarMessage}}
       <v-btn color="error" text @click="snackbar = false">Cerrar</v-btn>
@@ -193,6 +202,7 @@ export default {
         (v && v > 0 && v <= 99999) ||
         "El código debe tener un máximo de 5 dígitos"
     ],
+    errorLoading: false,
     spinner: {
       loading: false,
       counter: 0
@@ -201,35 +211,34 @@ export default {
   props: {
     form: Object
   },
-  watch: {
-    form: function() {
-      this.selectCustomerByAlias();
-      this.parseDatePick();
-      this.$nextTick(this.$refs.customerCode.focus);
-    }
-  },
-  created() {
-    this.listCustomers();
-    this.listProducts();
-    this.parseDatePick();
+  mounted() {
+    this.loadView();
   },
   methods: {
-    async listCustomers() {
-      this.showSpinner();
-      this.customers = await CustomerService.getAllWithPrices();
-      for (var customer of this.customers) {
-        customer.alias = customer.alias + " - " + customer.name;
+    async loadView() {
+      try {
+        this.errorLoading = false;
+        this.showSpinner();
+        this.customers = await CustomerService.getAllWithPrices();
+        for (var customer of this.customers) {
+          customer.alias = customer.alias + " - " + customer.name;
+        }
+        if (this.form.deliveryNote.customer) {
+          this.customerCode = this.form.deliveryNote.customer.code;
+          this.selectCustomerByCode();
+        }
+        this.products = await ProductService.getAll();
+        this.parseDatePick();
+      } catch {
+        this.errorLoading = true;
+      } finally {
+        this.$nextTick(this.$refs.customerCode.focus);
+        this.closeSpinner();
       }
-      this.closeSpinner();
-    },
-    async listProducts() {
-      this.showSpinner();
-      this.products = await ProductService.getAll();
-      this.closeSpinner();
     },
     selectCustomerByCode() {
       var vm = this;
-      if (this.customerCode != "" && this.customerCode != null) {
+      if (this.customerCode) {
         var index = this.customers.findIndex(function(element) {
           return element.code == vm.customerCode;
         });
@@ -245,10 +254,8 @@ export default {
     },
     selectCustomerByAlias() {
       if (
-        this.form.deliveryNote.customer != {} &&
-        this.form.deliveryNote.customer != null &&
-        this.form.deliveryNote.customer != undefined &&
-        this.form.deliveryNote.customer.code != null
+        this.form.deliveryNote.customer &&
+        this.form.deliveryNote.customer.code
       ) {
         this.customerCode = this.form.deliveryNote.customer.code;
         this.selectCustomerPrices();
@@ -263,7 +270,7 @@ export default {
     },
     selectProductByCode() {
       var vm = this;
-      if (this.productCode != "" && this.productCode != null) {
+      if (this.productCode) {
         var index = this.products.findIndex(function(element) {
           return element.code == vm.productCode;
         });

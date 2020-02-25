@@ -94,9 +94,6 @@ export default {
                     deliveryNotes: response.data.content,
                     totalElements: response.data.totalElements
                 };
-            })
-            .catch(() => {
-                alert("Ha ocurrido un error recuperando los albaranes");
             });
     },
     async getWithCustomerAndTotal(id) {
@@ -111,9 +108,6 @@ export default {
                 deliveryNote.date = moment.utc(deliveryNote.issuedTimestamp, "x").format("YYYY-MM-DD");
                 deliveryNote.valid = false;
                 deliveryNote.deliveryNoteTotal = { value: 0 };
-            })
-            .catch(() => {
-                alert("Ha ocurrido un error recuperando el albarán");
             });
         await Promise.all(promises);
         for (const deliveryNoteItem of deliveryNote.deliveryNoteItems) {
@@ -170,10 +164,7 @@ export default {
                     f => !deliveryNoteItemsOriginal.includes(f)
                 );
                 itemsToDelete.forEach(element => {
-                    promises.push(HttpClient.delete(element._links.self.href)
-                        .catch(() => {
-                            alert("Ha ocurrido un error actualizando las líneas de albarán");
-                        }));
+                    promises.push(HttpClient.delete(element._links.self.href));
                 });
                 itemsToInsert.forEach(element => {
                     var deliveryNoteItem = {
@@ -182,15 +173,9 @@ export default {
                         product: element.product._links.self.href,
                         deliveryNote: deliveryNote._links.self.href
                     };
-                    promises.push(HttpClient.post(DELIVERY_NOTE_ITEM_RESOURCE, deliveryNoteItem)
-                        .catch(() => {
-                            alert("Ha ocurrido un error actualizando líneas de albarán");
-                        }));
+                    promises.push(HttpClient.post(DELIVERY_NOTE_ITEM_RESOURCE, deliveryNoteItem));
                 });
-            })
-            .catch(() => {
-                alert("Ha ocurrido un error actualizando el albarán");
-            })
+            });
         await promisePut;
         return Promise.all(promises);
     },

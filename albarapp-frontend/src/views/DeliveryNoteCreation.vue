@@ -25,7 +25,7 @@ export default {
       valid: false,
       create: true,
       deliveryNote: {
-        customer: {},
+        customer: null,
         auxDeliveryNoteNr: "",
         issuedTimestamp: 0,
         date: "",

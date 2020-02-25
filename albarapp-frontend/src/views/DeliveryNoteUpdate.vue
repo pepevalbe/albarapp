@@ -1,9 +1,24 @@
 <template>
   <v-flex align-self-start>
-    <DeliveryNoteForm :form="form" @saveClicked="updateDeliveryNote" ref="form"></DeliveryNoteForm>
-    <v-snackbar v-model="snackbar">
-      Albarán modificado correctamente
-      <v-btn color="success" text @click="snackbar = false">Cerrar</v-btn>
+    <div v-if="!errorLoading">
+      <DeliveryNoteForm
+        v-if="form.deliveryNote"
+        :form="form"
+        @saveClicked="updateDeliveryNote"
+        ref="form"
+      ></DeliveryNoteForm>
+    </div>
+    <div v-if="errorLoading">
+      <v-row class="mb-2" justify="center">Error al obtener el albarán, por favor vuelva a cargar.</v-row>
+      <v-row justify="center">
+        <v-btn @click="loadDeliveryNote()">
+          <v-icon dark>mdi-refresh</v-icon>
+        </v-btn>
+      </v-row>
+    </div>
+    <v-snackbar v-model="snackbar.show" :color="snackbar.color">
+      {{snackbar.message}}
+      <v-btn text @click="snackbar.show=false">Cerrar</v-btn>
     </v-snackbar>
     <v-overlay v-if="spinner.loading" :value="true">
       <v-progress-circular indeterminate color="primary"></v-progress-circular>
@@ -24,15 +39,14 @@ export default {
     form: {
       valid: false,
       create: false,
-      deliveryNote: {
-        customer: {},
-        date: "",
-        auxDeliveryNoteNr: "",
-        deliveryNoteItems: [],
-        deliveryNoteTotal: { value: 0 }
-      }
+      deliveryNote: null
     },
-    snackbar: false,
+    errorLoading: false,
+    snackbar: {
+      show: false,
+      message: "",
+      color: ""
+    },
     spinner: {
       loading: false,
       counter: 0
@@ -46,34 +60,51 @@ export default {
   },
   methods: {
     async loadDeliveryNote() {
-      this.showSpinner();
-      var deliveryNote = await DeliveryNoteService.getWithCustomerAndTotal(
-        this.deliveryNoteId
-      );
-      this.form = {
-        valid: false,
-        create: false,
-        deliveryNote: deliveryNote
-      };
-      this.deliveryNoteItemsOriginal = Array.from(
-        this.form.deliveryNote.deliveryNoteItems
-      );
-      this.closeSpinner();
+      try {
+        this.showSpinner();
+        this.errorLoading = false;
+        var deliveryNote = await DeliveryNoteService.getWithCustomerAndTotal(
+          this.deliveryNoteId
+        );
+        this.form.deliveryNote = deliveryNote;
+        this.deliveryNoteItemsOriginal = Array.from(
+          this.form.deliveryNote.deliveryNoteItems
+        );
+      } catch {
+        this.errorLoading = true;
+      } finally {
+        this.closeSpinner();
+      }
     },
     reset() {
       this.$refs.form.reset();
     },
     async updateDeliveryNote() {
-      this.showSpinner();
-      await DeliveryNoteService.update(
-        this.deliveryNoteId,
-        this.form.deliveryNote,
-        this.form.deliveryNote.deliveryNoteItems,
-        this.deliveryNoteItemsOriginal
-      );
-      this.closeSpinner();
-      this.snackbar = true;
-      this.loadDeliveryNote();
+      try {
+        this.showSpinner();
+        await DeliveryNoteService.update(
+          this.deliveryNoteId,
+          this.form.deliveryNote,
+          this.form.deliveryNote.deliveryNoteItems,
+          this.deliveryNoteItemsOriginal
+        );
+        this.snackbar = {
+          show: true,
+          message: "Albarán actualizado correctamente",
+          color: "success"
+        };
+        await this.loadDeliveryNote();
+        this.$refs.form.loadView();
+      } catch {
+        this.snackbar = {
+          show: true,
+          message:
+            "No se ha podido modificar el albarán, por favor vuelva a intentarlo.",
+          color: "error"
+        };
+      } finally {
+        this.closeSpinner();
+      }
     }
   }
 };

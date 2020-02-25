@@ -1,104 +1,117 @@
 <template>
-  <v-flex align-self-start>
-    <v-layout text-right wrap class="pt-2 pb-5 mr-5">
-      <v-flex xs12>
-        <v-btn to="/delivery-note-creation/">
-          Nuevo
-          <v-icon class="ml-2">mdi-plus-circle</v-icon>
-        </v-btn>
-      </v-flex>
-    </v-layout>
-    <v-card>
-      <v-card-title>Listado de albaranes</v-card-title>
-      <CustomerAndDatesFilterForm v-bind:form="filter.form" />
-      <v-data-table
-        :loading="loading"
-        loading-text="Cargando... Por favor, espere"
-        :headers="getHeaders()"
-        :footer-props="footerProps"
-        :items="deliveryNotes"
-        :server-items-length="totalItems"
-        :options.sync="options"
-      >
-        <template v-slot:body="{ items }">
-          <tbody v-if="!$vuetify.breakpoint.xsOnly">
-            <tr v-for="item in items" :key="item.deliveryNoteItemsHref">
-              <td>A{{item.id}}</td>
-              <td>
-                <span v-if="item.invoiceId">F{{item.invoiceId}}</span>
-              </td>
-              <td>{{item.auxDeliveryNoteNr}}</td>
-              <td>{{item.customerAlias}}</td>
-              <td>{{dateFormatted(item.issuedTimestamp)}}</td>
-              <td>
-                <span v-for="(noteItem,index) in item.deliveryNoteItems" :key="index">
-                  {{noteItem.quantity}} - {{noteItem.productName}} - {{noteItem.price}} €
-                  <br />
-                </span>
-              </td>
-              <td>{{currencyFormatted(item.total)}}</td>
-              <td>
-                <v-btn @click="updateDeliveryNote(item)">
-                  <v-icon dark>mdi-pencil</v-icon>
-                </v-btn>
-              </td>
-              <td>
-                <v-btn v-if="!item.invoiceId" color="red" dark @click="openDeleteDialog(item)">
-                  <v-icon dark>mdi-delete</v-icon>
-                </v-btn>
-              </td>
-            </tr>
-          </tbody>
-          <tbody v-else>
-            <tr>
-              <v-card class="flex-content" outlined v-for="item in items" :key="item.id">
-                <v-card-text>
-                  <span class="black--text">Nº Albarán:</span>
-                  A{{item.id}}
-                  <br />
-                  <span class="black--text">Nº Factura:</span>
+  <v-container>
+    <div v-if="!errorLoading">
+      <v-layout text-right wrap class="pt-2 pb-5 mr-5">
+        <v-flex xs12>
+          <v-btn to="/delivery-note-creation/">
+            Nuevo
+            <v-icon class="ml-2">mdi-plus-circle</v-icon>
+          </v-btn>
+        </v-flex>
+      </v-layout>
+      <v-card>
+        <v-card-title>Listado de albaranes</v-card-title>
+        <CustomerAndDatesFilterForm v-bind:form="filter.form" />
+        <v-data-table
+          :loading="loading"
+          loading-text="Cargando... Por favor, espere"
+          :headers="getHeaders()"
+          :footer-props="footerProps"
+          :items="deliveryNotes"
+          :server-items-length="totalItems"
+          :options.sync="options"
+        >
+          <template v-slot:body="{ items }">
+            <tbody v-if="!$vuetify.breakpoint.xsOnly">
+              <tr v-for="item in items" :key="item.deliveryNoteItemsHref">
+                <td>A{{item.id}}</td>
+                <td>
                   <span v-if="item.invoiceId">F{{item.invoiceId}}</span>
-                  <br />
-                  <span class="black--text">Nº Albarán auxiliar:</span>
-                  {{item.auxDeliveryNoteNr}}
-                  <br />
-                  <span class="black--text">Cliente:</span>
-                  {{item.customerAlias}}
-                  <br />
-                  <span class="black--text">Fecha:</span>
-                  {{dateFormatted(item.issuedTimestamp)}}
-                  <br />
+                </td>
+                <td>{{item.auxDeliveryNoteNr}}</td>
+                <td>{{item.customerAlias}}</td>
+                <td>{{dateFormatted(item.issuedTimestamp)}}</td>
+                <td>
                   <span v-for="(noteItem,index) in item.deliveryNoteItems" :key="index">
                     {{noteItem.quantity}} - {{noteItem.productName}} - {{noteItem.price}} €
                     <br />
                   </span>
-                  <span class="black--text">Total:</span>
-                  {{currencyFormatted(item.total)}}
-                  <br />
-                </v-card-text>
-                <v-card-actions>
-                  <v-layout text-center wrap>
-                    <v-flex xs12>
-                      <v-btn @click="updateDeliveryNote(item)">
-                        <v-icon dark>mdi-pencil</v-icon>
-                      </v-btn>
-                      <v-btn
-                        v-if="!item.invoiceId"
-                        color="red"
-                        dark
-                        @click="openDeleteDialog(item)"
-                      >
-                        <v-icon dark>mdi-delete</v-icon>
-                      </v-btn>
-                    </v-flex>
-                  </v-layout>
-                </v-card-actions>
-              </v-card>
-            </tr>
-          </tbody>
-        </template>
-      </v-data-table>
-    </v-card>
+                </td>
+                <td>{{currencyFormatted(item.total)}}</td>
+                <td>
+                  <v-btn @click="updateDeliveryNote(item)">
+                    <v-icon dark>mdi-pencil</v-icon>
+                  </v-btn>
+                </td>
+                <td>
+                  <v-btn v-if="!item.invoiceId" color="red" dark @click="openDeleteDialog(item)">
+                    <v-icon dark>mdi-delete</v-icon>
+                  </v-btn>
+                </td>
+              </tr>
+            </tbody>
+            <tbody v-else>
+              <tr>
+                <v-card class="flex-content" outlined v-for="item in items" :key="item.id">
+                  <v-card-text>
+                    <span class="black--text">Nº Albarán:</span>
+                    A{{item.id}}
+                    <br />
+                    <span class="black--text">Nº Factura:</span>
+                    <span v-if="item.invoiceId">F{{item.invoiceId}}</span>
+                    <br />
+                    <span class="black--text">Nº Albarán auxiliar:</span>
+                    {{item.auxDeliveryNoteNr}}
+                    <br />
+                    <span class="black--text">Cliente:</span>
+                    {{item.customerAlias}}
+                    <br />
+                    <span class="black--text">Fecha:</span>
+                    {{dateFormatted(item.issuedTimestamp)}}
+                    <br />
+                    <span v-for="(noteItem,index) in item.deliveryNoteItems" :key="index">
+                      {{noteItem.quantity}} - {{noteItem.productName}} - {{noteItem.price}} €
+                      <br />
+                    </span>
+                    <span class="black--text">Total:</span>
+                    {{currencyFormatted(item.total)}}
+                    <br />
+                  </v-card-text>
+                  <v-card-actions>
+                    <v-layout text-center wrap>
+                      <v-flex xs12>
+                        <v-btn @click="updateDeliveryNote(item)">
+                          <v-icon dark>mdi-pencil</v-icon>
+                        </v-btn>
+                        <v-btn
+                          v-if="!item.invoiceId"
+                          color="red"
+                          dark
+                          @click="openDeleteDialog(item)"
+                        >
+                          <v-icon dark>mdi-delete</v-icon>
+                        </v-btn>
+                      </v-flex>
+                    </v-layout>
+                  </v-card-actions>
+                </v-card>
+              </tr>
+            </tbody>
+          </template>
+        </v-data-table>
+      </v-card>
+    </div>
+    <div v-if="errorLoading">
+      <v-row
+        class="mb-2"
+        justify="center"
+      >Error al obtener los albaranes, por favor vuelva a cargar.</v-row>
+      <v-row justify="center">
+        <v-btn @click="listDeliveryNotes()">
+          <v-icon dark>mdi-refresh</v-icon>
+        </v-btn>
+      </v-row>
+    </div>
     <v-overlay v-if="spinner.loading" :value="true">
       <v-progress-circular indeterminate color="primary"></v-progress-circular>
     </v-overlay>
@@ -117,7 +130,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-  </v-flex>
+  </v-container>
 </template>
 
 <script>
@@ -148,6 +161,7 @@ export default {
         multiSort: false
       },
       loading: true,
+      errorLoading: false,
       totalItems: 0,
       filter: {
         form: {
@@ -196,21 +210,27 @@ export default {
   },
   methods: {
     async listDeliveryNotes() {
-      this.loading = true;
-      this.showSpinner();
-      var response = await DeliveryNoteService.getAllWithCustomerAndTotal(
-        this.filter,
-        this.options
-      );
-      this.deliveryNotes = response.deliveryNotes;
-      this.netTotal = this.deliveryNotes.reduce(
-        (a, b) => a + (b.total || 0),
-        0
-      );
-      this.totalItems = response.totalElements;
-      this.loading = false;
-      this.closeSpinner();
-      this.updateURL();
+      try {
+        this.loading = true;
+        this.errorLoading = false;
+        this.showSpinner();
+        var response = await DeliveryNoteService.getAllWithCustomerAndTotal(
+          this.filter,
+          this.options
+        );
+        this.deliveryNotes = response.deliveryNotes;
+        this.netTotal = this.deliveryNotes.reduce(
+          (a, b) => a + (b.total || 0),
+          0
+        );
+        this.totalItems = response.totalElements;
+        this.loading = false;
+        this.updateURL();
+      } catch {
+        this.errorLoading = true;
+      } finally {
+        this.closeSpinner();
+      }
     },
     updateDeliveryNote(item) {
       this.$router.push({
