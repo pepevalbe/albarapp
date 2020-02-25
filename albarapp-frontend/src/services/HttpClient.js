@@ -21,7 +21,7 @@ httpClient.interceptors.response.use(function (response) {
         && (error.response.status === 401 ||
             error.response.status === 403)) {
         localStorage.clear();
-        if (window.location.pathname !== "/") window.location.href = "/";
+        if (!window.location.hash.includes("#/login")) window.location.href = "/#/login?destinationURL=" + window.location.hash.split("#")[1];
     } else if (
         error && error.response &&
         error.response.data &&

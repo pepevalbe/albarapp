@@ -1,11 +1,5 @@
 <template>
-  <v-navigation-drawer
-    v-if="token"
-    fixed
-    :clipped="$vuetify.breakpoint.mdAndUp"
-    app
-    v-model="drawer.value"
-  >
+  <v-navigation-drawer fixed :clipped="$vuetify.breakpoint.mdAndUp" app v-model="drawer.value">
     <div v-if="!errorLoading">
       <v-list-item>
         <v-list-item-avatar>
@@ -78,7 +72,7 @@
     </v-list>
     <template v-slot:append>
       <div class="pa-2">
-        <v-btn v-if="token" block @click="logout()">Cerrar sesión</v-btn>
+        <v-btn block @click="logout()">Cerrar sesión</v-btn>
       </div>
     </template>
   </v-navigation-drawer>

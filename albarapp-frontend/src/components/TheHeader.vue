@@ -1,6 +1,6 @@
 <template>
   <div>
-    <WebNavDrawer v-bind:drawer="drawer" />
+    <WebNavDrawer v-if="$route.name !== 'Login' && $route.name !== 'UserCreation'" v-bind:drawer="drawer" />
     <v-app-bar color="darken-3" dark app :clipped-left="$vuetify.breakpoint.mdAndUp" fixed>
       <v-app-bar-nav-icon @click="toggleNavDrawer"></v-app-bar-nav-icon>
       <v-toolbar-title class="headline text-uppercase">
@@ -8,27 +8,15 @@
         <span class="font-weight-light"> - {{currentStateHeaderName}}</span>
       </v-toolbar-title>
     </v-app-bar>
-    <v-dialog
-      v-if="!token && currentState != 'UserCreation'"
-      v-model="dialog"
-      persistent
-      max-width="600px"
-    >
-      <v-card>
-        <LoginForm />
-      </v-card>
-    </v-dialog>
   </div>
 </template>
 <script>
 import WebNavDrawer from "@/components/TheNavDrawer";
-import LoginForm from "@/components/LoginForm";
 
 export default {
   name: "WebHeader",
   components: {
-    WebNavDrawer,
-    LoginForm
+    WebNavDrawer
   },
   props: {
     currentStateHeaderName: String,

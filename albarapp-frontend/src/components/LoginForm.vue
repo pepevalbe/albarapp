@@ -38,11 +38,17 @@ export default {
       password: "",
       valid: false,
       passwordRules: [v => !!v],
-      emailRules: [
-        v => !!v,
-        v => /.+@.+\..+/.test(v) || "Email inválido"
-      ]
+      emailRules: [v => !!v, v => /.+@.+\..+/.test(v) || "Email inválido"]
     };
+  },
+  created() {
+    if (this.token) {
+      if (this.$route.query && this.$route.query.destinationURL) {
+        this.$router.push(this.$route.query.destinationURL);
+      } else {
+        this.$router.push("/");
+      }
+    }
   },
   methods: {
     async login() {
@@ -52,8 +58,12 @@ export default {
         this.password = "";
       } else {
         this.setToken(result); // Esto no funciona. No lo mete en el localStorage
-        localStorage.setItem('token', result); // Así que lo meto manualmente...
-        this.$router.go();
+        localStorage.setItem("token", result); // Así que lo meto manualmente...
+        if (this.$route.query && this.$route.query.destinationURL) {
+          this.$router.push(this.$route.query.destinationURL);
+        } else {
+          this.$router.push("/");
+        }
       }
     }
   }
