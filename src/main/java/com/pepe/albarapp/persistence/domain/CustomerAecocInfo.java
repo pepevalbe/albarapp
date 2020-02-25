@@ -1,23 +1,25 @@
 package com.pepe.albarapp.persistence.domain;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import java.util.Objects;
 
 @Data
+@NoArgsConstructor
 public class CustomerAecocInfo {
 
 	@Column
-	private final String receiverGln;
+	private String receiverGln;
 	@Column
-	private final String buyerGln;
+	private String buyerGln;
 	@Column
-	private final String shipGln;
+	private String shipGln;
 	@Column
-	private final String payerGln;
+	private String payerGln;
 	@Column
-	private final String invoiceeGln;
+	private String invoiceeGln;
 
 	public CustomerAecocInfo(String receiverGln, String buyerGln, String shipGln, String payerGln, String invoiceeGln) {
 
