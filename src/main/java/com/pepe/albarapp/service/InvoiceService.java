@@ -4,10 +4,7 @@ import com.pepe.albarapp.api.error.ApiError;
 import com.pepe.albarapp.api.error.ApiException;
 import com.pepe.albarapp.api.log.ApiLog;
 import com.pepe.albarapp.persistence.domain.*;
-import com.pepe.albarapp.persistence.repository.DeliveryNoteItemRepository;
-import com.pepe.albarapp.persistence.repository.DeliveryNoteRepository;
-import com.pepe.albarapp.persistence.repository.InvoiceRepository;
-import com.pepe.albarapp.persistence.repository.ProductRepository;
+import com.pepe.albarapp.persistence.repository.*;
 import com.pepe.albarapp.service.dto.DeliveryNoteDto;
 import com.pepe.albarapp.service.dto.InvoiceDto;
 import com.pepe.albarapp.service.mapping.InvoiceMapper;
@@ -27,6 +24,9 @@ public class InvoiceService {
 
 	@Autowired
 	private InvoiceRepository invoiceRepository;
+
+	@Autowired
+	private InvoiceFilterRepository invoiceFilterRepository;
 
 	@Autowired
 	private DeliveryNoteRepository deliveryNoteRepository;
@@ -92,7 +92,7 @@ public class InvoiceService {
 	@Transactional(readOnly = true)
 	public Page<InvoiceDto> getInvoices(Integer customerCode, Long timestampFrom, Long timestampTo, List<Integer> productCodes, Pageable pageable) {
 
-		return invoiceRepository.filter(customerCode, timestampFrom, timestampTo, productCodes, pageable).map(invoiceMapper::map);
+		return invoiceFilterRepository.filter(customerCode, timestampFrom, timestampTo, productCodes, pageable).map(invoiceMapper::map);
 	}
 
 	@Transactional

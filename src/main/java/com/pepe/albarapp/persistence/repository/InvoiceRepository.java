@@ -2,7 +2,6 @@ package com.pepe.albarapp.persistence.repository;
 
 import com.pepe.albarapp.persistence.domain.Invoice;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.Query;
@@ -40,7 +39,7 @@ public interface InvoiceRepository extends PagingAndSortingRepository<Invoice, L
 			@Param("timestampTo") Long timestampTo,
 			Pageable pageable);
 
-	String CUSTOMER_TIMESTAMP_PRODUCTS_CONDITION = "dni.product.code in :productCodes and" +
+	String CUSTOMER_TIMESTAMP_PRODUCTS_CONDITION = "dni.product.code in :productCodes and " +
 			"(:customerCode is null or i.customer.code = :customerCode) and " +
 			"(:timestampFrom is null or i.issuedTimestamp >= :timestampFrom) and " +
 			"(:timestampTo is null or i.issuedTimestamp <= :timestampTo)";
@@ -56,17 +55,26 @@ public interface InvoiceRepository extends PagingAndSortingRepository<Invoice, L
 			@Param("productCodes") List<Integer> productCodes,
 			Pageable pageable);
 
-	default Page<Invoice> filter(Integer customerCode, Long timestampFrom, Long timestampTo, List<Integer> productCodes, Pageable pageable) {
-		Page<Long> ids;
+	@Query(value = "select distinct i from Invoice i " +
+			"join fetch i.customer c " +
+			"join fetch i.deliveryNotes dn " +
+			"join fetch dn.deliveryNoteItems dni " +
+			"join fetch dni.product p " +
+			"where " + CUSTOMER_TIMESTAMP_CONDITION)
+	List<Invoice> findIdByCustomerCodeAndTimestampRange(
+			@Param("customerCode") Integer customerCode,
+			@Param("timestampFrom") Long timestampFrom,
+			@Param("timestampTo") Long timestampTo);
 
-		if (productCodes == null || productCodes.isEmpty()) {
-			ids = findIdByCustomerCodeAndTimestampRange(customerCode, timestampFrom, timestampTo, pageable).map(Invoice::getId);
-		} else {
-			ids = findIdByCustomerCodeAndTimestampRangeAndProducts(customerCode, timestampFrom, timestampTo, productCodes, pageable).map(Invoice::getId);
-		}
-
-		List<Invoice> invoices = findByIdIn(ids.getContent(), pageable.getSort());
-
-		return new PageImpl<>(invoices, pageable, ids.getTotalElements());
-	}
+	@Query(value = "select distinct i from Invoice i " +
+			"join fetch i.customer c " +
+			"join fetch i.deliveryNotes dn " +
+			"join fetch dn.deliveryNoteItems dni " +
+			"join fetch dni.product p " +
+			"where " + CUSTOMER_TIMESTAMP_PRODUCTS_CONDITION)
+	List<Invoice> findIdByCustomerCodeAndTimestampRangeAndProducts(
+			@Param("customerCode") Integer customerCode,
+			@Param("timestampFrom") Long timestampFrom,
+			@Param("timestampTo") Long timestampTo,
+			@Param("productCodes") List<Integer> productCodes);
 }
