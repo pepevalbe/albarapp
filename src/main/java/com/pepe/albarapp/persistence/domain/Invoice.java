@@ -41,13 +41,11 @@ public class Invoice {
 	}
 
 	public boolean isEdiInvoice() {
-		boolean isAecocCustomer = customer.getCustomerAecocInfo() != null;
-
 		boolean isValidProducts = deliveryNotes.stream()
 				.flatMap(deliveryNote -> deliveryNote.getDeliveryNoteItems().stream())
 				.noneMatch(item -> item.getProduct().getAecocGtin() == null);
 
-		return isAecocCustomer && isValidProducts;
+		return customer.isEdiCustomer() && isValidProducts;
 	}
 
 	public BigDecimal getTotal() {

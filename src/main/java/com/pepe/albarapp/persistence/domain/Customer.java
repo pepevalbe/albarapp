@@ -58,4 +58,8 @@ public class Customer {
 	public int hashCode() {
 		return Objects.hash(id);
 	}
+
+	public boolean isEdiCustomer() {
+		return customerAecocInfo != null && customerAecocInfo.isValid();
+	}
 }

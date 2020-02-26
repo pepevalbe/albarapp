@@ -21,13 +21,4 @@ public interface CustomerMapper {
 
 	@Mapping(source = "productId", target = "product.id")
 	CustomerProductPrice map(CustomerProductPriceDto CustomerProductPriceDto);
-
-	default CustomerAecocInfo map(CustomerAecocInfoDto customerAecocInfoDto) {
-		return new CustomerAecocInfo(
-				customerAecocInfoDto.getReceiverGln(),
-				customerAecocInfoDto.getBuyerGln(),
-				customerAecocInfoDto.getShipGln(),
-				customerAecocInfoDto.getPayerGln(),
-				customerAecocInfoDto.getInvoiceeGln());
-	}
 }
