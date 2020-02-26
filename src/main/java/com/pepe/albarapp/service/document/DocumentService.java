@@ -3,8 +3,10 @@ package com.pepe.albarapp.service.document;
 import com.pepe.albarapp.api.error.ApiError;
 import com.pepe.albarapp.api.error.ApiException;
 import com.pepe.albarapp.persistence.domain.Invoice;
+import com.pepe.albarapp.persistence.repository.InvoiceFilterRepository;
 import com.pepe.albarapp.persistence.repository.InvoiceRepository;
 import com.pepe.albarapp.service.document.aecoc.AecocInvoice;
+import com.pepe.albarapp.service.document.csv.CsvFile;
 import com.pepe.albarapp.service.document.pdf.PdfInvoice;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +27,9 @@ public class DocumentService {
 
 	@Autowired
 	private InvoiceRepository invoiceRepository;
+
+	@Autowired
+	private InvoiceFilterRepository invoiceFilterRepository;
 
 	public AecocInvoice generateAecocInvoice(long invoiceId) {
 
@@ -60,4 +65,10 @@ public class DocumentService {
 		zipOut.close();
 	}
 
+	public CsvFile generateCsvFile(Integer customerCode, Long timestampFrom, Long timestampTo, List<Integer> productCodes) {
+
+		List<Invoice> invoices = invoiceFilterRepository.filter(customerCode, timestampFrom, timestampTo, productCodes);
+
+		return new CsvFile(invoices);
+	}
 }

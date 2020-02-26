@@ -127,7 +127,7 @@
 			"response": []
 		},
 		{
-			"name": "/api/profile Copy",
+			"name": "/api/statistics",
 			"event": [
 				{
 					"listen": "test",
@@ -144,13 +144,13 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{host}}/api/profile",
+					"raw": "{{host}}/api/statistics",
 					"host": [
 						"{{host}}"
 					],
 					"path": [
 						"api",
-						"profile"
+						"statistics"
 					]
 				}
 			},
@@ -605,7 +605,7 @@
 					}
 				],
 				"url": {
-					"raw": "{{host}}/api/invoices?customerCode=&timestampFrom=&timestampTo=&page=&size=",
+					"raw": "{{host}}/api/invoices?customerCode=&timestampFrom=&timestampTo=&productCodes=&page=&size=",
 					"host": [
 						"{{host}}"
 					],
@@ -624,6 +624,10 @@
 						},
 						{
 							"key": "timestampTo",
+							"value": ""
+						},
+						{
+							"key": "productCodes",
 							"value": ""
 						},
 						{
@@ -693,6 +697,67 @@
 						{
 							"key": "issuedTimestamp",
 							"value": "0"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/api/invoices/download/csv",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f3cdf1d1-61e6-4f71-979f-092b18be39bb",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{host}}/api/invoices/download/csv?",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"invoices",
+						"download",
+						"csv"
+					],
+					"query": [
+						{
+							"key": "customerCode",
+							"value": "",
+							"disabled": true
+						},
+						{
+							"key": "timestampFrom",
+							"value": "",
+							"disabled": true
+						},
+						{
+							"key": "timestampTo",
+							"value": "",
+							"disabled": true
+						},
+						{
+							"key": "productCodes",
+							"value": null,
+							"disabled": true
 						}
 					]
 				}
