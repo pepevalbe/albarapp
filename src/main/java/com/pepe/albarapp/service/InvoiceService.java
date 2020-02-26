@@ -17,7 +17,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -42,8 +41,7 @@ public class InvoiceService {
 	private InvoiceMapper invoiceMapper;
 
 	@Transactional(readOnly = true)
-	public Page<DeliveryNoteDto> getDeliveryNotes(@RequestParam Integer customerCode, @RequestParam Long timestampFrom,
-												  @RequestParam Long timestampTo, Pageable pageable) {
+	public Page<DeliveryNoteDto> getDeliveryNotes(Integer customerCode, Long timestampFrom, Long timestampTo, Pageable pageable) {
 		return deliveryNoteRepository
 				.filterByCustomerCodeAndTimestampRange(customerCode, timestampFrom, timestampTo, pageable)
 				.map(invoiceMapper::map);
@@ -92,8 +90,7 @@ public class InvoiceService {
 	}
 
 	@Transactional(readOnly = true)
-	public Page<InvoiceDto> getInvoices(@RequestParam Integer customerCode, @RequestParam Long timestampFrom,
-										@RequestParam Long timestampTo, @RequestParam List<Integer> productCodes, Pageable pageable) {
+	public Page<InvoiceDto> getInvoices(Integer customerCode, Long timestampFrom, Long timestampTo, List<Integer> productCodes, Pageable pageable) {
 
 		return invoiceRepository.filter(customerCode, timestampFrom, timestampTo, productCodes, pageable).map(invoiceMapper::map);
 	}
