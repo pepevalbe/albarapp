@@ -19,8 +19,8 @@ import java.util.List;
 public class InvoiceController {
 
 	private static final String DELIVERY_NOTES_ENDPOINT = "/api/deliveryNotes";
-	private static final String INVOICE_ENDPOINT = "/api/invoices";
-	private static final String INVOICE_BILL_ENDPOINT = "/api/invoices/bill";
+	private static final String INVOICES_ENDPOINT = "/api/invoices";
+	private static final String INVOICES_BILL_ENDPOINT = "/api/invoices/bill";
 
 	@Autowired
 	private InvoiceService invoiceService;
@@ -46,7 +46,7 @@ public class InvoiceController {
 		return invoiceService.deleteDeliveryNote(deliveryNoteDto) ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
 	}
 
-	@GetMapping(INVOICE_ENDPOINT)
+	@GetMapping(INVOICES_ENDPOINT)
 	public ResponseEntity<Page<InvoiceDto>> getInvoices(@RequestParam @Nullable Integer customerCode,
 														@RequestParam @Nullable Long timestampFrom,
 														@RequestParam @Nullable Long timestampTo,
@@ -56,7 +56,7 @@ public class InvoiceController {
 		return ResponseEntity.ok(invoiceService.getInvoices(customerCode, timestampFrom, timestampTo, productCodes, pageable));
 	}
 
-	@PostMapping(INVOICE_BILL_ENDPOINT)
+	@PostMapping(INVOICES_BILL_ENDPOINT)
 	public ResponseEntity<List<InvoiceDto>> billProcess(@RequestParam Integer customerCodeFrom,
 														@RequestParam Integer customerCodeTo,
 														@RequestParam Long timestampFrom,

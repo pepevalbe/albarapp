@@ -23,9 +23,9 @@ import java.util.Arrays;
 @RestController
 public class DocumentController {
 
-	private static final String INVOICE_AECOC_ENDPOINT = "/api/invoices/download/edi";
-	private static final String INVOICE_DOWNLOAD_ENDPOINT = "/api/invoices/download/pdf";
-	private static final String INVOICE_DOWNLOAD_MULTIPLE_ENDPOINT = "/api/invoices/download/pdf/multiple";
+	private static final String INVOICES_AECOC_ENDPOINT = "/api/invoices/download/edi";
+	private static final String INVOICES_PDF_ENDPOINT = "/api/invoices/download/pdf";
+	private static final String INVOICES_PDF_MULTIPLE_ENDPOINT = "/api/invoices/download/pdf/multiple";
 
 	private static final XmlMapper XML_MAPPER = new XmlMapper();
 
@@ -36,7 +36,7 @@ public class DocumentController {
 	@Autowired
 	private DocumentService documentService;
 
-	@GetMapping(INVOICE_AECOC_ENDPOINT)
+	@GetMapping(INVOICES_AECOC_ENDPOINT)
 	@ResponseBody
 	public void downloadAecocInvoice(@RequestParam Long invoiceId, HttpServletResponse response) {
 
@@ -52,7 +52,7 @@ public class DocumentController {
 		}
 	}
 
-	@GetMapping(INVOICE_DOWNLOAD_ENDPOINT)
+	@GetMapping(INVOICES_PDF_ENDPOINT)
 	public void downloadPdfInvoice(@RequestParam Long invoiceId, HttpServletResponse response) {
 		try {
 			documentService.generatePdfInvoice(invoiceId, response.getOutputStream());
@@ -64,7 +64,7 @@ public class DocumentController {
 		}
 	}
 
-	@GetMapping(INVOICE_DOWNLOAD_MULTIPLE_ENDPOINT)
+	@GetMapping(INVOICES_PDF_MULTIPLE_ENDPOINT)
 	public void downloadMultiplePdfInvoices(@RequestParam Long[] invoiceId, HttpServletResponse response) {
 		try {
 			documentService.generateMultiplePdfInvoices(Arrays.asList(invoiceId), response.getOutputStream());
