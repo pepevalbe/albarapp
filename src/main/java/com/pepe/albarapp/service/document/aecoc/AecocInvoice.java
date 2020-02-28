@@ -11,7 +11,10 @@ import com.pepe.albarapp.persistence.domain.Invoice;
 import com.pepe.albarapp.service.document.aecoc.lineitem.LineItem;
 import lombok.Data;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 import java.util.stream.Collectors;
 
 @Data
@@ -22,7 +25,7 @@ public class AecocInvoice {
 	@JacksonXmlProperty(isAttribute = true, localName = "xmlns:xsd")
 	private final String xmlns2 = "http://www.w3.org/2001/XMLSchema";
 	@JacksonXmlProperty(isAttribute = true)
-	private final String creationDate = "2019-12-31T00:00:00";
+	private String creationDate;
 	@JacksonXmlProperty(isAttribute = true)
 	private final String documentStatus = "ORIGINAL";
 	@JacksonXmlProperty(isAttribute = true)
@@ -61,6 +64,9 @@ public class AecocInvoice {
 		}
 
 		AecocInvoice aecocInvoice = new AecocInvoice();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+		sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+		aecocInvoice.creationDate = sdf.format(new Date(invoice.getIssuedTimestamp()));
 		aecocInvoice.typedEntityIdentification = new TypedEntityIdentification(invoice.getId(), AecocConstants.glnOwner);
 		aecocInvoice.senderCorporateOffice = AecocConstants.corporateOfficeOwner;
 		aecocInvoice.receiverCorporateOffice = new CorporateOffice(customerAecocInfo.getReceiverGln());
