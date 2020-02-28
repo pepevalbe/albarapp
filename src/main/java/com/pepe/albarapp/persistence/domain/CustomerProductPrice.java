@@ -31,6 +31,7 @@ public class CustomerProductPrice {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		CustomerProductPrice that = (CustomerProductPrice) o;
+		if (this.id == null || that.id == null) return false;
 		return id.equals(that.id);
 	}
 

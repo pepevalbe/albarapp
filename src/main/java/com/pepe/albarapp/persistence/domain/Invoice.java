@@ -32,6 +32,7 @@ public class Invoice {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		Invoice invoice = (Invoice) o;
+		if (this.id == null || invoice.id == null) return false;
 		return id.equals(invoice.id);
 	}
 

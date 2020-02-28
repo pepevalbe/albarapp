@@ -50,8 +50,9 @@ public class User {
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
-		User customer = (User) o;
-		return id.equals(customer.id);
+		User that = (User) o;
+		if (this.id == null || that.id == null) return false;
+		return id.equals(that.id);
 	}
 
 	@Override

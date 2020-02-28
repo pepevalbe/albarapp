@@ -36,6 +36,7 @@ public class DeliveryNoteItem {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		DeliveryNoteItem that = (DeliveryNoteItem) o;
+		if (this.id == null || that.id == null) return false;
 		return id.equals(that.id);
 	}
 

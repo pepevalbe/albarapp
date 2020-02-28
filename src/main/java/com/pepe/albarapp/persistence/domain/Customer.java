@@ -51,6 +51,7 @@ public class Customer {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		Customer customer = (Customer) o;
+		if (this.id == null || customer.id == null) return false;
 		return id.equals(customer.id);
 	}
 
