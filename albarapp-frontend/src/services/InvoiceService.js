@@ -77,6 +77,7 @@ export default {
     async getDeliveryNoteItemsAndCustomer(deliveryNote) {
         Object.assign(deliveryNote, await DeliveryNoteService.getWithCustomerAndTotal(deliveryNote.id));
     },
+
     getAllWithCustomerAndTotal(filter, options, timeout) {
         var params = {};
         if (filter && filter.form) {
@@ -110,34 +111,9 @@ export default {
                     invoices: response.data.content,
                     totalElements: response.data.totalElements
                 };
-            })
-            .catch(() => {
-                alert("Ha ocurrido un error recuperando los albaranes");
             });
     },
-    async create(invoice, deliveryNotes) {
 
-        var promises = [];
-
-        var invoiceToCreate = {
-            issuedTimestamp: invoice.issuedTimestamp,
-            customer: deliveryNotes[0].customer._links.self.href
-        };
-
-        // Refactorizar usando DeliveryNoteService
-        var promisePost = HttpClient.post(RESOURCE_NAME, invoiceToCreate).then(response => {
-            for (var i = 0; i < deliveryNotes.length; i++) {
-                var item = deliveryNotes[i];
-                item.invoice = response.data._links.self.href;
-                promises.push(
-                    HttpClient.patch(item._links.self.href, item)
-                );
-            }
-        });
-
-        await promisePost;
-        return Promise.all(promises);
-    },
     async createList(customerCodeFrom, customerCodeTo, timestampFrom, timestampTo, issuedTimestamp) {
 
         var params = {
@@ -157,9 +133,6 @@ export default {
         return HttpClient.post(INVOICE_BILL_ENDPOINT + queryString)
             .then(response => {
                 return response.data;
-            })
-            .catch(() => {
-                alert("Ha ocurrido un error facturando los albaranes");
             });
     },
     update(id, invoice) {
@@ -207,9 +180,6 @@ export default {
                 link.href = window.URL.createObjectURL(blob);
                 link.download = id + '.pdf';
                 link.click();
-            })
-            .catch(() => {
-                alert("Ha ocurrido un error descargando la factura");
             });
     },
     downloadPdfMultiple(ids) {
@@ -226,9 +196,6 @@ export default {
                 link.href = window.URL.createObjectURL(blob);
                 link.download = 'invoices_' + moment.utc().format("DDMMYYYY") + '.zip';
                 link.click();
-            })
-            .catch(() => {
-                alert("Ha ocurrido un error descargando la factura");
             });
     }
 }

@@ -116,7 +116,7 @@
     <div v-if="errorLoading">
       <v-row class="mb-2" justify="center">Error al obtener los clientes, por favor vuelva a cargar.</v-row>
       <v-row justify="center">
-        <v-btn @click="getStatistics()">
+        <v-btn @click="loadPage()">
           <v-icon dark>mdi-refresh</v-icon>
         </v-btn>
       </v-row>
@@ -160,11 +160,14 @@ export default {
     }
   }),
   created() {
-    this.listCustomers();
-    if (this.form.dateFrom) this.parseDateFromPick();
-    if (this.form.dateTo) this.parseDateToPick();
+    this.loadPage();
   },
   methods: {
+    loadPage() {
+      this.listCustomers();
+      if (this.form.dateFrom) this.parseDateFromPick();
+      if (this.form.dateTo) this.parseDateToPick();
+    },
     async listCustomers() {
       try {
         this.showSpinner();

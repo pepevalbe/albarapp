@@ -137,9 +137,20 @@
       >Facturar</v-btn>
       <v-btn to="/invoice-list/">Volver</v-btn>
     </v-row>
-    <v-snackbar v-model="snackbar">
-      Creadas {{numberInvoicesCreated}} facturas correctamente
-      <v-btn color="success" text @click="snackbar = false">Cerrar</v-btn>
+    <v-dialog v-model="dialogInvoicesCreated.show" max-width="600">
+      <v-card>
+        <v-card-title class="headline">Facturas creadas</v-card-title>
+        <v-card-text>Se han generado {{numberInvoicesCreated}} facturas. ¿Desea descargarlas en formato PDF?</v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="darken-1" text @click="dialogInvoicesCreated.show = false">No</v-btn>
+          <v-btn color="red darken-1" text @click="downloadCreatedInvoices()">Sí</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <v-snackbar v-model="snackbar.show" :color="snackbar.color">
+      {{snackbar.message}}
+      <v-btn text @click="snackbar.show=false">Cerrar</v-btn>
     </v-snackbar>
     <v-overlay v-if="spinner.loading" :value="true">
       <v-progress-circular indeterminate color="primary"></v-progress-circular>
@@ -167,7 +178,15 @@ export default {
     menuDateFromPicker: false,
     menuDateToPicker: false,
     menuIssuedDatePicker: false,
-    snackbar: false,
+    dialogInvoicesCreated: {
+      show: false
+    },
+    invoicesCreated: [],
+    snackbar: {
+      show: false,
+      message: "",
+      color: ""
+    },
     spinner: {
       loading: false,
       counter: 0
@@ -191,20 +210,58 @@ export default {
   }),
   methods: {
     async createInvoices() {
-      this.showSpinner();
-      var invoicesCreated = await InvoiceService.createList(
-        this.form.customerCodeFrom,
-        this.form.customerCodeTo,
-        this.$moment.utc(this.form.dateFromFormatted, "DD/MM/YYYY").format("x"),
-        this.$moment.utc(this.form.dateToFormatted, "DD/MM/YYYY").format("x"),
-        this.$moment.utc(this.form.issuedDateFormatted, "DD/MM/YYYY").format("x")
-      );
-      this.numberInvoicesCreated = invoicesCreated.length;
-      if (invoicesCreated.length)
-        await InvoiceService.downloadPdfMultiple(invoicesCreated.map(dto => dto.id));
-      this.snackbar = true;
-      this.$refs.form.reset();
-      this.closeSpinner();
+      try {
+        this.showSpinner();
+        var invoicesCreated = await InvoiceService.createList(
+          this.form.customerCodeFrom,
+          this.form.customerCodeTo,
+          this.$moment
+            .utc(this.form.dateFromFormatted, "DD/MM/YYYY")
+            .format("x"),
+          this.$moment.utc(this.form.dateToFormatted, "DD/MM/YYYY").format("x"),
+          this.$moment
+            .utc(this.form.issuedDateFormatted, "DD/MM/YYYY")
+            .format("x")
+        );
+        this.numberInvoicesCreated = invoicesCreated.length;
+        this.invoicesCreated = invoicesCreated.map(dto => dto.id);
+        if (this.numberInvoicesCreated) {
+          this.dialogInvoicesCreated.show = true;
+          this.$refs.form.reset();
+        } else {
+          this.snackbar = {
+            show: true,
+            message:
+              "No hay albaranes pendientes de facturar, por favor revisa los datos introducidos.",
+            color: "error"
+          };
+        }
+      } catch {
+        this.snackbar = {
+          show: true,
+          message:
+            "No se ha podido generar las facturas, por favor vuelva a intentarlo.",
+          color: "error"
+        };
+      } finally {
+        this.closeSpinner();
+      }
+    },
+    async downloadCreatedInvoices() {
+      this.dialogInvoicesCreated.show = false;
+      try {
+        this.showSpinner();
+        await InvoiceService.downloadPdfMultiple(this.invoicesCreated);
+      } catch {
+        this.snackbar = {
+          show: true,
+          message:
+            "No se ha podido descargar las facturas, por favor descárguelas desde el listado.",
+          color: "error"
+        };
+      } finally {
+        this.closeSpinner();
+      }
     },
     parseDateFromPick() {
       var moment = this.$moment.utc(this.form.dateFrom, "YYYY-MM-DD", true);
