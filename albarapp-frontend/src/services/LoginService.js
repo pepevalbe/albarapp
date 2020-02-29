@@ -13,8 +13,14 @@ export default {
         return response.headers.authorization;
       })
       .catch((response) => {
-      response.isError = true;
-        return response;
+        if (response && response.response
+          && response.response.data 
+          && response.response.data.errorCode == "003") {
+          response.isError = true;
+          return response;
+        } else {
+          return Promise.reject(response);
+        }
       });
   }
 }

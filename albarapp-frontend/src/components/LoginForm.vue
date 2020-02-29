@@ -13,6 +13,7 @@
       <v-text-field
         v-model="password"
         type="password"
+        ref="password"
         :rules="passwordRules"
         label="Contraseña"
         required
@@ -24,6 +25,13 @@
         <v-btn :disabled="!valid" color="success" class="mr-4" @click="login()">Acceder</v-btn>
       </v-flex>
     </v-layout>
+    <v-snackbar v-model="snackbar.show" :color="snackbar.color">
+      {{snackbar.message}}
+      <v-btn text @click="snackbar.show=false">Cerrar</v-btn>
+    </v-snackbar>
+    <v-overlay v-if="spinner.loading" :value="true">
+      <v-progress-circular indeterminate color="primary"></v-progress-circular>
+    </v-overlay>
   </v-container>
 </template>
 
@@ -37,8 +45,17 @@ export default {
       email: "",
       password: "",
       valid: false,
-      passwordRules: [v => !!v],
-      emailRules: [v => !!v, v => /.+@.+\..+/.test(v) || "Email inválido"]
+      passwordRules: [v => !!v || "Password obligatoria"],
+      emailRules: [v => !!v, v => /.+@.+\..+/.test(v) || "Email inválido"],
+      snackbar: {
+        show: false,
+        message: "",
+        color: ""
+      },
+      spinner: {
+        loading: false,
+        counter: 0
+      }
     };
   },
   created() {
@@ -52,18 +69,35 @@ export default {
   },
   methods: {
     async login() {
-      var result = await LoginService.login(this.email, this.password);
-      if (result.isError) {
-        this.alertError(result);
-        this.password = "";
-      } else {
-        this.setToken(result); // Esto no funciona. No lo mete en el localStorage
-        localStorage.setItem("token", result); // Así que lo meto manualmente...
-        if (this.$route.query && this.$route.query.destinationURL) {
-          this.$router.push(this.$route.query.destinationURL);
+      try {
+        this.showSpinner();
+        var result = await LoginService.login(this.email, this.password);
+        if (result.isError) {
+          this.snackbar = {
+            show: true,
+            message: "Email o credenciales incorrectas.",
+            color: "error"
+          };
+          this.password = "";
+
+          this.$nextTick(this.$refs.password.focus);
         } else {
-          this.$router.push("/");
+          this.setToken(result); // Esto no funciona. No lo mete en el localStorage
+          localStorage.setItem("token", result); // Así que lo meto manualmente...
+          if (this.$route.query && this.$route.query.destinationURL) {
+            this.$router.push(this.$route.query.destinationURL);
+          } else {
+            this.$router.push("/");
+          }
         }
+      } catch {
+        this.snackbar = {
+          show: true,
+          message: "Error al intentar realizar la identificación.",
+          color: "error"
+        };
+      } finally {
+        this.closeSpinner();
       }
     }
   }
