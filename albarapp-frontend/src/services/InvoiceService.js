@@ -10,40 +10,10 @@ const INVOICE_DOWNLOAD_PDF_ENDPOINT = '/api/invoices/download/pdf';
 const INVOICE_DOWNLOAD_PDF_MULTIPLE_ENDPOINT = '/api/invoices/download/pdf/multiple';
 
 export default {
-    getAll(options) {
-
-        var params = {};
-
-        if (options) {
-            if (options.page) params.page = options.page - 1;
-            if (options.itemsPerPage) params.size = options.itemsPerPage;
-        }
-
-        var queryString = Object.keys(params).map(function (key) {
-            return key + '=' + params[key]
-        }).join('&');
-
-        if (queryString != "") queryString = '?' + queryString;
-
-        return HttpClient.get(RESOURCE_NAME + queryString)
-            .then(response => {
-                return {
-                    invoices: response.data._embedded.invoices,
-                    page: response.data.page
-                }
-            })
-            .catch(() => {
-                alert("Ha ocurrido un error recuperando las facturas");
-            });
-    },
-
     get(id) {
         return HttpClient.get(`${RESOURCE_NAME}/${id}`)
             .then(response => {
                 return response.data;
-            })
-            .catch(() => {
-                alert("Ha ocurrido un error recuperando la factura");
             });
     },
     async getWithCustomerAndTotal(id) {
@@ -68,9 +38,6 @@ export default {
         return HttpClient.get(invoice._links.deliveryNotes.href)
             .then(response => {
                 invoice.deliveryNotes = response.data._embedded.deliveryNotes;
-            })
-            .catch(() => {
-                alert("Ha ocurrido un error recuperando los albaranes de las facturas");
             });
     },
 
@@ -135,20 +102,17 @@ export default {
                 return response.data;
             });
     },
-    update(id, invoice) {
 
+    update(id, invoice) {
         var invoiceToUpdate = {
             issuedTimestamp: invoice.issuedTimestamp
         };
         return HttpClient.patch(`${RESOURCE_NAME}/${id}`, invoiceToUpdate)
             .then(response => {
                 return response.data;
-            })
-            .catch(() => {
-                alert("Ha ocurrido un error actualizando la factura");
             });
-
     },
+
     downloadEdi(id) {
         return HttpClient.get(`${INVOICE_DOWNLOAD_EDI_ENDPOINT}/?invoiceId=${id}`,
             {
@@ -162,9 +126,6 @@ export default {
                 link.href = window.URL.createObjectURL(blob);
                 link.download = id + '.xml';
                 link.click();
-            })
-            .catch(() => {
-                alert("Ha ocurrido un error descargando la factura");
             });
     },
     downloadPdf(id) {

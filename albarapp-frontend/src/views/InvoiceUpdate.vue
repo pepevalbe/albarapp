@@ -1,196 +1,206 @@
 <template>
   <v-flex align-self-start>
-    <v-form ref="form" v-model="form.valid">
-      <v-subheader class="title ml-1">Datos de factura</v-subheader>
-      <v-row justify="center">
-        <v-col cols="12" md="2">
-          <v-text-field
-            ref="invoiceId"
-            v-model="form.invoice.id"
-            type="text"
-            label="Número de factura"
-            required
-            readonly
-          ></v-text-field>
-        </v-col>
-        <v-col cols="12" md="2">
-          <v-text-field
-            ref="customerAlias"
-            v-model="form.invoice.deliveryNotes[0].customer.alias"
-            type="text"
-            label="Cliente"
-            required
-            readonly
-          ></v-text-field>
-        </v-col>
-        <v-col cols="12" md="2">
-          <v-menu
-            ref="menuDatePicker"
-            v-model="menuDatePicker"
-            :close-on-content-click="false"
-            transition="scale-transition"
-            offset-y
-            max-width="290px"
-            min-width="290px"
-          >
-            <template v-slot:activator="{ on }">
-              <v-text-field
-                v-model="dateFormatted"
-                ref="dateText"
-                label="Fecha"
-                hint="Formato: ddMMaaaa"
-                persistent-hint
-                @focus="$event.target.select()"
-                prepend-icon="mdi-calendar"
-                @blur="parseDateText()"
-                v-on="on"
-              ></v-text-field>
-            </template>
-            <v-date-picker
-              v-model="form.invoice.date"
-              no-title
-              @input="parseDatePick()"
-              locale="es-ES"
-              first-day-of-week="1"
-            ></v-date-picker>
-          </v-menu>
-        </v-col>
-        <v-col cols="12" md="1">
-          <v-text-field
-            ref="total"
-            v-model="form.invoice.total"
-            type="text"
-            label="Total"
-            suffix=" €"
-            required
-            readonly
-          ></v-text-field>
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col>
-          <v-subheader class="title ml-1">Albaranes</v-subheader>
-        </v-col>
-        <v-col>
-          <v-layout text-right wrap class="pt-2 mr-5">
-            <v-flex xs12>
-              <v-btn @click="showAssociateList()">
-                Asociar
-                <v-icon class="ml-2">mdi-link-variant-plus</v-icon>
-              </v-btn>
-            </v-flex>
-          </v-layout>
-        </v-col>
-      </v-row>
-      <v-data-table
-        :loading="loading"
-        loading-text="Cargando... Por favor, espere"
-        :headers="headers"
-        :items="form.invoice.deliveryNotes"
-      >
-        <template v-slot:body="{ items }">
-          <tbody v-if="!$vuetify.breakpoint.xsOnly">
-            <tr v-for="deliveryNote in items" :key="deliveryNote.deliveryNoteItemsHref">
-              <td>A{{deliveryNote.id}}</td>
-              <td>{{deliveryNote.auxDeliveryNoteNr}}</td>
-              <td>{{deliveryNote.dateFormatted}}</td>
-              <td>
-                <span v-for="noteItem in deliveryNote.deliveryNoteItems" :key="noteItem.id">
-                  {{noteItem.quantity}} - {{noteItem.product.name}} - {{noteItem.price}} €
-                  <br />
-                </span>
-              </td>
-              <td>{{deliveryNote.deliveryNoteTotal.value.toFixed(2)}} €</td>
-              <td justify="center">
-                <div class="text-xs-center">
-                  <v-btn class="ma-2" justify="center" @click="editDeliveryNote(deliveryNote)">
-                    <v-icon dark>mdi-pencil</v-icon>
-                  </v-btn>
-                </div>
-              </td>
-              <td justify="center">
-                <div class="text-xs-center">
-                  <v-btn
-                    class="ma-2"
-                    justify="center"
-                    color="red"
-                    dark
-                    @click="disassociate(deliveryNote)"
-                    :disabled="form.invoice.deliveryNotes.length<=1"
-                  >
-                    <v-icon dark>mdi-link-variant-off</v-icon>
-                  </v-btn>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-          <tbody v-else>
-            <tr>
-              <v-card
-                class="flex-content"
-                outlined
-                v-for="deliveryNote in items"
-                :key="deliveryNote.id"
-              >
-                <v-card-text>
-                  <span class="black--text">Nº Albarán:</span>
-                  A{{deliveryNote.id}}
-                  <br />
-                  <span class="black--text">Nº Pedido:</span>
-                  {{deliveryNote.auxDeliveryNoteNr}}
-                  <br />
-                  <span class="black--text">Fecha:</span>
-                  {{deliveryNote.dateFormatted}}
-                  <br />
-                  <span class="black--text">Productos:</span>
-                  <br />
+    <div v-if="!errorLoading">
+      <v-form ref="form" v-model="form.valid">
+        <v-subheader class="title ml-1">Datos de factura</v-subheader>
+        <v-row justify="center">
+          <v-col cols="12" md="2">
+            <v-text-field
+              ref="invoiceId"
+              v-model="form.invoice.id"
+              type="text"
+              label="Número de factura"
+              required
+              readonly
+            ></v-text-field>
+          </v-col>
+          <v-col cols="12" md="2">
+            <v-text-field
+              ref="customerAlias"
+              v-model="form.invoice.deliveryNotes[0].customer.alias"
+              type="text"
+              label="Cliente"
+              required
+              readonly
+            ></v-text-field>
+          </v-col>
+          <v-col cols="12" md="2">
+            <v-menu
+              ref="menuDatePicker"
+              v-model="menuDatePicker"
+              :close-on-content-click="false"
+              transition="scale-transition"
+              offset-y
+              max-width="290px"
+              min-width="290px"
+            >
+              <template v-slot:activator="{ on }">
+                <v-text-field
+                  v-model="dateFormatted"
+                  ref="dateText"
+                  label="Fecha"
+                  hint="Formato: ddMMaaaa"
+                  persistent-hint
+                  @focus="$event.target.select()"
+                  prepend-icon="mdi-calendar"
+                  @blur="parseDateText()"
+                  v-on="on"
+                ></v-text-field>
+              </template>
+              <v-date-picker
+                v-model="form.invoice.date"
+                no-title
+                @input="parseDatePick()"
+                locale="es-ES"
+                first-day-of-week="1"
+              ></v-date-picker>
+            </v-menu>
+          </v-col>
+          <v-col cols="12" md="1">
+            <v-text-field
+              ref="total"
+              v-model="form.invoice.total"
+              type="text"
+              label="Total"
+              suffix=" €"
+              required
+              readonly
+            ></v-text-field>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col>
+            <v-subheader class="title ml-1">Albaranes</v-subheader>
+          </v-col>
+          <v-col>
+            <v-layout text-right wrap class="pt-2 mr-5">
+              <v-flex xs12>
+                <v-btn @click="showAssociateList()">
+                  Asociar
+                  <v-icon class="ml-2">mdi-link-variant-plus</v-icon>
+                </v-btn>
+              </v-flex>
+            </v-layout>
+          </v-col>
+        </v-row>
+        <v-data-table
+          :loading="loading"
+          loading-text="Cargando... Por favor, espere"
+          :headers="headers"
+          :items="form.invoice.deliveryNotes"
+        >
+          <template v-slot:body="{ items }">
+            <tbody v-if="!$vuetify.breakpoint.xsOnly">
+              <tr v-for="deliveryNote in items" :key="deliveryNote.deliveryNoteItemsHref">
+                <td>A{{deliveryNote.id}}</td>
+                <td>{{deliveryNote.auxDeliveryNoteNr}}</td>
+                <td>{{deliveryNote.dateFormatted}}</td>
+                <td>
                   <span v-for="noteItem in deliveryNote.deliveryNoteItems" :key="noteItem.id">
                     {{noteItem.quantity}} - {{noteItem.product.name}} - {{noteItem.price}} €
                     <br />
                   </span>
-                  <span class="black--text">Total:</span>
-                  {{deliveryNote.deliveryNoteTotal.value.toFixed(2)}} €
-                  <br />
-                </v-card-text>
-                <v-card-actions>
-                  <v-layout text-center wrap>
-                    <v-flex xs12>
-                      <v-btn class="ma-2" justify="center" @click="editDeliveryNote(deliveryNote)">
-                        <v-icon dark>mdi-pencil</v-icon>
-                      </v-btn>
-                      <v-btn
-                        class="ma-2"
-                        justify="center"
-                        color="red"
-                        dark
-                        @click="disassociate(deliveryNote)"
-                      >
-                        <v-icon dark>mdi-link-variant-off</v-icon>
-                      </v-btn>
-                    </v-flex>
-                  </v-layout>
-                </v-card-actions>
-              </v-card>
-            </tr>
-          </tbody>
-        </template>
-      </v-data-table>
-    </v-form>
-    <v-layout text-center wrap class="pt-10">
-      <v-flex xs12>
-        <v-btn class="mr-4" @click="$router.back()">Volver</v-btn>
-        <v-btn
-          :disabled="!form.valid"
-          color="success"
-          class="mr-4"
-          @click="updateInvoice()"
-        >Actualizar</v-btn>
-      </v-flex>
-    </v-layout>
-    <v-snackbar v-model="snackbar">
-      Factura actualizada correctamente
-      <v-btn color="green" text @click="snackbar = false">Cerrar</v-btn>
-    </v-snackbar>
+                </td>
+                <td>{{deliveryNote.deliveryNoteTotal.value.toFixed(2)}} €</td>
+                <td justify="center">
+                  <div class="text-xs-center">
+                    <v-btn class="ma-2" justify="center" @click="editDeliveryNote(deliveryNote)">
+                      <v-icon dark>mdi-pencil</v-icon>
+                    </v-btn>
+                  </div>
+                </td>
+                <td justify="center">
+                  <div class="text-xs-center">
+                    <v-btn
+                      class="ma-2"
+                      justify="center"
+                      color="red"
+                      dark
+                      @click="disassociate(deliveryNote)"
+                      :disabled="form.invoice.deliveryNotes.length<=1"
+                    >
+                      <v-icon dark>mdi-link-variant-off</v-icon>
+                    </v-btn>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+            <tbody v-else>
+              <tr>
+                <v-card
+                  class="flex-content"
+                  outlined
+                  v-for="deliveryNote in items"
+                  :key="deliveryNote.id"
+                >
+                  <v-card-text>
+                    <span class="black--text">Nº Albarán:</span>
+                    A{{deliveryNote.id}}
+                    <br />
+                    <span class="black--text">Nº Pedido:</span>
+                    {{deliveryNote.auxDeliveryNoteNr}}
+                    <br />
+                    <span class="black--text">Fecha:</span>
+                    {{deliveryNote.dateFormatted}}
+                    <br />
+                    <span class="black--text">Productos:</span>
+                    <br />
+                    <span v-for="noteItem in deliveryNote.deliveryNoteItems" :key="noteItem.id">
+                      {{noteItem.quantity}} - {{noteItem.product.name}} - {{noteItem.price}} €
+                      <br />
+                    </span>
+                    <span class="black--text">Total:</span>
+                    {{deliveryNote.deliveryNoteTotal.value.toFixed(2)}} €
+                    <br />
+                  </v-card-text>
+                  <v-card-actions>
+                    <v-layout text-center wrap>
+                      <v-flex xs12>
+                        <v-btn
+                          class="ma-2"
+                          justify="center"
+                          @click="editDeliveryNote(deliveryNote)"
+                        >
+                          <v-icon dark>mdi-pencil</v-icon>
+                        </v-btn>
+                        <v-btn
+                          class="ma-2"
+                          justify="center"
+                          color="red"
+                          dark
+                          @click="disassociate(deliveryNote)"
+                        >
+                          <v-icon dark>mdi-link-variant-off</v-icon>
+                        </v-btn>
+                      </v-flex>
+                    </v-layout>
+                  </v-card-actions>
+                </v-card>
+              </tr>
+            </tbody>
+          </template>
+        </v-data-table>
+      </v-form>
+      <v-layout text-center wrap class="pt-10">
+        <v-flex xs12>
+          <v-btn class="mr-4" @click="$router.back()">Volver</v-btn>
+          <v-btn
+            :disabled="!form.valid"
+            color="success"
+            class="mr-4"
+            @click="updateInvoice()"
+          >Actualizar</v-btn>
+        </v-flex>
+      </v-layout>
+    </div>
+    <div v-if="errorLoading">
+      <v-row class="mb-2" justify="center">Error al obtener la factura, por favor vuelva a cargar.</v-row>
+      <v-row justify="center">
+        <v-btn @click="loadInvoice()">
+          <v-icon dark>mdi-refresh</v-icon>
+        </v-btn>
+      </v-row>
+    </div>
     <v-dialog v-model="dialogDisassociate.show" max-width="600">
       <v-card>
         <v-card-title class="headline">¿Desasociar albarán?</v-card-title>
@@ -295,6 +305,10 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <v-snackbar v-model="snackbar.show" :color="snackbar.color">
+      {{snackbar.message}}
+      <v-btn text @click="snackbar.show=false">Cerrar</v-btn>
+    </v-snackbar>
     <v-overlay v-if="spinner.loading" :value="true">
       <v-progress-circular indeterminate color="primary"></v-progress-circular>
     </v-overlay>
@@ -345,6 +359,7 @@ export default {
       dateFormatted: "",
       menuDatePicker: false,
       loading: false,
+      errorLoading: false,
       snackbar: false,
       dialogDisassociate: {
         show: false,
@@ -374,15 +389,21 @@ export default {
   },
   methods: {
     async loadInvoice() {
-      this.showSpinner();
-      this.loading = true;
-      this.form.invoice = await InvoiceService.getWithCustomerAndTotal(
-        this.invoiceId
-      );
-      this.form.invoice.total = this.form.invoice.total.toFixed(2);
-      this.parseDatePick();
-      this.loading = false;
-      this.closeSpinner();
+      try {
+        this.showSpinner();
+        this.errorLoading = false;
+        this.loading = true;
+        this.form.invoice = await InvoiceService.getWithCustomerAndTotal(
+          this.invoiceId
+        );
+        this.form.invoice.total = this.form.invoice.total.toFixed(2);
+        this.parseDatePick();
+        this.loading = false;
+      } catch {
+        this.errorLoading = true;
+      } finally {
+        this.closeSpinner();
+      }
     },
     parseDateText() {
       var moment = this.$moment.utc(
@@ -405,11 +426,25 @@ export default {
       this.menuDatePicker = false;
     },
     async updateInvoice() {
-      this.showSpinner();
-      await InvoiceService.update(this.form.invoice.id, this.form.invoice);
-      this.snackbar = true;
-      this.loadInvoice(this.invoiceId);
-      this.closeSpinner();
+      try {
+        this.showSpinner();
+        await InvoiceService.update(this.form.invoice.id, this.form.invoice);
+        this.snackbar = {
+          show: true,
+          message: "Albarán actualizado correctamente.",
+          color: "success"
+        };
+        this.loadInvoice();
+      } catch {
+        this.snackbar = {
+          show: true,
+          message:
+            "Ha ocurrido un error al intentar modificar la factura, por favor vuelva a intentarlo.",
+          color: "error"
+        };
+      } finally {
+        this.closeSpinner();
+      }
     },
     disassociate(deliveryNote) {
       this.dialogDisassociate.deliveryNote = deliveryNote;
@@ -423,20 +458,46 @@ export default {
       });
     },
     async confirmDisassociate() {
-      await DeliveryNoteService.disassociateInvoice(
-        this.dialogDisassociate.deliveryNote.id
-      );
-      this.snackbar = true;
-      this.loadInvoice(this.invoiceId);
-      this.dialogDisassociate.show = false;
+      try {
+        this.showSpinner();
+        await DeliveryNoteService.disassociateInvoice(
+          this.dialogDisassociate.deliveryNote.id
+        );
+        this.dialogDisassociate.show = false;
+        this.snackbar = {
+          show: true,
+          message: "Albarán desasociado correctamente.",
+          color: "success"
+        };
+        this.loadInvoice();
+      } catch {
+        this.snackbar = {
+          show: true,
+          message:
+            "Ha ocurrido un error al intentar desasociar el albarán de la factura, por favor vuelva a intentarlo.",
+          color: "error"
+        };
+      } finally {
+        this.closeSpinner();
+      }
     },
     async showAssociateList() {
-      this.showSpinner();
-      this.dialogAssociate.show = true;
-      this.dialogAssociate.deliveryNotes = await DeliveryNoteService.findDeliveryNotesToBillWithCustomerAndTotal(
-        this.form.invoice.deliveryNotes[0].customer.code
-      );
-      this.closeSpinner();
+      try {
+        this.showSpinner();
+        this.dialogAssociate.deliveryNotes = await DeliveryNoteService.findDeliveryNotesToBillWithCustomerAndTotal(
+          this.form.invoice.deliveryNotes[0].customer.code
+        );
+        this.dialogAssociate.show = true;
+      } catch {
+        this.snackbar = {
+          show: true,
+          message:
+            "Error al consultar los albaranes pendientes, por favor vuelva a intentarlo.",
+          color: "error"
+        };
+      } finally {
+        this.closeSpinner();
+      }
     },
     associate(deliveryNote) {
       this.dialogAssociate.show = false;
@@ -445,15 +506,29 @@ export default {
       this.dialogConfirmAssociate.show = true;
     },
     async confirmAssociate() {
-      this.showSpinner();
-      await DeliveryNoteService.associateInvoice(
-        this.dialogConfirmAssociate.deliveryNote.id,
-        this.dialogConfirmAssociate.invoice
-      );
-      this.snackbar = true;
-      this.loadInvoice(this.invoiceId);
-      this.dialogConfirmAssociate.show = false;
-      this.closeSpinner();
+      try {
+        this.showSpinner();
+        await DeliveryNoteService.associateInvoice(
+          this.dialogConfirmAssociate.deliveryNote.id,
+          this.dialogConfirmAssociate.invoice
+        );
+        this.dialogConfirmAssociate.show = false;
+        this.snackbar = {
+          show: true,
+          message: "Albarán asociado correctamente.",
+          color: "success"
+        };
+        this.loadInvoice();
+      } catch {
+        this.snackbar = {
+          show: true,
+          message:
+            "Ha ocurrido un error al intentar asociar el albarán a la factura, por favor vuelva a intentarlo.",
+          color: "error"
+        };
+      } finally {
+        this.closeSpinner();
+      }
     }
   }
 };

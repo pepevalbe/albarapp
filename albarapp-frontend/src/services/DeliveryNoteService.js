@@ -163,8 +163,8 @@ export default {
         await promisePut;
         return Promise.all(promises);
     },
-    findDeliveryNotesToBill(customerCode) {
 
+    findDeliveryNotesToBill(customerCode) {
         var params = {};
         if (customerCode) {
             params.customerCode = customerCode;
@@ -181,9 +181,6 @@ export default {
         return HttpClient.get(DELIVERY_NOTE_RESOURCE + '/search/findByCustomerCodeAndInvoiceIsNull' + queryString)
             .then(response => {
                 return response.data._embedded.deliveryNotes;
-            })
-            .catch(() => {
-                alert("Ha ocurrido un error recuperando el albarán");
             });
     },
     async findDeliveryNotesToBillWithCustomerAndTotal(customerCode) {
