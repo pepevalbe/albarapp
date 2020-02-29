@@ -123,6 +123,7 @@ export default {
           this.surname,
           this.password
         );
+        this.dialogCreation.show = true;
       } catch {
         this.snackbar = {
           show: true,
