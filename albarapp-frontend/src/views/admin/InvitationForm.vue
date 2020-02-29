@@ -7,6 +7,13 @@
     </v-form>
     <v-btn class="mr-4" to="/admin">Volver</v-btn>
     <v-btn :disabled="!valid" color="success" @click="sendInvitation()">Enviar</v-btn>
+    <v-snackbar v-model="snackbar.show" :color="snackbar.color">
+      {{snackbar.message}}
+      <v-btn text @click="snackbar.show=false">Cerrar</v-btn>
+    </v-snackbar>
+    <v-overlay v-if="spinner.loading" :value="true">
+      <v-progress-circular indeterminate color="primary"></v-progress-circular>
+    </v-overlay>
   </v-flex>
 </template>
 
@@ -24,12 +31,37 @@ export default {
       v => !!v || "El email es necesario",
       v => /.+@.+\..+/.test(v) || "Email inválido"
     ],
-    roleRules: [v => !!v || "El tipo es necesario"]
+    roleRules: [v => !!v || "El tipo es necesario"],
+    snackbar: {
+      show: false,
+      message: "",
+      color: ""
+    },
+    spinner: {
+      loading: false,
+      counter: 0
+    }
   }),
   methods: {
-    sendInvitation: async function() {
-      await UserService.sendInvitation(this.email, this.role);
-      this.$refs.form.reset();
+    async sendInvitation() {
+      try {
+        this.showSpinner();
+        await UserService.sendInvitation(this.email, this.role);
+        this.snackbar = {
+          show: true,
+          message: "Invitación enviada correctamente",
+          color: "success"
+        };
+        this.$refs.form.reset();
+      } catch {
+        this.snackbar = {
+          show: true,
+          message: "Ha ocurrido un error al intentar enviar la invitación",
+          color: "error"
+        };
+      } finally {
+        this.closeSpinner();
+      }
     }
   }
 };

@@ -39,6 +39,23 @@
     <div class="mb-3"></div>
     <v-btn color="error" class="mr-4" @click="reset()">Borrar</v-btn>
     <v-btn :disabled="!valid && token !== null" color="success" @click="createUser()">Crear</v-btn>
+    <v-dialog v-model="dialogCreation.show" max-width="600">
+      <v-card>
+        <v-card-title class="headline">Usuario creado</v-card-title>
+        <v-card-text>Se ha creado el usuario correctamente. Por favor, identifícate con tu usuario y contraseña</v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="darken-1" text @click="goToLogin()">Entendido</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <v-snackbar v-model="snackbar.show" :color="snackbar.color">
+      {{snackbar.message}}
+      <v-btn text @click="snackbar.show=false">Cerrar</v-btn>
+    </v-snackbar>
+    <v-overlay v-if="spinner.loading" :value="true">
+      <v-progress-circular indeterminate color="primary"></v-progress-circular>
+    </v-overlay>
   </v-flex>
 </template>
 
@@ -73,7 +90,19 @@ export default {
       v =>
         (v && v.length <= 15) ||
         "La contraseña debe tener menos de 15 caracteres"
-    ]
+    ],
+    dialogCreation: {
+      show: false
+    },
+    snackbar: {
+      show: false,
+      message: "",
+      color: ""
+    },
+    spinner: {
+      loading: false,
+      counter: 0
+    }
   }),
   computed: {
     invitation: function() {
@@ -86,18 +115,31 @@ export default {
   },
   methods: {
     async createUser() {
-      await UserService.createUser(
-        this.invitation,
-        this.name,
-        this.surname,
-        this.password
-      );
-      this.$router.push({
-        name: "LoginPage"
-      });
+      try {
+        this.showSpinner();
+        await UserService.createUser(
+          this.invitation,
+          this.name,
+          this.surname,
+          this.password
+        );
+      } catch {
+        this.snackbar = {
+          show: true,
+          message: "Ha ocurrido un error al crear el usuario",
+          color: "error"
+        };
+      } finally {
+        this.closeSpinner();
+      }
     },
     reset() {
       this.$refs.form.reset();
+    },
+    goToLogin() {
+      this.$router.push({
+        name: "LoginPage"
+      });
     }
   }
 };

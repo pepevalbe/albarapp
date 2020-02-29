@@ -47,19 +47,6 @@ Vue.mixin({
       localStorage.clear();
       this.$router.go();
     },
-    alertError: function (error) {
-      if (
-        error != null &&
-        error.response != null &&
-        error.response.data != null &&
-        error.response.data.errorMessage != null &&
-        error.response.data.errorCode != null
-      ) {
-        alert(error.response.data.errorCode + ' : ' + error.response.data.errorMessage)
-      } else {
-        alert('Ha ocurrido un error, por favor inténtelo de nuevo más adelante')
-      }
-    },
     showSpinner() {
       this.spinner.counter++;
       if (this.spinner.counter) this.spinner.loading = true;
