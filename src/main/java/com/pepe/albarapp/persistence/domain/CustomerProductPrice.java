@@ -23,7 +23,7 @@ public class CustomerProductPrice {
 	private Customer customer;
 
 	@Column
-	private Long index;
+	private Long priceIndex;
 
 	@ManyToOne
 	@JoinColumn(name = "product_id")

@@ -7,5 +7,5 @@ public class CustomerProductPriceDto {
 
 	private String productId;
 	private double offeredPrice;
-	private Long index;
+	private Long priceIndex;
 }

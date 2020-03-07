@@ -44,7 +44,7 @@ public class Customer {
 	private CustomerAecocInfo customerAecocInfo;        // Optional Customer AECOC additional info
 
 	@OneToMany(mappedBy = "customer")
-	@OrderBy("index ASC")
+	@OrderBy("price_index ASC")
 	private Set<CustomerProductPrice> customerProductPrices;
 
 	@Override

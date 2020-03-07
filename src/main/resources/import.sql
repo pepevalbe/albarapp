@@ -169,7 +169,7 @@ INSERT INTO customer(id, address, alias, code, email, fiscal_id, name, province,
 	('fdeb33e1-23f9-4ed7-af4c-48f08eaf7b17', 'DIRECCION 152', 'ALIAS 152', 152, NULL, '00000000A', 'NOMBRE 152', 'PROVINCIA 152', NULL, NULL, NULL, NULL, NULL, NULL),
 	('fef05816-b9b6-473e-be54-06a322fc9055', 'DIRECCION 153', 'ALIAS 153', 153, NULL, '00000000A', 'NOMBRE 153', 'PROVINCIA 153', NULL, NULL, NULL, NULL, NULL, NULL);
 
-INSERT INTO customer_product_price (id, offered_price, customer_id, product_id, index) VALUES
+INSERT INTO customer_product_price (id, offered_price, customer_id, product_id, price_index) VALUES
 	('02ce4546-00ac-40c1-a9d5-c97d89be7ab8', 0.12, 'fc595358-2924-4de1-9ced-3d22c5829df7', '2', 0),
 	('03f005df-b460-498b-8d3a-7d4824638d1f', 0.14, 'a3122534-bcc4-45f5-9477-5d8122c86b63', '5', 0),
 	('046888a0-96fd-4b50-bc9f-f87c049f7152', 0.13, 'faedca97-2d98-404e-9d8d-1f10198d38d7', '2', 0),
