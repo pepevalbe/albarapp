@@ -22,6 +22,9 @@ public class CustomerProductPrice {
 	@JoinColumn(name = "customer_id")
 	private Customer customer;
 
+	@Column
+	private Long index;
+
 	@ManyToOne
 	@JoinColumn(name = "product_id")
 	private Product product;

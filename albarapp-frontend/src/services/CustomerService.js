@@ -58,6 +58,7 @@ export default {
   mapCustomerToDto(customer) {
     var customerDto = Object.assign({}, customer);
     for (const customerProductPrice of customerDto.customerProductPrices) {
+      customerProductPrice.index = customerDto.customerProductPrices.indexOf(customerProductPrice);
       customerProductPrice.productId = customerProductPrice.product.id;
     }
     return customerDto;

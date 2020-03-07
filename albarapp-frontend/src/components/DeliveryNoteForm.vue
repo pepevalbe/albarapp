@@ -344,14 +344,18 @@ export default {
     },
     moveToQuantity() {
       // We load default product and productPrice for this customer
+      // We load the customerProductPrice of index depending on the number of lines
+      // the deliveryNote already has
       if (this.customerPrices && this.customerPrices.length > 0) {
         var vm = this;
+        var indexCustomerProductPrice = this.form.deliveryNote.deliveryNoteItems.length;
+        if (indexCustomerProductPrice >= this.customerPrices.length) indexCustomerProductPrice = 0;
         var index = this.products.findIndex(function(element) {
-          return element.id == vm.customerPrices[0].productId;
+          return element.id == vm.customerPrices[indexCustomerProductPrice].productId;
         });
         vm.productCode = vm.products[index].code;
         vm.product = vm.products[index];
-        vm.price = vm.customerPrices[0].offeredPrice;
+        vm.price = vm.customerPrices[indexCustomerProductPrice].offeredPrice;
       }
       this.$nextTick(this.$refs.quantity.focus);
     },

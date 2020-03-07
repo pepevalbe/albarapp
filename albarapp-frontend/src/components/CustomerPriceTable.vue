@@ -32,13 +32,22 @@
           <template v-slot:default>
             <thead>
               <tr>
+                <th class="text-left" v-if="!readonly">Orden</th>
                 <th class="text-left">Producto</th>
                 <th class="text-left">Precio</th>
                 <th class="text-left" v-if="!readonly"></th>
               </tr>
             </thead>
             <tbody>
-              <tr v-for="item in customerProductPrices" :key="item.product.id">
+              <tr v-for="(item, index) in customerProductPrices" :key="item.product.id">
+                <td v-if="!readonly">
+                  <v-btn class="ma-2" :disabled="index == 0" justify="center" @click="moveUp(item)">
+                    <v-icon dark>mdi-chevron-up</v-icon>
+                  </v-btn>
+                  <v-btn class="ma-2" :disabled="index==customerProductPrices.length-1" justify="center" @click="moveDown(item)">
+                    <v-icon dark>mdi-chevron-down</v-icon>
+                  </v-btn>
+                </td>
                 <td>{{ item.product.name }}</td>
                 <td>{{ item.offeredPrice }} €</td>
                 <td justify="center" v-if="!readonly">
@@ -115,6 +124,16 @@ export default {
         this.customerProductPrices.findIndex(item => item === price),
         1
       );
+    },
+    moveUp(price){
+      var index = this.customerProductPrices.indexOf(price);
+      this.customerProductPrices.splice(index, 1);
+      this.customerProductPrices.splice(index-1, 0, price);
+    },
+    moveDown(price){
+      var index = this.customerProductPrices.indexOf(price);
+      this.customerProductPrices.splice(index, 1);
+      this.customerProductPrices.splice(index+1, 0, price);
     }
   }
 };
