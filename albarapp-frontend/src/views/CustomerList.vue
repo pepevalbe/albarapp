@@ -40,7 +40,7 @@
                 <td>{{item.phoneNumber}}</td>
                 <td>
                   <v-btn @click="showCustomer(item)">
-                    <v-icon dark>mdi-account-card-details</v-icon>
+                    <v-icon dark>mdi-badge-account-horizontal-outline</v-icon>
                   </v-btn>
                 </td>
                 <td>
@@ -71,7 +71,7 @@
                     <v-layout text-center wrap>
                       <v-flex xs12 class="mb-4">
                         <v-btn @click="showCustomer(item)">
-                          <v-icon dark>mdi-account-card-details</v-icon>
+                          <v-icon dark>mdi-badge-account-horizontal-outline</v-icon>
                         </v-btn>
                         <v-btn @click="updateCustomer(item)">
                           <v-icon dark>mdi-pencil</v-icon>
