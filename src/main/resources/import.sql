@@ -9,7 +9,7 @@ INSERT INTO product (id, code, factory_price, name, tax, aecoc_gtin) VALUES
 	('4bd9496c-1552-468f-9497-b184d8eb47b7', 10, 4.5, 'Machos', 3, NULL),
 	('5', 5, 0.13, 'Huevo M - Estuche 10uds', 0, '11111100000011'),
 	('6', 6, 0.13, 'Huevo M - Estuche 6uds', 0, '22220000000011'),
-	('679d1143-d92a-48c6-a521-81681133c791', 11, 2.5, 'Pollitas de 3 días', 3, NULL),
+	('679d1143-d92a-48c6-a521-81681133c791', 11, 2.5, 'Pollitas de 3 dias', 3, NULL),
 	('7', 8, 4, 'Pollitas', 3, NULL),
 	('c4a16657-8368-4d14-9330-1b0c903c0ba2', 9, 4, 'Pollitas blancas', 3, NULL),
 	('cbcb9728-762d-4632-9947-dd3e8652779c', 7, 0.14, 'Huevo L - Estuche 10uds', 0, NULL);

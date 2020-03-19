@@ -3,7 +3,7 @@
     <div v-if="!errorLoading">
       <v-layout text-right wrap class="pt-2 pb-5 mr-5">
         <v-flex xs12>
-          <v-btn @click="exportToCSV()" class="ml-2 mt-2">
+          <v-btn @click="downloadCsv()" class="ml-2 mt-2">
             Exportar a CSV
             <v-icon class="ml-2">mdi-google-spreadsheet</v-icon>
           </v-btn>
@@ -153,7 +153,6 @@
 
 <script>
 import InvoiceService from "@/services/InvoiceService.js";
-import ExportService from "@/services/ExportService.js";
 import CustomerAndDatesFilterForm from "@/components/CustomerAndDatesFilterForm";
 import ProductFilter from "@/components/ProductFilter";
 
@@ -363,42 +362,20 @@ export default {
         })
         .catch(() => {});
     },
-    async exportToCSV() {
-      this.loading = true;
-      this.showSpinner();
-      var localOptions = {
-        page: 1,
-        itemsPerPage: this.totalItems,
-        sortBy: this.options.sortBy,
-        sortDesc: this.options.sortDesc
-      };
-      var response = await InvoiceService.getAllWithCustomerAndTotal(
-        this.filter,
-        localOptions,
-        120000 // 2 min
-      );
-      var prettyInvoices = ExportService.prettyPrintInvoices(response.invoices);
-      var csvData = ExportService.convertChartDataToCSV(
-        prettyInvoices,
-        ";",
-        "\n"
-      );
-      var filename = "Facturas";
-      if (this.filter.form.customerCode)
-        filename += "_cliente_" + this.filter.form.customerCode;
-      if (this.filter.form.dateFrom)
-        filename +=
-          "_desde_" +
-          this.$moment.utc(this.filter.form.dateFrom).format("DD/MM/YYYY");
-      if (this.filter.form.dateTo)
-        filename +=
-          "_hasta_" +
-          this.$moment.utc(this.filter.form.dateTo).format("DD/MM/YYYY");
-      filename += ".csv";
-      ExportService.downloadCSV(csvData, filename);
-
-      this.loading = false;
-      this.closeSpinner();
+    async downloadCsv() {
+      try {
+        this.showSpinner();
+        await InvoiceService.downloadCsv(this.filter, this.options);
+      } catch {
+        this.snackbar = {
+          show: true,
+          message:
+            "No se ha podido descargar el informe, por favor vuelva a intentarlo.",
+          color: "error"
+        };
+      } finally {
+        this.closeSpinner();
+      }
     }
   }
 };

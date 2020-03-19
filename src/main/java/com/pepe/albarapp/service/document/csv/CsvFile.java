@@ -4,19 +4,26 @@ import com.pepe.albarapp.persistence.domain.Customer;
 import com.pepe.albarapp.persistence.domain.Invoice;
 
 import java.io.PrintWriter;
+import java.math.RoundingMode;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class CsvFile {
 
-	private static String DELIMITER = ";";
-	private static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/mm/yyyy");
-	private static String[] HEADERS = {"Numero de factura", "Fecha", "Código cliente", "Razón social cliente", "NIF Cliente", "Alias cliente", "Cantidad producto", "Total"};
+	private static final String DELIMITER = ";";
+	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
+	private static final NumberFormat NUMBER_FORMAT = NumberFormat.getInstance(new Locale("es", "ES"));
+	private static final String[] HEADERS = {"Numero de factura", "Fecha", "Código cliente", "Razón social cliente", "NIF Cliente", "Alias cliente", "Cantidad producto", "Total", "Total IGIC"};
 
 	private final String[] lines;
 
 	public CsvFile(List<Invoice> invoices) {
+
+		NUMBER_FORMAT.setMinimumFractionDigits(2);
+
 		lines = invoices.stream().map(this::parseInvoice).toArray(String[]::new);
 	}
 
@@ -37,6 +44,7 @@ public class CsvFile {
 				.concat(customer.getFiscalId()).concat(DELIMITER)
 				.concat(customer.getAlias()).concat(DELIMITER)
 				.concat(String.valueOf(invoice.getProductQuantity())).concat(DELIMITER)
-				.concat(invoice.getTotal().toString()).concat(DELIMITER);
+				.concat(NUMBER_FORMAT.format(invoice.getTotal().setScale(2, RoundingMode.HALF_UP))).concat(DELIMITER)
+				.concat(NUMBER_FORMAT.format(invoice.getTaxTotal().setScale(2, RoundingMode.HALF_UP))).concat(DELIMITER);
 	}
 }

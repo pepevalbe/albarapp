@@ -7,6 +7,7 @@ const INVOICE_COMPLETE_ENDPOINT = '/api/invoices';
 const INVOICE_BILL_ENDPOINT = '/api/invoices/bill';
 const INVOICE_DOWNLOAD_EDI_ENDPOINT = '/api/invoices/download/edi';
 const INVOICE_DOWNLOAD_PDF_ENDPOINT = '/api/invoices/download/pdf';
+const INVOICE_DOWNLOAD_CSV_ENDPOINT = '/api/invoices/download/csv';
 const INVOICE_DOWNLOAD_PDF_MULTIPLE_ENDPOINT = '/api/invoices/download/pdf/multiple';
 
 export default {
@@ -125,6 +126,44 @@ export default {
                 let link = document.createElement('a');
                 link.href = window.URL.createObjectURL(blob);
                 link.download = id + '.xml';
+                link.click();
+            });
+    },
+    downloadCsv(filter, options) {
+
+        var params = {};
+        if (filter && filter.form) {
+            if (filter.form.customerCode) params.customerCode = filter.form.customerCode;
+            if (filter.form.dateFrom) params.timestampFrom = moment.utc(filter.form.dateFrom, "YYYY-MM-DD").format('x');
+            if (filter.form.dateTo) params.timestampTo = moment.utc(filter.form.dateTo, "YYYY-MM-DD").format('x');
+            if (filter.products.productCodes && filter.products.productCodes.length) params.productCodes = filter.products.productCodes;
+        }
+        if (options) {
+            if (options.page) params.page = options.page - 1;
+            if (options.itemsPerPage) params.size = options.itemsPerPage;
+            if (options.sortBy && options.sortBy.length) {
+                var direction = options.sortDesc[0] ? 'desc' : 'asc';
+                params.sort = options.sortBy + ',' + direction;
+            }
+        }
+
+        var queryString = Object.keys(params).map(function (key) {
+            return key + '=' + params[key]
+        }).join('&');
+
+        if (queryString != "") queryString = '?' + queryString;
+
+        return HttpClient.get(`${INVOICE_DOWNLOAD_CSV_ENDPOINT}` + queryString,
+            {
+                responseType: 'arraybuffer',
+                headers: {
+                    'Accept': 'text/csv'
+                }
+            }).then(response => {
+                let blob = new Blob([response.data], { type: 'text/csv' });
+                let link = document.createElement('a');
+                link.href = window.URL.createObjectURL(blob);
+                link.download = 'Facturas.csv';
                 link.click();
             });
     },
