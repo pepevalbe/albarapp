@@ -13,9 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.ServletOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
 import java.util.zip.ZipEntry;
@@ -49,9 +49,9 @@ public class DocumentService {
 		for (Long invoiceId : invoiceIds) {
 			Invoice invoice = invoiceRepository.findById(invoiceId).orElseThrow(() -> new ApiException(ApiError.ApiError009));
 
-			File tempFile = new File("temp");
-			PdfInvoice.generate(invoice, new FileOutputStream(tempFile));
-			FileInputStream fis = new FileInputStream(tempFile);
+			ByteArrayOutputStream invoiceStream = new ByteArrayOutputStream();
+			PdfInvoice.generate(invoice, invoiceStream);
+			ByteArrayInputStream fis = new ByteArrayInputStream(invoiceStream.toByteArray());
 			ZipEntry zipEntry = new ZipEntry(invoiceId + ".pdf");
 			zipOut.putNextEntry(zipEntry);
 
