@@ -36,7 +36,7 @@ public class StatisticsService {
 	private static final String TOTAL_DELIVERY_NOTES_QUERY = "select count(ID) from delivery_note";
 	private static final String RANKING_CUSTOMER_QUERY = "select alias, SUM(dni.quantity*dni.price) as total FROM delivery_note dn INNER JOIN customer cus ON dn.customer_id = cus.id INNER JOIN delivery_note_item dni ON dni.delivery_note_id = dn.id GROUP BY cus.id ORDER BY total DESC LIMIT 10";
 	private static final String MONTHLY_EVOLUTION_QUERY = "select SUM(dni.quantity*dni.price) as total FROM delivery_note dn INNER JOIN delivery_note_item dni ON dni.delivery_note_id = dn.id WHERE dn.issued_timestamp >= %d AND dn.issued_timestamp <= %d";
-	private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/yy")
+	private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM yyyy")
 			.withLocale(new Locale("es", "ES"));
 
 	@Autowired

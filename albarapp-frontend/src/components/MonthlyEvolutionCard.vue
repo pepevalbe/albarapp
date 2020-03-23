@@ -9,8 +9,17 @@
           :value="monthlyEvolutionValues"
           :labels="monthlyEvolutionLabels"
           show-labels
+          smooth
+          padding="12"
+          auto-draw
+          label-size="3"
           line-width="1"
-        ></v-sparkline>
+        >
+          <template v-slot:label="item">
+            <tspan dx="0" dy="-1.2em">{{ item.value.split("|")[0] }}</tspan>
+            <tspan :dx="-item.value.length*0.68" dy="1.2em">{{ item.value.split("|")[1] }}</tspan>
+          </template>
+        </v-sparkline>
       </v-card>
     </div>
     <div v-if="errorLoading">
@@ -48,7 +57,13 @@ export default {
       this.errorLoading = false;
       HttpClient.get("api/statistics/monthlyEvolution")
         .then(response => {
-          this.monthlyEvolutionLabels = response.data.map(o => o.monthName);
+          this.monthlyEvolutionLabels = response.data.map(
+            o =>
+              o.monthName.charAt(0).toUpperCase() +
+              o.monthName.substring(1) +
+              "|" +
+              this.currencyFormatted(o.invoiceTotal)
+          );
           this.monthlyEvolutionValues = response.data.map(o => o.invoiceTotal);
           this.rankingReady = true;
         })
