@@ -1,0 +1,12 @@
+{
+  "name": "albarapp",
+  "addons": [
+    "jawsdb:kitefin",
+    "logdna:quaco"
+  ],
+  "buildpacks": [
+    {
+      "url": "heroku/java"
+    }
+  ]
+}
