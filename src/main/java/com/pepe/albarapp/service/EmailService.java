@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
@@ -21,8 +23,11 @@ public class EmailService {
 	private static final String WELCOME_EMAIL = "Bienvenido a albarapp";
 	private static final String WELCOME_TEMPLATE = "Hola %s, ya puedes entrar a tu cuenta con tu email y contraseña";
 
-	@Value("${albarapp.mail.sender}")
+	@Value("${albarapp.mail.senderEmail}")
 	private String senderEmail;
+
+	@Value("${albarapp.mail.senderName}")
+	private String senderName;
 
 	@Autowired
 	private JavaMailSender javaMailSender;
@@ -40,12 +45,17 @@ public class EmailService {
 
 	@Async
 	public void sendEmail(String to, String subject, String text) {
-		SimpleMailMessage message = new SimpleMailMessage();
-		message.setFrom(senderEmail);
-		message.setTo(to);
-		message.setSubject(subject);
-		message.setText(text);
-		javaMailSender.send(message);
+
+		MimeMessagePreparator mailMessage = mimeMessage -> {
+            MimeMessageHelper message = new MimeMessageHelper(
+                    mimeMessage, true, "UTF-8");
+
+            message.setFrom(senderEmail, senderName);
+			message.setTo(to);
+			message.setSubject(subject);
+			message.setText(text);
+        };
+		javaMailSender.send(mailMessage);
 		log.info("Sent email to: " + to);
 	}
 
