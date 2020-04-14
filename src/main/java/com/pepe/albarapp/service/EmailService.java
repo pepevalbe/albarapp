@@ -21,7 +21,7 @@ public class EmailService {
 	private static final String WELCOME_EMAIL = "Bienvenido a albarapp";
 	private static final String WELCOME_TEMPLATE = "Hola %s, ya puedes entrar a tu cuenta con tu email y contraseña";
 
-	@Value("${spring.mail.username}")
+	@Value("${albarapp.mail.sender}")
 	private String senderEmail;
 
 	@Autowired
