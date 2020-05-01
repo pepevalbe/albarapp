@@ -38,7 +38,7 @@ export default {
     getDeliveryNotes(invoice) {
         return HttpClient.get(invoice._links.deliveryNotes.href)
             .then(response => {
-                invoice.deliveryNotes = response.data._embedded.deliveryNotes;
+                invoice.deliveryNotes = response.data._embedded.deliveryNotes.sort((a, b) => a.issuedTimestamp - b.issuedTimestamp);
             });
     },
 
