@@ -39,3 +39,17 @@ There are two spring profiles. You can specify the active profile with -Dspring.
 
         npm run serve
 
+---
+### Docker ###  
+Build docker image with the app and run a container:
+- Development:
+
+        ./mvnw clean install -P development,frontend
+        docker build -t albarapp/albarapp .
+        docker run -d -p 80:8085 -v ~/logs:/logs "SPRING_PROFILES_ACTIVE=development" albarapp/albarapp
+
+- Production:
+        
+        ./mvnw clean install
+        docker build -t albarapp/albarapp:VERSION_TAG .
+        docker run -d -p 80:8085 -v /home/ec2-user/logs-albarapp:/logs --env-file /home/ec2-user/env.albarapp albarapp/albarapp:VERSION_TAG

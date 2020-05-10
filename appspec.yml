@@ -12,10 +12,10 @@ permissions:
 
 hooks:
   AfterInstall:
-    - location: scripts/build_app_docker.sh
+    - location: scripts/build_app_docker.bash
       timeout: 300
       runas: ec2-user
   ApplicationStart:
-    - location: scripts/start_app_docker.sh
+    - location: scripts/start_app_docker.bash
       timeout: 60
       runas: ec2-user
