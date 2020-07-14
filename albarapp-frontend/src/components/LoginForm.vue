@@ -59,7 +59,7 @@ export default {
     };
   },
   created() {
-    if (this.token) {
+    if (this.$store.getters.authenticated) {
       if (this.$route.query && this.$route.query.destinationURL) {
         this.$router.push(this.$route.query.destinationURL);
       } else {
@@ -82,8 +82,7 @@ export default {
 
           this.$nextTick(this.$refs.password.focus);
         } else {
-          this.setToken(result); // Esto no funciona. No lo mete en el localStorage
-          localStorage.setItem("token", result); // Así que lo meto manualmente...
+          this.$store.commit("login", result);
           if (this.$route.query && this.$route.query.destinationURL) {
             this.$router.push(this.$route.query.destinationURL);
           } else {

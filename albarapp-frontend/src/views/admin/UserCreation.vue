@@ -38,7 +38,7 @@
     </v-form>
     <div class="mb-3"></div>
     <v-btn color="error" class="mr-4" @click="reset()">Borrar</v-btn>
-    <v-btn :disabled="!valid && token !== null" color="success" @click="createUser()">Crear</v-btn>
+    <v-btn :disabled="!valid" color="success" @click="createUser()">Crear</v-btn>
     <v-dialog v-model="dialogCreation.show" max-width="600">
       <v-card>
         <v-card-title class="headline">Usuario creado</v-card-title>

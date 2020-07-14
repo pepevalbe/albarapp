@@ -1,15 +1,15 @@
 <template>
   <div>
     <v-row>
-      <v-col v-if="token && parsedToken.roles.includes('ADMIN')">
+      <v-col v-if="$store.getters.authenticated && $store.getters.parsedToken.roles.includes('ADMIN')">
         <MonthlyEvolutionCard />
       </v-col>
     </v-row>
     <v-row>
-      <v-col v-if="token && parsedToken.roles.includes('ADMIN')">
+      <v-col v-if="$store.getters.authenticated && $store.getters.parsedToken.roles.includes('ADMIN')">
         <StatisticsCard />
       </v-col>
-      <v-col v-if="token && parsedToken.roles.includes('ADMIN')">
+      <v-col v-if="$store.getters.authenticated && $store.getters.parsedToken.roles.includes('ADMIN')">
         <RankingCard />
       </v-col>
       <v-col>

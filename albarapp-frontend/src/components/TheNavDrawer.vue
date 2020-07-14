@@ -7,7 +7,7 @@
         </v-list-item-avatar>
         <v-list-item-content>
           <v-list-item-title class="title">{{profile.name}}</v-list-item-title>
-          <v-list-item-subtitle>{{parsedToken.sub}}</v-list-item-subtitle>
+          <v-list-item-subtitle>{{$store.getters.parsedToken.sub}}</v-list-item-subtitle>
         </v-list-item-content>
       </v-list-item>
     </div>
@@ -29,7 +29,11 @@
           <v-list-item-title>Home</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
-      <v-list-item link to="/admin/" v-if="token && parsedToken.roles.includes('ADMIN')">
+      <v-list-item
+        link
+        to="/admin/"
+        v-if="$store.getters.authenticated && $store.getters.parsedToken.roles.includes('ADMIN')"
+      >
         <v-list-item-icon>
           <v-icon>mdi-account-group</v-icon>
         </v-list-item-icon>
@@ -97,7 +101,7 @@ export default {
   },
   methods: {
     async loadProfile() {
-      if (this.token) {
+      if (this.$store.getters.authenticated) {
         try {
           this.profile = await UserService.getProfile();
           this.errorLoading = false;
@@ -105,6 +109,13 @@ export default {
           this.errorLoading = true;
         }
       }
+    },
+    logout() {
+      this.$store.commit("logout");
+      this.$router.push({
+        path: "/login",
+        query: { destinationURL: window.location.hash.split("#")[1] }
+      });
     }
   }
 };

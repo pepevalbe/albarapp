@@ -1,6 +1,6 @@
 <template>
   <div>
-    <WebNavDrawer v-if="$route.name !== 'Login' && $route.name !== 'UserCreation'" v-bind:drawer="drawer" />
+    <WebNavDrawer v-if="$store.getters.authenticated" v-bind:drawer="drawer" />
     <v-app-bar color="darken-3" dark app :clipped-left="$vuetify.breakpoint.mdAndUp" fixed>
       <v-app-bar-nav-icon @click="toggleNavDrawer"></v-app-bar-nav-icon>
       <v-toolbar-title class="headline text-uppercase">

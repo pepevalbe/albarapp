@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { store } from '../store/store';
 
 const httpClient = axios.create({
     baseURL: process.env.VUE_APP_API_URL,
@@ -7,7 +8,7 @@ const httpClient = axios.create({
 });
 
 httpClient.interceptors.request.use(function (config) {
-    var token = localStorage.token
+    var token = store.getters.token;
     if (token) {
         config.headers['Authorization'] = token
     }
