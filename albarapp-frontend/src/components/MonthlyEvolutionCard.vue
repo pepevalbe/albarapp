@@ -11,7 +11,7 @@
           show-labels
           smooth
           padding="12"
-          auto-draw
+          :auto-draw="autoDraw"
           label-size="3"
           line-width="1"
         >
@@ -37,7 +37,7 @@
 </template>
 
 <script>
-import HttpClient from "@/services/HttpClient.js";
+import StatisticService from "@/services/StatisticService.js";
 
 export default {
   name: "MonthlyEvolutionCard",
@@ -45,6 +45,7 @@ export default {
     return {
       monthlyEvolutionLabels: [],
       monthlyEvolutionValues: [],
+      autoDraw: false,
       errorLoading: false,
       rankingReady: false
     };
@@ -55,16 +56,17 @@ export default {
   methods: {
     getMonthlyEvolution() {
       this.errorLoading = false;
-      HttpClient.get("api/statistics/monthlyEvolution")
+      StatisticService.getMonthlyEvolution()
         .then(response => {
-          this.monthlyEvolutionLabels = response.data.map(
+          this.monthlyEvolutionLabels = response.map(
             o =>
               o.monthName.charAt(0).toUpperCase() +
               o.monthName.substring(1) +
               "|" +
               this.currencyFormatted(o.invoiceTotal)
           );
-          this.monthlyEvolutionValues = response.data.map(o => o.invoiceTotal);
+          this.monthlyEvolutionValues = response.map(o => o.invoiceTotal);
+          this.autoDraw = true;
           this.rankingReady = true;
         })
         .catch(() => {

@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import HttpClient from "@/services/HttpClient.js";
+import StatisticService from "@/services/StatisticService.js";
 
 export default {
   name: "StatisticsCard",
@@ -43,9 +43,9 @@ export default {
   methods: {
     getStatistics: function() {
       this.errorLoading = false;
-      HttpClient.get("api/statistics")
+      StatisticService.getQuantities()
         .then(response => {
-          this.statistics = response.data;
+          this.statistics = response;
           this.statisticsReady = true;
         })
         .catch(() => {

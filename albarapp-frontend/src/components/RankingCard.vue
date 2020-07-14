@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import HttpClient from "@/services/HttpClient.js";
+import StatisticService from "@/services/StatisticService.js";
 
 export default {
   name: "RankingCard",
@@ -43,16 +43,11 @@ export default {
   methods: {
     getRanking() {
       this.errorLoading = false;
-      HttpClient.get("api/statistics/ranking")
+      StatisticService.getRanking()
         .then(response => {
-          this.ranking = response.data;
+          this.ranking = response;
           this.rankingReady = true;
         })
-        .catch(() => {
-          this.errorLoading = true;
-        });
-
-      HttpClient.get("api/statistics/monthlyEvolution")
         .catch(() => {
           this.errorLoading = true;
         });
