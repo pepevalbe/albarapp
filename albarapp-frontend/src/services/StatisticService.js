@@ -7,8 +7,16 @@ const QUANTITIES_ENDPOINT = '/api/statistics';
 
 
 export default {
-    getMonthlyEvolution() {
-        return HttpClient.get(`${MONTHLY_EVOLUTION_ENDPOINT}`)
+    getMonthlyEvolution(productCodes) {
+        var params = {};
+        if (productCodes && productCodes.length) params.productCodes = productCodes;
+        var queryString = Object.keys(params).map(function (key) {
+            return key + '=' + params[key]
+        }).join('&');
+
+        if (queryString != "") queryString = '?' + queryString;
+
+        return HttpClient.get(`${MONTHLY_EVOLUTION_ENDPOINT}` + queryString)
             .then(response => {
                 return response.data;
             });

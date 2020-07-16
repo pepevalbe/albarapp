@@ -6,7 +6,6 @@ import com.pepe.albarapp.service.StatisticsService;
 import com.pepe.albarapp.service.UserService;
 import com.pepe.albarapp.service.dto.InvitationDto;
 import com.pepe.albarapp.service.dto.RegistrationDto;
-import com.pepe.albarapp.service.dto.StatisticsDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -32,7 +31,6 @@ public class UserController {
 	private static final String USER_ENDPOINT = "/user-creation";
 	private static final String PROFILE_ENDPOINT = "/api/profile";
 	private static final String INVITATION_ENDPOINT = "/api/send-invitation";
-	private static final String STATISTICS_ENDPOINT = "/api/statistics";
 	private static final String TRIVIA_ENDPOINT = "/api/trivia";
 
 	@Autowired
@@ -65,13 +63,6 @@ public class UserController {
 		userService.sendInvitation(invitationDto.getEmail(), invitationDto.getRole());
 
 		return ResponseEntity.ok().build();
-	}
-
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	@GetMapping(STATISTICS_ENDPOINT)
-	public ResponseEntity<List<StatisticsDto>> getStatistics() {
-
-		return ResponseEntity.ok(statisticsService.getStatistics());
 	}
 
 	@GetMapping(TRIVIA_ENDPOINT)
