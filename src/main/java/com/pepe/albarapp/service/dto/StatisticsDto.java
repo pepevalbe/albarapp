@@ -10,5 +10,5 @@ import lombok.NoArgsConstructor;
 public class StatisticsDto {
 
 	private String name;
-	private String value;
+	private Long value;
 }

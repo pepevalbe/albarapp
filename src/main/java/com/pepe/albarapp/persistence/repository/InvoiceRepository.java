@@ -15,6 +15,8 @@ import java.util.List;
 @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_USER')")
 public interface InvoiceRepository extends PagingAndSortingRepository<Invoice, Long> {
 
+	long count();
+
 	String CUSTOMER_TIMESTAMP_CONDITION = "" +
 			"(?1 is null or i.customer.code = ?1) and " +
 			"(?2 is null or i.issuedTimestamp >= ?2) and " +

@@ -9,7 +9,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
-import java.util.List;
 import java.util.Set;
 
 @CrossOrigin(origins = "http://localhost:8080")
@@ -21,6 +20,8 @@ public interface DeliveryNoteRepository extends PagingAndSortingRepository<Deliv
 			"(:timestampFrom is null or dn.issuedTimestamp >= :timestampFrom) and " +
 			"(:timestampTo is null or dn.issuedTimestamp <= :timestampTo)")
 	Page<DeliveryNote> filterByCustomerCodeAndTimestampRange(@Param("customerCode") Integer customerCode, @Param("timestampFrom") Long timestampFrom, @Param("timestampTo") Long timestampTo, Pageable pageable);
+
+	long count();
 
 	Page<DeliveryNote> findByCustomerCodeAndInvoiceIsNull(Integer customerCode, Pageable pageable);
 
