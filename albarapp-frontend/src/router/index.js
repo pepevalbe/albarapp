@@ -1,9 +1,10 @@
 import Vue from "vue";
 import Router from "vue-router";
+import { store } from '../store/store';
 
 Vue.use(Router);
 
-export default new Router({
+const router = new Router({
   routes: [
     {
       path: "/",
@@ -120,3 +121,19 @@ export default new Router({
     }
   ]
 });
+
+
+router.beforeEach((to, from, next) => {
+  if (to.name != "UserCreation" && to.name != "Login" && !store.getters.authenticated) {
+    next({
+      name: "Login",
+      query: {
+        destinationURL: to.path
+      }
+    })
+  } else {
+    next();
+  }
+});
+
+export default router;
