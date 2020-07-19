@@ -39,11 +39,18 @@ export default {
   },
   created() {
     this.getRanking();
+    this.$watch(
+      "$store.getters.statisticsProductFilter",
+      function() {
+        this.getRanking();
+      },
+      { deep: true }
+    );
   },
   methods: {
     getRanking() {
       this.errorLoading = false;
-      StatisticService.getRanking()
+      StatisticService.getRanking(this.$store.getters.statisticsProductFilter)
         .then(response => {
           this.ranking = response;
           this.rankingReady = true;

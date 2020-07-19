@@ -18,7 +18,7 @@ export const store = new Vuex.Store({
     state: {
         token: initialToken,
         parsedToken: initialParsedToken,
-        chartProductFilter: []
+        statisticsProductFilter: []
     },
     mutations: {
         login(state, token) {
@@ -35,14 +35,14 @@ export const store = new Vuex.Store({
             state.token = null;
             localStorage.clear();
         },
-        filterChart(state, products) {
-            state.chartProductFilter = products;
+        filterStatistics(state, products) {
+            state.statisticsProductFilter = products;
         }
     },
     getters: {
         token: state => state.token,
         authenticated: state => state.token != null,
         parsedToken: state => state.parsedToken,
-        chartProductFilter: state => state.chartProductFilter
+        statisticsProductFilter: state => state.statisticsProductFilter
     }
 })

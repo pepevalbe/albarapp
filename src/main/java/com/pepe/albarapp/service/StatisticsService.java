@@ -62,9 +62,13 @@ public class StatisticsService {
 		return statistics;
 	}
 
-	public List<RankingDto> getRanking() {
+	public List<RankingDto> getRanking(List<Integer> productCodes) {
 		Pageable pageable = PageRequest.of(0, 10);
-		return customerRepository.findTopByDeliveryNoteTotal(pageable).getContent();
+		if (productCodes == null || productCodes.isEmpty()) {
+			return customerRepository.findTopByDeliveryNoteTotal(pageable).getContent();
+		} else {
+			return customerRepository.findTopByDeliveryNoteTotalFilteredByProducts(productCodes, pageable).getContent();
+		}
 	}
 
 	public List<MonthlyEvolutionDto> getMonthlyEvolution(List<Integer> productCodes) {

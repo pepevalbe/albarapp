@@ -1,7 +1,7 @@
 <template>
   <v-flex align-self-start>
     <v-form ref="form" v-model="valid">
-      <v-subheader class="title ml-1">Inhformación de usuario</v-subheader>
+      <v-subheader class="title ml-1">Información de usuario</v-subheader>
       <v-text-field
         v-model="name"
         :counter="15"

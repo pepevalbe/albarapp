@@ -3,12 +3,7 @@
     <div v-if="!errorLoading">
       <v-card :loading="!rankingReady" class="mt-2">
         <v-card-title class="mb-4">
-          <v-col cols="12" md="9" align-self="start">
-            <v-icon large class="mr-2">mdi-chart-bar</v-icon>Evolución mensual
-          </v-col>
-          <v-col cols="12" md="3">
-            <ProductFilter :products="filter.products" />
-          </v-col>
+          <v-icon large class="mr-2">mdi-chart-bar</v-icon>Evolución mensual
         </v-card-title>
         <v-sparkline
           :value="monthlyEvolutionValues"
@@ -43,13 +38,9 @@
 
 <script>
 import StatisticService from "@/services/StatisticService.js";
-import ProductFilter from "@/components/ProductFilter";
 
 export default {
   name: "MonthlyEvolutionCard",
-  components: {
-    ProductFilter
-  },
   data: () => {
     return {
       monthlyEvolutionLabels: [],
@@ -65,22 +56,19 @@ export default {
     };
   },
   created() {
-    var vm = this;
-    this.filter.products.productCodes = this.$store.getters.chartProductFilter;
-    this.getMonthlyEvolution(this.$store.getters.chartProductFilter);
+    this.getMonthlyEvolution();
     this.$watch(
-      "filter",
+      "$store.getters.statisticsProductFilter",
       function() {
-        this.$store.commit("filterChart", vm.filter.products.productCodes);
-        this.getMonthlyEvolution(this.$store.getters.chartProductFilter);
+        this.getMonthlyEvolution();
       },
       { deep: true }
     );
   },
   methods: {
-    getMonthlyEvolution(productCodes) {
+    getMonthlyEvolution() {
       this.errorLoading = false;
-      StatisticService.getMonthlyEvolution(productCodes)
+      StatisticService.getMonthlyEvolution(this.$store.getters.statisticsProductFilter)
         .then(response => {
           this.monthlyEvolutionLabels = response.map(
             o =>

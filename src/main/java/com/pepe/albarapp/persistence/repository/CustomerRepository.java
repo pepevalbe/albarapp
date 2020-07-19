@@ -10,6 +10,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -27,4 +28,7 @@ public interface CustomerRepository extends PagingAndSortingRepository<Customer,
 
 	@Query(value = "select new com.pepe.albarapp.service.dto.statistics.RankingDto(cus.alias, SUM(dni.quantity*dni.price)) from DeliveryNote dn join dn.customer cus join dn.deliveryNoteItems dni group by cus.id order by SUM(dni.quantity*dni.price) desc")
 	Page<RankingDto> findTopByDeliveryNoteTotal(Pageable pageable);
+
+	@Query(value = "select new com.pepe.albarapp.service.dto.statistics.RankingDto(cus.alias, SUM(dni.quantity*dni.price)) from DeliveryNote dn join dn.customer cus join dn.deliveryNoteItems dni where dni.product.code in ?1 group by cus.id order by SUM(dni.quantity*dni.price) desc")
+	Page<RankingDto> findTopByDeliveryNoteTotalFilteredByProducts(List<Integer> productCodes, Pageable pageable);
 }

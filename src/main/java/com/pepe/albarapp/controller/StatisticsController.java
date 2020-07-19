@@ -27,17 +27,17 @@ public class StatisticsController {
     @Autowired
     private StatisticsService statisticsService;
 
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	@GetMapping(STATISTICS_ENDPOINT)
-	public ResponseEntity<List<StatisticsDto>> getStatistics() {
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @GetMapping(STATISTICS_ENDPOINT)
+    public ResponseEntity<List<StatisticsDto>> getStatistics() {
 
-		return ResponseEntity.ok(statisticsService.getStatistics());
-	}
+        return ResponseEntity.ok(statisticsService.getStatistics());
+    }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping(RANKING_ENDPOINT)
-    public ResponseEntity<List<RankingDto>> getRanking() {
-        return ResponseEntity.ok(statisticsService.getRanking());
+    public ResponseEntity<List<RankingDto>> getRanking(@RequestParam @Nullable List<Integer> productCodes) {
+        return ResponseEntity.ok(statisticsService.getRanking(productCodes));
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
