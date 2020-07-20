@@ -1,13 +1,9 @@
 <template>
   <div>
-    <v-row>
-      <v-col cols="12" md="11">
-      </v-col>
-      <v-col cols="12" md="1">
-        <v-btn @click="openStatisticsFilter()">
-          <v-icon>mdi-cogs</v-icon>
-        </v-btn>
-      </v-col>
+    <v-row class="justify-end mr-3 mt-2">
+      <v-btn @click="openStatisticsFilter()">
+        <v-icon>mdi-cogs</v-icon>
+      </v-btn>
     </v-row>
     <v-row>
       <v-col
