@@ -65,9 +65,9 @@ public class StatisticsService {
 	public List<RankingDto> getRanking(List<Integer> productCodes) {
 		Pageable pageable = PageRequest.of(0, 10);
 		if (productCodes == null || productCodes.isEmpty()) {
-			return customerRepository.findTopByDeliveryNoteTotal(pageable).getContent();
+			return customerRepository.findTopByDeliveryNoteTotal(pageable);
 		} else {
-			return customerRepository.findTopByDeliveryNoteTotalFilteredByProducts(productCodes, pageable).getContent();
+			return customerRepository.findTopByDeliveryNoteTotalFilteredByProducts(productCodes, pageable);
 		}
 	}
 
