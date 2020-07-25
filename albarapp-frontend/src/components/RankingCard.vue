@@ -58,12 +58,6 @@ export default {
         .catch(() => {
           this.errorLoading = true;
         });
-    },
-    currencyFormatted(value) {
-      return value.toLocaleString("es-ES", {
-        style: "currency",
-        currency: "EUR"
-      });
     }
   }
 };

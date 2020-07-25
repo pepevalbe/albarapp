@@ -283,15 +283,6 @@ export default {
       ];
       return headers;
     },
-    dateFormatted(timestamp) {
-      return this.$moment.utc(timestamp, "x").format("DD/MM/YYYY");
-    },
-    currencyFormatted(value) {
-      return value.toLocaleString("es-ES", {
-        style: "currency",
-        currency: "EUR"
-      });
-    },
     async downloadPdf(item) {
       try {
         this.showSpinner();

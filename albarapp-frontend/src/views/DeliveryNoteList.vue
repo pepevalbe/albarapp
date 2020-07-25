@@ -273,9 +273,6 @@ export default {
         this.closeSpinner();
       }
     },
-    dateFormatted(timestamp) {
-      return this.$moment.utc(timestamp, "x").format("DD/MM/YYYY");
-    },
     getHeaders() {
       var headers = [
         { text: "Nº Albarán", sortable: true, value: "id" },
@@ -296,12 +293,6 @@ export default {
         { text: "", sortable: false, value: "update" }
       ];
       return headers;
-    },
-    currencyFormatted(value) {
-      return value.toLocaleString("es-ES", {
-        style: "currency",
-        currency: "EUR"
-      });
     },
     updateURL() {
       var query = {};

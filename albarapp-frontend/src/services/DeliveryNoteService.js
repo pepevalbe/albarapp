@@ -52,18 +52,14 @@ export default {
     },
     async getAllWithCustomerAndTotal(filter, options) {
         var params = {};
-        if (filter && filter.form) {
-            if (filter.form.customerCode) params.customerCode = filter.form.customerCode;
-            if (filter.form.dateFrom) params.timestampFrom = moment.utc(filter.form.dateFrom, "YYYY-MM-DD").format('x');
-            if (filter.form.dateTo) params.timestampTo = moment.utc(filter.form.dateTo, "YYYY-MM-DD").format('x');
-        }
-        if (options) {
-            if (options.page) params.page = options.page - 1;
-            if (options.itemsPerPage) params.size = options.itemsPerPage;
-            if (options.sortBy && options.sortBy.length) {
-                var direction = options.sortDesc[0] ? 'desc' : 'asc';
-                params.sort = options.sortBy + ',' + direction;
-            }
+        if (filter?.form?.customerCode) params.customerCode = filter.form.customerCode;
+        if (filter?.form?.dateFrom) params.timestampFrom = moment.utc(filter.form.dateFrom, "YYYY-MM-DD").format('x');
+        if (filter?.form?.dateTo) params.timestampTo = moment.utc(filter.form.dateTo, "YYYY-MM-DD").format('x');
+        if (options?.page) params.page = options.page - 1;
+        if (options?.itemsPerPage) params.size = options.itemsPerPage;
+        if (options?.sortBy?.length) {
+            var direction = options.sortDesc[0] ? 'desc' : 'asc';
+            params.sort = options.sortBy + ',' + direction;
         }
 
         var queryString = Object.keys(params).map(function (key) {

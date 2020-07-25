@@ -41,7 +41,8 @@ export const store = new Vuex.Store({
     },
     getters: {
         token: state => state.token,
-        authenticated: state => state.token != null,
+        authenticated: state => state.token,
+        isAdmin: state => state.token && state.parsedToken.roles.includes('ADMIN'),
         parsedToken: state => state.parsedToken,
         statisticsProductFilter: state => state.statisticsProductFilter
     }

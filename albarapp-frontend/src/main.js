@@ -18,6 +18,15 @@ Vue.mixin({
     closeSpinner() {
       this.spinner.counter--;
       if (!this.spinner.counter) this.spinner.loading = false;
+    },
+    currencyFormatted(value) {
+      return value.toLocaleString("es-ES", {
+        style: "currency",
+        currency: "EUR"
+      });
+    },
+    dateFormatted(timestamp) {
+      return this.$moment.utc(timestamp, "x").format("DD/MM/YYYY");
     }
   }
 })

@@ -7,19 +7,19 @@
     </v-row>
     <v-row>
       <v-col
-        v-if="$store.getters.authenticated && $store.getters.parsedToken.roles.includes('ADMIN')"
+        v-if="$store.getters.isAdmin"
       >
         <MonthlyEvolutionCard />
       </v-col>
     </v-row>
     <v-row>
       <v-col
-        v-if="$store.getters.authenticated && $store.getters.parsedToken.roles.includes('ADMIN')"
+        v-if="$store.getters.isAdmin"
       >
         <StatisticsCard />
       </v-col>
       <v-col
-        v-if="$store.getters.authenticated && $store.getters.parsedToken.roles.includes('ADMIN')"
+        v-if="$store.getters.isAdmin"
       >
         <RankingCard />
       </v-col>

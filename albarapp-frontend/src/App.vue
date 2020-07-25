@@ -37,7 +37,11 @@ export default {
 };
 </script>
 <style>
-button:focus {
-  background-color: #b5e7a0 !important;
+.v-btn:not(.v-btn--flat):not(.v-btn--text):not(.v-btn--outlined):focus {
+  background-color: #1976d2 !important;
+  color: white;
+}
+.v-btn:not(.v-btn--text):not(.v-btn--outlined):focus:before {
+  opacity: 0;
 }
 </style>

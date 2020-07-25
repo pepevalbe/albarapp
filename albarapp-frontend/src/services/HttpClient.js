@@ -18,16 +18,13 @@ httpClient.interceptors.request.use(function (config) {
 httpClient.interceptors.response.use(function (response) {
     return response
 }, function (error) {
-    if (error && error.response
-        && (error.response.status === 401 ||
-            error.response.status === 403)) {
+    if (error?.response?.status === 401 ||
+        error?.response?.status === 403) {
         localStorage.clear();
         if (!window.location.hash.includes("#/login")) window.location.href = "/#/login?destinationURL=" + window.location.hash.split("#")[1];
     } else if (
-        error && error.response &&
-        error.response.data &&
-        error.response.data.errorCode &&
-        error.response.data.errorMessage &&
+        error?.response?.data?.errorCode &&
+        error?.response?.data?.errorMessage &&
         error.response.data.errorCode !== '002') {
         return Promise.reject(error);
     }

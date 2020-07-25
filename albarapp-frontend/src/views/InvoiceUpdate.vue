@@ -36,7 +36,7 @@
             >
               <template v-slot:activator="{ on }">
                 <v-text-field
-                  v-model="dateFormatted"
+                  v-model="dateFormattedText"
                   ref="dateText"
                   label="Fecha"
                   hint="Formato: ddMMaaaa"
@@ -356,7 +356,7 @@ export default {
         { text: "", sortable: false, value: "edit" },
         { text: "", sortable: false, value: "disassociate" }
       ],
-      dateFormatted: "",
+      dateFormattedText: "",
       menuDatePicker: false,
       loading: false,
       errorLoading: false,
@@ -407,13 +407,13 @@ export default {
     },
     parseDateText() {
       var moment = this.$moment.utc(
-        this.dateFormatted,
+        this.dateFormattedText,
         ["DDMMYYYY", "DD/MM/YYYY"],
         true
       );
       if (moment.isValid()) {
         this.form.invoice.date = moment.format("YYYY-MM-DD");
-        this.dateFormatted = moment.format("DD/MM/YYYY");
+        this.dateFormattedText = moment.format("DD/MM/YYYY");
         this.form.invoice.issuedTimestamp = moment.format("x");
       } else {
         this.$nextTick(this.$refs.dateText.focus);
@@ -421,7 +421,7 @@ export default {
     },
     parseDatePick() {
       var moment = this.$moment.utc(this.form.invoice.date, "YYYY-MM-DD", true);
-      this.dateFormatted = moment.format("DD/MM/YYYY");
+      this.dateFormattedText = moment.format("DD/MM/YYYY");
       this.form.invoice.issuedTimestamp = moment.format("x");
       this.menuDatePicker = false;
     },

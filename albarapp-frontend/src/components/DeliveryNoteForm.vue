@@ -42,7 +42,7 @@
             >
               <template v-slot:activator="{ on }">
                 <v-text-field
-                  v-model="dateFormatted"
+                  v-model="dateFormattedText"
                   ref="dateText"
                   label="Fecha"
                   hint="Formato: ddMMaaaa"
@@ -187,7 +187,7 @@ export default {
   data: () => ({
     customerCode: "",
     customers: [],
-    dateFormatted: "",
+    dateFormattedText: "",
     products: [],
     product: {},
     productCode: "",
@@ -389,13 +389,13 @@ export default {
     },
     parseDateText() {
       var moment = this.$moment.utc(
-        this.dateFormatted,
+        this.dateFormattedText,
         ["DDMMYYYY", "DD/MM/YYYY"],
         true
       );
       if (moment.isValid()) {
         this.form.deliveryNote.date = moment.format("YYYY-MM-DD");
-        this.dateFormatted = moment.format("DD/MM/YYYY");
+        this.dateFormattedText = moment.format("DD/MM/YYYY");
         this.form.deliveryNote.issuedTimestamp = moment.format("x");
       } else {
         this.$nextTick(this.$refs.dateText.focus);
@@ -411,7 +411,7 @@ export default {
         "YYYY-MM-DD",
         true
       );
-      this.dateFormatted = moment.format("DD/MM/YYYY");
+      this.dateFormattedText = moment.format("DD/MM/YYYY");
       this.form.deliveryNote.issuedTimestamp = moment.format("x");
       this.menuDatePicker = false;
     },
@@ -424,9 +424,8 @@ export default {
     },
     deliveryNoteValid() {
       if (
-        this.form.deliveryNote.customer &&
-        this.form.deliveryNote.customer.code &&
-        this.dateFormatted &&
+        this.form.deliveryNote.customer?.code &&
+        this.dateFormattedText &&
         this.form.deliveryNote.deliveryNoteItems.length > 0
       ) {
         return true;

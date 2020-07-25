@@ -32,7 +32,7 @@
       <v-list-item
         link
         to="/admin/"
-        v-if="$store.getters.authenticated && $store.getters.parsedToken.roles.includes('ADMIN')"
+        v-if="$store.getters.isAdmin"
       >
         <v-list-item-icon>
           <v-icon>mdi-account-group</v-icon>
