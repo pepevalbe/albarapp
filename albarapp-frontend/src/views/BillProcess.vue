@@ -251,7 +251,11 @@ export default {
       this.dialogInvoicesCreated.show = false;
       try {
         this.showSpinner();
-        await InvoiceService.downloadPdfMultiple(this.invoicesCreated);
+        if (this.invoicesCreated.length > 1) {
+          await InvoiceService.downloadPdfMultiple(this.invoicesCreated);
+        } else {
+          await InvoiceService.downloadPdf(this.invoicesCreated[0]);
+        }
       } catch {
         this.snackbar = {
           show: true,
