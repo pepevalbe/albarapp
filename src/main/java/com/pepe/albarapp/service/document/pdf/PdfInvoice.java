@@ -9,6 +9,7 @@ import com.pepe.albarapp.persistence.domain.Invoice;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
+import org.apache.pdfbox.multipdf.PDFMergerUtility;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,6 +17,7 @@ import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -44,6 +46,8 @@ public class PdfInvoice {
 	private static final String GROSS_FIELD = "grossTotal";
 	private static final String VAT_FIELD = "vatTotal";
 	private static final String AMOUNT_FIELD = "amount";
+	private static final String PAGE_NUMBER_FIELD = "pageNumber";
+	private static final String PAGE_TOTAL_FIELD = "pageTotal";
 	private static final int MAX_ROW_NUMBER = 29;
 	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
 	private static final NumberFormat NUMBER_FORMAT = NumberFormat.getInstance(new Locale("es", "ES"));
@@ -59,22 +63,15 @@ public class PdfInvoice {
 				.sorted(Comparator.comparing(DeliveryNote::getIssuedTimestamp).thenComparing(DeliveryNote::getId))
 				.collect(Collectors.toList());
 
-		if (deliveryNotes.isEmpty() || deliveryNotes.size() > MAX_ROW_NUMBER) {
-			log.error("Invoice is too large or empty");
+		if (deliveryNotes.isEmpty()) {
+			log.error("Invoice is empty");
 			throw new ApiException(ApiError.ApiError009);
 		}
 
 		Customer customer = deliveryNotes.get(0).getCustomer();
-		PDDocument pdfDocument;
-		try {
-			pdfDocument = PDDocument.load(new File(TEMPLATE_PDF_DOCUMENT));
-		} catch (IOException e) {
-			log.error(e.getMessage(), e);
-			throw new ApiException(ApiError.ApiError009);
-		}
-		PDAcroForm pdfForm = pdfDocument.getDocumentCatalog().getAcroForm();
-
-		setDocumentHeader(pdfForm, customer, invoice);
+		List<PDDocument> pdfDocumentList = new ArrayList<PDDocument>();
+		PDFMergerUtility pdfMergerUtility = new PDFMergerUtility();
+		PDAcroForm pdfForm = addNewPage(pdfDocumentList);
 
 		BigDecimal grossTotal = new BigDecimal(0);
 		BigDecimal vatTotal = new BigDecimal(0);
@@ -82,10 +79,15 @@ public class PdfInvoice {
 		for (DeliveryNote deliveryNote : deliveryNotes) {
 			// Get delivery notes sorted by productCode
 			List<DeliveryNoteItem> deliveryNoteItems = deliveryNote.getDeliveryNoteItems().stream()
-					.sorted(Comparator.comparing(d -> d.getProduct().getCode()))
-					.collect(Collectors.toList());
+					.sorted(Comparator.comparing(d -> d.getProduct().getCode())).collect(Collectors.toList());
 
 			for (DeliveryNoteItem deliveryNoteItem : deliveryNoteItems) {
+
+				if (rowCounter >= MAX_ROW_NUMBER) {
+					rowCounter = 0;
+					pdfForm = addNewPage(pdfDocumentList);
+				}
+
 				BigDecimal quantity = new BigDecimal(deliveryNoteItem.getQuantity());
 				BigDecimal price = new BigDecimal(Double.toString(deliveryNoteItem.getPrice()));
 				BigDecimal partialGross = quantity.multiply(price);
@@ -99,18 +101,41 @@ public class PdfInvoice {
 			}
 		}
 
-		setDocumentFooter(pdfForm, grossTotal, vatTotal);
-
-		// Make form fields not editable
-		pdfForm.getFieldIterator().forEachRemaining(pdField -> pdField.setReadOnly(true));
+		// Set header, footer and pagination for all pages
+		for (int i = 0; i < pdfDocumentList.size(); i++) {
+			PDAcroForm pdfFormIterator = pdfDocumentList.get(i).getDocumentCatalog().getAcroForm();
+			setDocumentHeader(pdfFormIterator, customer, invoice);
+			setDocumentFooter(pdfFormIterator, grossTotal, vatTotal);
+			setPagintationFooter(pdfFormIterator, i + 1, pdfDocumentList.size());
+			// Make form fields not editable
+			pdfFormIterator.getFieldIterator().forEachRemaining(pdField -> pdField.setReadOnly(true));
+		}
 
 		try {
+			// Take first document as root, then append and close the rest
+			PDDocument pdfDocument = pdfDocumentList.get(0);
+			for (int i = 1; i < pdfDocumentList.size(); i++) {
+				pdfMergerUtility.appendDocument(pdfDocument, pdfDocumentList.get(i));
+				pdfDocumentList.get(i).close();
+			}
 			pdfDocument.save(outputStream);
 			pdfDocument.close();
 		} catch (IOException e) {
 			log.error(e.getMessage(), e);
 			throw new ApiException(ApiError.ApiError009);
 		}
+	}
+
+	private static PDAcroForm addNewPage(List<PDDocument> pdfDocumentList) {
+		PDDocument pdfDocument;
+		try {
+			pdfDocument = PDDocument.load(new File(TEMPLATE_PDF_DOCUMENT));
+			pdfDocumentList.add(pdfDocument);
+		} catch (IOException e) {
+			log.error(e.getMessage(), e);
+			throw new ApiException(ApiError.ApiError009);
+		}
+		return pdfDocument.getDocumentCatalog().getAcroForm();
 	}
 
 	private static void setDocumentHeader(PDAcroForm form, Customer customer, Invoice invoice) {
@@ -162,6 +187,17 @@ public class PdfInvoice {
 			form.getField(GROSS_FIELD).setValue(NUMBER_FORMAT.format(grossTotal) + " €");
 			form.getField(VAT_FIELD).setValue(NUMBER_FORMAT.format(vatTotal) + " €");
 			form.getField(AMOUNT_FIELD).setValue(NUMBER_FORMAT.format(netTotal) + " €");
+		} catch (IOException e) {
+			log.error(e.getMessage(), e);
+			log.error("Error filling footer");
+			throw new ApiException(ApiError.ApiError009);
+		}
+	}
+
+	private static void setPagintationFooter(PDAcroForm form, int pageNum, int pageTotal) {
+		try {
+			form.getField(PAGE_NUMBER_FIELD).setValue(String.valueOf(pageNum));
+			form.getField(PAGE_TOTAL_FIELD).setValue(String.valueOf(pageTotal));
 		} catch (IOException e) {
 			log.error(e.getMessage(), e);
 			log.error("Error filling footer");
