@@ -58,15 +58,6 @@ export default {
       }
     };
   },
-  created() {
-    if (this.$store.getters.authenticated) {
-      if (this.$route.query && this.$route.query.destinationURL) {
-        this.$router.push(this.$route.query.destinationURL);
-      } else {
-        this.$router.push("/");
-      }
-    }
-  },
   methods: {
     async login() {
       try {

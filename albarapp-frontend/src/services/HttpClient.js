@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { store } from '../store/store';
+import router from "../router"
 
 const httpClient = axios.create({
     baseURL: process.env.VUE_APP_API_URL,
@@ -20,8 +21,13 @@ httpClient.interceptors.response.use(function (response) {
 }, function (error) {
     if (error?.response?.status === 401 ||
         error?.response?.status === 403) {
-        localStorage.clear();
-        if (!window.location.hash.includes("#/login")) window.location.href = "/#/login?destinationURL=" + window.location.hash.split("#")[1];
+        store.commit("logout");
+        if (router?.currentRoute?.name != "Login") router.go({
+            name: "Login",
+            query: {
+                destinationURL: router.currentRoute.path
+            }
+        });
     } else if (
         error?.response?.data?.errorCode &&
         error?.response?.data?.errorMessage &&

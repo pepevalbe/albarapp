@@ -29,11 +29,7 @@
           <v-list-item-title>Home</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
-      <v-list-item
-        link
-        to="/admin/"
-        v-if="$store.getters.isAdmin"
-      >
+      <v-list-item link to="/admin/" v-if="$store.getters.isAdmin">
         <v-list-item-icon>
           <v-icon>mdi-account-group</v-icon>
         </v-list-item-icon>
@@ -88,12 +84,12 @@ import UserService from "@/services/UserService.js";
 export default {
   name: "WebNavDrawer",
   props: {
-    drawer: Object
+    drawer: Object,
   },
   data: () => {
     return {
       profile: Object,
-      errorLoading: false
+      errorLoading: false,
     };
   },
   async created() {
@@ -114,9 +110,9 @@ export default {
       this.$store.commit("logout");
       this.$router.push({
         path: "/login",
-        query: { destinationURL: window.location.hash.split("#")[1] }
+        query: { destinationURL: this.$router.currentRoute.path },
       });
-    }
-  }
+    },
+  },
 };
 </script>

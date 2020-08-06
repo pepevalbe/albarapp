@@ -111,7 +111,7 @@ const router = new Router({
       component: () => import("@/views/InvoiceUpdate"),
       props: true,
       name: "InvoiceUpdate",
-      meta: { headerName: "Modificar factura"}
+      meta: { headerName: "Modificar factura" }
     },
     {
       path: "/invoice-bill-process/",
@@ -131,6 +131,9 @@ router.beforeEach((to, from, next) => {
         destinationURL: to.path
       }
     })
+  } else if (to.name === "Login" && store.getters.authenticated) {
+    if (to.query?.destinationURL) next({ path: to.query?.destinationURL });
+    else next({ name: "HomePage" });
   } else {
     next();
   }
