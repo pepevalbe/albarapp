@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <v-form v-model="valid">
+    <v-form v-model="valid" @submit.prevent>
       <v-row align="center" justify="center">
         <v-col>
           <v-text-field
