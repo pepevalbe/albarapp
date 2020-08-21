@@ -95,6 +95,12 @@ public class InvoiceService {
 		return invoiceFilterRepository.filter(customerCode, timestampFrom, timestampTo, productCodes, pageable).map(invoiceMapper::map);
 	}
 
+	@Transactional(readOnly = true)
+	public Page<InvoiceDto> getInvoicesInterval(Long idFrom, Long idTo, Pageable pageable) {
+
+		return invoiceRepository.findByIdBetween(idFrom, idTo, pageable).map(invoiceMapper::map);
+	}
+
 	@Transactional
 	public List<InvoiceDto> billProcess(Integer customerCodeFrom, Integer customerCodeTo, Long timestampFrom,
 										Long timestampTo, Long issuedTimestamp) {

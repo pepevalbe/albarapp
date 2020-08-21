@@ -20,6 +20,7 @@ public class InvoiceController {
 
 	private static final String DELIVERY_NOTES_ENDPOINT = "/api/deliveryNotes";
 	private static final String INVOICES_ENDPOINT = "/api/invoices";
+	private static final String INVOICES_INTERVAL_ENDPOINT = "/api/invoices/interval";
 	private static final String INVOICES_BILL_ENDPOINT = "/api/invoices/bill";
 
 	@Autowired
@@ -54,6 +55,14 @@ public class InvoiceController {
 														@PageableDefault(sort = "id") Pageable pageable) {
 
 		return ResponseEntity.ok(invoiceService.getInvoices(customerCode, timestampFrom, timestampTo, productCodes, pageable));
+	}
+
+	@GetMapping(INVOICES_INTERVAL_ENDPOINT)
+	public ResponseEntity<Page<InvoiceDto>> getInvoicesInterval(@RequestParam @Nullable Long idFrom,
+														@RequestParam @Nullable Long idTo,
+														@PageableDefault(sort = "id") Pageable pageable) {
+
+		return ResponseEntity.ok(invoiceService.getInvoicesInterval(idFrom, idTo, pageable));
 	}
 
 	@PostMapping(INVOICES_BILL_ENDPOINT)

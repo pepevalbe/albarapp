@@ -4,6 +4,7 @@ import DeliveryNoteService from "@/services/DeliveryNoteService.js";
 
 const RESOURCE_NAME = '/hateoas/invoices';
 const INVOICE_COMPLETE_ENDPOINT = '/api/invoices';
+const INVOICE_INTERVAL_COMPLETE_ENDPOINT = '/api/invoices/interval';
 const INVOICE_BILL_ENDPOINT = '/api/invoices/bill';
 const INVOICE_DOWNLOAD_EDI_ENDPOINT = '/api/invoices/download/edi';
 const INVOICE_DOWNLOAD_PDF_ENDPOINT = '/api/invoices/download/pdf';
@@ -70,6 +71,32 @@ export default {
         } : null;
 
         return HttpClient.get(INVOICE_COMPLETE_ENDPOINT + queryString, HttpClientOptions)
+            .then(response => {
+                return {
+                    invoices: response.data.content,
+                    totalElements: response.data.totalElements
+                };
+            });
+    },
+
+    getIntervalWithCustomerAndTotal(filter, options) {
+        var params = {};
+        if (filter?.form?.invoiceFilter.idFrom != null) params.idFrom = filter.form.invoiceFilter.idFrom;
+        if (filter?.form?.invoiceFilter.idTo != null) params.idTo = filter.form.invoiceFilter.idTo;
+        if (options?.page) params.page = options.page - 1;
+        if (options?.itemsPerPage) params.size = options.itemsPerPage;
+        if (options?.sortBy?.length) {
+            var direction = options.sortDesc[0] ? 'desc' : 'asc';
+            params.sort = options.sortBy + ',' + direction;
+        }
+
+        var queryString = Object.keys(params).map(function (key) {
+            return key + '=' + params[key]
+        }).join('&');
+
+        if (queryString != "") queryString = '?' + queryString;
+
+        return HttpClient.get(INVOICE_INTERVAL_COMPLETE_ENDPOINT + queryString)
             .then(response => {
                 return {
                     invoices: response.data.content,

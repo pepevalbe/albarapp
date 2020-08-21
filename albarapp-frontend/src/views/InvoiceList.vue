@@ -3,7 +3,7 @@
     <div v-if="!errorLoading">
       <v-layout text-right wrap class="pt-2 pb-5 mr-5">
         <v-flex xs12>
-          <v-btn @click="downloadCsv()" class="ml-2 mt-2">
+          <v-btn :disabled="filter.mode!=='P'" @click="downloadCsv()" class="ml-2 mt-2">
             Exportar a CSV
             <v-icon class="ml-2">mdi-google-spreadsheet</v-icon>
           </v-btn>
@@ -19,20 +19,31 @@
             Facturar albaranes
             <v-icon class="ml-2">mdi-animation</v-icon>
           </v-btn>
-          <v-btn to="/" class="ml-2 mt-2">
-            Nuevo
-            <v-icon class="ml-2">mdi-plus-circle</v-icon>
-          </v-btn>
         </v-flex>
       </v-layout>
       <v-card>
         <v-card-title>Listado de facturas</v-card-title>
-        <v-row>
+        <v-row justify="center">
+          <v-chip-group active-class="primary--text" v-model="filter.mode" mandatory>
+            <v-chip
+              large
+              v-for="mode in filterModes"
+              :key="mode.key"
+              :value="mode.key"
+            >{{mode.name}}</v-chip>
+          </v-chip-group>
+        </v-row>
+        <v-row v-if="filter.mode==='P'">
           <v-col cols="12" md="9">
             <CustomerAndDatesFilterForm v-bind:form="filter.form" />
           </v-col>
           <v-col cols="12" md="3">
             <ProductFilter :products="filter.products" />
+          </v-col>
+        </v-row>
+        <v-row justify="center" v-if="filter.mode==='F'">
+          <v-col cols="12" md="6">
+            <InvoiceIdFilter :invoiceFilter="filter.form.invoiceFilter" />
           </v-col>
         </v-row>
         <v-data-table
@@ -155,12 +166,14 @@
 import InvoiceService from "@/services/InvoiceService.js";
 import CustomerAndDatesFilterForm from "@/components/CustomerAndDatesFilterForm";
 import ProductFilter from "@/components/ProductFilter";
+import InvoiceIdFilter from "@/components/InvoiceIdFilter";
 
 export default {
   name: "InvoiceList",
   components: {
     CustomerAndDatesFilterForm,
-    ProductFilter
+    ProductFilter,
+    InvoiceIdFilter
   },
   data: () => {
     return {
@@ -184,12 +197,22 @@ export default {
       loading: true,
       errorLoading: false,
       totalItems: 0,
+      filterModes: [
+        { key: "P", name: "Filtrar por parámetros" },
+        { key: "F", name: "Buscar por número de factura" }
+      ],
       filter: {
+        mode: "P",
         form: {
           valid: true,
           customerCode: "",
           dateFrom: "",
-          dateTo: ""
+          dateTo: "",
+          invoiceFilter: {
+            enabled: false,
+            idFrom: 0,
+            idTo: 0
+          }
         },
         products: {
           productCodes: []
@@ -219,6 +242,11 @@ export default {
           this.filter.products.productCodes.push(Number(productCode));
         });
       }
+      if (this?.$route?.query?.idFrom) {
+        this.filter.mode = "F";
+        this.filter.form.invoiceFilter.idFrom = this.$route.query.idFrom;
+        this.filter.form.invoiceFilter.idTo = this.$route.query.idTo;
+      }
       if (this.$route.query.page)
         this.options.page = Number(this.$route.query.page);
       if (this.$route.query.itemsPerPage)
@@ -245,10 +273,18 @@ export default {
         this.loading = true;
         this.errorLoading = false;
         this.showSpinner();
-        var response = await InvoiceService.getAllWithCustomerAndTotal(
-          this.filter,
-          this.options
-        );
+        var response;
+        if (this.filter.mode === "F") {
+          response = await InvoiceService.getIntervalWithCustomerAndTotal(
+            this.filter,
+            this.options
+          );
+        } else {
+          response = await InvoiceService.getAllWithCustomerAndTotal(
+            this.filter,
+            this.options
+          );
+        }
         this.invoices = response.invoices;
         this.netTotal = this.invoices.reduce((a, b) => a + (b.total || 0), 0);
         this.selectedInvoices = [];
@@ -332,15 +368,20 @@ export default {
     },
     updateURL() {
       var query = {};
-      if (this.filter.form.customerCode)
-        query.customerCode = this.filter.form.customerCode;
-      if (this.filter.form.dateFrom) query.from = this.filter.form.dateFrom;
-      if (this.filter.form.dateTo) query.to = this.filter.form.dateTo;
-      if (
-        this.filter.products.productCodes &&
-        this.filter.products.productCodes.length
-      )
-        query.productCodes = this.filter.products.productCodes.toString();
+      if (this.filter.mode === "F") {
+        query.idFrom = this.filter.form.invoiceFilter.idFrom;
+        query.idTo = this.filter.form.invoiceFilter.idTo;
+      } else if (this.filter.mode === "P") {
+        if (this.filter.form.customerCode)
+          query.customerCode = this.filter.form.customerCode;
+        if (this.filter.form.dateFrom) query.from = this.filter.form.dateFrom;
+        if (this.filter.form.dateTo) query.to = this.filter.form.dateTo;
+        if (
+          this.filter.products.productCodes &&
+          this.filter.products.productCodes.length
+        )
+          query.productCodes = this.filter.products.productCodes.toString();
+      }
       if (this.options.page) query.page = this.options.page;
       if (this.options.itemsPerPage)
         query.itemsPerPage = this.options.itemsPerPage;

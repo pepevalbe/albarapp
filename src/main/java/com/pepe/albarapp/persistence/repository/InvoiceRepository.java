@@ -59,4 +59,9 @@ public interface InvoiceRepository extends PagingAndSortingRepository<Invoice, L
 			"join fetch dni.product p " +
 			"where i.id in ?1")
 	List<Invoice> findByIdIn(List<Long> ids, Sort sort);
+
+	Page<Invoice> findByIdBetween(Long idFrom, Long idTo, Pageable pageable);
+	
+	List<Invoice> findByIdBetween(Long idFrom, Long idTo);
+
 }
