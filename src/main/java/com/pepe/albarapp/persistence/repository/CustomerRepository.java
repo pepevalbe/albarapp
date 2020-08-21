@@ -26,9 +26,9 @@ public interface CustomerRepository extends CrudRepository<Customer, String> {
 
 	long count();
 
-	@Query(value = "select new com.pepe.albarapp.service.dto.statistics.RankingDto(cus.alias, SUM(dni.quantity*dni.price)) from DeliveryNote dn join dn.customer cus join dn.deliveryNoteItems dni group by cus.id order by SUM(dni.quantity*dni.price) desc")
+	@Query(value = "select new com.pepe.albarapp.service.dto.statistics.RankingDto(cus.alias, SUM(dni.quantity*dni.price*(1+dni.product.tax/100))) from DeliveryNote dn join dn.customer cus join dn.deliveryNoteItems dni group by cus.id order by SUM(dni.quantity*dni.price) desc")
 	List<RankingDto> findTopByDeliveryNoteTotal(Pageable pageable);
 
-	@Query(value = "select new com.pepe.albarapp.service.dto.statistics.RankingDto(cus.alias, SUM(dni.quantity*dni.price)) from DeliveryNote dn join dn.customer cus join dn.deliveryNoteItems dni where dni.product.code in ?1 group by cus.id order by SUM(dni.quantity*dni.price) desc")
+	@Query(value = "select new com.pepe.albarapp.service.dto.statistics.RankingDto(cus.alias, SUM(dni.quantity*dni.price*(1+dni.product.tax/100))) from DeliveryNote dn join dn.customer cus join dn.deliveryNoteItems dni where dni.product.code in ?1 group by cus.id order by SUM(dni.quantity*dni.price) desc")
 	List<RankingDto> findTopByDeliveryNoteTotalFilteredByProducts(List<Integer> productCodes, Pageable pageable);
 }
