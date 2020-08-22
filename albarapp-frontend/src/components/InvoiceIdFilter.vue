@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-form v-model="valid" @submit.prevent>
-      <v-row align="center" justify="center">
+      <v-row class="ml-2 mr-2" align="center" justify="center">
         <v-col>
           <v-text-field
             :rules="fromRules"

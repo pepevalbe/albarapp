@@ -24,7 +24,7 @@
       <v-card>
         <v-card-title>Listado de facturas</v-card-title>
         <v-row justify="center">
-          <v-chip-group active-class="primary--text" v-model="filter.mode" mandatory>
+          <v-chip-group active-class="primary--text" class="ml-6 mr-6" column v-model="filter.mode" mandatory>
             <v-chip
               large
               v-for="mode in filterModes"
