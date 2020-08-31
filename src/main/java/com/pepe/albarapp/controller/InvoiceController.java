@@ -7,6 +7,7 @@ import com.pepe.albarapp.service.dto.InvoiceDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
@@ -30,7 +31,7 @@ public class InvoiceController {
 	public ResponseEntity<Page<DeliveryNoteDto>> getDeliveryNotes(@RequestParam @Nullable Integer customerCode,
 																  @RequestParam @Nullable Long timestampFrom,
 																  @RequestParam @Nullable Long timestampTo,
-																  @PageableDefault(sort = "id") Pageable pageable) {
+																  @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
 
 		return ResponseEntity.ok(invoiceService.getDeliveryNotes(customerCode, timestampFrom, timestampTo, pageable));
 	}
@@ -52,7 +53,7 @@ public class InvoiceController {
 														@RequestParam @Nullable Long timestampFrom,
 														@RequestParam @Nullable Long timestampTo,
 														@RequestParam @Nullable List<Integer> productCodes,
-														@PageableDefault(sort = "id") Pageable pageable) {
+														@PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
 
 		return ResponseEntity.ok(invoiceService.getInvoices(customerCode, timestampFrom, timestampTo, productCodes, pageable));
 	}
@@ -60,7 +61,7 @@ public class InvoiceController {
 	@GetMapping(INVOICES_INTERVAL_ENDPOINT)
 	public ResponseEntity<Page<InvoiceDto>> getInvoicesInterval(@RequestParam @Nullable Long idFrom,
 														@RequestParam @Nullable Long idTo,
-														@PageableDefault(sort = "id") Pageable pageable) {
+														@PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
 
 		return ResponseEntity.ok(invoiceService.getInvoicesInterval(idFrom, idTo, pageable));
 	}
