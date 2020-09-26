@@ -1,6 +1,6 @@
 import axios from 'axios';
-import { store } from '../store/store';
-import router from "../router"
+import { store } from '@/store/store';
+import router from "@/router"
 
 const httpClient = axios.create({
     baseURL: process.env.VUE_APP_API_URL,
