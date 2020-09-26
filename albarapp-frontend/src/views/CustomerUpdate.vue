@@ -47,27 +47,27 @@ export default {
   name: "CustomerUpdate",
   components: {
     CustomerForm,
-    CustomerPriceTable
+    CustomerPriceTable,
   },
   data: () => ({
     form: {
       valid: false,
       switchAecoc: false,
-      customer: null
+      customer: null,
     },
     errorLoading: false,
     snackbar: {
       show: false,
       message: "",
-      color: ""
+      color: "",
     },
     spinner: {
       loading: false,
-      counter: 0
-    }
+      counter: 0,
+    },
   }),
   props: {
-    customerId: String
+    customerId: String,
   },
   async created() {
     this.loadCustomer();
@@ -102,19 +102,19 @@ export default {
         this.snackbar = {
           show: true,
           message: "Cliente actualizado correctamente",
-          color: "success"
+          color: "success",
         };
       } catch (e) {
         this.snackbar = {
           show: true,
           message:
             "No se ha podido modificar el cliente, por favor vuelva a intentarlo.",
-          color: "error"
+          color: "error",
         };
       } finally {
         this.closeSpinner();
       }
-    }
-  }
+    },
+  },
 };
 </script>

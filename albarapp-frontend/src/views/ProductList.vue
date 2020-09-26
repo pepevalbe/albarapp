@@ -19,6 +19,7 @@
             label="Buscar ..."
             single-line
             hide-details
+            autocomplete="off"
           ></v-text-field>
         </v-card-title>
         <v-data-table
@@ -108,7 +109,7 @@ export default {
         { text: "Nombre", sortable: false, value: "name" },
         { text: "Precio estándar", sortable: true, value: "factoryPrice" },
         { text: "Tipo impositivo (%)", sortable: false, value: "tax" },
-        { text: "", sortable: false, value: "update" }
+        { text: "", sortable: false, value: "update" },
       ],
       search: "",
       sortBy: "code",
@@ -116,8 +117,8 @@ export default {
       errorLoading: false,
       spinner: {
         loading: false,
-        counter: 0
-      }
+        counter: 0,
+      },
     };
   },
   async created() {
@@ -138,10 +139,10 @@ export default {
     updateProduct(item) {
       this.$router.push({
         name: "ProductUpdate",
-        params: { productId: item.id }
+        params: { productId: item.id },
       });
-    }
-  }
+    },
+  },
 };
 </script>
 

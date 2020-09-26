@@ -45,17 +45,17 @@ export default {
       email: "",
       password: "",
       valid: false,
-      passwordRules: [v => !!v || "Password obligatoria"],
-      emailRules: [v => !!v, v => /.+@.+\..+/.test(v) || "Email inválido"],
+      passwordRules: [(v) => !!v || "Password obligatoria"],
+      emailRules: [(v) => !!v, (v) => /.+@.+\..+/.test(v) || "Email inválido"],
       snackbar: {
         show: false,
         message: "",
-        color: ""
+        color: "",
       },
       spinner: {
         loading: false,
-        counter: 0
-      }
+        counter: 0,
+      },
     };
   },
   methods: {
@@ -67,7 +67,7 @@ export default {
           this.snackbar = {
             show: true,
             message: "Email o credenciales incorrectas.",
-            color: "error"
+            color: "error",
           };
           this.password = "";
 
@@ -84,12 +84,12 @@ export default {
         this.snackbar = {
           show: true,
           message: "Error al intentar realizar la identificación.",
-          color: "error"
+          color: "error",
         };
       } finally {
         this.closeSpinner();
       }
-    }
-  }
+    },
+  },
 };
 </script>

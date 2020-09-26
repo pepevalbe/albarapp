@@ -34,14 +34,14 @@ export default {
     return {
       ranking: [],
       errorLoading: false,
-      rankingReady: false
+      rankingReady: false,
     };
   },
   created() {
     this.getRanking();
     this.$watch(
       "$store.getters.statisticsProductFilter",
-      function() {
+      function () {
         this.getRanking();
       },
       { deep: true }
@@ -51,14 +51,14 @@ export default {
     getRanking() {
       this.errorLoading = false;
       StatisticService.getRanking(this.$store.getters.statisticsProductFilter)
-        .then(response => {
+        .then((response) => {
           this.ranking = response;
           this.rankingReady = true;
         })
         .catch(() => {
           this.errorLoading = true;
         });
-    }
-  }
+    },
+  },
 };
 </script>

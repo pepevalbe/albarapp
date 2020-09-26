@@ -45,21 +45,21 @@ export default {
       errorLoading: false,
       answers: [],
       answerStatus: [],
-      questionReady: false
+      questionReady: false,
     };
   },
   created() {
     this.getQuestion();
   },
   methods: {
-    getQuestion: function() {
+    getQuestion: function () {
       this.errorLoading = false;
       HttpClient.get("api/trivia")
-        .then(response => {
+        .then((response) => {
           var answers = [
-            decodeURIComponent(response.data.results[0].correct_answer)
+            decodeURIComponent(response.data.results[0].correct_answer),
           ];
-          response.data.results[0].incorrect_answers.forEach(function(item) {
+          response.data.results[0].incorrect_answers.forEach(function (item) {
             answers.push(decodeURIComponent(item));
           });
           this.shuffleArray(answers);
@@ -75,23 +75,23 @@ export default {
           this.errorLoading = true;
         });
     },
-    checkAnswer: function(index) {
+    checkAnswer: function (index) {
       if (this.answers[index] == this.rightAnswer) {
         this.$set(this.answerStatus, index, 2);
         var vm = this;
-        setTimeout(function() {
+        setTimeout(function () {
           vm.getQuestion();
         }, 1000);
       } else {
         this.$set(this.answerStatus, index, 1);
       }
     },
-    shuffleArray: function(array) {
+    shuffleArray: function (array) {
       for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [array[i], array[j]] = [array[j], array[i]];
       }
-    }
-  }
+    },
+  },
 };
 </script>

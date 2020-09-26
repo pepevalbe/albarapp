@@ -52,16 +52,16 @@ export default {
   name: "DeliveryNoteItemTable",
   props: {
     deliveryNoteItems: Array,
-    deliveryNoteTotal: Object
+    deliveryNoteTotal: Object,
   },
   methods: {
     removeDeliveryNoteItem(deliveryNoteItem) {
       this.deliveryNoteItems.splice(
-        this.deliveryNoteItems.findIndex(item => item === deliveryNoteItem),
+        this.deliveryNoteItems.findIndex((item) => item === deliveryNoteItem),
         1
       );
       this.deliveryNoteTotal.value -= deliveryNoteItem.net;
-    }
-  }
+    },
+  },
 };
 </script>

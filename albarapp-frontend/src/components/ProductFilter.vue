@@ -37,11 +37,11 @@ export default {
   name: "ProductFilter",
   props: {
     products: {
-      productCodes: Array
-    }
+      productCodes: Array,
+    },
   },
   data: () => ({
-    totalProducts: []
+    totalProducts: [],
   }),
   created() {
     this.listProducts();
@@ -49,10 +49,10 @@ export default {
   methods: {
     async listProducts() {
       this.totalProducts = await ProductService.getAll();
-      this.totalProducts.sort(function(a, b) {
+      this.totalProducts.sort(function (a, b) {
         return a.code > b.code ? 1 : -1;
       });
-    }
-  }
+    },
+  },
 };
 </script>

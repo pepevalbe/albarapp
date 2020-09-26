@@ -10,15 +10,15 @@ import ProductFilter from "@/components/ProductFilter";
 export default {
   name: "StatisticsFilter",
   components: {
-    ProductFilter
+    ProductFilter,
   },
   data: () => {
     return {
       filter: {
         products: {
-          productCodes: []
-        }
-      }
+          productCodes: [],
+        },
+      },
     };
   },
   created() {
@@ -26,12 +26,12 @@ export default {
     this.filter.products.productCodes = this.$store.getters.statisticsProductFilter;
     this.$watch(
       "filter",
-      function() {
+      function () {
         this.$store.commit("filterStatistics", vm.filter.products.productCodes);
       },
       { deep: true }
     );
   },
-  methods: {}
+  methods: {},
 };
 </script>

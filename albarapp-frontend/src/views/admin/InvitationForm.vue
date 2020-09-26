@@ -2,7 +2,7 @@
   <v-flex align-self-start>
     <v-form ref="form" v-model="valid">
       <v-subheader class="title ml-1">Invitar usuario</v-subheader>
-      <v-text-field v-model="email" :rules="emailRules" label="Email" required></v-text-field>
+      <v-text-field v-model="email" :rules="emailRules" autocomplete="off" label="Email" required></v-text-field>
       <v-select v-model="role" :items="roles" :rules="roleRules" label="Tipo" required></v-select>
     </v-form>
     <v-btn class="mr-4" to="/admin">Volver</v-btn>
@@ -28,19 +28,19 @@ export default {
     role: null,
     roles: ["USER", "ADMIN"],
     emailRules: [
-      v => !!v || "El email es necesario",
-      v => /.+@.+\..+/.test(v) || "Email inválido"
+      (v) => !!v || "El email es necesario",
+      (v) => /.+@.+\..+/.test(v) || "Email inválido",
     ],
-    roleRules: [v => !!v || "El tipo es necesario"],
+    roleRules: [(v) => !!v || "El tipo es necesario"],
     snackbar: {
       show: false,
       message: "",
-      color: ""
+      color: "",
     },
     spinner: {
       loading: false,
-      counter: 0
-    }
+      counter: 0,
+    },
   }),
   methods: {
     async sendInvitation() {
@@ -50,19 +50,19 @@ export default {
         this.snackbar = {
           show: true,
           message: "Invitación enviada correctamente",
-          color: "success"
+          color: "success",
         };
         this.$refs.form.reset();
       } catch {
         this.snackbar = {
           show: true,
           message: "Ha ocurrido un error al intentar enviar la invitación",
-          color: "error"
+          color: "error",
         };
       } finally {
         this.closeSpinner();
       }
-    }
-  }
+    },
+  },
 };
 </script>

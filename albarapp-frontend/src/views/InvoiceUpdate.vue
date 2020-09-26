@@ -12,6 +12,7 @@
               label="Número de factura"
               required
               readonly
+              autocomplete="off"
             ></v-text-field>
           </v-col>
           <v-col cols="12" md="2">
@@ -22,6 +23,7 @@
               label="Cliente"
               required
               readonly
+              autocomplete="off"
             ></v-text-field>
           </v-col>
           <v-col cols="12" md="2">
@@ -41,6 +43,7 @@
                   label="Fecha"
                   hint="Formato: ddMMaaaa"
                   persistent-hint
+                  autocomplete="off"
                   @focus="$event.target.select()"
                   prepend-icon="mdi-calendar"
                   @blur="parseDateText()"
@@ -65,6 +68,7 @@
               suffix=" €"
               required
               readonly
+              autocomplete="off"
             ></v-text-field>
           </v-col>
         </v-row>
@@ -329,32 +333,32 @@ export default {
           deliveryNotes: [
             {
               customer: {
-                alias: ""
+                alias: "",
               },
               deliveryNoteTotal: {
-                value: 0
-              }
-            }
+                value: 0,
+              },
+            },
           ],
-          total: 0
-        }
+          total: 0,
+        },
       },
       headers: [
         { text: "Nº Albarán", sortable: true, value: "id" },
         {
           text: "Nº pedido",
           sortable: false,
-          value: "auxDeliveryNoteNr"
+          value: "auxDeliveryNoteNr",
         },
         { text: "Fecha", sortable: false, value: "dateFormatted" },
         {
           text: "Productos",
           sortable: false,
-          value: "deliveryNoteItems"
+          value: "deliveryNoteItems",
         },
         { text: "Total", sortable: false, value: "total" },
         { text: "", sortable: false, value: "edit" },
-        { text: "", sortable: false, value: "disassociate" }
+        { text: "", sortable: false, value: "disassociate" },
       ],
       dateFormattedText: "",
       menuDatePicker: false,
@@ -364,25 +368,25 @@ export default {
       dialogDisassociate: {
         show: false,
         deliveryNote: {},
-        invoice: {}
+        invoice: {},
       },
       dialogAssociate: {
         show: false,
-        deliveryNotes: []
+        deliveryNotes: [],
       },
       dialogConfirmAssociate: {
         show: false,
         deliveryNote: {},
-        invoice: {}
+        invoice: {},
       },
       spinner: {
         loading: false,
-        counter: 0
-      }
+        counter: 0,
+      },
     };
   },
   props: {
-    invoiceId: String
+    invoiceId: String,
   },
   created() {
     this.loadInvoice();
@@ -432,7 +436,7 @@ export default {
         this.snackbar = {
           show: true,
           message: "Albarán actualizado correctamente.",
-          color: "success"
+          color: "success",
         };
         this.loadInvoice();
       } catch {
@@ -440,7 +444,7 @@ export default {
           show: true,
           message:
             "Ha ocurrido un error al intentar modificar la factura, por favor vuelva a intentarlo.",
-          color: "error"
+          color: "error",
         };
       } finally {
         this.closeSpinner();
@@ -454,7 +458,7 @@ export default {
     editDeliveryNote(deliveryNote) {
       this.$router.push({
         name: "DeliveryNoteUpdate",
-        params: { deliveryNoteId: deliveryNote.id.toString() }
+        params: { deliveryNoteId: deliveryNote.id.toString() },
       });
     },
     async confirmDisassociate() {
@@ -467,7 +471,7 @@ export default {
         this.snackbar = {
           show: true,
           message: "Albarán desasociado correctamente.",
-          color: "success"
+          color: "success",
         };
         this.loadInvoice();
       } catch {
@@ -475,7 +479,7 @@ export default {
           show: true,
           message:
             "Ha ocurrido un error al intentar desasociar el albarán de la factura, por favor vuelva a intentarlo.",
-          color: "error"
+          color: "error",
         };
       } finally {
         this.closeSpinner();
@@ -493,7 +497,7 @@ export default {
           show: true,
           message:
             "Error al consultar los albaranes pendientes, por favor vuelva a intentarlo.",
-          color: "error"
+          color: "error",
         };
       } finally {
         this.closeSpinner();
@@ -516,7 +520,7 @@ export default {
         this.snackbar = {
           show: true,
           message: "Albarán asociado correctamente.",
-          color: "success"
+          color: "success",
         };
         this.loadInvoice();
       } catch {
@@ -524,12 +528,12 @@ export default {
           show: true,
           message:
             "Ha ocurrido un error al intentar asociar el albarán a la factura, por favor vuelva a intentarlo.",
-          color: "error"
+          color: "error",
         };
       } finally {
         this.closeSpinner();
       }
-    }
-  }
+    },
+  },
 };
 </script>

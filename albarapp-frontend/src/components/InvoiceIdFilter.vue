@@ -8,11 +8,19 @@
             class="mr-5"
             v-model="idFrom"
             type="number"
+            autocomplete="off"
             label="Desde"
           ></v-text-field>
         </v-col>
         <v-col>
-          <v-text-field :rules="toRules" class="mr-5" v-model="idTo" type="number" label="Hasta"></v-text-field>
+          <v-text-field
+            :rules="toRules"
+            class="mr-5"
+            v-model="idTo"
+            type="number"
+            autocomplete="off"
+            label="Hasta"
+          ></v-text-field>
         </v-col>
         <v-col>
           <v-btn type="submit" :disabled="!valid" @click="filter">
@@ -30,16 +38,16 @@ export default {
   props: {
     invoiceFilter: {
       idFrom: Number,
-      idTo: Number
-    }
+      idTo: Number,
+    },
   },
   data: () => {
     return {
       idFrom: 0,
       idTo: 0,
       valid: true,
-      fromRules: [v => !!v || "Dato obligatorio"],
-      toRules: [v => !!v || "Dato obligatorio"]
+      fromRules: [(v) => !!v || "Dato obligatorio"],
+      toRules: [(v) => !!v || "Dato obligatorio"],
     };
   },
   created() {
@@ -50,7 +58,7 @@ export default {
     filter() {
       this.invoiceFilter.idFrom = this.idFrom;
       this.invoiceFilter.idTo = this.idTo;
-    }
-  }
+    },
+  },
 };
 </script>

@@ -38,22 +38,22 @@ export default {
   name: "CustomerDetail",
   components: {
     CustomerForm,
-    CustomerPriceTable
+    CustomerPriceTable,
   },
   data: () => ({
     form: {
       valid: false,
       switchAecoc: false,
-      customer: null
+      customer: null,
     },
     errorLoading: false,
     spinner: {
       loading: false,
-      counter: 0
-    }
+      counter: 0,
+    },
   }),
   props: {
-    customerId: String
+    customerId: String,
   },
   async created() {
     this.loadCustomer();
@@ -75,7 +75,7 @@ export default {
       } finally {
         this.closeSpinner();
       }
-    }
-  }
+    },
+  },
 };
 </script>

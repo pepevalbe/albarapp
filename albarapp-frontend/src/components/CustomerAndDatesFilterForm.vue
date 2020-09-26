@@ -21,7 +21,7 @@
                     return-object
                     clearable
                     no-data-text="Sin coincidencias"
-                    v-on:change="selectCustomerByAlias()"
+                    @change="selectCustomerByAlias()"
                   >
                     <template v-slot:prepend>
                       <v-btn
@@ -57,6 +57,7 @@
                         label="Desde"
                         hint="Formato: ddMMaaaa"
                         persistent-hint
+                        autocomplete="off"
                         @focus="$event.target.select()"
                         prepend-icon="mdi-calendar"
                         @blur="parseDateFromText()"
@@ -91,6 +92,7 @@
                         label="Hasta"
                         hint="Formato: ddMMaaaa"
                         persistent-hint
+                        autocomplete="off"
                         @focus="$event.target.select()"
                         prepend-icon="mdi-calendar"
                         @blur="parseDateToText()"
@@ -136,16 +138,16 @@ export default {
       valid: Boolean,
       customerCode: String,
       dateFrom: String,
-      dateTo: String
-    }
+      dateTo: String,
+    },
   },
   data: () => ({
     panelsExpanded: null,
     customerCode: "",
     customerCodeRules: [
-      v =>
+      (v) =>
         (v && v > 0 && v <= 99999) ||
-        "El código debe tener un máximo de 5 dígitos"
+        "El código debe tener un máximo de 5 dígitos",
     ],
     customers: [],
     customer: {},
@@ -156,8 +158,8 @@ export default {
     errorLoading: false,
     spinner: {
       loading: false,
-      counter: 0
-    }
+      counter: 0,
+    },
   }),
   created() {
     this.loadPage();
@@ -173,11 +175,11 @@ export default {
         this.showSpinner();
         this.errorLoading = false;
         this.customers = await CustomerService.getAll();
-        this.customers.forEach(function(element) {
+        this.customers.forEach(function (element) {
           element.alias =
             element.code + " - " + element.alias + " - " + element.name;
         });
-        this.customers.sort(function(a, b) {
+        this.customers.sort(function (a, b) {
           if (a.code < b.code) return -1;
           if (a.code > b.code) return 1;
           if (a.code == b.code) return 0;
@@ -192,7 +194,7 @@ export default {
     selectCustomerByCode() {
       var vm = this;
       if (this.form.customerCode != "" && this.form.customerCode != null) {
-        var index = this.customers.findIndex(function(element) {
+        var index = this.customers.findIndex(function (element) {
           return element.code == vm.form.customerCode;
         });
         if (index === -1) {
@@ -287,7 +289,7 @@ export default {
         this.form.dateTo = "";
         this.dateToFormatted = "";
       }
-    }
-  }
+    },
+  },
 };
 </script>

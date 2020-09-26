@@ -10,6 +10,7 @@
             :counter="5"
             autofocus
             :rules="codeFromRules"
+            autocomplete="off"
             label="Código desde *"
             required
           ></v-text-field>
@@ -19,6 +20,7 @@
             v-model="form.customerCodeTo"
             :counter="5"
             :rules="codeToRules"
+            autocomplete="off"
             label="Código hasta *"
             required
           ></v-text-field>
@@ -42,6 +44,7 @@
                 label="Fecha desde"
                 hint="Formato: ddMMaaaa"
                 :rules="dateFromRules"
+                autocomplete="off"
                 persistent-hint
                 @focus="$event.target.select()"
                 prepend-icon="mdi-calendar"
@@ -75,6 +78,7 @@
                 label="Fecha hasta"
                 hint="Formato: ddMMaaaa"
                 :rules="dateToRules"
+                autocomplete="off"
                 persistent-hint
                 @focus="$event.target.select()"
                 prepend-icon="mdi-calendar"
@@ -110,6 +114,7 @@
                 label="Fecha de emisión"
                 hint="Formato: ddMMaaaa"
                 :rules="issuedDateRules"
+                autocomplete="off"
                 persistent-hint
                 @focus="$event.target.select()"
                 prepend-icon="mdi-calendar"
@@ -173,40 +178,40 @@ export default {
       issuedDate: "",
       issuedDateFormatted: "",
       customerCodeFrom: "",
-      customerCodeTo: ""
+      customerCodeTo: "",
     },
     menuDateFromPicker: false,
     menuDateToPicker: false,
     menuIssuedDatePicker: false,
     dialogInvoicesCreated: {
-      show: false
+      show: false,
     },
     invoicesCreated: [],
     snackbar: {
       show: false,
       message: "",
-      color: ""
+      color: "",
     },
     spinner: {
       loading: false,
-      counter: 0
+      counter: 0,
     },
     numberInvoicesCreated: "",
     codeFromRules: [
-      v => !!v || "El código es obligatorio",
-      v =>
+      (v) => !!v || "El código es obligatorio",
+      (v) =>
         (v && v > 0 && v <= 99999) ||
-        "El código debe tener un máximo de 5 dígitos"
+        "El código debe tener un máximo de 5 dígitos",
     ],
     codeToRules: [
-      v => !!v || "El código es obligatorio",
-      v =>
+      (v) => !!v || "El código es obligatorio",
+      (v) =>
         (v && v > 0 && v <= 99999) ||
-        "El código debe tener un máximo de 5 dígitos"
+        "El código debe tener un máximo de 5 dígitos",
     ],
-    dateFromRules: [v => !!v || "La fecha desde es obligatoria"],
-    dateToRules: [v => !!v || "La fecha hasta es obligatoria"],
-    issuedDateRules: [v => !!v || "La fecha de emisión es obligatoria"]
+    dateFromRules: [(v) => !!v || "La fecha desde es obligatoria"],
+    dateToRules: [(v) => !!v || "La fecha hasta es obligatoria"],
+    issuedDateRules: [(v) => !!v || "La fecha de emisión es obligatoria"],
   }),
   methods: {
     async createInvoices() {
@@ -224,7 +229,7 @@ export default {
             .format("x")
         );
         this.numberInvoicesCreated = invoicesCreated.length;
-        this.invoicesCreated = invoicesCreated.map(dto => dto.id);
+        this.invoicesCreated = invoicesCreated.map((dto) => dto.id);
         if (this.numberInvoicesCreated) {
           this.dialogInvoicesCreated.show = true;
           this.$refs.form.reset();
@@ -233,7 +238,7 @@ export default {
             show: true,
             message:
               "No hay albaranes pendientes de facturar, por favor revisa los datos introducidos.",
-            color: "error"
+            color: "error",
           };
         }
       } catch {
@@ -241,7 +246,7 @@ export default {
           show: true,
           message:
             "No se ha podido generar las facturas, por favor vuelva a intentarlo.",
-          color: "error"
+          color: "error",
         };
       } finally {
         this.closeSpinner();
@@ -261,7 +266,7 @@ export default {
           show: true,
           message:
             "No se ha podido descargar las facturas, por favor descárguelas desde el listado.",
-          color: "error"
+          color: "error",
         };
       } finally {
         this.closeSpinner();
@@ -323,7 +328,7 @@ export default {
         this.form.issuedDate = "";
         this.form.issuedDateFormatted = "";
       }
-    }
-  }
+    },
+  },
 };
 </script>

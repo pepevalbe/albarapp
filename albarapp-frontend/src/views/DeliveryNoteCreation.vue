@@ -1,6 +1,6 @@
 <template>
   <v-flex align-self-start>
-    <DeliveryNoteForm v-bind:form="form" @saveClicked="createDeliveryNote" ref="form"></DeliveryNoteForm>
+    <DeliveryNoteForm :form="form" @saveClicked="createDeliveryNote" ref="form"></DeliveryNoteForm>
     <v-snackbar v-model="snackbar">
       Albarán creado correctamente
       <v-btn color="success" text @click="snackbar = false">Cerrar</v-btn>
@@ -18,7 +18,7 @@ import DeliveryNoteService from "@/services/DeliveryNoteService.js";
 export default {
   name: "DeliveryNoteCreation",
   components: {
-    DeliveryNoteForm
+    DeliveryNoteForm,
   },
   data: () => ({
     form: {
@@ -30,16 +30,16 @@ export default {
         issuedTimestamp: 0,
         date: "",
         deliveryNoteItems: [],
-        deliveryNoteTotal: { value: 0 }
+        deliveryNoteTotal: { value: 0 },
       },
       deliveryNoteItems: [],
-      deliveryNoteTotal: { value: 0 }
+      deliveryNoteTotal: { value: 0 },
     },
     snackbar: false,
     spinner: {
       loading: false,
-      counter: 0
-    }
+      counter: 0,
+    },
   }),
   mounted() {
     this.setDateToday();
@@ -61,7 +61,7 @@ export default {
       this.closeSpinner();
       this.reset();
       this.snackbar = true;
-    }
-  }
+    },
+  },
 };
 </script>

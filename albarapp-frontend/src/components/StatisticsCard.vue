@@ -34,24 +34,24 @@ export default {
     return {
       statistics: [],
       errorLoading: false,
-      statisticsReady: false
+      statisticsReady: false,
     };
   },
   created() {
     this.getStatistics();
   },
   methods: {
-    getStatistics: function() {
+    getStatistics: function () {
       this.errorLoading = false;
       StatisticService.getQuantities()
-        .then(response => {
+        .then((response) => {
           this.statistics = response;
           this.statisticsReady = true;
         })
         .catch(() => {
           this.errorLoading = true;
         });
-    }
-  }
+    },
+  },
 };
 </script>

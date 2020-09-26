@@ -24,7 +24,13 @@
       <v-card>
         <v-card-title>Listado de facturas</v-card-title>
         <v-row justify="center">
-          <v-chip-group active-class="primary--text" class="ml-6 mr-6" column v-model="filter.mode" mandatory>
+          <v-chip-group
+            active-class="primary--text"
+            class="ml-6 mr-6"
+            column
+            v-model="filter.mode"
+            mandatory
+          >
             <v-chip
               large
               v-for="mode in filterModes"
@@ -35,7 +41,7 @@
         </v-row>
         <v-row v-if="filter.mode==='P'">
           <v-col cols="12" md="9">
-            <CustomerAndDatesFilterForm v-bind:form="filter.form" />
+            <CustomerAndDatesFilterForm :form="filter.form" />
           </v-col>
           <v-col cols="12" md="3">
             <ProductFilter :products="filter.products" />
@@ -173,7 +179,7 @@ export default {
   components: {
     CustomerAndDatesFilterForm,
     ProductFilter,
-    InvoiceIdFilter
+    InvoiceIdFilter,
   },
   data: () => {
     return {
@@ -182,7 +188,7 @@ export default {
       selectedInvoices: [],
       footerProps: {
         itemsPerPageOptions: [15, 30, 45, 60, 75],
-        showFirstLastPage: true
+        showFirstLastPage: true,
       },
       options: {
         page: 1,
@@ -192,14 +198,14 @@ export default {
         groupBy: [],
         groupDesc: [],
         mustSort: false,
-        multiSort: false
+        multiSort: false,
       },
       loading: true,
       errorLoading: false,
       totalItems: 0,
       filterModes: [
         { key: "P", name: "Filtrar por parámetros" },
-        { key: "F", name: "Buscar por número de factura" }
+        { key: "F", name: "Buscar por número de factura" },
       ],
       filter: {
         mode: "P",
@@ -211,22 +217,22 @@ export default {
           invoiceFilter: {
             enabled: false,
             idFrom: 0,
-            idTo: 0
-          }
+            idTo: 0,
+          },
         },
         products: {
-          productCodes: []
-        }
+          productCodes: [],
+        },
       },
       spinner: {
         loading: false,
-        counter: 0
+        counter: 0,
       },
       snackbar: {
         show: false,
         message: "",
-        color: ""
-      }
+        color: "",
+      },
     };
   },
   async created() {
@@ -238,7 +244,7 @@ export default {
       if (this.$route.query.to) this.filter.form.dateTo = this.$route.query.to;
       if (this.$route.query.productCodes) {
         var productCodes = this.$route.query.productCodes.split(",");
-        productCodes.forEach(productCode => {
+        productCodes.forEach((productCode) => {
           this.filter.products.productCodes.push(Number(productCode));
         });
       }
@@ -260,7 +266,7 @@ export default {
     this.$watch("options", this.listInvoices, { deep: true });
     this.$watch(
       "filter",
-      function() {
+      function () {
         if (this.options.page != 1) this.options.page = 1;
         else this.listInvoices();
       },
@@ -300,7 +306,7 @@ export default {
     updateInvoice(item) {
       this.$router.push({
         name: "InvoiceUpdate",
-        params: { invoiceId: item.id.toString() }
+        params: { invoiceId: item.id.toString() },
       });
     },
     getHeaders() {
@@ -311,11 +317,11 @@ export default {
         {
           text: "Total: " + this.currencyFormatted(this.netTotal),
           sortable: false,
-          value: "total"
+          value: "total",
         },
         { text: "", sortable: false, value: "update" },
         { text: "", sortable: false, value: "downloadPdf" },
-        { text: "", sortable: false, value: "downloadEdi" }
+        { text: "", sortable: false, value: "downloadEdi" },
       ];
       return headers;
     },
@@ -328,7 +334,7 @@ export default {
           show: true,
           message:
             "No se ha podido descargar la factura, por favor vuelva a intentarlo.",
-          color: "error"
+          color: "error",
         };
       } finally {
         this.closeSpinner();
@@ -343,7 +349,7 @@ export default {
           show: true,
           message:
             "No se ha podido descargar la factura, por favor vuelva a intentarlo.",
-          color: "error"
+          color: "error",
         };
       } finally {
         this.closeSpinner();
@@ -353,14 +359,14 @@ export default {
       try {
         this.showSpinner();
         await InvoiceService.downloadPdfMultiple(
-          this.selectedInvoices.map(dto => dto.id)
+          this.selectedInvoices.map((dto) => dto.id)
         );
       } catch {
         this.snackbar = {
           show: true,
           message:
             "No se ha podido descargar las facturas, por favor vuelva a intentarlo.",
-          color: "error"
+          color: "error",
         };
       } finally {
         this.closeSpinner();
@@ -390,7 +396,7 @@ export default {
       this.$router
         .push({
           path: this.$route.path,
-          query: query
+          query: query,
         })
         .catch(() => {});
     },
@@ -403,12 +409,12 @@ export default {
           show: true,
           message:
             "No se ha podido descargar el informe, por favor vuelva a intentarlo.",
-          color: "error"
+          color: "error",
         };
       } finally {
         this.closeSpinner();
       }
-    }
-  }
+    },
+  },
 };
 </script>

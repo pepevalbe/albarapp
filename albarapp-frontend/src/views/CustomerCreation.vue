@@ -1,10 +1,10 @@
 <template>
   <v-flex align-self-start>
-    <CustomerForm v-bind:form="form" ref="form"></CustomerForm>
+    <CustomerForm :form="form" ref="form"></CustomerForm>
     <div class="mb-3"></div>
     <CustomerPriceTable
       v-if="form.customer.customerProductPrices"
-      v-bind:customerProductPrices="form.customer.customerProductPrices"
+      :customerProductPrices="form.customer.customerProductPrices"
     ></CustomerPriceTable>
     <div class="mb-10"></div>
     <v-layout text-center wrap class="pt-10">
@@ -33,7 +33,7 @@ export default {
   name: "CustomerCreation",
   components: {
     CustomerPriceTable,
-    CustomerForm
+    CustomerForm,
   },
   data: () => ({
     form: {
@@ -49,18 +49,18 @@ export default {
         province: "",
         phoneNumber: "",
         customerAecocInfo: null,
-        customerProductPrices: []
-      }
+        customerProductPrices: [],
+      },
     },
     snackbar: {
       show: false,
       message: "",
-      color: ""
+      color: "",
     },
     spinner: {
       loading: false,
-      counter: 0
-    }
+      counter: 0,
+    },
   }),
   methods: {
     async createCustomer() {
@@ -70,7 +70,7 @@ export default {
         this.snackbar = {
           show: true,
           message: "Cliente creado correctamente",
-          color: "success"
+          color: "success",
         };
         this.reset();
       } catch (e) {
@@ -78,7 +78,7 @@ export default {
           show: true,
           message:
             "No se ha podido crear el cliente, por favor vuelva a intentarlo.",
-          color: "error"
+          color: "error",
         };
       } finally {
         this.closeSpinner();
@@ -87,7 +87,7 @@ export default {
     reset() {
       this.$refs.form.reset();
       this.form.customer.customerProductPrices = [];
-    }
-  }
+    },
+  },
 };
 </script>

@@ -1,11 +1,11 @@
 <template>
   <div>
-    <WebNavDrawer v-if="$store.getters.authenticated" v-bind:drawer="drawer" />
+    <WebNavDrawer v-if="$store.getters.authenticated" :drawer="drawer" />
     <v-app-bar color="darken-3" dark app :clipped-left="$vuetify.breakpoint.mdAndUp" fixed>
       <v-app-bar-nav-icon @click="toggleNavDrawer"></v-app-bar-nav-icon>
       <v-toolbar-title class="headline text-uppercase">
         <a href="/">Albarapp</a>
-        <span class="font-weight-light"> - {{currentStateHeaderName}}</span>
+        <span class="font-weight-light">- {{currentStateHeaderName}}</span>
       </v-toolbar-title>
     </v-app-bar>
   </div>
@@ -16,25 +16,25 @@ import WebNavDrawer from "@/components/TheNavDrawer";
 export default {
   name: "WebHeader",
   components: {
-    WebNavDrawer
+    WebNavDrawer,
   },
   props: {
     currentStateHeaderName: String,
-    currentState: String
+    currentState: String,
   },
   data: () => {
     return {
       dialog: true,
       drawer: {
-        value: true
-      }
+        value: true,
+      },
     };
   },
   methods: {
     toggleNavDrawer() {
       this.drawer.value = !this.drawer.value;
-    }
-  }
+    },
+  },
 };
 </script>
 <style scoped>

@@ -50,16 +50,16 @@ export default {
       rankingReady: false,
       filter: {
         products: {
-          productCodes: []
-        }
-      }
+          productCodes: [],
+        },
+      },
     };
   },
   created() {
     this.getMonthlyEvolution();
     this.$watch(
       "$store.getters.statisticsProductFilter",
-      function() {
+      function () {
         this.getMonthlyEvolution();
       },
       { deep: true }
@@ -68,23 +68,25 @@ export default {
   methods: {
     getMonthlyEvolution() {
       this.errorLoading = false;
-      StatisticService.getMonthlyEvolution(this.$store.getters.statisticsProductFilter)
-        .then(response => {
+      StatisticService.getMonthlyEvolution(
+        this.$store.getters.statisticsProductFilter
+      )
+        .then((response) => {
           this.monthlyEvolutionLabels = response.map(
-            o =>
+            (o) =>
               o.monthName.charAt(0).toUpperCase() +
               o.monthName.substring(1) +
               "|" +
               this.currencyFormatted(o.invoiceTotal)
           );
-          this.monthlyEvolutionValues = response.map(o => o.invoiceTotal);
+          this.monthlyEvolutionValues = response.map((o) => o.invoiceTotal);
           this.autoDraw = true;
           this.rankingReady = true;
         })
         .catch(() => {
           this.errorLoading = true;
         });
-    }
-  }
+    },
+  },
 };
 </script>

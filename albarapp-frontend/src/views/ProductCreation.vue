@@ -1,6 +1,6 @@
 <template>
   <v-flex align-self-start>
-    <ProductForm v-bind:form="form" ref="form"></ProductForm>
+    <ProductForm :form="form" ref="form"></ProductForm>
     <div class="mb-3"></div>
     <v-layout text-center wrap class="pt-10">
       <v-flex xs12>
@@ -26,7 +26,7 @@ import ProductService from "@/services/ProductService.js";
 export default {
   name: "ProductCreation",
   components: {
-    ProductForm
+    ProductForm,
   },
   data: () => ({
     form: {
@@ -35,18 +35,18 @@ export default {
         code: "",
         name: "",
         factoryPrice: 0,
-        tax: 0
-      }
+        tax: 0,
+      },
     },
     snackbar: {
       show: false,
       message: "",
-      color: ""
+      color: "",
     },
     spinner: {
       loading: false,
-      counter: 0
-    }
+      counter: 0,
+    },
   }),
   methods: {
     async createProduct() {
@@ -56,7 +56,7 @@ export default {
         this.snackbar = {
           show: true,
           message: "Producto creado correctamente",
-          color: "success"
+          color: "success",
         };
         this.reset();
       } catch (e) {
@@ -64,7 +64,7 @@ export default {
           show: true,
           message:
             "No se ha podido crear el producto, por favor vuelva a intentarlo.",
-          color: "error"
+          color: "error",
         };
       } finally {
         this.closeSpinner();
@@ -72,7 +72,7 @@ export default {
     },
     reset() {
       this.$refs.form.reset();
-    }
-  }
+    },
+  },
 };
 </script>

@@ -6,21 +6,15 @@
       </v-btn>
     </v-row>
     <v-row>
-      <v-col
-        v-if="$store.getters.isAdmin"
-      >
+      <v-col v-if="$store.getters.isAdmin">
         <MonthlyEvolutionCard />
       </v-col>
     </v-row>
     <v-row>
-      <v-col
-        v-if="$store.getters.isAdmin"
-      >
+      <v-col v-if="$store.getters.isAdmin">
         <StatisticsCard />
       </v-col>
-      <v-col
-        v-if="$store.getters.isAdmin"
-      >
+      <v-col v-if="$store.getters.isAdmin">
         <RankingCard />
       </v-col>
       <v-col>
@@ -52,13 +46,13 @@ export default {
     RankingCard,
     MonthlyEvolutionCard,
     TriviaCard,
-    StatisticsFilter
+    StatisticsFilter,
   },
   data: () => {
     return {
       dialog: {
-        show: false
-      }
+        show: false,
+      },
     };
   },
   methods: {
@@ -67,7 +61,7 @@ export default {
     },
     closeStatisticsFilter() {
       this.dialog.show = false;
-    }
-  }
+    },
+  },
 };
 </script>

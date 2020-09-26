@@ -1,7 +1,7 @@
 <template>
   <v-flex align-self-start>
     <div v-if="!errorLoading">
-      <ProductForm v-bind:form="form"></ProductForm>
+      <ProductForm :form="form"></ProductForm>
       <div class="mb-3"></div>
       <div class="mb-10"></div>
       <v-layout text-center wrap class="pt-10">
@@ -41,7 +41,7 @@ import ProductService from "@/services/ProductService.js";
 export default {
   name: "ProductUpdate",
   components: {
-    ProductForm
+    ProductForm,
   },
   data: () => ({
     form: {
@@ -50,22 +50,22 @@ export default {
         code: "",
         name: "",
         factoryPrice: 0,
-        tax: 0
-      }
+        tax: 0,
+      },
     },
     errorLoading: false,
     snackbar: {
       show: false,
       message: "",
-      color: ""
+      color: "",
     },
     spinner: {
       loading: false,
-      counter: 0
-    }
+      counter: 0,
+    },
   }),
   props: {
-    productId: String
+    productId: String,
   },
   async created() {
     this.loadProduct();
@@ -89,19 +89,19 @@ export default {
         this.snackbar = {
           show: true,
           message: "Producto actualizado correctamente",
-          color: "success"
+          color: "success",
         };
       } catch (e) {
         this.snackbar = {
           show: true,
           message:
             "No se ha podido modificar el producto, por favor vuelva a intentarlo.",
-          color: "error"
+          color: "error",
         };
       } finally {
         this.closeSpinner();
       }
-    }
-  }
+    },
+  },
 };
 </script>

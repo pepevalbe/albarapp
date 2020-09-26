@@ -19,6 +19,7 @@
             label="Buscar ..."
             single-line
             hide-details
+            autocomplete="off"
           ></v-text-field>
         </v-card-title>
         <v-data-table
@@ -87,10 +88,7 @@
       </v-card>
     </div>
     <div v-if="errorLoading">
-      <v-row
-        class="mb-2"
-        justify="center"
-      >Error al obtener los clientes, por favor vuelva a cargar.</v-row>
+      <v-row class="mb-2" justify="center">Error al obtener los clientes, por favor vuelva a cargar.</v-row>
       <v-row justify="center">
         <v-btn @click="loadCustomers()">
           <v-icon dark>mdi-refresh</v-icon>
@@ -117,7 +115,7 @@ export default {
         { text: "Razón Social", sortable: false, value: "name" },
         { text: "Teléfono", sortable: false, value: "phoneNumber" },
         { text: "", sortable: false, value: "detail" },
-        { text: "", sortable: false, value: "update" }
+        { text: "", sortable: false, value: "update" },
       ],
       search: "",
       sortBy: "code",
@@ -125,8 +123,8 @@ export default {
       errorLoading: false,
       spinner: {
         loading: false,
-        counter: 0
-      }
+        counter: 0,
+      },
     };
   },
   async created() {
@@ -147,15 +145,15 @@ export default {
     showCustomer(item) {
       this.$router.push({
         name: "CustomerDetail",
-        params: { customerId: item.id }
+        params: { customerId: item.id },
       });
     },
     updateCustomer(item) {
       this.$router.push({
         name: "CustomerUpdate",
-        params: { customerId: item.id }
+        params: { customerId: item.id },
       });
-    }
-  }
+    },
+  },
 };
 </script>

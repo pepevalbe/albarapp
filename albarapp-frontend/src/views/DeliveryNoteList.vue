@@ -11,7 +11,7 @@
       </v-layout>
       <v-card>
         <v-card-title>Listado de albaranes</v-card-title>
-        <CustomerAndDatesFilterForm v-bind:form="filter.form" />
+        <CustomerAndDatesFilterForm :form="filter.form" />
         <v-data-table
           :loading="loading"
           loading-text="Cargando... Por favor, espere"
@@ -144,7 +144,7 @@ import CustomerAndDatesFilterForm from "@/components/CustomerAndDatesFilterForm"
 export default {
   name: "DeliveryNoteList",
   components: {
-    CustomerAndDatesFilterForm
+    CustomerAndDatesFilterForm,
   },
   data: () => {
     return {
@@ -152,7 +152,7 @@ export default {
       netTotal: 0,
       footerProps: {
         itemsPerPageOptions: [15, 30, 45, 60, 75],
-        showFirstLastPage: true
+        showFirstLastPage: true,
       },
       options: {
         page: 1,
@@ -162,14 +162,14 @@ export default {
         groupBy: [],
         groupDesc: [],
         mustSort: false,
-        multiSort: false
+        multiSort: false,
       },
       loading: true,
       errorLoading: false,
       snackbar: {
         show: false,
         message: "",
-        color: ""
+        color: "",
       },
       totalItems: 0,
       filter: {
@@ -177,17 +177,17 @@ export default {
           valid: true,
           customerCode: "",
           dateFrom: "",
-          dateTo: ""
-        }
+          dateTo: "",
+        },
       },
       spinner: {
         loading: false,
-        counter: 0
+        counter: 0,
       },
       dialogDelete: {
         show: false,
-        deliveryNote: {}
-      }
+        deliveryNote: {},
+      },
     };
   },
   async created() {
@@ -210,7 +210,7 @@ export default {
     this.$watch("options", this.listDeliveryNotes, { deep: true });
     this.$watch(
       "filter",
-      function() {
+      function () {
         if (this.options.page != 1) this.options.page = 1;
         else this.listDeliveryNotes();
       },
@@ -244,7 +244,7 @@ export default {
     updateDeliveryNote(item) {
       this.$router.push({
         name: "DeliveryNoteUpdate",
-        params: { deliveryNoteId: item.id.toString() }
+        params: { deliveryNoteId: item.id.toString() },
       });
     },
     openDeleteDialog(item) {
@@ -259,7 +259,7 @@ export default {
         this.snackbar = {
           show: true,
           message: "Albarán eliminado correctamente",
-          color: "success"
+          color: "success",
         };
         this.listDeliveryNotes();
       } catch {
@@ -267,7 +267,7 @@ export default {
           show: true,
           message:
             "No se ha podido eliminar el albarán, por favor vuelva a intentarlo.",
-          color: "error"
+          color: "error",
         };
       } finally {
         this.closeSpinner();
@@ -280,7 +280,7 @@ export default {
         {
           text: "Nº pedido",
           sortable: false,
-          value: "auxDeliveryNoteNr"
+          value: "auxDeliveryNoteNr",
         },
         { text: "Cliente", sortable: true, value: "customer.code" },
         { text: "Fecha", sortable: true, value: "issuedTimestamp" },
@@ -288,9 +288,9 @@ export default {
         {
           text: "Total: " + this.currencyFormatted(this.netTotal),
           sortable: false,
-          value: "total"
+          value: "total",
         },
-        { text: "", sortable: false, value: "update" }
+        { text: "", sortable: false, value: "update" },
       ];
       return headers;
     },
@@ -308,10 +308,10 @@ export default {
       this.$router
         .push({
           path: this.$route.path,
-          query: query
+          query: query,
         })
         .catch(() => {});
-    }
-  }
+    },
+  },
 };
 </script>

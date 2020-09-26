@@ -33,27 +33,27 @@ import DeliveryNoteService from "@/services/DeliveryNoteService.js";
 export default {
   name: "DeliveryNoteUpdate",
   components: {
-    DeliveryNoteForm
+    DeliveryNoteForm,
   },
   data: () => ({
     form: {
       valid: false,
       create: false,
-      deliveryNote: null
+      deliveryNote: null,
     },
     errorLoading: false,
     snackbar: {
       show: false,
       message: "",
-      color: ""
+      color: "",
     },
     spinner: {
       loading: false,
-      counter: 0
-    }
+      counter: 0,
+    },
   }),
   props: {
-    deliveryNoteId: String
+    deliveryNoteId: String,
   },
   created() {
     this.loadDeliveryNote();
@@ -91,7 +91,7 @@ export default {
         this.snackbar = {
           show: true,
           message: "Albarán actualizado correctamente",
-          color: "success"
+          color: "success",
         };
         await this.loadDeliveryNote();
         this.$refs.form.loadView();
@@ -100,12 +100,12 @@ export default {
           show: true,
           message:
             "No se ha podido modificar el albarán, por favor vuelva a intentarlo.",
-          color: "error"
+          color: "error",
         };
       } finally {
         this.closeSpinner();
       }
-    }
-  }
+    },
+  },
 };
 </script>

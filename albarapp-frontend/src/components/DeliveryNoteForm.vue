@@ -13,10 +13,11 @@
               :rules="customerCodeRules"
               required
               autofocus
+              autocomplete="off"
               @focus="$event.target.select()"
-              v-on:blur="selectCustomerByCode()"
-              v-on:input="clearCustomer()"
-              v-on:keypress.enter="moveToDate()"
+              @blur="selectCustomerByCode()"
+              @input="clearCustomer()"
+              @keypress.enter="moveToDate()"
             ></v-text-field>
           </v-col>
           <v-col cols="12" md="6">
@@ -26,8 +27,9 @@
               :items="customers"
               item-text="alias"
               return-object
+              autocomplete="off"
               no-data-text="Sin coincidencias"
-              v-on:change="selectCustomerByAlias()"
+              @change="selectCustomerByAlias()"
             ></v-autocomplete>
           </v-col>
           <v-col cols="12" md="2">
@@ -47,10 +49,11 @@
                   label="Fecha"
                   hint="Formato: ddMMaaaa"
                   persistent-hint
+                  autocomplete="off"
                   @focus="$event.target.select()"
                   prepend-icon="mdi-calendar"
                   @blur="parseDateText()"
-                  v-on:keypress.enter="moveToAuxDeliveryNoteNr()"
+                  @keypress.enter="moveToAuxDeliveryNoteNr()"
                   v-on="on"
                 ></v-text-field>
               </template>
@@ -68,9 +71,10 @@
               ref="auxDeliveryNoteNr"
               v-model="form.deliveryNote.auxDeliveryNoteNr"
               type="number"
+              autocomplete="off"
               label="Nº Pedido"
               @focus="$event.target.select()"
-              v-on:keypress.enter="moveToQuantity()"
+              @keypress.enter="moveToQuantity()"
             ></v-text-field>
           </v-col>
         </v-row>
@@ -80,9 +84,10 @@
               ref="quantity"
               v-model="quantity"
               type="number"
+              autocomplete="off"
               label="Cantidad"
               @focus="$event.target.select()"
-              v-on:keypress.enter="moveToProductCode()"
+              @keypress.enter="moveToProductCode()"
             ></v-text-field>
           </v-col>
           <v-col cols="12" md="2">
@@ -90,11 +95,12 @@
               ref="productCode"
               v-model="productCode"
               type="number"
+              autocomplete="off"
               label="Código de producto"
               @focus="$event.target.select()"
-              v-on:keypress.enter="selectProductByCode()"
-              v-on:blur="selectProductByCode()"
-              v-on:input="clearProduct()"
+              @keypress.enter="selectProductByCode()"
+              @blur="selectProductByCode()"
+              @input="clearProduct()"
             ></v-text-field>
           </v-col>
           <v-col cols="12" md="4">
@@ -105,7 +111,7 @@
               item-text="name"
               return-object
               no-data-text="Sin coincidencias"
-              v-on:change="selectProductByName()"
+              @change="selectProductByName()"
             ></v-autocomplete>
           </v-col>
           <v-col cols="12" md="2">
@@ -113,9 +119,10 @@
               ref="price"
               v-model="price"
               type="number"
+              autocomplete="off"
               label="Precio"
               @focus="$event.target.select()"
-              v-on:keypress.enter="moveToAddLine()"
+              @keypress.enter="moveToAddLine()"
             ></v-text-field>
           </v-col>
           <v-col cols="12" md="2">
@@ -123,7 +130,7 @@
               <v-btn
                 @click="addDeliveryNoteItem()"
                 ref="addLineButton"
-                v-bind:disabled="!noteItemToAdd()"
+                :disabled="!noteItemToAdd()"
               >
                 <span>Añadir línea</span>
               </v-btn>
@@ -182,7 +189,7 @@ import ProductService from "@/services/ProductService.js";
 export default {
   name: "DeliveryNoteForm",
   components: {
-    DeliveryNoteItemTable
+    DeliveryNoteItemTable,
   },
   data: () => ({
     customerCode: "",
@@ -197,19 +204,19 @@ export default {
     snackbar: false,
     snackbarMessage: "",
     customerCodeRules: [
-      v => !!v || "El código es obligatorio",
-      v =>
+      (v) => !!v || "El código es obligatorio",
+      (v) =>
         (v && v > 0 && v <= 99999) ||
-        "El código debe tener un máximo de 5 dígitos"
+        "El código debe tener un máximo de 5 dígitos",
     ],
     errorLoading: false,
     spinner: {
       loading: false,
-      counter: 0
-    }
+      counter: 0,
+    },
   }),
   props: {
-    form: Object
+    form: Object,
   },
   mounted() {
     this.loadView();
@@ -239,7 +246,7 @@ export default {
     selectCustomerByCode() {
       var vm = this;
       if (this.customerCode) {
-        var index = this.customers.findIndex(function(element) {
+        var index = this.customers.findIndex(function (element) {
           return element.code == vm.customerCode;
         });
         if (index === -1) {
@@ -259,6 +266,7 @@ export default {
       ) {
         this.customerCode = this.form.deliveryNote.customer.code;
         this.selectCustomerPrices();
+        this.moveToDate();
       }
       return false;
     },
@@ -271,7 +279,7 @@ export default {
     selectProductByCode() {
       var vm = this;
       if (this.productCode) {
-        var index = this.products.findIndex(function(element) {
+        var index = this.products.findIndex(function (element) {
           return element.code == vm.productCode;
         });
         if (index === -1) {
@@ -303,7 +311,7 @@ export default {
       var vm = this;
       var index = -1;
       if (this.customerPrices) {
-        index = this.customerPrices.findIndex(function(element) {
+        index = this.customerPrices.findIndex(function (element) {
           return element.productId == vm.product.id;
         });
       }
@@ -322,7 +330,7 @@ export default {
         price: this.price,
         gross: this.quantity * this.price,
         taxRate: this.product.tax,
-        net: this.quantity * this.price * (1 + this.product.tax / 100)
+        net: this.quantity * this.price * (1 + this.product.tax / 100),
       });
 
       this.form.deliveryNote.deliveryNoteTotal.value += itemNet;
@@ -348,10 +356,14 @@ export default {
       // the deliveryNote already has
       if (this.customerPrices && this.customerPrices.length > 0) {
         var vm = this;
-        var indexCustomerProductPrice = this.form.deliveryNote.deliveryNoteItems.length;
-        if (indexCustomerProductPrice >= this.customerPrices.length) indexCustomerProductPrice = 0;
-        var index = this.products.findIndex(function(element) {
-          return element.id == vm.customerPrices[indexCustomerProductPrice].productId;
+        var indexCustomerProductPrice = this.form.deliveryNote.deliveryNoteItems
+          .length;
+        if (indexCustomerProductPrice >= this.customerPrices.length)
+          indexCustomerProductPrice = 0;
+        var index = this.products.findIndex(function (element) {
+          return (
+            element.id == vm.customerPrices[indexCustomerProductPrice].productId
+          );
         });
         vm.productCode = vm.products[index].code;
         vm.product = vm.products[index];
@@ -432,7 +444,7 @@ export default {
       } else {
         return false;
       }
-    }
-  }
+    },
+  },
 };
 </script>

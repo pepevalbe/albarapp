@@ -19,6 +19,7 @@
             label="Buscar ..."
             single-line
             hide-details
+            autocomplete="off"
           ></v-text-field>
         </v-card-title>
         <v-data-table
@@ -87,7 +88,7 @@ export default {
         { text: "Email", sortable: true, value: "email" },
         { text: "Nombre", sortable: false, value: "name" },
         { text: "Apellidos", sortable: true, value: "surname" },
-        { text: "Tipo", sortable: false, value: "role" }
+        { text: "Tipo", sortable: false, value: "role" },
       ],
       search: "",
       sortBy: "email",
@@ -96,14 +97,14 @@ export default {
         valid: Boolean,
         Invitation: {
           email: "",
-          role: ""
-        }
+          role: "",
+        },
       },
       errorLoading: false,
       spinner: {
         loading: false,
-        counter: 0
-      }
+        counter: 0,
+      },
     };
   },
   async created() {
@@ -120,8 +121,8 @@ export default {
       } finally {
         this.closeSpinner();
       }
-    }
-  }
+    },
+  },
 };
 </script>
 

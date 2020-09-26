@@ -20,7 +20,7 @@
         ></v-select>
       </v-col>
       <v-col cols="12" md="1">
-        <v-text-field v-model="price" type="number" label="Precio" suffix="€"></v-text-field>
+        <v-text-field v-model="price" type="number" autocomplete="off" label="Precio" suffix="€"></v-text-field>
       </v-col>
       <v-col cols="12" md="1" align-self="center">
         <v-btn :disabled="!price || !product || sameProduct()" @click="addPrice()">Añadir</v-btn>
@@ -44,7 +44,12 @@
                   <v-btn class="ma-2" :disabled="index == 0" justify="center" @click="moveUp(item)">
                     <v-icon dark>mdi-chevron-up</v-icon>
                   </v-btn>
-                  <v-btn class="ma-2" :disabled="index==customerProductPrices.length-1" justify="center" @click="moveDown(item)">
+                  <v-btn
+                    class="ma-2"
+                    :disabled="index==customerProductPrices.length-1"
+                    justify="center"
+                    @click="moveDown(item)"
+                  >
                     <v-icon dark>mdi-chevron-down</v-icon>
                   </v-btn>
                 </td>
@@ -86,12 +91,12 @@ export default {
     price: 0,
     spinner: {
       loading: false,
-      counter: 0
-    }
+      counter: 0,
+    },
   }),
   props: {
     customerProductPrices: Array,
-    readonly: Boolean
+    readonly: Boolean,
   },
   async created() {
     this.showSpinner();
@@ -104,7 +109,7 @@ export default {
       if (!this.sameProduct()) {
         this.customerProductPrices.push({
           product: vm.product,
-          offeredPrice: vm.price
+          offeredPrice: vm.price,
         });
         vm.product = undefined;
         vm.price = 0;
@@ -115,26 +120,26 @@ export default {
       return (
         vm.product &&
         vm.customerProductPrices.some(
-          product => product.product.code === vm.product.code
+          (product) => product.product.code === vm.product.code
         )
       );
     },
     removePrice(price) {
       this.customerProductPrices.splice(
-        this.customerProductPrices.findIndex(item => item === price),
+        this.customerProductPrices.findIndex((item) => item === price),
         1
       );
     },
-    moveUp(price){
+    moveUp(price) {
       var index = this.customerProductPrices.indexOf(price);
       this.customerProductPrices.splice(index, 1);
-      this.customerProductPrices.splice(index-1, 0, price);
+      this.customerProductPrices.splice(index - 1, 0, price);
     },
-    moveDown(price){
+    moveDown(price) {
       var index = this.customerProductPrices.indexOf(price);
       this.customerProductPrices.splice(index, 1);
-      this.customerProductPrices.splice(index+1, 0, price);
-    }
-  }
+      this.customerProductPrices.splice(index + 1, 0, price);
+    },
+  },
 };
 </script>

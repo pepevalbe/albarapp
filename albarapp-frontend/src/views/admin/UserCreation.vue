@@ -6,6 +6,7 @@
         v-model="name"
         :counter="15"
         :rules="nameRules"
+        autocomplete="off"
         label="Nombre"
         required
         autofocus
@@ -14,6 +15,7 @@
         v-model="surname"
         :counter="30"
         :rules="surnameRules"
+        autocomplete="off"
         label="Apellidos"
         required
       ></v-text-field>
@@ -21,6 +23,7 @@
         v-model="password"
         :append-icon="showPassword ? 'mdi-eye-outline' : 'mdi-eye'"
         :rules="passwordRules"
+        autocomplete="off"
         :type="showPassword ? 'text' : 'password'"
         label="Contraseña"
         hint="Como mínimo 5 caracteres"
@@ -30,6 +33,7 @@
         v-model="rePassword"
         :append-icon="showRepassword ? 'mdi-eye-outline' : 'mdi-eye'"
         :rules="[rePasswordMatchRule]"
+        autocomplete="off"
         :type="showRepassword ? 'text' : 'password'"
         label="Repita la contraseña"
         counter
@@ -72,46 +76,46 @@ export default {
     showPassword: false,
     showRepassword: false,
     nameRules: [
-      v => !!v || "El nombre es obligatorio",
-      v =>
-        (v && v.length <= 15) || "El nombre debe tener menos de 15 caracteres"
+      (v) => !!v || "El nombre es obligatorio",
+      (v) =>
+        (v && v.length <= 15) || "El nombre debe tener menos de 15 caracteres",
     ],
     surnameRules: [
-      v => !!v || "Los apellidos son obligatorio",
-      v =>
+      (v) => !!v || "Los apellidos son obligatorio",
+      (v) =>
         (v && v.length <= 30) ||
-        "Los apellidos deben tener menos de 30 caracteres"
+        "Los apellidos deben tener menos de 30 caracteres",
     ],
     passwordRules: [
-      v => !!v || "La contraseña es obligatoria",
-      v =>
+      (v) => !!v || "La contraseña es obligatoria",
+      (v) =>
         (v && v.length >= 5) ||
         "La contraseña debe tener al menos 5 caracteres",
-      v =>
+      (v) =>
         (v && v.length <= 15) ||
-        "La contraseña debe tener menos de 15 caracteres"
+        "La contraseña debe tener menos de 15 caracteres",
     ],
     dialogCreation: {
-      show: false
+      show: false,
     },
     snackbar: {
       show: false,
       message: "",
-      color: ""
+      color: "",
     },
     spinner: {
       loading: false,
-      counter: 0
-    }
+      counter: 0,
+    },
   }),
   computed: {
-    invitation: function() {
+    invitation: function () {
       return this.$route.query.token;
     },
     rePasswordMatchRule() {
       return () =>
         this.password === this.rePassword || "Las contraseñas no coinciden";
-    }
+    },
   },
   methods: {
     async createUser() {
@@ -128,7 +132,7 @@ export default {
         this.snackbar = {
           show: true,
           message: "Ha ocurrido un error al crear el usuario",
-          color: "error"
+          color: "error",
         };
       } finally {
         this.closeSpinner();
@@ -139,9 +143,9 @@ export default {
     },
     goToLogin() {
       this.$router.push({
-        name: "Login"
+        name: "Login",
       });
-    }
-  }
+    },
+  },
 };
 </script>
