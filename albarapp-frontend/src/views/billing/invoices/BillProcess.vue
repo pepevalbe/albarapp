@@ -140,7 +140,7 @@
         :disabled="!form.valid"
         @click="createInvoices()"
       >Facturar</v-btn>
-      <v-btn to="/invoice-list/">Volver</v-btn>
+      <v-btn :to="{name: 'InvoiceList'}">Volver</v-btn>
     </v-row>
     <v-dialog v-model="dialogInvoicesCreated.show" max-width="600">
       <v-card>

@@ -6,9 +6,10 @@ Vue.use(Router);
 
 const router = new Router({
   routes: [
+    { path: '*', redirect: '/billing/home' },
     {
-      path: "/",
-      component: () => import("@/views/HomePage"),
+      path: "/billing/home",
+      component: () => import("@/views/billing/HomePage"),
       name: "HomePage",
       meta: { headerName: "Home" }
     },
@@ -25,7 +26,7 @@ const router = new Router({
       meta: { headerName: "Administración de usuarios" }
     },
     {
-      path: "/invitation",
+      path: "/admin/invitation",
       component: () => import("@/views/admin/InvitationForm"),
       name: "InvitationForm",
       meta: { headerName: "Enviar invitación" }
@@ -37,87 +38,111 @@ const router = new Router({
       meta: { headerName: "Creación de usuario" }
     },
     {
-      path: "/product-list/",
-      component: () => import("@/views/ProductList"),
-      name: "ProductList",
-      meta: { headerName: "Productos" }
+      path: "/billing/products/",
+      component: () => import("@/views/billing/products/ProductHome"),
+      children: [
+        {
+          path: "",
+          component: () => import("@/views/billing/products/ProductList"),
+          name: "ProductList",
+          meta: { headerName: "Productos" }
+        },
+        {
+          path: "creation/",
+          component: () => import("@/views/billing/products/ProductCreation"),
+          name: "ProductCreation",
+          meta: { headerName: "Nuevo producto" }
+        },
+        {
+          path: "update/:productId",
+          component: () => import("@/views/billing/products/ProductUpdate"),
+          props: true,
+          name: "ProductUpdate",
+          meta: { headerName: "Actualizar producto" }
+        },
+      ]
     },
     {
-      path: "/product-creation/",
-      component: () => import("@/views/ProductCreation"),
-      name: "ProductCreation",
-      meta: { headerName: "Nuevo producto" }
+      path: "/billing/customers/",
+      component: () => import("@/views/billing/customers/CustomerHome"),
+      children: [
+        {
+          path: "",
+          component: () => import("@/views/billing/customers/CustomerList"),
+          name: "CustomerList",
+          meta: { headerName: "Clientes" }
+        },
+        {
+          path: "creation",
+          component: () => import("@/views/billing/customers/CustomerCreation"),
+          name: "CustomerCreation",
+          meta: { headerName: "Nuevo cliente" }
+        },
+        {
+          path: "detail/:customerId",
+          component: () => import("@/views/billing/customers/CustomerDetail"),
+          props: true,
+          name: "CustomerDetail",
+          meta: { headerName: "Detalle de cliente" }
+        },
+        {
+          path: "update/:customerId",
+          component: () => import("@/views/billing/customers/CustomerUpdate"),
+          props: true,
+          name: "CustomerUpdate",
+          meta: { headerName: "Actualizar cliente" }
+        }
+      ]
     },
     {
-      path: "/product-update/:productId",
-      component: () => import("@/views/ProductUpdate"),
-      props: true,
-      name: "ProductUpdate",
-      meta: { headerName: "Actualizar producto" }
+      path: "/billing/delivery-notes/",
+      component: () => import("@/views/billing/deliveryNotes/DeliveryNoteHome"),
+      children: [
+        {
+          path: "",
+          component: () => import("@/views/billing/deliveryNotes/DeliveryNoteList"),
+          name: "DeliveryNoteList",
+          meta: { headerName: "Albaranes" }
+        },
+        {
+          path: "creation/",
+          component: () => import("@/views/billing/deliveryNotes/DeliveryNoteCreation"),
+          name: "DeliveryNoteCreation",
+          meta: { headerName: "Nuevo albarán" }
+        },
+        {
+          path: "update/:deliveryNoteId",
+          component: () => import("@/views/billing/deliveryNotes/DeliveryNoteUpdate"),
+          props: true,
+          name: "DeliveryNoteUpdate",
+          meta: { headerName: "Modificar albarán" }
+        },
+      ]
     },
     {
-      path: "/customer-list/",
-      component: () => import("@/views/CustomerList"),
-      name: "CustomerList",
-      meta: { headerName: "Clientes" }
-    },
-    {
-      path: "/customer-creation/",
-      component: () => import("@/views/CustomerCreation"),
-      name: "CustomerCreation",
-      meta: { headerName: "Nuevo cliente" }
-    },
-    {
-      path: "/customer-detail/:customerId",
-      component: () => import("@/views/CustomerDetail"),
-      props: true,
-      name: "CustomerDetail",
-      meta: { headerName: "Detalle de cliente" }
-    },
-    {
-      path: "/customer-update/:customerId",
-      component: () => import("@/views/CustomerUpdate"),
-      props: true,
-      name: "CustomerUpdate",
-      meta: { headerName: "Actualizar cliente" }
-    },
-    {
-      path: "/delivery-note-list/",
-      component: () => import("@/views/DeliveryNoteList"),
-      name: "DeliveryNoteList",
-      meta: { headerName: "Albaranes" }
-    },
-    {
-      path: "/delivery-note-creation/",
-      component: () => import("@/views/DeliveryNoteCreation"),
-      name: "DeliveryNoteCreation",
-      meta: { headerName: "Nuevo albarán" }
-    },
-    {
-      path: "/delivery-note-update/:deliveryNoteId",
-      component: () => import("@/views/DeliveryNoteUpdate"),
-      props: true,
-      name: "DeliveryNoteUpdate",
-      meta: { headerName: "Modificar albarán" }
-    },
-    {
-      path: "/invoice-list/",
-      component: () => import("@/views/InvoiceList"),
-      name: "InvoiceList",
-      meta: { headerName: "Facturas" }
-    },
-    {
-      path: "/invoice-update/:invoiceId",
-      component: () => import("@/views/InvoiceUpdate"),
-      props: true,
-      name: "InvoiceUpdate",
-      meta: { headerName: "Modificar factura" }
-    },
-    {
-      path: "/invoice-bill-process/",
-      component: () => import("@/views/BillProcess"),
-      name: "BillProcess",
-      meta: { headerName: "Facturar" }
+      path: "/billing/invoices/",
+      component: () => import("@/views/billing/invoices/InvoiceHome"),
+      children: [
+        {
+          path: "",
+          component: () => import("@/views/billing/invoices/InvoiceList"),
+          name: "InvoiceList",
+          meta: { headerName: "Facturas" }
+        },
+        {
+          path: "update/:invoiceId",
+          component: () => import("@/views/billing/invoices/InvoiceUpdate"),
+          props: true,
+          name: "InvoiceUpdate",
+          meta: { headerName: "Modificar factura" }
+        },
+        {
+          path: "bill-process/",
+          component: () => import("@/views/billing/invoices/BillProcess"),
+          name: "BillProcess",
+          meta: { headerName: "Facturar" }
+        }
+      ]
     }
   ]
 });

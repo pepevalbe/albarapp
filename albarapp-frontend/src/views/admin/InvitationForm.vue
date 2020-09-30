@@ -5,7 +5,7 @@
       <v-text-field v-model="email" :rules="emailRules" autocomplete="off" label="Email" required></v-text-field>
       <v-select v-model="role" :items="roles" :rules="roleRules" label="Tipo" required></v-select>
     </v-form>
-    <v-btn class="mr-4" to="/admin">Volver</v-btn>
+    <v-btn class="mr-4" :to="{name: 'AdminPage'}">Volver</v-btn>
     <v-btn :disabled="!valid" color="success" @click="sendInvitation()">Enviar</v-btn>
     <v-snackbar v-model="snackbar.show" :color="snackbar.color">
       {{snackbar.message}}

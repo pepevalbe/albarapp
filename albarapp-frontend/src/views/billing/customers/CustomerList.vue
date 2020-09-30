@@ -3,7 +3,7 @@
     <div v-if="!errorLoading">
       <v-layout text-right wrap class="pt-2 pb-5 mr-5">
         <v-flex xs12>
-          <v-btn to="/customer-creation/">
+          <v-btn :to="{name: 'CustomerCreation'}">
             Nuevo
             <v-icon class="ml-2">mdi-plus-circle</v-icon>
           </v-btn>

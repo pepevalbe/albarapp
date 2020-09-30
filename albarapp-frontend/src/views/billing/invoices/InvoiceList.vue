@@ -15,7 +15,7 @@
             Descargar seleccionadas
             <v-icon class="ml-2">mdi-download-multiple</v-icon>
           </v-btn>
-          <v-btn to="/invoice-bill-process/" class="ml-2 mt-2">
+          <v-btn :to="{name: 'BillProcess'}" class="ml-2 mt-2">
             Facturar albaranes
             <v-icon class="ml-2">mdi-animation</v-icon>
           </v-btn>

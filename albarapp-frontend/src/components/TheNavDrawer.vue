@@ -21,54 +21,69 @@
     </div>
     <v-divider></v-divider>
     <v-list dense nav>
-      <v-list-item link to="/">
-        <v-list-item-icon>
-          <v-icon>mdi-home</v-icon>
-        </v-list-item-icon>
-        <v-list-item-content>
-          <v-list-item-title>Home</v-list-item-title>
-        </v-list-item-content>
-      </v-list-item>
-      <v-list-item link to="/admin/" v-if="$store.getters.isAdmin">
-        <v-list-item-icon>
-          <v-icon>mdi-account-group</v-icon>
-        </v-list-item-icon>
-        <v-list-item-content>
-          <v-list-item-title>Administrar</v-list-item-title>
-        </v-list-item-content>
-      </v-list-item>
-      <v-list-item link to="/product-list/">
-        <v-list-item-icon>
-          <v-icon>mdi-baguette</v-icon>
-        </v-list-item-icon>
-        <v-list-item-content>
-          <v-list-item-title>Productos</v-list-item-title>
-        </v-list-item-content>
-      </v-list-item>
-      <v-list-item link to="/customer-list/">
-        <v-list-item-icon>
-          <v-icon>mdi-account-tie</v-icon>
-        </v-list-item-icon>
-        <v-list-item-content>
-          <v-list-item-title>Clientes</v-list-item-title>
-        </v-list-item-content>
-      </v-list-item>
-      <v-list-item link to="/delivery-note-list/">
-        <v-list-item-icon>
-          <v-icon>mdi-basket</v-icon>
-        </v-list-item-icon>
-        <v-list-item-content>
-          <v-list-item-title>Albaranes</v-list-item-title>
-        </v-list-item-content>
-      </v-list-item>
-      <v-list-item link to="/invoice-list/">
-        <v-list-item-icon>
-          <v-icon>mdi-cash</v-icon>
-        </v-list-item-icon>
-        <v-list-item-content>
-          <v-list-item-title>Facturas</v-list-item-title>
-        </v-list-item-content>
-      </v-list-item>
+      <v-list-group prepend-icon="mdi-receipt" group="^.*billing.*$">
+        <template v-slot:activator>
+          <v-list-item-title>FACTURACIÓN</v-list-item-title>
+        </template>
+        <v-list-item link :to="{name: 'HomePage'}">
+          <v-list-item-icon>
+            <v-icon>mdi-home</v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title>Home</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item link :to="{name: 'ProductList'}">
+          <v-list-item-icon>
+            <v-icon>mdi-baguette</v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title>Productos</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item link :to="{name: 'CustomerList'}">
+          <v-list-item-icon>
+            <v-icon>mdi-account-tie</v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title>Clientes</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item link :to="{name: 'DeliveryNoteList'}">
+          <v-list-item-icon>
+            <v-icon>mdi-basket</v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title>Albaranes</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item link :to="{name: 'InvoiceList'}">
+          <v-list-item-icon>
+            <v-icon>mdi-cash</v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title>Facturas</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list-group>
+      <v-list-group prepend-icon="mdi-barn" group="^.*production.*$">
+        <template v-slot:activator>
+          <v-list-item-title>LOTES Y PUESTA</v-list-item-title>
+        </template>
+      </v-list-group>
+      <v-list-group prepend-icon="mdi-form-dropdown" group="^.*admin.*$">
+        <template v-slot:activator>
+          <v-list-item-title>ADMINISTRAR</v-list-item-title>
+        </template>
+        <v-list-item link :to="{name: 'AdminPage'}" v-if="$store.getters.isAdmin">
+          <v-list-item-icon>
+            <v-icon>mdi-account-group</v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title>Usuarios</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list-group>
     </v-list>
     <template v-slot:append>
       <div class="pa-2">

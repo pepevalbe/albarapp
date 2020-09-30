@@ -3,7 +3,7 @@
     <div v-if="!errorLoading">
       <v-layout text-right wrap class="pt-2 pb-5 mr-5">
         <v-flex xs12>
-          <v-btn to="/invitation/">
+          <v-btn :to="{name: 'InvitationForm'}">
             Enviar Invitación
             <v-icon class="ml-4">mdi-account-plus</v-icon>
           </v-btn>
