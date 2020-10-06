@@ -10,13 +10,16 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 public class CsvFile {
 
 	private static final String DELIMITER = ";";
+	private static final String PREFIX = "=\"";
+	private static final String SUFFIX = "\"";
 	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
 	private static final NumberFormat NUMBER_FORMAT = NumberFormat.getInstance(new Locale("es", "ES"));
-	private static final String[] HEADERS = {"Numero de factura", "Fecha", "Código cliente", "Razón social cliente", "NIF Cliente", "Alias cliente", "Cantidad producto", "Total", "Total IGIC"};
+	private static final String[] HEADERS = {"Numero de factura", "Cuenta contable", "Fecha", "Código cliente", "Razón social cliente", "NIF Cliente", "Alias cliente", "Cantidad producto", "Total", "Total IGIC"};
 
 	private final String[] lines;
 
@@ -38,6 +41,7 @@ public class CsvFile {
 	private String parseInvoice(Invoice invoice) {
 		Customer customer = invoice.getCustomer();
 		return String.valueOf(invoice.getId()).concat(DELIMITER)
+				.concat(PREFIX).concat(Objects.toString(customer.getAccountingId(), "")).concat(SUFFIX).concat(DELIMITER)
 				.concat(DATE_FORMAT.format(new Date(invoice.getIssuedTimestamp()))).concat(DELIMITER)
 				.concat(String.valueOf(customer.getCode())).concat(DELIMITER)
 				.concat(customer.getName()).concat(DELIMITER)

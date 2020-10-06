@@ -40,6 +40,9 @@ public class Customer {
 	@Column
 	private String province;
 
+	@Column
+	private String accountingId;
+
 	@Embedded
 	private CustomerAecocInfo customerAecocInfo;        // Optional Customer AECOC additional info
 

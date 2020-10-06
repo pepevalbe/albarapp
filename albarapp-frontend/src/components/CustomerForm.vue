@@ -73,6 +73,14 @@
         autocomplete="off"
         label="Teléfono"
       ></v-text-field>
+      <v-text-field
+        v-model="form.customer.accountingId"
+        :readonly="readonly"
+        :counter="20"
+        :rules="accountingIdRules"
+        autocomplete="off"
+        label="Cuenta contable"
+      ></v-text-field>
       <v-switch
         @change="createDeleteAecoc"
         :readonly="readonly"
@@ -108,6 +116,7 @@ export default {
         address: String,
         province: String,
         phoneNumber: String,
+        accountingId: String,
         customerAecocInfo: Object,
       },
     },
@@ -155,6 +164,12 @@ export default {
     phoneNumberRules: [
       (v) =>
         !v || v.length <= 15 || "El teléfono debe tener menos de 15 dígitos",
+    ],
+    accountingIdRules: [
+      (v) =>
+        !v ||
+        v.length <= 20 ||
+        "La cuenta contable debe tener menos de 20 caracteres",
     ],
   }),
   methods: {
