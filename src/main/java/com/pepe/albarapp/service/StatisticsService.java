@@ -8,8 +8,8 @@ import com.pepe.albarapp.service.dto.StatisticsDto;
 import com.pepe.albarapp.service.dto.statistics.MonthlyEvolutionDto;
 import com.pepe.albarapp.service.dto.statistics.RankingDto;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 
-@Slf4j
 @Service
 public class StatisticsService {
 
@@ -62,7 +61,7 @@ public class StatisticsService {
 		return statistics;
 	}
 
-	public List<RankingDto> getRanking(List<Integer> productCodes) {
+	public Page<RankingDto> getRanking(List<Integer> productCodes) {
 		Pageable pageable = PageRequest.of(0, 10);
 		if (productCodes == null || productCodes.isEmpty()) {
 			return customerRepository.findTopByDeliveryNoteTotal(pageable);

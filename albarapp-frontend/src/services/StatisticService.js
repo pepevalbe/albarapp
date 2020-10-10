@@ -31,7 +31,7 @@ export default {
         if (queryString != "") queryString = '?' + queryString;
         return HttpClient.get(`${RANKING_ENDPOINT}` + queryString)
             .then(response => {
-                return response.data;
+                return response.data.content;
             });
     },
     getQuantities() {

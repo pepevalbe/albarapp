@@ -2,7 +2,6 @@ package com.pepe.albarapp.controller;
 
 import com.pepe.albarapp.api.log.Log;
 import com.pepe.albarapp.persistence.domain.User;
-import com.pepe.albarapp.service.StatisticsService;
 import com.pepe.albarapp.service.UserService;
 import com.pepe.albarapp.service.dto.InvitationDto;
 import com.pepe.albarapp.service.dto.RegistrationDto;
@@ -22,7 +21,6 @@ import org.springframework.web.client.RestTemplate;
 
 import java.security.Principal;
 import java.util.Collections;
-import java.util.List;
 
 @Log
 @RestController
@@ -35,9 +33,6 @@ public class UserController {
 
 	@Autowired
 	private UserService userService;
-
-	@Autowired
-	private StatisticsService statisticsService;
 
 	@PostMapping(USER_ENDPOINT)
 	public ResponseEntity<User> createUser(@RequestBody RegistrationDto registrationDto) {
