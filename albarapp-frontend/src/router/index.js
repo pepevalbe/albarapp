@@ -143,6 +143,50 @@ const router = new Router({
           meta: { headerName: "Facturar" }
         }
       ]
+    },
+    {
+      path: "/production/hens-batches/",
+      component: () => import("@/views/production/hensBatches/HensBatchHome"),
+      children: [
+        {
+          path: "",
+          component: () => import("@/views/production/hensBatches/HensBatchList"),
+          name: "HensBatchList",
+          meta: { headerName: "Lotes" }
+        },
+        {
+          path: "creation/",
+          component: () => import("@/views/production/hensBatches/HensBatchCreation"),
+          name: "HensBatchCreation",
+          meta: { headerName: "Nuevo lote" }
+        },
+        {
+          path: "update/:hensBatchId",
+          component: () => import("@/views/production/hensBatches/HensBatchUpdate"),
+          props: true,
+          name: "HensBatchUpdate",
+          meta: { headerName: "Modificar lote" }
+        }
+      ]
+    },
+    {
+      path: "/production/hens-batch-daily-reports/",
+      component: () => import("@/views/production/hensBatchDailyReports/HensBatchDailyReportHome"),
+      children: [
+        {
+          path: "",
+          component: () => import("@/views/production/hensBatchDailyReports/HensBatchDailyReportList"),
+          name: "HensBatchDailyReportList",
+          meta: { headerName: "Reporte diario" }
+        },
+        {
+          path: "creation/:hensBatchId",
+          component: () => import("@/views/production/hensBatchDailyReports/HensBatchDailyReportCreation"),
+          props: true,
+          name: "HensBatchDailyReportCreation",
+          meta: { headerName: "Nuevo reporte diario" }
+        },
+      ]
     }
   ]
 });

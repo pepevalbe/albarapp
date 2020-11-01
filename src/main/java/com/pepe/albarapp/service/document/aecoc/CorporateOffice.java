@@ -1,6 +1,5 @@
 package com.pepe.albarapp.service.document.aecoc;
 
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import lombok.Data;
 
 @Data

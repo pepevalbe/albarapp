@@ -28,9 +28,7 @@ public class SequentialByYearGenerator implements IdentifierGenerator {
 			localDate = Instant.ofEpochMilli(issuedTimestamp).atZone(ZoneId.systemDefault()).toLocalDate();
 		}
 		//Get first Id of current year
-		//long firstId = localDate.getYear() * 100000L + 1;
-		// For 2020 invoiceId will be 1,2,3,4... instead of 202000001,202000002,202000003,202000004...
-		long firstId = 1;
+		long firstId = localDate.getYear() * 100000L + 1;
 
 		//Get first Id of next year
 		long firstIdNextYear = (localDate.getYear() + 1) * 100000L + 1;

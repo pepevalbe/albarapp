@@ -291,6 +291,7 @@ export default {
           value: "total",
         },
         { text: "", sortable: false, value: "update" },
+        { text: "", sortable: false, value: "delete" },
       ];
       return headers;
     },

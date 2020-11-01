@@ -8,7 +8,6 @@ import com.pepe.albarapp.persistence.repository.InvoiceRepository;
 import com.pepe.albarapp.service.document.aecoc.AecocInvoice;
 import com.pepe.albarapp.service.document.csv.CsvFile;
 import com.pepe.albarapp.service.document.pdf.PdfInvoice;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +20,6 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-@Slf4j
 @Service
 public class DocumentService {
 

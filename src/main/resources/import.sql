@@ -1,7 +1,15 @@
-INSERT INTO user (id, email, password, name, surname, role) VALUES ('0', 'admin@albarapp.com', '$2a$10$eB4FAVGW3ykdZCpofs1zwO.zKHup.Y6B21hPpWCbfqH1dyD8uhJHS', 'admin-name', 'admin-surname', 'ADMIN');
-INSERT INTO user (id, email, password, name, surname, role) VALUES ('1', 'user@albarapp.com', '$2a$10$1A6X0IvozT15pfnbeDGBVujKF70vthvAyIJvuAKdotFY/MOcfo0NO', 'user-name', 'user-surname', 'USER');
+INSERT INTO user
+	(id, email, password, name, surname, role)
+VALUES
+	('0', 'admin@albarapp.com', '$2a$10$eB4FAVGW3ykdZCpofs1zwO.zKHup.Y6B21hPpWCbfqH1dyD8uhJHS', 'admin-name', 'admin-surname', 'ADMIN');
+INSERT INTO user
+	(id, email, password, name, surname, role)
+VALUES
+	('1', 'user@albarapp.com', '$2a$10$1A6X0IvozT15pfnbeDGBVujKF70vthvAyIJvuAKdotFY/MOcfo0NO', 'user-name', 'user-surname', 'USER');
 
-INSERT INTO product (id, code, factory_price, name, tax, aecoc_gtin) VALUES
+INSERT INTO product
+	(id, code, factory_price, name, tax, aecoc_gtin)
+VALUES
 	('1', 1, 0.15, 'Huevo XL', 0, NULL),
 	('2', 2, 0.13, 'Huevo L', 0, NULL),
 	('3', 3, 0.11, 'Huevo M', 0, NULL),
@@ -14,7 +22,9 @@ INSERT INTO product (id, code, factory_price, name, tax, aecoc_gtin) VALUES
 	('c4a16657-8368-4d14-9330-1b0c903c0ba2', 9, 4, 'Pollitas blancas', 3, NULL),
 	('cbcb9728-762d-4632-9947-dd3e8652779c', 7, 0.14, 'Huevo L - Estuche 10uds', 0, NULL);
 
-INSERT INTO customer(id, address, alias, code, email, fiscal_id, name, province, phone_number, receiver_gln, buyer_gln, ship_gln, payer_gln, invoicee_gln) VALUES
+INSERT INTO customer
+	(id, address, alias, code, email, fiscal_id, name, province, phone_number, receiver_gln, buyer_gln, ship_gln, payer_gln, invoicee_gln)
+VALUES
 	('0134dfd1-dbaa-4a45-a4b7-c513a9b6f256', 'DIRECCION 1', 'ALIAS 1', 1, NULL, '00000000A', 'NOMBRE 1', 'PROVINCIA 1', NULL, NULL, NULL, NULL, NULL, NULL),
 	('02d3e82b-31ce-4f0e-bcab-377ef305a8e8', 'DIRECCION 2', 'ALIAS 2', 2, NULL, '00000000A', 'NOMBRE 2', 'PROVINCIA 2', NULL, NULL, NULL, NULL, NULL, NULL),
 	('032fbd78-99f5-4f80-a655-dc6d46a2c389', 'DIRECCION 3', 'ALIAS 3', 3, NULL, '00000000A', 'NOMBRE 3', 'PROVINCIA 3', NULL, NULL, NULL, NULL, NULL, NULL),
@@ -169,7 +179,9 @@ INSERT INTO customer(id, address, alias, code, email, fiscal_id, name, province,
 	('fdeb33e1-23f9-4ed7-af4c-48f08eaf7b17', 'DIRECCION 152', 'ALIAS 152', 152, NULL, '00000000A', 'NOMBRE 152', 'PROVINCIA 152', NULL, NULL, NULL, NULL, NULL, NULL),
 	('fef05816-b9b6-473e-be54-06a322fc9055', 'DIRECCION 153', 'ALIAS 153', 153, NULL, '00000000A', 'NOMBRE 153', 'PROVINCIA 153', NULL, NULL, NULL, NULL, NULL, NULL);
 
-INSERT INTO customer_product_price (id, offered_price, customer_id, product_id, price_index) VALUES
+INSERT INTO customer_product_price
+	(id, offered_price, customer_id, product_id, price_index)
+VALUES
 	('02ce4546-00ac-40c1-a9d5-c97d89be7ab8', 0.12, 'fc595358-2924-4de1-9ced-3d22c5829df7', '2', 0),
 	('03f005df-b460-498b-8d3a-7d4824638d1f', 0.14, 'a3122534-bcc4-45f5-9477-5d8122c86b63', '5', 0),
 	('046888a0-96fd-4b50-bc9f-f87c049f7152', 0.13, 'faedca97-2d98-404e-9d8d-1f10198d38d7', '2', 0),
@@ -353,7 +365,9 @@ INSERT INTO customer_product_price (id, offered_price, customer_id, product_id, 
 	('fde234af-87ee-455c-b6db-3eb4f336b046', 0.13, '41da413e-f273-46ea-ac72-53dfc829f5e0', '2', 0),
 	('fe780b3b-f78f-4db9-9306-44b92b0177c9', 0.13, 'a95b3743-e7e7-42f4-b9b6-260d36b91bcb', '2', 0);
 
-INSERT INTO invoice (id, issued_timestamp, customer_id) VALUES
+INSERT INTO invoice
+	(id, issued_timestamp, customer_id)
+VALUES
 	(1, 1578614400000, 'a82dca3e-e46e-482f-820c-e962bb1615a8'),
 	(2, 1578700800000, 'a82dca3e-e46e-482f-820c-e962bb1615a8'),
 	(3, 1579478400000, 'd75bc5d1-2127-40c8-a7e5-b8ee7633b40a'),
@@ -505,7 +519,9 @@ INSERT INTO invoice (id, issued_timestamp, customer_id) VALUES
 	(149, 1582588800000, '34d2144b-b1cf-4de0-a459-25aaf8218b9a'),
 	(150, 1582588800000, 'ce08b474-d62a-4ad2-ac66-194d3e4af6f5');
 
-INSERT INTO delivery_note (id, aux_delivery_note_nr, issued_timestamp, customer_id, invoice_id) VALUES
+INSERT INTO delivery_note
+	(id, aux_delivery_note_nr, issued_timestamp, customer_id, invoice_id)
+VALUES
 	(202000000, NULL, 1578009600000, 'f7c51473-5f81-4690-9f19-b67bab3edf09', 15),
 	(202000001, NULL, 1578355200000, 'f7c51473-5f81-4690-9f19-b67bab3edf09', 15),
 	(202000002, NULL, 1578614400000, 'f7c51473-5f81-4690-9f19-b67bab3edf09', 15),
@@ -1712,7 +1728,9 @@ INSERT INTO delivery_note (id, aux_delivery_note_nr, issued_timestamp, customer_
 	(202001209, '03209', 1582848000000, '2e63aedb-0988-4069-afcc-f766ab77b7ac', NULL),
 	(202001210, '03210', 1582848000000, '2e63aedb-0988-4069-afcc-f766ab77b7ac', NULL);
 
-INSERT INTO delivery_note_item (id, price, quantity, delivery_note_id, product_id) VALUES
+INSERT INTO delivery_note_item
+	(id, price, quantity, delivery_note_id, product_id)
+VALUES
 	('008b2a02-0b74-44e3-9e40-40c23791ff8c', 0.105, 360, 202000270, '3'),
 	('00a55e67-4318-4dc6-88bc-219deaf74ac3', 0.13, 120, 202001185, '2'),
 	('00d24662-c0aa-4fa9-affc-e530df9fcd27', 0.13, 120, 202000545, '2'),
@@ -3097,3 +3115,16 @@ INSERT INTO delivery_note_item (id, price, quantity, delivery_note_id, product_i
 	('fef6edf0-ad97-4375-b3fd-9c4835caadfd', 0.14, 90, 202000643, '5'),
 	('ff271770-3495-403a-aade-faccc17fd70f', 0.13, 360, 202000301, '2'),
 	('ff32a235-0e85-489b-a6a4-1902ee6c99e6', 0.095, 3600, 202000038, '3');
+
+INSERT INTO hens_batch
+	(id, name, birth_date_timestamp, race, animal_quantity, end_date_timestamp)
+VALUES
+	('a', 'Lote 2020 A', 0, 'Raza A', 5000, NULL),
+	('b', 'Lote 2020 B', 0, 'Raza A', 7500, NULL);
+
+
+INSERT INTO hens_batch_daily_report
+	(id, hens_batch_id, date_timestamp, water_consumption, poultry_mash_consumption, max_temperature, min_temperature, xl, l, m, s, xs, dirties, brokens, deaths, departures, comments)
+VALUES
+	('2763487', 'a', 1602453600000, NULL, NULL, 23.5, 20.1, 150, 3000, 2500, 150, 0, 30, 15, 1, 0, NULL),
+	('2763488', 'a', 1602367200000, NULL, NULL, 23.2, 20.3, 160, 1950, 2300, 180, 0, 30, 15, 1, 0, 'Las gallinas estuvieron 6 horas sin comida porque a cierto granjero se le olvido cambiar de silo');

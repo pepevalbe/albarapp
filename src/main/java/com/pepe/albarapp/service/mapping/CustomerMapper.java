@@ -1,9 +1,7 @@
 package com.pepe.albarapp.service.mapping;
 
 import com.pepe.albarapp.persistence.domain.Customer;
-import com.pepe.albarapp.persistence.domain.CustomerAecocInfo;
 import com.pepe.albarapp.persistence.domain.CustomerProductPrice;
-import com.pepe.albarapp.service.dto.CustomerAecocInfoDto;
 import com.pepe.albarapp.service.dto.CustomerDto;
 import com.pepe.albarapp.service.dto.CustomerProductPriceDto;
 import org.mapstruct.Mapper;
