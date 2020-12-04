@@ -1,0 +1,14 @@
+Scripts to be launched are spcified in appspec.yml
+There are tree scenarios:
+
+Build java jar in ec2. Run albarapp as java proccess in background
+	build_app.bash
+	start_app.bash
+
+Build java jar and docker image in ec2. Run app as a docker container
+	build_app_docker.bash
+	start_app_docker.bash
+
+Build java jar with CodeBuild (using buildspec.yml). Run app as a docker container
+	build_docker.bash
+	start_docker.bash
