@@ -1,7 +1,7 @@
 import HttpClient from '@/services/HttpClient.js';
 
 const RESOURCE_NAME = '/hateoas/hensBatches';
-const RESOURCE_NAME_ACTIVES = '/hateoas/hensBatches/search/findByEndDateTimestampIsNull';
+const RESOURCE_NAME_ACTIVES = '/hateoas/hensBatches/search/findByEndTimestampIsNull';
 
 export default {
   getAll() {

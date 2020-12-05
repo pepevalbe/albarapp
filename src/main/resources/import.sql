@@ -3117,14 +3117,14 @@ VALUES
 	('ff32a235-0e85-489b-a6a4-1902ee6c99e6', 0.095, 3600, 202000038, '3');
 
 INSERT INTO hens_batch
-	(id, name, birth_date_timestamp, race, animal_quantity, end_date_timestamp)
+	(id, name, birth_timestamp, breed, animal_quantity, end_timestamp)
 VALUES
 	('a', 'Lote 2020 A', 0, 'Raza A', 5000, NULL),
 	('b', 'Lote 2020 B', 0, 'Raza A', 7500, NULL);
 
 
-INSERT INTO hens_batch_daily_report
-	(id, hens_batch_id, date_timestamp, water_consumption, poultry_mash_consumption, max_temperature, min_temperature, xl, l, m, s, xs, dirties, brokens, deaths, departures, comments)
+INSERT INTO hens_batch_report
+	(id, hens_batch_id, report_timestamp, water_consumption, poultry_mash_consumption, max_temperature, min_temperature, num_xl, num_l, num_m, num_s, num_xs, dirties, brokens, deaths, departures, comments)
 VALUES
 	('2763487', 'a', 1602453600000, NULL, NULL, 23.5, 20.1, 150, 3000, 2500, 150, 0, 30, 15, 1, 0, NULL),
 	('2763488', 'a', 1602367200000, NULL, NULL, 23.2, 20.3, 160, 1950, 2300, 180, 0, 30, 15, 1, 0, 'Las gallinas estuvieron 6 horas sin comida porque a cierto granjero se le olvido cambiar de silo');

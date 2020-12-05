@@ -14,6 +14,6 @@ public interface HensBatchRepository extends CrudRepository<HensBatch, String> {
     
     Set<HensBatch> findAll();
 
-    Set<HensBatch> findByEndDateTimestampIsNull();
+    Set<HensBatch> findByEndTimestampIsNull();
 
 }

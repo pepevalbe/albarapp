@@ -36,9 +36,9 @@
             <tbody v-if="!$vuetify.breakpoint.xsOnly">
               <tr v-for="item in items" :key="item.id">
                 <td>{{ item.name }}</td>
-                <td>{{ item.race }}</td>
+                <td>{{ item.breed }}</td>
                 <td>{{ item.animalQuantity }}</td>
-                <td>{{ dateFormatted(item.birthDateTimestamp) }}</td>
+                <td>{{ dateFormatted(item.birthTimestamp) }}</td>
                 <td>
                   <v-btn @click="updateHensBatch(item)">
                     <v-icon dark>mdi-pencil</v-icon>
@@ -59,13 +59,13 @@
                     {{ item.name }}
                     <br />
                     <span class="black--text">Raza / Estirpe:</span>
-                    {{ item.race }}
+                    {{ item.breed }}
                     <br />
                     <span class="black--text">Número de animales:</span>
                     {{ item.animalQuantity }}
                     <br />
                     <span class="black--text">Fecha de nacimiento:</span>
-                    {{ dateFormatted(item.birthDateTimestamp) }}
+                    {{ dateFormatted(item.birthTimestamp) }}
                     <br />
                   </v-card-text>
                   <v-card-actions>
@@ -110,17 +110,17 @@ export default {
       hensBatches: [],
       headers: [
         { text: "Nombre", sortable: true, value: "name" },
-        { text: "Raza / Estirpe", sortable: true, value: "race" },
+        { text: "Raza / Estirpe", sortable: true, value: "breed" },
         { text: "Número de animales", sortable: true, value: "animalQuantity" },
         {
           text: "Fecha de nacimiento",
           sortable: true,
-          value: "birthDateTimestamp",
+          value: "birthTimestamp",
         },
         { text: "", sortable: false, value: "update" },
       ],
       search: "",
-      sortBy: "birthDateTimestamp",
+      sortBy: "birthTimestamp",
       descending: false,
       errorLoading: false,
       spinner: {

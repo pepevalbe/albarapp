@@ -82,13 +82,13 @@
           </v-list-item-icon>
           <v-list-item-title>Lotes</v-list-item-title>
         </v-list-item>
-        <v-list-item class="pl-8" link :to="{ name: 'HensBatchDailyReportList' }">
+        <v-list-item class="pl-8" link :to="{ name: 'HensBatchReportList' }">
           <v-list-item-icon>
             <v-icon>mdi-clipboard-list-outline</v-icon>
           </v-list-item-icon>
           <v-list-item-title>Reporte diario</v-list-item-title>
         </v-list-item>
-        <v-list-item class="pl-8" link :to="{ name: 'ProductList' }">
+        <v-list-item hidden class="pl-8" link :to="{ name: 'HensBatchReportList' }">
           <v-list-item-icon>
             <v-icon>mdi-silo</v-icon>
           </v-list-item-icon>

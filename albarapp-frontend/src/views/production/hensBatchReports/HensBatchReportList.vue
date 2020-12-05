@@ -3,7 +3,7 @@
     <div v-if="!errorLoading">
       <v-layout text-right wrap class="pt-2 pb-5 mr-5">
         <v-flex xs12>
-          <v-btn :to="toDailyReportCreation()" :disabled="!hensBatch">
+          <v-btn :to="toReportCreation()" :disabled="!hensBatch">
             Nuevo
             <v-icon class="ml-2">mdi-plus-circle</v-icon>
           </v-btn>
@@ -27,10 +27,10 @@
           />
         </v-card-title>
         <v-data-table
-          :loading="!hensBatchDailyReports"
+          :loading="!hensBatchReports"
           loading-text="Cargando... Por favor, espere"
           :headers="headers"
-          :items="hensBatchDailyReports"
+          :items="hensBatchReports"
           :search="search"
           :sort-by.sync="sortBy"
           :sort-desc.sync="descending"
@@ -43,13 +43,13 @@
             >
               <tr v-for="item in items" :key="item.code">
                 <td>
-                  {{ dateFormatted(item.dateTimestamp) }}
+                  {{ dateFormatted(item.reportTimestamp) }}
                 </td>
-                <td>{{ item.xl }}</td>
-                <td>{{ item.l }}</td>
-                <td>{{ item.m }}</td>
-                <td>{{ item.s }}</td>
-                <td>{{ item.xs }}</td>
+                <td>{{ item.numXL }}</td>
+                <td>{{ item.numL }}</td>
+                <td>{{ item.numM }}</td>
+                <td>{{ item.numS }}</td>
+                <td>{{ item.numXS }}</td>
                 <td>{{ item.dirties }}</td>
                 <td>{{ item.brokens }}</td>
                 <td>{{ item.deaths }}</td>
@@ -64,7 +64,7 @@
                   </v-tooltip>
                 </td>
                 <td>
-                  <v-btn @click="updateHensBatchDailyReport(item)">
+                  <v-btn @click="updateHensBatchReport(item)">
                     <v-icon dark>mdi-pencil</v-icon>
                   </v-btn>
                 </td>
@@ -90,7 +90,7 @@
                 >
                   <v-card-text>
                     <span class="black--text">Fecha:</span>
-                    {{ dateFormatted(item.dateTimestamp) }}
+                    {{ dateFormatted(item.reportTimestamp) }}
                     <br />
                     <span class="black--text">XL:</span>
                     {{ item.xl }}
@@ -123,7 +123,7 @@
                   <v-card-actions>
                     <v-layout text-center wrap>
                       <v-flex xs12>
-                        <v-btn @click="updateHensBatchDailyReport(item)">
+                        <v-btn @click="updateHensBatchReport(item)">
                           <v-icon dark>mdi-pencil</v-icon>
                         </v-btn>
                         <v-btn color="red" dark @click="openDeleteDialog(item)">
@@ -158,7 +158,7 @@
         <v-card-title class="headline">¿Eliminar reporte diario?</v-card-title>
         <v-card-text
           >Si sigue adelante eliminará el reporte diario con fecha
-          {{ dateFormatted(dialogDelete.dailyReport.dateTimestamp) }} del lote
+          {{ dateFormatted(dialogDelete.Report.reportTimestamp) }} del lote
           {{ hensBatch.name }}. Este proceso es irreversible.</v-card-text
         >
         <v-card-actions>
@@ -169,7 +169,7 @@
           <v-btn
             color="red darken-1"
             text
-            @click="deleteHensBatchDailyReport(dialogDelete.dailyReport)"
+            @click="deleteHensBatchReport(dialogDelete.Report)"
             >Confirmar</v-btn
           >
         </v-card-actions>
@@ -180,13 +180,13 @@
 
 <script>
 import HensBatchService from "@/services/production/HensBatchService.js";
-import HensBatchDailyReportService from "@/services/production/HensBatchDailyReportService.js";
+import HensBatchReportService from "@/services/production/HensBatchReportService.js";
 
 export default {
-  name: "HensBatchDailyReportList",
+  name: "HensBatchReportList",
   data: () => {
     return {
-      hensBatchDailyReports: [],
+      hensBatchReports: [],
       hensBatches: [],
       hensBatch: null,
       headers: [
@@ -194,13 +194,13 @@ export default {
           text: "Fecha",
           sortable: true,
           align: "center",
-          value: "dateTimestamp",
+          value: "reportTimestamp",
         },
-        { text: "XL", sortable: true, align: "center", value: "xl" },
-        { text: "L", sortable: true, align: "center", value: "l" },
-        { text: "M", sortable: true, align: "center", value: "m" },
-        { text: "S", sortable: true, align: "center", value: "s" },
-        { text: "XS", sortable: true, align: "center", value: "xs" },
+        { text: "XL", sortable: true, align: "center", value: "numXL" },
+        { text: "L", sortable: true, align: "center", value: "numL" },
+        { text: "M", sortable: true, align: "center", value: "numM" },
+        { text: "S", sortable: true, align: "center", value: "numS" },
+        { text: "XS", sortable: true, align: "center", value: "numXS" },
         { text: "Sucios", sortable: true, align: "center", value: "dirties" },
         { text: "Rotos", sortable: true, align: "center", value: "brokens" },
         { text: "Muertas", sortable: true, align: "center", value: "deaths" },
@@ -214,11 +214,11 @@ export default {
         { text: "", sortable: false, align: "center", value: "delete" },
       ],
       search: "",
-      sortBy: "dateTimestamp",
+      sortBy: "reportTimestamp",
       descending: true,
       dialogDelete: {
         show: false,
-        dailyReport: {},
+        Report: {},
       },
       errorLoading: false,
       spinner: {
@@ -237,6 +237,7 @@ export default {
   },
   methods: {
     async loadHensBatches() {
+
       try {
         this.showSpinner();
         this.errorLoading = false;
@@ -253,10 +254,10 @@ export default {
           this.showSpinner();
           this.errorLoading = false;
           this.$store.commit(
-            "filterDailyReportsByHensBatch",
+            "filterReportsByHensBatch",
             this.hensBatch.id
           );
-          this.hensBatchDailyReports = await HensBatchDailyReportService.getByHensBatchId(
+          this.hensBatchReports = await HensBatchReportService.getByHensBatchId(
             this.hensBatch.id
           );
         } catch (e) {
@@ -265,33 +266,33 @@ export default {
           this.closeSpinner();
         }
       } else {
-        this.hensBatchDailyReports = [];
-        this.$store.commit("filterDailyReportsByHensBatch", null);
+        this.hensBatchReports = [];
+        this.$store.commit("filterReportsByHensBatch", null);
       }
     },
-    updateHensBatchDailyReport(item) {
+    updateHensBatchReport(item) {
       this.$router.push({
-        name: "HensBatchDailyReportUpdate",
-        params: { hensBatchDailyReportId: item.id },
+        name: "HensBatchReportUpdate",
+        params: { hensBatchReportId: item.id },
       });
     },
-    toDailyReportCreation() {
+    toReportCreation() {
       if (this.hensBatch) {
         return {
-          name: "HensBatchDailyReportCreation",
+          name: "HensBatchReportCreation",
           params: { hensBatchId: this.hensBatch.id },
         };
       }
     },
     openDeleteDialog(item) {
-      this.dialogDelete.dailyReport = item;
+      this.dialogDelete.Report = item;
       this.dialogDelete.show = true;
     },
-    async deleteHensBatchDailyReport(item) {
+    async deleteHensBatchReport(item) {
       try {
         this.dialogDelete.show = false;
         this.showSpinner();
-        await HensBatchDailyReportService.delete(item.id);
+        await HensBatchReportService.delete(item.id);
         this.snackbar = {
           show: true,
           message: "Reporte diario eliminado correctamente",

@@ -39,9 +39,9 @@
       <v-divider></v-divider>
       <v-row class="mr-6 ml-6">
         <v-text-field
-          v-model="form.hensBatchDailyReport.xl"
+          v-model="form.hensBatchReport.numXL"
           type="number"
-          :rules="xlRules"
+          :rules="numXLRules"
           autocomplete="off"
           label="XL *"
           required
@@ -49,39 +49,39 @@
           @focus="$event.target.select()"
         ></v-text-field>
         <v-text-field
-          v-model="form.hensBatchDailyReport.l"
+          v-model="form.hensBatchReport.numL"
           type="number"
-          :rules="lRules"
+          :rules="numLRules"
           autocomplete="off"
           label="L *"
           required
         ></v-text-field>
         <v-text-field
-          v-model="form.hensBatchDailyReport.m"
+          v-model="form.hensBatchReport.numM"
           type="number"
-          :rules="mRules"
+          :rules="numMRules"
           autocomplete="off"
           label="M *"
           required
         ></v-text-field>
         <v-text-field
-          v-model="form.hensBatchDailyReport.s"
+          v-model="form.hensBatchReport.numS"
           type="number"
-          :rules="sRules"
+          :rules="numSRules"
           autocomplete="off"
           label="S *"
           required
         ></v-text-field>
         <v-text-field
-          v-model="form.hensBatchDailyReport.xs"
+          v-model="form.hensBatchReport.numXS"
           type="number"
-          :rules="xsRules"
+          :rules="numXSRules"
           autocomplete="off"
           label="XS *"
           required
         ></v-text-field>
         <v-text-field
-          v-model="form.hensBatchDailyReport.dirties"
+          v-model="form.hensBatchReport.dirties"
           type="number"
           :rules="dirtiesRules"
           autocomplete="off"
@@ -89,7 +89,7 @@
           required
         ></v-text-field>
         <v-text-field
-          v-model="form.hensBatchDailyReport.brokens"
+          v-model="form.hensBatchReport.brokens"
           type="number"
           :rules="brokensRules"
           autocomplete="off"
@@ -101,7 +101,7 @@
       <v-divider></v-divider>
       <v-row class="mr-6 ml-6">
         <v-text-field
-          v-model="form.hensBatchDailyReport.deaths"
+          v-model="form.hensBatchReport.deaths"
           type="number"
           :rules="deathsRules"
           autocomplete="off"
@@ -109,7 +109,7 @@
           required
         ></v-text-field>
         <v-text-field
-          v-model="form.hensBatchDailyReport.departures"
+          v-model="form.hensBatchReport.departures"
           type="number"
           :rules="departuresRules"
           autocomplete="off"
@@ -121,7 +121,7 @@
       <v-divider></v-divider>
       <v-row class="mr-6 ml-6">
         <v-text-field
-          v-model="form.hensBatchDailyReport.maxTemperature"
+          v-model="form.hensBatchReport.maxTemperature"
           type="number"
           :rules="maxTempRules"
           autocomplete="off"
@@ -129,7 +129,7 @@
           required
         ></v-text-field>
         <v-text-field
-          v-model="form.hensBatchDailyReport.minTemperature"
+          v-model="form.hensBatchReport.minTemperature"
           type="number"
           :rules="minTempRules"
           autocomplete="off"
@@ -141,13 +141,13 @@
       <v-divider></v-divider>
       <v-row class="mr-6 ml-6">
         <v-text-field
-          v-model="form.hensBatchDailyReport.waterConsumption"
+          v-model="form.hensBatchReport.waterConsumption"
           type="number"
           autocomplete="off"
           label="Agua en litros"
         ></v-text-field>
         <v-text-field
-          v-model="form.hensBatchDailyReport.poultryMashConsumption"
+          v-model="form.hensBatchReport.poultryMashConsumption"
           type="number"
           autocomplete="off"
           label="Pienso en kilogramos"
@@ -157,7 +157,7 @@
       <v-divider></v-divider>
       <v-row class="mr-6 ml-6">
         <v-text-field
-          v-model="form.hensBatchDailyReport.comments"
+          v-model="form.hensBatchReport.comments"
           autocomplete="off"
           label="Observaciones"
         ></v-text-field>
@@ -168,28 +168,28 @@
         
 <script>
 export default {
-  name: "HensBatchDailyReportForm",
+  name: "HensBatchReportForm",
   props: {
     form: {
       valid: Boolean,
-      hensBatchDailyReport: {
+      hensBatchReport: {
         name: String,
-        race: String,
+        breed: String,
         animalQuantity: Number,
-        birthDateTimestamp: Number,
+        birthTimestamp: Number,
       },
     },
     hensBatch: {
       name: String,
-      race: String,
+      breed: String,
       animalQuantity: Number,
-      birthDateTimestamp: Number,
+      birthTimestamp: Number,
     },
   },
   created() {
-    if (this.form?.hensBatchDailyReport?.dateTimestamp) {
+    if (this.form?.hensBatchReport?.reportTimestamp) {
       let moment = this.$moment.utc(
-        this.form.hensBatchDailyReport.dateTimestamp,
+        this.form.hensBatchReport.reportTimestamp,
         "x",
         true
       );
@@ -199,15 +199,15 @@ export default {
       let moment = this.$moment.utc();
       this.date = moment.format("YYYY-MM-DD");
       this.dateText = moment.format("DD/MM/YYYY");
-      this.form.hensBatchDailyReport.dateTimestamp = moment.format("x");
+      this.form.hensBatchReport.reportTimestamp = moment.format("x");
     }
   },
   data: () => ({
-    xlRules: [(v) => !!v || "La cantidad de huevos XL es obligatoria"],
-    lRules: [(v) => !!v || "La cantidad de huevos L es obligatoria"],
-    mRules: [(v) => !!v || "La cantidad de huevos M es obligatoria"],
-    sRules: [(v) => !!v || "La cantidad de huevos S es obligatoria"],
-    xsRules: [(v) => !!v || "La cantidad de huevos XS es obligatoria"],
+    numXLRules: [(v) => !!v || "La cantidad de huevos XL es obligatoria"],
+    numLRules: [(v) => !!v || "La cantidad de huevos L es obligatoria"],
+    numMRules: [(v) => !!v || "La cantidad de huevos M es obligatoria"],
+    numSRules: [(v) => !!v || "La cantidad de huevos S es obligatoria"],
+    numXSRules: [(v) => !!v || "La cantidad de huevos XS es obligatoria"],
     dirtiesRules: [(v) => !!v || "La cantidad de huevos sucios es obligatoria"],
     brokensRules: [(v) => !!v || "La cantidad de huevos rotos es obligatoria"],
     deathsRules: [
@@ -239,7 +239,7 @@ export default {
       if (moment.isValid()) {
         this.date = moment.format("YYYY-MM-DD");
         this.dateText = moment.format("DD/MM/YYYY");
-        this.form.hensBatchDailyReport.dateTimestamp = moment.format("x");
+        this.form.hensBatchReport.reportTimestamp = moment.format("x");
       } else {
         this.$nextTick(this.$refs.dateText.focus);
       }
@@ -247,7 +247,7 @@ export default {
     datePickedOnCalendar() {
       var moment = this.$moment.utc(this.date, "YYYY-MM-DD", true);
       this.dateText = moment.format("DD/MM/YYYY");
-      this.form.hensBatchDailyReport.dateTimestamp = moment.format("x");
+      this.form.hensBatchReport.reportTimestamp = moment.format("x");
       this.menuDatePicker = false;
     },
   },

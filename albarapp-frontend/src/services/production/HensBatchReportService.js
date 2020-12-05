@@ -1,21 +1,21 @@
 import HttpClient from '@/services/HttpClient.js';
 
-const RESOURCE_NAME = '/hateoas/hensBatchDailyReports';
-const RESOURCE_NAME_BY_BATCH = '/hateoas/hensBatchDailyReports/search/findByHensBatchId';
-const CREATE_ASSOCIATED_TO_BATCH = '/hateoas/hensBatchs/{hensBatchId}/hensBatchDailyReport';
+const RESOURCE_NAME = '/hateoas/hensBatchReports';
+const RESOURCE_NAME_BY_BATCH = '/hateoas/hensBatchReports/search/findByHensBatchId';
+const CREATE_ASSOCIATED_TO_BATCH = '/hateoas/hensBatchs/{hensBatchId}/hensBatchReport';
 
 export default {
   getAll() {
     return HttpClient.get(RESOURCE_NAME)
       .then(response => {
-        return response.data._embedded.hensBatchDailyReports;
+        return response.data._embedded.hensBatchReports;
       });
   },
 
   getByHensBatchId(hensBatchId) {
     return HttpClient.get(`${RESOURCE_NAME_BY_BATCH}?hensBatchId=${hensBatchId}`)
       .then(response => {
-        return response.data._embedded.hensBatchDailyReports;
+        return response.data._embedded.hensBatchReports;
       });
   },
 

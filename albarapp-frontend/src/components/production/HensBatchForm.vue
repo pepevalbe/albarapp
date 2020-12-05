@@ -11,8 +11,8 @@
         required
       ></v-text-field>
       <v-text-field
-        v-model="form.hensBatch.race"
-        :rules="raceRules"
+        v-model="form.hensBatch.breed"
+        :rules="breedRules"
         autocomplete="off"
         label="Raza / Estirpe *"
         required
@@ -99,25 +99,25 @@ export default {
       valid: Boolean,
       hensBatch: {
         name: String,
-        race: String,
+        breed: String,
         animalQuantity: Number,
-        birthDateTimestamp: Number,
+        birthTimestamp: Number,
       },
     },
   },
   created() {
-    if (this.form?.hensBatch?.birthDateTimestamp) {
+    if (this.form?.hensBatch?.birthTimestamp) {
       let moment = this.$moment.utc(
-        this.form.hensBatch.birthDateTimestamp,
+        this.form.hensBatch.birthTimestamp,
         "x",
         true
       );
       this.birthDate = moment.format("YYYY-MM-DD");
       this.birthDateText = moment.format("DD/MM/YYYY");
     }
-    if (this.form?.hensBatch?.endDateTimestamp) {
+    if (this.form?.hensBatch?.endTimestamp) {
       let moment = this.$moment.utc(
-        this.form.hensBatch.endDateTimestamp,
+        this.form.hensBatch.endTimestamp,
         "x",
         true
       );
@@ -131,7 +131,7 @@ export default {
       (v) =>
         (v && v.length <= 80) || "El nombre debe tener menos de 40 caracteres",
     ],
-    raceRules: [(v) => !!v || "La raza es obligatorio"],
+    breedRules: [(v) => !!v || "La raza es obligatoria"],
     animalQuantityRules: [
       (v) => !!v || "La cantidad de animales es obligatoria",
       (v) => (v && v >= 0) || "La cantidad de animales debe ser mayor a 0",
@@ -156,7 +156,7 @@ export default {
       if (moment.isValid()) {
         this.birthDate = moment.format("YYYY-MM-DD");
         this.birthDateText = moment.format("DD/MM/YYYY");
-        this.form.hensBatch.birthDateTimestamp = moment.format("x");
+        this.form.hensBatch.birthTimestamp = moment.format("x");
       } else {
         this.$nextTick(this.$refs.dateText.focus);
       }
@@ -164,7 +164,7 @@ export default {
     datePickedOnCalendar() {
       var moment = this.$moment.utc(this.birthDate, "YYYY-MM-DD", true);
       this.birthDateText = moment.format("DD/MM/YYYY");
-      this.form.hensBatch.birthDateTimestamp = moment.format("x");
+      this.form.hensBatch.birthTimestamp = moment.format("x");
       this.menuDatePicker = false;
     },
     parseDateTextEnd() {
@@ -176,7 +176,7 @@ export default {
       if (moment.isValid()) {
         this.endDate = moment.format("YYYY-MM-DD");
         this.endDateText = moment.format("DD/MM/YYYY");
-        this.form.hensBatch.endDateTimestamp = moment.format("x");
+        this.form.hensBatch.endTimestamp = moment.format("x");
       } else {
         this.$nextTick(this.$refs.dateTextEnd.focus);
       }
@@ -184,7 +184,7 @@ export default {
     datePickedOnCalendarEnd() {
       var moment = this.$moment.utc(this.endDate, "YYYY-MM-DD", true);
       this.endDateText = moment.format("DD/MM/YYYY");
-      this.form.hensBatch.endDateTimestamp = moment.format("x");
+      this.form.hensBatch.endTimestamp = moment.format("x");
       this.menuDatePickerEnd = false;
     },
   },

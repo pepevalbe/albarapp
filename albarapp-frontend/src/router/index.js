@@ -170,20 +170,20 @@ const router = new Router({
       ]
     },
     {
-      path: "/production/hens-batch-daily-reports/",
-      component: () => import("@/views/production/hensBatchDailyReports/HensBatchDailyReportHome"),
+      path: "/production/hens-batch-reports/",
+      component: () => import("@/views/production/hensBatchReports/HensBatchReportHome"),
       children: [
         {
           path: "",
-          component: () => import("@/views/production/hensBatchDailyReports/HensBatchDailyReportList"),
-          name: "HensBatchDailyReportList",
+          component: () => import("@/views/production/hensBatchReports/HensBatchReportList"),
+          name: "HensBatchReportList",
           meta: { headerName: "Reporte diario" }
         },
         {
           path: "creation/:hensBatchId",
-          component: () => import("@/views/production/hensBatchDailyReports/HensBatchDailyReportCreation"),
+          component: () => import("@/views/production/hensBatchReports/HensBatchReportCreation"),
           props: true,
-          name: "HensBatchDailyReportCreation",
+          name: "HensBatchReportCreation",
           meta: { headerName: "Nuevo reporte diario" }
         },
       ]

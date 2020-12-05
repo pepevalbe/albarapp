@@ -21,27 +21,26 @@ public class HensBatch {
     private String name;
     
 	@Column(nullable = false)
-    private Long birthDateTimestamp;
+    private long birthTimestamp;
     
     @Column(nullable = false)
-    private String race;
+    private String breed;
     
 	@Column(nullable = false)
-	private Long animalQuantity;
+	private long animalQuantity;
 	
 	@Column
-    private Long endDateTimestamp;
+    private Long endTimestamp;
 
     @OneToMany(mappedBy = "hensBatch")
-	private Set<HensBatchDailyReport> hensBatchDailyReport;
-    
-    @Override
+	private Set<HensBatchReport> hensBatchReports;
+
+	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		HensBatch hensBatch = (HensBatch) o;
-		if (this.id == null || hensBatch.id == null) return false;
-		return id.equals(hensBatch.id);
+		return Objects.equals(id, hensBatch.id);
 	}
 
 	@Override

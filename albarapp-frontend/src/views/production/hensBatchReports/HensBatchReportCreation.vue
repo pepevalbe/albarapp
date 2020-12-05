@@ -1,11 +1,11 @@
 <template>
   <v-flex align-self-start>
-    <HensBatchDailyReportForm
+    <HensBatchReportForm
       v-if="hensBatch"
       :form="form"
       :hensBatch="hensBatch"
       ref="form"
-    ></HensBatchDailyReportForm>
+    ></HensBatchReportForm>
     <div class="mb-3"></div>
     <v-layout text-center wrap class="pt-10">
       <v-flex xs12>
@@ -13,7 +13,7 @@
           :disabled="!form.valid"
           color="success"
           class="mr-4"
-          @click="createHenseBatchDailyReport()"
+          @click="createHenseBatchReport()"
           >Crear</v-btn
         >
         <v-btn color="error" class="mr-4" @click="reset()">Borrar</v-btn>
@@ -31,14 +31,14 @@
 </template>
 
 <script>
-import HensBatchDailyReportForm from "@/components/production/HensBatchDailyReportForm";
-import HensBatchDailyReportService from "@/services/production/HensBatchDailyReportService.js";
+import HensBatchReportForm from "@/components/production/HensBatchReportForm";
+import HensBatchReportService from "@/services/production/HensBatchReportService.js";
 import HensBatchService from "@/services/production/HensBatchService.js";
 
 export default {
-  name: "HensBatchDailyReportCreation",
+  name: "HensBatchReportCreation",
   components: {
-    HensBatchDailyReportForm,
+    HensBatchReportForm,
   },
   props: {
     hensBatchId: String,
@@ -46,7 +46,7 @@ export default {
   data: () => ({
     form: {
       valid: false,
-      hensBatchDailyReport: {
+      hensBatchReport: {
         xl: "0",
         l: "0",
         m: "0",
@@ -84,14 +84,14 @@ export default {
         this.closeSpinner();
       }
     },
-    async createHenseBatchDailyReport() {
+    async createHenseBatchReport() {
       try {
         this.showSpinner();
-        this.form.hensBatchDailyReport.hensBatch = this.hensBatch._links.self.href;
-        this.form.hensBatchDailyReport.deaths = 0;
-        this.form.hensBatchDailyReport.departures = 0;
-        await HensBatchDailyReportService.create(
-          this.form.hensBatchDailyReport
+        this.form.hensBatchReport.hensBatch = this.hensBatch._links.self.href;
+        this.form.hensBatchReport.deaths = 0;
+        this.form.hensBatchReport.departures = 0;
+        await HensBatchReportService.create(
+          this.form.hensBatchReport
         );
         this.snackbar = {
           show: true,

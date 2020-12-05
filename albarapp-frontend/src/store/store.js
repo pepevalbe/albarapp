@@ -42,7 +42,7 @@ export const store = new Vuex.Store({
             state.statisticsProductFilter = products;
             localStorage.setItem("initialStatisticsProductFilter", JSON.stringify(products));
         },
-        filterDailyReportsByHensBatch(state, hensBatchId) {
+        filterReportsByHensBatch(state, hensBatchId) {
             state.hensBatch = hensBatchId;
             localStorage.setItem("initialHensBatch", hensBatchId);
         }
