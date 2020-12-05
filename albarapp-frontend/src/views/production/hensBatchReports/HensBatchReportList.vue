@@ -53,6 +53,7 @@
                 <td>{{ item.dirties }}</td>
                 <td>{{ item.brokens }}</td>
                 <td>{{ item.deaths }}</td>
+                <td>{{ item.waterConsumption }}</td>
                 <td>
                   <v-tooltip bottom v-if="item.comments">
                     <template v-slot:activator="{ on, attrs }">
@@ -115,6 +116,9 @@
                     <br />
                     <span class="black--text">Muertas:</span>
                     {{ item.deaths }}
+                    <br />
+                    <span class="black--text">Consumo de agua:</span>
+                    {{ item.waterConsumption }}
                     <br />
                     <span class="black--text">Comentarios:</span>
                     {{ item.comments }}
@@ -204,6 +208,7 @@ export default {
         { text: "Sucios", sortable: true, align: "center", value: "dirties" },
         { text: "Rotos", sortable: true, align: "center", value: "brokens" },
         { text: "Muertas", sortable: true, align: "center", value: "deaths" },
+        { text: "Consumo agua", sortable: true, align: "center", value: "waterConsumption" },
         {
           text: "Comentarios",
           sortable: false,

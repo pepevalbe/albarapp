@@ -13,7 +13,7 @@
           :disabled="!form.valid"
           color="success"
           class="mr-4"
-          @click="createHenseBatchReport()"
+          @click="createHensBatchReport()"
           >Crear</v-btn
         >
         <v-btn color="error" class="mr-4" @click="reset()">Borrar</v-btn>
@@ -84,12 +84,10 @@ export default {
         this.closeSpinner();
       }
     },
-    async createHenseBatchReport() {
+    async createHensBatchReport() {
       try {
         this.showSpinner();
-        this.form.hensBatchReport.hensBatch = this.hensBatch._links.self.href;
-        this.form.hensBatchReport.deaths = 0;
-        this.form.hensBatchReport.departures = 0;
+        this.form.hensBatchReport.hensBatchId = this.hensBatch._links.self.href.substring(this.hensBatch._links.self.href.lastIndexOf('/') + 1);
         await HensBatchReportService.create(
           this.form.hensBatchReport
         );

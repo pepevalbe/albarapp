@@ -4,6 +4,9 @@ import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Objects;
 
 @Entity
@@ -17,9 +20,6 @@ public class HensBatchReport {
 
 	@Column(nullable = false)
 	private long reportTimestamp;
-
-	@Column
-	private Long waterConsumption;
 
 	@Column
 	private Long poultryMashConsumption;
@@ -75,5 +75,10 @@ public class HensBatchReport {
 	@Override
 	public int hashCode() {
 		return Objects.hash(id);
+	}
+
+	public LocalDate getReportLocalDate() {
+
+		return Instant.ofEpochMilli(reportTimestamp).atZone(ZoneId.systemDefault()).toLocalDate();
 	}
 }

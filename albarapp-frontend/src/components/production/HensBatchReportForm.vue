@@ -144,7 +144,7 @@
           v-model="form.hensBatchReport.waterConsumption"
           type="number"
           autocomplete="off"
-          label="Agua en litros"
+          label="Lectura contador agua"
         ></v-text-field>
         <v-text-field
           v-model="form.hensBatchReport.poultryMashConsumption"
