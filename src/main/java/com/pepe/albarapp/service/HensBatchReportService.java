@@ -6,7 +6,6 @@ import com.pepe.albarapp.persistence.domain.HensBatch;
 import com.pepe.albarapp.persistence.domain.HensBatchReport;
 import com.pepe.albarapp.persistence.domain.WaterReading;
 import com.pepe.albarapp.persistence.repository.HensBatchReportRepository;
-import com.pepe.albarapp.persistence.repository.HensBatchRepository;
 import com.pepe.albarapp.persistence.repository.WaterReadingRepository;
 import com.pepe.albarapp.service.dto.report.HensBatchReportDto;
 import com.pepe.albarapp.service.mapping.HensBatchReportMapper;
@@ -31,9 +30,6 @@ public class HensBatchReportService {
 	public static final long MAX_DAY_LAPS = 5;
 
 	@Autowired
-	private HensBatchRepository hensBatchRepository;
-
-	@Autowired
 	private HensBatchReportRepository hensBatchReportRepository;
 
 	@Autowired
@@ -42,6 +38,28 @@ public class HensBatchReportService {
 	@Autowired
 	private HensBatchReportMapper hensBatchReportMapper;
 
+
+	@Transactional(readOnly = true)
+	public HensBatchReportDto getHensBatchReport(String hensBatchReportId) {
+
+		// Get hens batch report
+		HensBatchReport hensBatchReport = hensBatchReportRepository.findById(hensBatchReportId).orElseThrow(() -> new ApiException(ApiError.ApiError006));
+
+		// Give some margin to search for water readings
+		long timestampFrom = hensBatchReport.getReportTimestamp() - ONE_DAY_MILLIS * 2;
+		long timestampTo = hensBatchReport.getReportTimestamp() + ONE_DAY_MILLIS * 2;
+
+		Map<LocalDate, Double> waterReadingsByDate = waterReadingRepository
+				.findByHensBatchIdAndTimestampRange(hensBatchReport.getHensBatch().getId(), timestampFrom, timestampTo).stream()
+				.collect(Collectors.toMap(WaterReading::getReportLocalDate, WaterReading::getReadingValue));
+
+		// Map report to dto and set water consumption from water readings
+		HensBatchReportDto hensBatchReportDto = hensBatchReportMapper.map(hensBatchReport);
+		double consumption = getWaterConsumption(hensBatchReport.getReportLocalDate(), waterReadingsByDate);
+		hensBatchReportDto.setWaterConsumption(consumption);
+
+		return hensBatchReportDto;
+	}
 
 	@Transactional(readOnly = true)
 	public Set<HensBatchReportDto> getAllHensBatchReports(String hensBatchId) {
@@ -148,6 +166,22 @@ public class HensBatchReportService {
 		}
 
 		// Create hens batch report
+		HensBatchReport createdHensBatchReport = hensBatchReportRepository.save(hensBatchReportMapper.map(hensBatchReportDto));
+
+		return hensBatchReportMapper.map(createdHensBatchReport);
+	}
+
+	public HensBatchReportDto updateHensBatchReport(HensBatchReportDto hensBatchReportDto) {
+
+		// Get hens batch report
+		HensBatchReport hensBatchReport = hensBatchReportRepository.findById(hensBatchReportDto.getId()).orElseThrow(() -> new ApiException(ApiError.ApiError006));
+
+		// Update water reading record if received in report
+		if (hensBatchReportDto.getWaterConsumption() != null) {
+			// TODO
+		}
+
+		// Update hens batch report
 		HensBatchReport createdHensBatchReport = hensBatchReportRepository.save(hensBatchReportMapper.map(hensBatchReportDto));
 
 		return hensBatchReportMapper.map(createdHensBatchReport);

@@ -186,6 +186,13 @@ const router = new Router({
           name: "HensBatchReportCreation",
           meta: { headerName: "Nuevo reporte diario" }
         },
+        {
+          path: "update/:hensBatchReportId",
+          component: () => import("@/views/production/hensBatchReports/HensBatchReportUpdate"),
+          props: true,
+          name: "HensBatchReportUpdate",
+          meta: { headerName: "Modificar reporte diario" }
+        }
       ]
     }
   ]

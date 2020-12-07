@@ -24,9 +24,21 @@ public class HensBatchReportController {
 		return ResponseEntity.ok(hensBatchReportService.getAllHensBatchReports(hensBatchId));
 	}
 
+	@GetMapping(HENS_BATCH_REPORT_ENDPOINT + "/{hensBatchReportId}")
+	public ResponseEntity<HensBatchReportDto> getHensBatchReport(@PathVariable String hensBatchReportId) {
+
+		return ResponseEntity.ok(hensBatchReportService.getHensBatchReport(hensBatchReportId));
+	}
+
 	@PostMapping(HENS_BATCH_REPORT_ENDPOINT)
 	public ResponseEntity<HensBatchReportDto> postHensBatchReport(@RequestBody HensBatchReportDto hensBatchReportDto) {
 
 		return ResponseEntity.ok(hensBatchReportService.createHensBatchReport(hensBatchReportDto));
+	}
+
+	@PutMapping(HENS_BATCH_REPORT_ENDPOINT)
+	public ResponseEntity<HensBatchReportDto> putHensBatchReport(@RequestBody HensBatchReportDto hensBatchReportDto) {
+
+		return ResponseEntity.ok(hensBatchReportService.updateHensBatchReport(hensBatchReportDto));
 	}
 }
