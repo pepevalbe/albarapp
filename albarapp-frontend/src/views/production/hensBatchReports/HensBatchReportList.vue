@@ -94,19 +94,19 @@
                     {{ dateFormatted(item.reportTimestamp) }}
                     <br />
                     <span class="black--text">XL:</span>
-                    {{ item.xl }}
+                    {{ item.numXL }}
                     <br />
                     <span class="black--text">L:</span>
-                    {{ item.l }}
+                    {{ item.numL }}
                     <br />
                     <span class="black--text">M:</span>
-                    {{ item.m }}
+                    {{ item.numM }}
                     <br />
                     <span class="black--text">S:</span>
-                    {{ item.s }}
+                    {{ item.numS }}
                     <br />
                     <span class="black--text">XS:</span>
-                    {{ item.xs }}
+                    {{ item.numXS }}
                     <br />
                     <span class="black--text">Sucios:</span>
                     {{ item.dirties }}
