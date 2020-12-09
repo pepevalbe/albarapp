@@ -4,10 +4,13 @@ import router from "@/router"
 import vuetify from '@/plugins/vuetify';
 import moment from 'moment';
 import { store } from '@/store/store'
+import HighchartsVue from 'highcharts-vue'
 
 Vue.config.productionTip = false
 
 Vue.prototype.$moment = moment;
+
+Vue.use(HighchartsVue);
 
 Vue.mixin({
   methods: {

@@ -1,32 +1,21 @@
 <template>
   <v-container>
     <div v-if="!errorLoading">
-      <v-card :loading="!rankingReady" class="mt-2">
+      <v-card>
         <v-card-title class="mb-4">
           <v-icon large class="mr-2">mdi-chart-bar</v-icon>Evolución mensual
         </v-card-title>
-        <v-sparkline
-          :value="monthlyEvolutionValues"
-          :labels="monthlyEvolutionLabels"
-          show-labels
-          smooth
-          padding="12"
-          :auto-draw="autoDraw"
-          label-size="3"
-          line-width="1"
-        >
-          <template v-slot:label="item">
-            <tspan dx="0" dy="-1.2em">{{ item.value.split("|")[0] }}</tspan>
-            <tspan :dx="-item.value.length*0.68" dy="1.2em">{{ item.value.split("|")[1] }}</tspan>
-          </template>
-        </v-sparkline>
+        <highcharts
+          class="chart"
+          :options="chartOptions"
+          :updateArgs="updateArgs"
+        ></highcharts>
       </v-card>
     </div>
     <div v-if="errorLoading">
-      <v-row
-        class="mb-2"
-        justify="center"
-      >Error al obtener las estadísticas, por favor vuelva a cargar.</v-row>
+      <v-row class="mb-2" justify="center"
+        >Error al obtener las estadísticas, por favor vuelva a cargar.</v-row
+      >
       <v-row justify="center">
         <v-btn @click="getMonthlyEvolution()">
           <v-icon dark>mdi-refresh</v-icon>
@@ -43,9 +32,6 @@ export default {
   name: "MonthlyEvolutionCard",
   data: () => {
     return {
-      monthlyEvolutionLabels: [],
-      monthlyEvolutionValues: [],
-      autoDraw: false,
       errorLoading: false,
       rankingReady: false,
       filter: {
@@ -53,6 +39,32 @@ export default {
           productCodes: [],
         },
       },
+      chartOptions: {
+        chart: {
+          type: "spline",
+        },
+        title: {
+          text: "",
+        },
+        plotOptions: {
+          dataLabels: {
+            enabled: true,
+          },
+        },
+        series: [
+          {
+            name: "Facturación",
+            data: [],
+            color: "#000000",
+          },
+        ],
+        yAxis: {
+          title: {
+            text: "Total ( € )",
+          },
+        },
+      },
+      updateArgs: [true, true, { duration: 1000 }],
     };
   },
   created() {
@@ -72,14 +84,15 @@ export default {
         this.$store.getters.statisticsProductFilter
       )
         .then((response) => {
-          this.monthlyEvolutionLabels = response.map(
-            (o) =>
-              o.monthName.charAt(0).toUpperCase() +
-              o.monthName.substring(1) +
-              "|" +
-              this.currencyFormatted(o.invoiceTotal)
+          this.chartOptions.series[0].data = response.map(
+            (o) => o.invoiceTotal
           );
-          this.monthlyEvolutionValues = response.map((o) => o.invoiceTotal);
+          this.chartOptions.xAxis = {
+            categories: response.map(
+              (o) =>
+                o.monthName.charAt(0).toUpperCase() + o.monthName.substring(1)
+            ),
+          };
           this.autoDraw = true;
           this.rankingReady = true;
         })
