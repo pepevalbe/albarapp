@@ -16,6 +16,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -93,9 +94,8 @@ public class StatisticsService {
 				totalDouble = Optional.ofNullable(deliveryNoteItemRepository
 						.calcTotalByIssuedTimestampRangeAndProductCodes(minTimestamp, maxTimestamp, productCodes));
 			}
-
 			result.add(new MonthlyEvolutionDto(minDateTime.format(formatter),
-					BigDecimal.valueOf(totalDouble.orElse(new Double(0)))));
+					BigDecimal.valueOf(totalDouble.orElse(new Double(0))).setScale(2, RoundingMode.HALF_UP)));
 		}
 
 		Collections.reverse(result);
