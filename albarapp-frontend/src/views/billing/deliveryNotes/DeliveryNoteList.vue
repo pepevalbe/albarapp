@@ -279,7 +279,7 @@ export default {
         { text: "Nº Factura", sortable: true, value: "invoice.id" },
         {
           text: "Nº pedido",
-          sortable: false,
+          sortable: true,
           value: "auxDeliveryNoteNr",
         },
         { text: "Cliente", sortable: true, value: "customer.code" },
