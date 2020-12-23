@@ -228,7 +228,19 @@ export default {
   }),
   methods: {
     reset: function () {
-      this.$refs.form.reset();
+      this.form.hensBatchReport.numXL = "0";
+      this.form.hensBatchReport.numL = "0";
+      this.form.hensBatchReport.numM = "0";
+      this.form.hensBatchReport.numS = "0";
+      this.form.hensBatchReport.numXS = "0";
+      this.form.hensBatchReport.dirties = "0";
+      this.form.hensBatchReport.brokens = "0";
+      this.form.hensBatchReport.deaths = "0";
+      this.form.hensBatchReport.departures = "0";
+      this.form.hensBatchReport.maxTemperature = "";
+      this.form.hensBatchReport.minTemperature = "";
+      this.form.hensBatchReport.waterReading = "";
+      this.$nextTick(this.$refs.dateText.focus);
     },
     parseDateText() {
       var moment = this.$moment.utc(
