@@ -59,6 +59,12 @@ public class HensBatchReport {
 
 	@Column
 	private String comments;
+	
+	@Column
+	private Long waterReading;
+
+	@Column
+	private Long waterConsumption;
 
 	@ManyToOne
 	@JoinColumn(name = "hens_batch_id")

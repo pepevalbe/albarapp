@@ -3128,9 +3128,3 @@ INSERT INTO hens_batch_report
 VALUES
 	('2763487', 'a', 1602367200000, NULL, 23.5, 20.1, 150, 3000, 2500, 150, 0, 30, 15, 1, 0, NULL),
 	('2763488', 'a', 1602453600000, 323, 23.2, 20.3, 160, 1950, 2300, 180, 0, 30, 15, 1, 0, 'Las gallinas estuvieron 6 horas sin comida porque a cierto granjero se le olvido cambiar de silo');
-
-INSERT INTO water_reading
-	(id, reading_timestamp, reading_value, hens_batch_id)
-VALUES
-	('001', 1602367200000, 3288.1, 'a'),
-	('002', 1602453600000, 3390.6, 'a');

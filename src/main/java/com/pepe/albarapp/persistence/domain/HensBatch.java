@@ -30,7 +30,10 @@ public class HensBatch {
 	private long animalQuantity;
 	
 	@Column
-    private Long endTimestamp;
+	private Long endTimestamp;
+	
+	@OneToMany(mappedBy = "hensBatch")
+	private Set<HensBatchReport> hensBatchReports;
 
 	@Override
 	public boolean equals(Object o) {

@@ -19,7 +19,8 @@ public class HensBatchReportDto {
 	private long brokens;
 	private long deaths;
 	private long departures;
-	private Double waterConsumption;
+	private Long waterConsumption;
+	private Long waterReading;
 	private String comments;
 	private String hensBatchId;
 }

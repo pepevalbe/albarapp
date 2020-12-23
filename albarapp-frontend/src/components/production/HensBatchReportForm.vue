@@ -141,7 +141,7 @@
       <v-divider></v-divider>
       <v-row class="mr-6 ml-6">
         <v-text-field
-          v-model="form.hensBatchReport.waterConsumption"
+          v-model="form.hensBatchReport.waterReading"
           type="number"
           autocomplete="off"
           label="Lectura contador agua"
@@ -196,7 +196,7 @@ export default {
       this.date = moment.format("YYYY-MM-DD");
       this.dateText = moment.format("DD/MM/YYYY");
     } else {
-      let moment = this.$moment.utc();
+      let moment = this.$moment.utc().startOf("day");
       this.date = moment.format("YYYY-MM-DD");
       this.dateText = moment.format("DD/MM/YYYY");
       this.form.hensBatchReport.reportTimestamp = moment.format("x");

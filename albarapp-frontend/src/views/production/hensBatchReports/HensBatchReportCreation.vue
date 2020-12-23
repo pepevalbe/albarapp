@@ -47,11 +47,11 @@ export default {
     form: {
       valid: false,
       hensBatchReport: {
-        xl: "0",
-        l: "0",
-        m: "0",
-        s: "0",
-        xs: "0",
+        numXL: "0",
+        numL: "0",
+        numM: "0",
+        numS: "0",
+        numXS: "0",
         dirties: "0",
         brokens: "0",
         deaths: "0",
