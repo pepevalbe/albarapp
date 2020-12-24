@@ -87,7 +87,7 @@ export default {
     async createHensBatchReport() {
       try {
         this.showSpinner();
-        this.form.hensBatchReport.hensBatchId = this.hensBatch._links.self.href.substring(this.hensBatch._links.self.href.lastIndexOf('/') + 1);
+        this.form.hensBatchReport.hensBatchId = this.hensBatch.id;
         await HensBatchReportService.create(
           this.form.hensBatchReport
         );
