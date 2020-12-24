@@ -19,11 +19,5 @@ public interface HensBatchReportRepository extends CrudRepository<HensBatchRepor
 
 	Optional<HensBatchReport> findFirstByReportTimestampAfterAndWaterReadingNotNullOrderByReportTimestampAsc(long reportTimestamp);
 
-	Set<HensBatchReport> findByReportTimestampBetween(long fromReportTimestamp, long toReportTimestamp);
-
-	@Query(value = "select report_timestamp from hens_batch_report where hens_batch_id = ?1 and report_timestamp < ?2 order by report_timestamp desc limit 1", nativeQuery = true)
-	Optional<Long> findPreviousReport(String hensBatchId, long reportTimestamp);
-
-	@Query(value = "select report_timestamp from hens_batch_report where hens_batch_id = ?1 and report_timestamp > ?2 order by report_timestamp asc limit 1", nativeQuery = true)
-	Optional<Long> findNextReport(String hensBatchId, long reportTimestamp);
+	Set<HensBatchReport> findByHensBatchIdAndReportTimestampBetween(String hensBatchId, long fromReportTimestamp, long toReportTimestamp);
 }
