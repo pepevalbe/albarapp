@@ -130,4 +130,16 @@ public class HensBatchReportService {
 
 		return hensBatchReportMapper.map(createdHensBatchReport);
 	}
+
+	@Transactional
+	public boolean deleteHensBatchReport(String hensBatchReportId) {
+
+		// Get hens batch report
+		Optional<HensBatchReport> hensBatchReport = hensBatchReportRepository.findById(hensBatchReportId);
+		if (hensBatchReport.isPresent()) {
+			hensBatchReportRepository.delete(hensBatchReport.get());
+			return true;
+		}
+		return false;
+	}
 }

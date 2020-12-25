@@ -1,7 +1,6 @@
 import HttpClient from '@/services/HttpClient.js';
 
 const RESOURCE_NAME = '/api/hens-batch-report';
-const HATEOAS_RESOURCE_NAME = '/hateoas/hens-batch-report';
 
 export default {
 
@@ -34,6 +33,6 @@ export default {
   },
 
   delete(id) {
-    return HttpClient.delete(`${HATEOAS_RESOURCE_NAME}/${id}`);
+    return HttpClient.delete(`${RESOURCE_NAME}/${id}`);
   }
 };

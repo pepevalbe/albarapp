@@ -41,4 +41,11 @@ public class HensBatchReportController {
 
 		return ResponseEntity.ok(hensBatchReportService.updateHensBatchReport(hensBatchReportDto));
 	}
+
+	@DeleteMapping(HENS_BATCH_REPORT_ENDPOINT + "/{hensBatchReportId}")
+	public ResponseEntity<Void> deleteHensBatchReport(@PathVariable String hensBatchReportId) {
+
+		return hensBatchReportService.deleteHensBatchReport(hensBatchReportId) ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
+		
+	}
 }
