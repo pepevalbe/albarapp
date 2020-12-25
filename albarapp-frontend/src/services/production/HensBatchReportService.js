@@ -26,7 +26,7 @@ export default {
   },
 
   update(id, data) {
-    return HttpClient.put(`${RESOURCE_NAME}/${id}`, data)
+    return HttpClient.put(`${RESOURCE_NAME}`, data)
       .then(response => {
         return response.data;
       });
