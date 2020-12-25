@@ -76,34 +76,6 @@ public class HensBatchReportService {
 		// Calculate water consumptions if reading is provided
 		if (hensBatchReportDto.getWaterReading() != null) {
 			updateWaterConsumption(hensBatchReportDto);
-			/*// Search for past report with a valid water reading
-			Optional<HensBatchReport> lastReportWithWaterReading = hensBatchReportRepository.findFirstByReportTimestampBeforeAndWaterReadingNotNullOrderByReportTimestampDesc(hensBatchReportDto.getReportTimestamp());
-			lastReportWithWaterReading.ifPresent(lastReport -> {
-				// If a past report is found calculates water consumption and updates any report between that past report (excluding that one) and current report
-				Long waterConsumption = Math.round((hensBatchReportDto.getWaterReading() - lastReport.getWaterReading()) / ((hensBatchReportDto.getReportTimestamp() - lastReport.getReportTimestamp()) / (double) ONE_DAY_MILLIS));
-				Set<HensBatchReport> pastReports = hensBatchReportRepository.findByHensBatchIdAndReportTimestampBetween(hensBatchReportDto.getHensBatchId(), lastReport.getReportTimestamp(), hensBatchReportDto.getReportTimestamp());
-				pastReports = pastReports.stream().map(pastReport -> {
-					pastReport.setWaterConsumption(waterConsumption);
-					return pastReport;
-				}).collect(Collectors.toSet());
-				hensBatchReportRepository.saveAll(pastReports);
-			});
-
-			// Search for future report (later to current report) with a valid water reading
-			Optional<HensBatchReport> nextReportWithWaterReading = hensBatchReportRepository.findFirstByReportTimestampAfterAndWaterReadingNotNullOrderByReportTimestampAsc(hensBatchReportDto.getReportTimestamp());
-			nextReportWithWaterReading.ifPresent(nextReport -> {
-				// If a past report is found calculates water consumption and updates any report between that current report and later report
-				Long waterConsumption = Math.round((nextReport.getWaterReading() - hensBatchReportDto.getWaterReading()) / ((nextReport.getReportTimestamp() - hensBatchReportDto.getReportTimestamp()) / (double) ONE_DAY_MILLIS));
-				Set<HensBatchReport> futureReports = hensBatchReportRepository.findByHensBatchIdAndReportTimestampBetween(hensBatchReportDto.getHensBatchId(), hensBatchReportDto.getReportTimestamp(), nextReport.getReportTimestamp());
-				futureReports = futureReports.stream().map(futureReport -> {
-					if (futureReport.getId() != nextReport.getId()) {
-						futureReport.setWaterConsumption(waterConsumption);
-					}
-					return futureReport;
-				}).collect(Collectors.toSet());
-				hensBatchReportRepository.saveAll(futureReports);
-				hensBatchReportDto.setWaterConsumption(waterConsumption);
-			});*/
 		} else {
 			Optional<HensBatchReport> nextReportWithWaterReading = hensBatchReportRepository.findFirstByReportTimestampAfterAndWaterReadingNotNullOrderByReportTimestampAsc(hensBatchReportDto.getReportTimestamp());
 			nextReportWithWaterReading.ifPresent(nextReport -> {
@@ -120,6 +92,18 @@ public class HensBatchReportService {
 
 		// Get hens batch report
 		HensBatchReport hensBatchReport = hensBatchReportRepository.findById(hensBatchReportDto.getId()).orElseThrow(() -> new ApiException(ApiError.ApiError006));
+
+		// Avoid two reports in the same day
+		ZonedDateTime startOfDay = Instant.ofEpochMilli(hensBatchReportDto.getReportTimestamp()).atZone(ZoneId.of("UTC")).toLocalDate().atStartOfDay(ZoneId.of("UTC"));
+		ZonedDateTime endOfDay = startOfDay.plusDays(1).minusNanos(1);
+		Set<HensBatchReport> reportsSameDay = hensBatchReportRepository.findByHensBatchIdAndReportTimestampBetween(hensBatchReportDto.getHensBatchId(), startOfDay.toInstant().toEpochMilli(), endOfDay.toInstant().toEpochMilli());
+		if (reportsSameDay != null && !reportsSameDay.isEmpty()) {
+			// Allow the day if the report found is the same that we're updating
+			final String hensBatchReportId = hensBatchReport.getId();
+			reportsSameDay.forEach(reportSameDay -> {
+				if (reportSameDay.getId() != hensBatchReportId) throw new ApiException(ApiError.ApiError012);
+			});
+		}
 
 		// Update water reading record if received in report
 		if (hensBatchReportDto.getWaterConsumption() != null) {

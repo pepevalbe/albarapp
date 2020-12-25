@@ -208,7 +208,12 @@ export default {
         { text: "Sucios", sortable: true, align: "center", value: "dirties" },
         { text: "Rotos", sortable: true, align: "center", value: "brokens" },
         { text: "Muertas", sortable: true, align: "center", value: "deaths" },
-        { text: "Consumo agua", sortable: true, align: "center", value: "waterConsumption" },
+        {
+          text: "Consumo agua",
+          sortable: true,
+          align: "center",
+          value: "waterConsumption",
+        },
         {
           text: "Comentarios",
           sortable: false,
@@ -242,7 +247,6 @@ export default {
   },
   methods: {
     async loadHensBatches() {
-
       try {
         this.showSpinner();
         this.errorLoading = false;
@@ -258,10 +262,7 @@ export default {
         try {
           this.showSpinner();
           this.errorLoading = false;
-          this.$store.commit(
-            "filterReportsByHensBatch",
-            this.hensBatch.id
-          );
+          this.$store.commit("filterReportsByHensBatch", this.hensBatch.id);
           this.hensBatchReports = await HensBatchReportService.getByHensBatchId(
             this.hensBatch.id
           );
@@ -278,7 +279,10 @@ export default {
     updateHensBatchReport(item) {
       this.$router.push({
         name: "HensBatchReportUpdate",
-        params: { hensBatchReportId: item.id },
+        params: {
+          hensBatchId: this.hensBatch.id,
+          hensBatchReportId: item.id,
+        },
       });
     },
     toReportCreation() {

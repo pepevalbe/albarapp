@@ -1,7 +1,11 @@
 <template>
   <v-flex align-self-start>
     <div v-if="!errorLoading">
-      <HensBatchReportForm v-if="form.hensBatchReport" :form="form"></HensBatchReportForm>
+      <HensBatchReportForm
+        v-if="form.hensBatchReport && hensBatch"
+        :hensBatch="hensBatch"
+        :form="form"
+      ></HensBatchReportForm>
       <div class="mb-3"></div>
       <div class="mb-10"></div>
       <v-layout text-center wrap class="pt-10">
@@ -40,6 +44,7 @@
 <script>
 import HensBatchReportForm from "@/components/production/HensBatchReportForm";
 import HensBatchReportService from "@/services/production/HensBatchReportService.js";
+import HensBatchService from "@/services/production/HensBatchService.js";
 
 export default {
   name: "HensBatchReportUpdate",
@@ -51,6 +56,7 @@ export default {
       valid: false,
       hensBatchReport: null,
     },
+    hensBatch: null,
     errorLoading: false,
     snackbar: {
       show: false,
@@ -64,16 +70,31 @@ export default {
   }),
   props: {
     hensBatchReportId: String,
+    hensBatchId: String,
   },
   async created() {
+    this.loadHensBatch();
     this.loadHensBatchReport();
   },
   methods: {
+    async loadHensBatch() {
+      try {
+        this.showSpinner();
+        this.errorLoading = false;
+        this.hensBatch = await HensBatchService.get(this.hensBatchId);
+      } catch (e) {
+        this.errorLoading = true;
+      } finally {
+        this.closeSpinner();
+      }
+    },
     async loadHensBatchReport() {
       try {
         this.showSpinner();
         this.errorLoading = false;
-        this.form.hensBatchReport = await HensBatchReportService.get(this.hensBatchReportId);
+        this.form.hensBatchReport = await HensBatchReportService.get(
+          this.hensBatchReportId
+        );
       } catch (e) {
         this.errorLoading = true;
       } finally {
@@ -83,7 +104,10 @@ export default {
     async updateHensBatchReport() {
       try {
         this.showSpinner();
-        await HensBatchReportService.update(this.hensBatchReportId, this.form.hensBatchReport);
+        await HensBatchReportService.update(
+          this.hensBatchReportId,
+          this.form.hensBatchReport
+        );
         this.snackbar = {
           show: true,
           message: "Reporte diario actualizado correctamente",
