@@ -75,7 +75,8 @@ public class HensBatchReportService {
 
 		// Calculate water consumptions if reading is provided
 		if (hensBatchReportDto.getWaterReading() != null) {
-			// Search for past report with a valid water reading
+			updateWaterConsumption(hensBatchReportDto);
+			/*// Search for past report with a valid water reading
 			Optional<HensBatchReport> lastReportWithWaterReading = hensBatchReportRepository.findFirstByReportTimestampBeforeAndWaterReadingNotNullOrderByReportTimestampDesc(hensBatchReportDto.getReportTimestamp());
 			lastReportWithWaterReading.ifPresent(lastReport -> {
 				// If a past report is found calculates water consumption and updates any report between that past report (excluding that one) and current report
@@ -102,7 +103,7 @@ public class HensBatchReportService {
 				}).collect(Collectors.toSet());
 				hensBatchReportRepository.saveAll(futureReports);
 				hensBatchReportDto.setWaterConsumption(waterConsumption);
-			});
+			});*/
 		} else {
 			Optional<HensBatchReport> nextReportWithWaterReading = hensBatchReportRepository.findFirstByReportTimestampAfterAndWaterReadingNotNullOrderByReportTimestampAsc(hensBatchReportDto.getReportTimestamp());
 			nextReportWithWaterReading.ifPresent(nextReport -> {
@@ -122,13 +123,49 @@ public class HensBatchReportService {
 
 		// Update water reading record if received in report
 		if (hensBatchReportDto.getWaterConsumption() != null) {
-			// TODO
+			updateWaterConsumption(hensBatchReportDto);
 		}
 
 		// Update hens batch report
-		HensBatchReport createdHensBatchReport = hensBatchReportRepository.save(hensBatchReportMapper.map(hensBatchReportDto));
+		hensBatchReport = hensBatchReportMapper.map(hensBatchReportDto);
+		HensBatchReport createdHensBatchReport = hensBatchReportRepository.save(hensBatchReport);
 
 		return hensBatchReportMapper.map(createdHensBatchReport);
+	}
+
+	@Transactional
+	private void updateWaterConsumption(HensBatchReportDto hensBatchReportDto) {
+		// Search for past report with a valid water reading
+		Optional<HensBatchReport> lastReportWithWaterReading = hensBatchReportRepository.findFirstByReportTimestampBeforeAndWaterReadingNotNullOrderByReportTimestampDesc(hensBatchReportDto.getReportTimestamp());
+		lastReportWithWaterReading.ifPresent(lastReport -> {
+			// If a past report is found calculates water consumption and updates any report between that past report and current report
+			Long waterConsumption = Math.round((hensBatchReportDto.getWaterReading() - lastReport.getWaterReading()) / ((hensBatchReportDto.getReportTimestamp() - lastReport.getReportTimestamp()) / (double) ONE_DAY_MILLIS));
+			Set<HensBatchReport> pastReports = hensBatchReportRepository.findByHensBatchIdAndReportTimestampBetween(hensBatchReportDto.getHensBatchId(), lastReport.getReportTimestamp(), hensBatchReportDto.getReportTimestamp());
+			pastReports = pastReports.stream().map(pastReport -> {
+				pastReport.setWaterConsumption(waterConsumption);
+				return pastReport;
+			}).collect(Collectors.toSet());
+			hensBatchReportRepository.saveAll(pastReports);
+		});
+
+		// Search for future report (later to current report) with a valid water reading
+		Optional<HensBatchReport> nextReportWithWaterReading = hensBatchReportRepository.findFirstByReportTimestampAfterAndWaterReadingNotNullOrderByReportTimestampAsc(hensBatchReportDto.getReportTimestamp());
+		nextReportWithWaterReading.ifPresent(nextReport -> {
+			// If a future report is found calculates water consumption and updates any report between that current report and later report  (excluding that one)
+			Long waterConsumption = Math.round((nextReport.getWaterReading() - hensBatchReportDto.getWaterReading()) / ((nextReport.getReportTimestamp() - hensBatchReportDto.getReportTimestamp()) / (double) ONE_DAY_MILLIS));
+			Set<HensBatchReport> futureReports = hensBatchReportRepository.findByHensBatchIdAndReportTimestampBetween(hensBatchReportDto.getHensBatchId(), hensBatchReportDto.getReportTimestamp(), nextReport.getReportTimestamp());
+			futureReports = futureReports.stream().map(futureReport -> {
+				if (futureReport.getId() != nextReport.getId()) {
+					futureReport.setWaterConsumption(waterConsumption);
+				}
+				return futureReport;
+			}).collect(Collectors.toSet());
+			hensBatchReportRepository.saveAll(futureReports);
+			hensBatchReportDto.setWaterConsumption(waterConsumption);
+		});
+		if (!nextReportWithWaterReading.isPresent()) {
+			hensBatchReportDto.setWaterConsumption(null);
+		}
 	}
 
 	@Transactional
@@ -137,7 +174,20 @@ public class HensBatchReportService {
 		// Get hens batch report
 		Optional<HensBatchReport> hensBatchReport = hensBatchReportRepository.findById(hensBatchReportId);
 		if (hensBatchReport.isPresent()) {
+			// Search last and next report with water reading
+			Optional<HensBatchReport> lastReportWithWaterReading = hensBatchReportRepository.findFirstByReportTimestampBeforeAndWaterReadingNotNullOrderByReportTimestampDesc(hensBatchReport.get().getReportTimestamp());
+			Optional<HensBatchReport> nextReportWithWaterReading = hensBatchReportRepository.findFirstByReportTimestampAfterAndWaterReadingNotNullOrderByReportTimestampAsc(hensBatchReport.get().getReportTimestamp());
+
 			hensBatchReportRepository.delete(hensBatchReport.get());
+
+			// Force update of last and next report with water reading to update water consumptions
+			lastReportWithWaterReading.ifPresent(lastReport -> {
+				updateHensBatchReport(hensBatchReportMapper.map(lastReport));
+			});
+			nextReportWithWaterReading.ifPresent(nextReport -> {
+				updateHensBatchReport(hensBatchReportMapper.map(nextReport));
+			});
+			
 			return true;
 		}
 		return false;

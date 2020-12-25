@@ -46,6 +46,6 @@ public class HensBatchReportController {
 	public ResponseEntity<Void> deleteHensBatchReport(@PathVariable String hensBatchReportId) {
 
 		return hensBatchReportService.deleteHensBatchReport(hensBatchReportId) ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
-		
+
 	}
 }
