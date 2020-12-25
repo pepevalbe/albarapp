@@ -1,7 +1,7 @@
 import HttpClient from '@/services/HttpClient.js';
 
 const RESOURCE_NAME = '/api/hens-batch-report';
-const HATEOAS_RESOURCE_NAME = '/api/hens-batch-report';
+const HATEOAS_RESOURCE_NAME = '/hateoas/hens-batch-report';
 
 export default {
 
