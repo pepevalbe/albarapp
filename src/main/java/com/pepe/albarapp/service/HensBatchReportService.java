@@ -106,7 +106,7 @@ public class HensBatchReportService {
 		}
 
 		// Update water reading record if received in report
-		if (hensBatchReportDto.getWaterConsumption() != null) {
+		if (hensBatchReportDto.getWaterReading() != null) {
 			updateWaterConsumption(hensBatchReportDto);
 		}
 
