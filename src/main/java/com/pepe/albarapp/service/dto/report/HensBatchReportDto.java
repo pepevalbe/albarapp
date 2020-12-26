@@ -6,10 +6,8 @@ import lombok.Data;
 public class HensBatchReportDto {
 
 	private String id;
+	private String hensBatchId;
 	private long reportTimestamp;
-	private Long poultryMashConsumption;
-	private Double maxTemperature;
-	private Double minTemperature;
 	private long numXL;
 	private long numL;
 	private long numM;
@@ -19,8 +17,9 @@ public class HensBatchReportDto {
 	private long brokens;
 	private long deaths;
 	private long departures;
-	private Long waterConsumption;
+	private Double maxTemperature;
+	private Double minTemperature;
 	private Long waterReading;
+	private Long poultryMashConsumption;
 	private String comments;
-	private String hensBatchId;
 }
