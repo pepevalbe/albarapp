@@ -1,12 +1,15 @@
 package com.pepe.albarapp.controller;
 
 import com.pepe.albarapp.api.log.Log;
+import com.pepe.albarapp.service.HensBatchInfoService;
 import com.pepe.albarapp.service.HensBatchReportService;
+import com.pepe.albarapp.service.dto.report.HensBatchInfoDto;
 import com.pepe.albarapp.service.dto.report.HensBatchReportDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Set;
 
 @Log
@@ -14,9 +17,13 @@ import java.util.Set;
 public class HensBatchReportController {
 
 	private static final String HENS_BATCH_REPORT_ENDPOINT = "/api/hens-batch-report";
+	private static final String HENS_BATCH_INFO_ENDPOINT = "/api/hens-batch-info";
 
 	@Autowired
 	private HensBatchReportService hensBatchReportService;
+
+	@Autowired
+	private HensBatchInfoService hensBatchInfoService;
 
 	@GetMapping(HENS_BATCH_REPORT_ENDPOINT)
 	public ResponseEntity<Set<HensBatchReportDto>> getHensBatchReports(@RequestParam String hensBatchId) {
@@ -47,5 +54,11 @@ public class HensBatchReportController {
 
 		return hensBatchReportService.deleteHensBatchReport(hensBatchReportId) ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
 
+	}
+
+	@GetMapping(HENS_BATCH_INFO_ENDPOINT)
+	public ResponseEntity<List<HensBatchInfoDto>> getHensBatchInfo(@RequestParam String hensBatchId) {
+
+		return ResponseEntity.ok(hensBatchInfoService.getHensBatchInfo(hensBatchId));
 	}
 }
