@@ -20,6 +20,8 @@ public class HensBatchReportDto {
 	private Double maxTemperature;
 	private Double minTemperature;
 	private Long waterReading;
-	private Long poultryMashConsumption;
+	private Long poultryMashAdditionQuantity;
+	private Long poultryMashAdditionFeedTurn;
+	private Long poultryMashMaxFeedTurns;
 	private String comments;
 }

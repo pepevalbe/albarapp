@@ -54,14 +54,23 @@
                 <td>{{ item.brokens }}</td>
                 <td>{{ item.deaths }}</td>
                 <td>{{ item.waterConsumption }}</td>
+                <td>{{ item.poultryMashConsumption }}</td>
                 <td>
                   <v-tooltip bottom v-if="item.comments">
                     <template v-slot:activator="{ on, attrs }">
-                      <v-icon color="black" dark v-bind="attrs" v-on="on">
+                      <v-icon class="mr-1 ml-1" color="black" dark v-bind="attrs" v-on="on">
                         mdi-comment-text-multiple
                       </v-icon>
                     </template>
                     <span>{{ item.comments }}</span>
+                  </v-tooltip>
+                  <v-tooltip bottom v-if="item.poultryMashAdditionQuantity">
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-icon class="mr-1 ml-1" color="black" dark v-bind="attrs" v-on="on">
+                        mdi-silo
+                      </v-icon>
+                    </template>
+                    <span>Cambio de silo. Nueva entrada de pienso de {{ item.poultryMashAdditionQuantity }} kg cambiado en la comida {{ item.poultryMashAdditionFeedTurn }} de {{ item.poultryMashMaxFeedTurns }}</span>
                   </v-tooltip>
                 </td>
                 <td>
@@ -119,6 +128,9 @@
                     <br />
                     <span class="black--text">Consumo de agua:</span>
                     {{ item.waterConsumption }}
+                    <br />
+                    <span class="black--text">Consumo de pienso:</span>
+                    {{ item.poultryMashConsumption }}
                     <br />
                     <span class="black--text">Comentarios:</span>
                     {{ item.comments }}
@@ -209,10 +221,16 @@ export default {
         { text: "Rotos", sortable: true, align: "center", value: "brokens" },
         { text: "Muertas", sortable: true, align: "center", value: "deaths" },
         {
-          text: "Consumo agua",
+          text: "Agua",
           sortable: true,
           align: "center",
           value: "waterConsumption",
+        },
+        {
+          text: "Pienso",
+          sortable: true,
+          align: "center",
+          value: "poultryMashConsumption",
         },
         {
           text: "Comentarios",
@@ -281,7 +299,7 @@ export default {
         name: "HensBatchReportUpdate",
         params: {
           hensBatchId: this.hensBatch.id,
-          hensBatchReportId: item.id,
+          hensBatchReportId: item.hensBatchReportId,
         },
       });
     },
@@ -301,7 +319,7 @@ export default {
       try {
         this.dialogDelete.show = false;
         this.showSpinner();
-        await HensBatchReportService.delete(item.id);
+        await HensBatchReportService.delete(item.hensBatchReportId);
         this.snackbar = {
           show: true,
           message: "Reporte diario eliminado correctamente",

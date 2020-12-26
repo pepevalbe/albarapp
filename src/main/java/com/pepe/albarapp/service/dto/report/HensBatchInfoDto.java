@@ -21,11 +21,15 @@ public class HensBatchInfoDto {
 	private Double maxTemperature;
 	private Double minTemperature;
 	private Long waterReading;
-	private Long poultryMashConsumption;
+	private Long poultryMashAdditionQuantity;
+	private Long poultryMashAdditionFeedTurn;
+	private Long poultryMashMaxFeedTurns;
 	private String comments;
 
 	// Calculated attributes
-	private Long waterConsumption;
 	private long numHens;
-	private Long hensWaterConsumption;
+	private Long waterConsumption;
+	private Double hensWaterConsumption;
+	private Long poultryMashConsumption;
+	private Double hensPoultryMashConsumption;
 }

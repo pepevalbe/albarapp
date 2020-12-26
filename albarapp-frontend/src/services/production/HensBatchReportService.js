@@ -1,11 +1,12 @@
 import HttpClient from '@/services/HttpClient.js';
 
 const RESOURCE_NAME = '/api/hens-batch-report';
+const REPORT_INFO_NAME = '/api/hens-batch-info';
 
 export default {
 
   getByHensBatchId(hensBatchId) {
-    return HttpClient.get(`${RESOURCE_NAME}?hensBatchId=${hensBatchId}`)
+    return HttpClient.get(`${REPORT_INFO_NAME}?hensBatchId=${hensBatchId}`)
       .then(response => {
         return response.data;
       });

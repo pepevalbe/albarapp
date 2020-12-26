@@ -50,7 +50,13 @@ public class HensBatchInfoService {
 		// Calculate water consumptions
 		hensBatchInfoDtos.forEach(hensBatchInfoDto -> {
 			hensBatchInfoDto.setWaterConsumption(calculateWaterConsumption(hensBatchInfoDto.getReportTimestamp(), hensBatchReports));
-			hensBatchInfoDto.setHensWaterConsumption(hensBatchInfoDto.getWaterConsumption() / hensBatchInfoDto.getNumHens());
+			hensBatchInfoDto.setHensWaterConsumption(hensBatchInfoDto.getWaterConsumption() / (double) hensBatchInfoDto.getNumHens());
+		});
+
+		// Calculate poultry mash consumptions
+		hensBatchInfoDtos.forEach(hensBatchInfoDto -> {
+			hensBatchInfoDto.setPoultryMashConsumption(calculatePoultryMashConsumption(hensBatchInfoDto.getReportTimestamp(), hensBatchReports));
+			hensBatchInfoDto.setHensPoultryMashConsumption(hensBatchInfoDto.getPoultryMashConsumption() / (double) hensBatchInfoDto.getNumHens());
 		});
 
 		return hensBatchInfoDtos;
@@ -58,15 +64,15 @@ public class HensBatchInfoService {
 
 	private long calculateWaterConsumption(long timestamp, List<HensBatchReport> hensBatchReports) {
 
-		// Find last report with water reading
+		// Find last or current report with water reading
 		HensBatchReport lastReport = hensBatchReports.stream()
-				.filter(hensBatchReport -> hensBatchReport.getReportTimestamp() < timestamp && hensBatchReport.getWaterReading() != null)
+				.filter(hensBatchReport -> hensBatchReport.getReportTimestamp() <= timestamp && hensBatchReport.getWaterReading() != null)
 				.max(Comparator.comparing(HensBatchReport::getReportTimestamp))
 				.orElse(null);
 
-		// Find next or current report with water reading
+		// Find next report with water reading
 		HensBatchReport nextReport = hensBatchReports.stream()
-				.filter(hensBatchReport -> hensBatchReport.getReportTimestamp() >= timestamp && hensBatchReport.getWaterReading() != null)
+				.filter(hensBatchReport -> hensBatchReport.getReportTimestamp() > timestamp && hensBatchReport.getWaterReading() != null)
 				.min(Comparator.comparing(HensBatchReport::getReportTimestamp))
 				.orElse(null);
 
@@ -75,5 +81,56 @@ public class HensBatchInfoService {
 		}
 
 		return Math.round((nextReport.getWaterReading() - lastReport.getWaterReading()) / ((nextReport.getReportTimestamp() - lastReport.getReportTimestamp()) / (double) ONE_DAY_MILLIS));
+	}
+
+	private long calculatePoultryMashConsumption(long timestamp, List<HensBatchReport> hensBatchReports) {
+
+		// Find last report with poultry mash addition
+		HensBatchReport lastReport = hensBatchReports.stream()
+				.filter(hensBatchReport -> hensBatchReport.getReportTimestamp() < timestamp && hensBatchReport.getPoultryMashAdditionQuantity() != null)
+				.max(Comparator.comparing(HensBatchReport::getReportTimestamp))
+				.orElse(null);
+
+		// Find current report if it has poultry mash addition
+		HensBatchReport currentReport = hensBatchReports.stream()
+		.filter(hensBatchReport -> hensBatchReport.getReportTimestamp() == timestamp && hensBatchReport.getPoultryMashAdditionQuantity() != null)
+		.max(Comparator.comparing(HensBatchReport::getReportTimestamp))
+		.orElse(null);
+
+		// Find next report with poultry mash addition
+		HensBatchReport nextReport = hensBatchReports.stream()
+				.filter(hensBatchReport -> hensBatchReport.getReportTimestamp() > timestamp && hensBatchReport.getPoultryMashAdditionQuantity() != null)
+				.min(Comparator.comparing(HensBatchReport::getReportTimestamp))
+				.orElse(null);
+
+		if (lastReport == null || nextReport == null) {
+			return 0;
+		}
+
+		// If current report has a poultry mash addition, it's needed to calculate two consumptions and make a weighted average
+		if (currentReport != null) {
+			long firstIntervalConsumption = calculatePoultryMashConsumptionInterval(lastReport, currentReport);
+			long secondIntervalConsumption = calculatePoultryMashConsumptionInterval(currentReport, nextReport);
+
+			double weightFirstInterval = (double) (currentReport.getPoultryMashAdditionFeedTurn()-1)/currentReport.getPoultryMashMaxFeedTurns();
+			double weightSecondInterval = 1 - ((double) (currentReport.getPoultryMashAdditionFeedTurn()-1)/currentReport.getPoultryMashMaxFeedTurns());
+
+			long averageConsumption = Math.round(firstIntervalConsumption * weightFirstInterval + secondIntervalConsumption * weightSecondInterval);
+			return averageConsumption;
+		} else {
+			return calculatePoultryMashConsumptionInterval(lastReport, nextReport);
+		}
+
+	}
+
+	private long calculatePoultryMashConsumptionInterval(HensBatchReport startReport, HensBatchReport endReport) {
+		long interval = endReport.getReportTimestamp() - startReport.getReportTimestamp();
+
+		long timeToSubstractFromStart = Math.round(ONE_DAY_MILLIS * (double) (startReport.getPoultryMashAdditionFeedTurn()-1)/startReport.getPoultryMashMaxFeedTurns());
+		long timeToAddFromEnd = Math.round(ONE_DAY_MILLIS * (double) (endReport.getPoultryMashAdditionFeedTurn()-1)/endReport.getPoultryMashMaxFeedTurns());
+
+		interval = interval - timeToSubstractFromStart + timeToAddFromEnd;
+
+		return Math.round(startReport.getPoultryMashAdditionQuantity() / (interval / (double) ONE_DAY_MILLIS));
 	}
 }

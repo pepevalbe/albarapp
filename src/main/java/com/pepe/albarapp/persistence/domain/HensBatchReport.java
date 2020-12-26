@@ -21,9 +21,6 @@ public class HensBatchReport {
 	@Column(nullable = false)
 	private long reportTimestamp;
 
-	@Column
-	private Long poultryMashConsumption;
-
 	@Column(nullable = false)
 	private Double maxTemperature;
 
@@ -64,7 +61,13 @@ public class HensBatchReport {
 	private Long waterReading;
 
 	@Column
-	private Long waterConsumption;
+	private Long poultryMashAdditionQuantity;
+
+	@Column 
+	private Long poultryMashAdditionFeedTurn;
+
+	@Column
+	private Long poultryMashMaxFeedTurns;
 
 	@ManyToOne
 	@JoinColumn(name = "hens_batch_id")
