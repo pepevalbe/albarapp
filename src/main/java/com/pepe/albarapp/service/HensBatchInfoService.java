@@ -3,7 +3,7 @@ package com.pepe.albarapp.service;
 import com.pepe.albarapp.persistence.domain.HensBatchReport;
 import com.pepe.albarapp.persistence.repository.HensBatchReportRepository;
 import com.pepe.albarapp.service.dto.report.HensBatchInfoDto;
-import com.pepe.albarapp.service.mapping.HensBatchReportMapper;
+import com.pepe.albarapp.service.mapping.HensBatchMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,7 +24,7 @@ public class HensBatchInfoService {
 	private HensBatchReportRepository hensBatchReportRepository;
 
 	@Autowired
-	private HensBatchReportMapper hensBatchReportMapper;
+	private HensBatchMapper hensBatchMapper;
 
 	@Transactional(readOnly = true)
 	public List<HensBatchInfoDto> getHensBatchInfo(String hensBatchId) {
@@ -37,7 +37,7 @@ public class HensBatchInfoService {
 
 		// Initialize hens batch info with direct mapping from hens batch reports
 		List<HensBatchInfoDto> hensBatchInfoDtos = hensBatchReports.stream()
-				.map(hensBatchReport -> hensBatchReportMapper.mapToHensBatchInfo(hensBatchReport))
+				.map(hensBatchReport -> hensBatchMapper.mapToHensBatchInfo(hensBatchReport))
 				.collect(Collectors.toList());
 
 		// Calculate remaining number of hens in batch

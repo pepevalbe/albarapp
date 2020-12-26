@@ -7,7 +7,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
-public interface HensBatchReportMapper {
+public interface HensBatchMapper {
 
 	@Mapping(source = "hensBatch.id", target = "hensBatchId")
 	HensBatchReportDto map(HensBatchReport hensBatchReport);

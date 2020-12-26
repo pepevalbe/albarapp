@@ -14,7 +14,7 @@ import java.util.Set;
 
 @Log
 @RestController
-public class HensBatchReportController {
+public class HensBatchController {
 
 	private static final String HENS_BATCH_REPORT_ENDPOINT = "/api/hens-batch-report";
 	private static final String HENS_BATCH_INFO_ENDPOINT = "/api/hens-batch-info";

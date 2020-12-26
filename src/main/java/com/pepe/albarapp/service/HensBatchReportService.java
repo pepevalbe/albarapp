@@ -5,7 +5,7 @@ import com.pepe.albarapp.api.error.ApiException;
 import com.pepe.albarapp.persistence.domain.HensBatchReport;
 import com.pepe.albarapp.persistence.repository.HensBatchReportRepository;
 import com.pepe.albarapp.service.dto.report.HensBatchReportDto;
-import com.pepe.albarapp.service.mapping.HensBatchReportMapper;
+import com.pepe.albarapp.service.mapping.HensBatchMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,13 +26,13 @@ public class HensBatchReportService {
 	private HensBatchReportRepository hensBatchReportRepository;
 
 	@Autowired
-	private HensBatchReportMapper hensBatchReportMapper;
+	private HensBatchMapper hensBatchMapper;
 
 	@Transactional(readOnly = true)
 	public HensBatchReportDto getHensBatchReport(String hensBatchReportId) {
 
 		return hensBatchReportRepository.findById(hensBatchReportId)
-				.map(hensBatchReport -> hensBatchReportMapper.map(hensBatchReport))
+				.map(hensBatchReport -> hensBatchMapper.map(hensBatchReport))
 				.orElseThrow(() -> new ApiException(ApiError.ApiError006));
 	}
 
@@ -46,7 +46,7 @@ public class HensBatchReportService {
 			return Collections.emptySet();
 		}
 
-		return hensBatchReports.stream().map(hensBatchReportMapper::map).collect(Collectors.toSet());
+		return hensBatchReports.stream().map(hensBatchMapper::map).collect(Collectors.toSet());
 	}
 
 	@Transactional
@@ -62,8 +62,8 @@ public class HensBatchReportService {
 		}
 
 		// Create hens batch report
-		HensBatchReport createdHensBatchReport = hensBatchReportRepository.save(hensBatchReportMapper.map(hensBatchReportDto));
-		return hensBatchReportMapper.map(createdHensBatchReport);
+		HensBatchReport createdHensBatchReport = hensBatchReportRepository.save(hensBatchMapper.map(hensBatchReportDto));
+		return hensBatchMapper.map(createdHensBatchReport);
 	}
 
 	@Transactional
@@ -77,8 +77,8 @@ public class HensBatchReportService {
 		hensBatchReportDto.setReportTimestamp(hensBatchReport.getReportTimestamp());
 
 		// Update hens batch report
-		HensBatchReport updatedHensBatchReport = hensBatchReportRepository.save(hensBatchReportMapper.map(hensBatchReportDto));
-		return hensBatchReportMapper.map(updatedHensBatchReport);
+		HensBatchReport updatedHensBatchReport = hensBatchReportRepository.save(hensBatchMapper.map(hensBatchReportDto));
+		return hensBatchMapper.map(updatedHensBatchReport);
 	}
 
 
