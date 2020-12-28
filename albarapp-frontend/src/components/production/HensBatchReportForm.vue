@@ -140,18 +140,44 @@
       <v-subheader>Consumos</v-subheader>
       <v-divider></v-divider>
       <v-row class="mr-6 ml-6">
-        <v-text-field
-          v-model="form.hensBatchReport.waterReading"
-          type="number"
-          autocomplete="off"
-          label="Lectura contador agua"
-        ></v-text-field>
-        <v-text-field
-          v-model="form.hensBatchReport.poultryMashConsumption"
-          type="number"
-          autocomplete="off"
-          label="Pienso en kilogramos"
-        ></v-text-field>
+        <v-col cols="12" md="3">
+          <v-text-field
+            v-model="form.hensBatchReport.waterReading"
+            type="number"
+            autocomplete="off"
+            label="Lectura contador agua"
+          ></v-text-field>
+        </v-col>
+        <v-col cols="12" md="9">
+          <v-row>
+            <v-switch
+              class="mr-2"
+              v-model="switchPoultryMashConsumption"
+              label="Cambio de silo"
+            ></v-switch>
+            <v-text-field
+              v-if="switchPoultryMashConsumption"
+              v-model="form.hensBatchReport.poultryMashAdditionQuantity"
+              type="number"
+              autocomplete="off"
+              label="Pienso en kilogramos"
+            ></v-text-field>
+            <v-text-field
+              v-if="switchPoultryMashConsumption"
+              v-model="form.hensBatchReport.poultryMashAdditionFeedTurn"
+              type="number"
+              autocomplete="off"
+              label="Turno de comida del cambio"
+            ></v-text-field>
+            <v-text-field
+              v-if="switchPoultryMashConsumption"
+              v-model="form.hensBatchReport.poultryMashMaxFeedTurns"
+              type="number"
+              autocomplete="off"
+              label="Turnos totales de comida del día"
+            ></v-text-field>
+          </v-row>
+        </v-col>
       </v-row>
       <v-subheader>Observaciones</v-subheader>
       <v-divider></v-divider>
@@ -201,40 +227,65 @@ export default {
       this.dateText = moment.format("DD/MM/YYYY");
       this.form.hensBatchReport.reportTimestamp = moment.format("x");
     }
+    if (this.form?.hensBatchReport?.poultryMashAdditionQuantity) {
+      this.switchPoultryMashConsumption = true;
+    }
   },
   data: () => ({
-    numXLRules: [(v) => !!v || v === 0 || "La cantidad de huevos XL es obligatoria"],
-    numLRules: [(v) => !!v || v === 0 || "La cantidad de huevos L es obligatoria"],
-    numMRules: [(v) => !!v || v === 0 || "La cantidad de huevos M es obligatoria"],
-    numSRules: [(v) => !!v || v === 0 || "La cantidad de huevos S es obligatoria"],
-    numXSRules: [(v) => !!v || v === 0 || "La cantidad de huevos XS es obligatoria"],
-    dirtiesRules: [(v) => !!v || v === 0 || "La cantidad de huevos sucios es obligatoria"],
-    brokensRules: [(v) => !!v || v === 0 || "La cantidad de huevos rotos es obligatoria"],
+    numXLRules: [
+      (v) => !!v || v === 0 || "La cantidad de huevos XL es obligatoria",
+    ],
+    numLRules: [
+      (v) => !!v || v === 0 || "La cantidad de huevos L es obligatoria",
+    ],
+    numMRules: [
+      (v) => !!v || v === 0 || "La cantidad de huevos M es obligatoria",
+    ],
+    numSRules: [
+      (v) => !!v || v === 0 || "La cantidad de huevos S es obligatoria",
+    ],
+    numXSRules: [
+      (v) => !!v || v === 0 || "La cantidad de huevos XS es obligatoria",
+    ],
+    dirtiesRules: [
+      (v) => !!v || v === 0 || "La cantidad de huevos sucios es obligatoria",
+    ],
+    brokensRules: [
+      (v) => !!v || v === 0 || "La cantidad de huevos rotos es obligatoria",
+    ],
     deathsRules: [
       (v) => !!v || v === 0 || "La cantidad de gallinas muertas es obligatoria",
     ],
     departuresRules: [
-      (v) => !!v || v === 0 || "La cantidad de gallinas dadas de baja es obligatoria",
+      (v) =>
+        !!v ||
+        v === 0 ||
+        "La cantidad de gallinas dadas de baja es obligatoria",
     ],
-    maxTempRules: [(v) => !!v || v === 0 || "La temperatura máxima es obligatoria"],
-    minTempRules: [(v) => !!v || v === 0 || "La temperatura mínima es obligatoria"],
+    maxTempRules: [
+      (v) => !!v || v === 0 || "La temperatura máxima es obligatoria",
+    ],
+    minTempRules: [
+      (v) => !!v || v === 0 || "La temperatura mínima es obligatoria",
+    ],
     date: "",
     dateText: "",
     menuDatePicker: false,
+    switchPoultryMashConsumption: false,
   }),
   methods: {
     reset: function () {
-      this.form.hensBatchReport.numXL = "0";
-      this.form.hensBatchReport.numL = "0";
-      this.form.hensBatchReport.numM = "0";
-      this.form.hensBatchReport.numS = "0";
-      this.form.hensBatchReport.numXS = "0";
-      this.form.hensBatchReport.dirties = "0";
-      this.form.hensBatchReport.brokens = "0";
-      this.form.hensBatchReport.deaths = "0";
-      this.form.hensBatchReport.departures = "0";
-      this.form.hensBatchReport.maxTemperature = "";
-      this.form.hensBatchReport.minTemperature = "";
+      this.form.hensBatchReport.numXL = 0;
+      this.form.hensBatchReport.numL = 0;
+      this.form.hensBatchReport.numM = 0;
+      this.form.hensBatchReport.numS = 0;
+      this.form.hensBatchReport.numXS = 0;
+      this.form.hensBatchReport.dirties = 0;
+      this.form.hensBatchReport.brokens = 0;
+      this.form.hensBatchReport.deaths = 0;
+      this.form.hensBatchReport.departures = 0;
+      this.form.hensBatchReport.maxTemperature = 0;
+      this.form.hensBatchReport.minTemperature = 0;
       this.form.hensBatchReport.waterReading = "";
       this.$nextTick(this.$refs.dateText.focus);
     },

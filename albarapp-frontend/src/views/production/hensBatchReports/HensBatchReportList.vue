@@ -53,12 +53,20 @@
                 <td>{{ item.dirties }}</td>
                 <td>{{ item.brokens }}</td>
                 <td>{{ item.deaths }}</td>
-                <td>{{ item.waterConsumption }}</td>
-                <td>{{ item.poultryMashConsumption }}</td>
+                <td>{{ Math.round(item.hensWaterConsumption * 1000) }}</td>
+                <td>
+                  {{ Math.round(item.hensPoultryMashConsumption * 1000) }}
+                </td>
                 <td>
                   <v-tooltip bottom v-if="item.comments">
                     <template v-slot:activator="{ on, attrs }">
-                      <v-icon class="mr-1 ml-1" color="black" dark v-bind="attrs" v-on="on">
+                      <v-icon
+                        class="mr-1 ml-1"
+                        color="black"
+                        dark
+                        v-bind="attrs"
+                        v-on="on"
+                      >
                         mdi-comment-text-multiple
                       </v-icon>
                     </template>
@@ -66,11 +74,22 @@
                   </v-tooltip>
                   <v-tooltip bottom v-if="item.poultryMashAdditionQuantity">
                     <template v-slot:activator="{ on, attrs }">
-                      <v-icon class="mr-1 ml-1" color="black" dark v-bind="attrs" v-on="on">
+                      <v-icon
+                        class="mr-1 ml-1"
+                        color="black"
+                        dark
+                        v-bind="attrs"
+                        v-on="on"
+                      >
                         mdi-silo
                       </v-icon>
                     </template>
-                    <span>Cambio de silo. Nueva entrada de pienso de {{ item.poultryMashAdditionQuantity }} kg cambiado en la comida {{ item.poultryMashAdditionFeedTurn }} de {{ item.poultryMashMaxFeedTurns }}</span>
+                    <span
+                      >Cambio de silo. Nueva entrada de pienso de
+                      {{ item.poultryMashAdditionQuantity }} kg cambiado en la
+                      comida {{ item.poultryMashAdditionFeedTurn }} de
+                      {{ item.poultryMashMaxFeedTurns }}</span
+                    >
                   </v-tooltip>
                 </td>
                 <td>
@@ -126,11 +145,11 @@
                     <span class="black--text">Muertas:</span>
                     {{ item.deaths }}
                     <br />
-                    <span class="black--text">Consumo de agua:</span>
-                    {{ item.waterConsumption }}
+                    <span class="black--text">Agua (ml):</span>
+                    {{ Math.round(item.hensWaterConsumption * 1000) }}
                     <br />
-                    <span class="black--text">Consumo de pienso:</span>
-                    {{ item.poultryMashConsumption }}
+                    <span class="black--text">Pienso (g):</span>
+                    {{ Math.round(item.hensPoultryMashConsumption * 1000) }}
                     <br />
                     <span class="black--text">Comentarios:</span>
                     {{ item.comments }}
@@ -221,13 +240,13 @@ export default {
         { text: "Rotos", sortable: true, align: "center", value: "brokens" },
         { text: "Muertas", sortable: true, align: "center", value: "deaths" },
         {
-          text: "Agua",
+          text: "Agua (ml)",
           sortable: true,
           align: "center",
           value: "waterConsumption",
         },
         {
-          text: "Pienso",
+          text: "Pienso (g)",
           sortable: true,
           align: "center",
           value: "poultryMashConsumption",
