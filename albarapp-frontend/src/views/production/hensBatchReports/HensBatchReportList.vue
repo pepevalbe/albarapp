@@ -153,6 +153,12 @@
                     <br />
                     <span class="black--text">Comentarios:</span>
                     {{ item.comments }}
+                    <span v-if="item.poultryMashAdditionQuantity">
+                      Cambio de silo. Nueva entrada de pienso de
+                      {{ item.poultryMashAdditionQuantity }} kg cambiado en la
+                      comida {{ item.poultryMashAdditionFeedTurn }} de
+                      {{ item.poultryMashMaxFeedTurns }}
+                    </span>
                     <br />
                   </v-card-text>
                   <v-card-actions>
