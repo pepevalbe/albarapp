@@ -70,18 +70,17 @@ export default {
   }),
   props: {
     hensBatchReportId: String,
-    hensBatchId: String,
   },
   async created() {
+    await this.loadHensBatchReport();
     this.loadHensBatch();
-    this.loadHensBatchReport();
   },
   methods: {
     async loadHensBatch() {
       try {
         this.showSpinner();
         this.errorLoading = false;
-        this.hensBatch = await HensBatchService.get(this.hensBatchId);
+        this.hensBatch = await HensBatchService.get(this.form.hensBatchReport.hensBatchId);
       } catch (e) {
         this.errorLoading = true;
       } finally {

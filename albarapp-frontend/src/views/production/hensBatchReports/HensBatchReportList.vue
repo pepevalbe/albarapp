@@ -323,7 +323,6 @@ export default {
       this.$router.push({
         name: "HensBatchReportUpdate",
         params: {
-          hensBatchId: this.hensBatch.id,
           hensBatchReportId: item.hensBatchReportId,
         },
       });
