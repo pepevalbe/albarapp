@@ -22,10 +22,10 @@ public class HensBatchReport {
 	private long reportTimestamp;
 
 	@Column(nullable = false)
-	private Double maxTemperature;
+	private double maxTemperature;
 
 	@Column(nullable = false)
-	private Double minTemperature;
+	private double minTemperature;
 
 	@Column(nullable = false, name = "num_xl")
 	private long numXL;

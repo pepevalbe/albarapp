@@ -1,8 +1,10 @@
 package com.pepe.albarapp.service.dto.report;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 
 @Data
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class HensBatchInfoDto {
 
 	// Direct mapping from hens batch report
@@ -18,8 +20,8 @@ public class HensBatchInfoDto {
 	private long brokens;
 	private long deaths;
 	private long departures;
-	private Double maxTemperature;
-	private Double minTemperature;
+	private double maxTemperature;
+	private double minTemperature;
 	private Long waterReading;
 	private Long poultryMashAdditionQuantity;
 	private Long poultryMashAdditionFeedTurn;

@@ -34,7 +34,7 @@ public class SequentialByYearGenerator implements IdentifierGenerator {
 		long firstIdNextYear = (localDate.getYear() + 1) * 100000L + 1;
 
 		// Get latest Id of current year
-		String query = String.format("select max(%s) from %s where id < %s", idColumnName, tableName, Long.toString(firstIdNextYear));
+		String query = String.format("select max(%s) from %s where id < %s", idColumnName, tableName, firstIdNextYear);
 		Long max = (Long) session.createQuery(query).getSingleResult();
 
 		// Empty table
