@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.pepe</groupId>
     <artifactId>albarapp</artifactId>
-    <version>2.0.8</version>
+    <version>2.1.0</version>
     <name>albarapp</name>
     <description>CRM web app focused on delivery notes management</description>
 
