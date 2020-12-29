@@ -56,14 +56,14 @@ public class HensBatchReport {
 
 	@Column
 	private String comments;
-	
+
 	@Column
 	private Long waterReading;
 
 	@Column
 	private Long poultryMashAdditionQuantity;
 
-	@Column 
+	@Column
 	private Long poultryMashAdditionFeedTurn;
 
 	@Column

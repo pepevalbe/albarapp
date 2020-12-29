@@ -1,10 +1,9 @@
 package com.pepe.albarapp.service.document.aecoc;
 
-import java.math.BigDecimal;
-
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
-
 import lombok.Data;
+
+import java.math.BigDecimal;
 
 @Data
 public class IgicTax {

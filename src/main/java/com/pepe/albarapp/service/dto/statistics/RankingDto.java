@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 public class RankingDto {
 
 	private String customerAlias;
-    private Double invoiceTotal;
-    
+	private Double invoiceTotal;
+
 }

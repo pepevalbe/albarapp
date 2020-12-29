@@ -1,7 +1,5 @@
 package com.pepe.albarapp.service.document.aecoc.lineitem;
 
-import java.math.BigDecimal;
-
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.pepe.albarapp.api.error.ApiError;
 import com.pepe.albarapp.api.error.ApiException;
@@ -9,6 +7,8 @@ import com.pepe.albarapp.persistence.domain.DeliveryNoteItem;
 import com.pepe.albarapp.service.document.aecoc.AmountWrapper;
 import com.pepe.albarapp.service.document.aecoc.IgicTax;
 import lombok.Data;
+
+import java.math.BigDecimal;
 
 @Data
 public class LineItem {

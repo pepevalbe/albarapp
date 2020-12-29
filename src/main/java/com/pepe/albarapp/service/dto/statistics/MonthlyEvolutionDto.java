@@ -1,10 +1,10 @@
 package com.pepe.albarapp.service.dto.statistics;
 
-import java.math.BigDecimal;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
 
 @Data
 @AllArgsConstructor
@@ -12,6 +12,6 @@ import lombok.NoArgsConstructor;
 public class MonthlyEvolutionDto {
 
 	private String monthName;
-    private BigDecimal invoiceTotal;
-    
+	private BigDecimal invoiceTotal;
+
 }

@@ -46,14 +46,14 @@ public class EmailService {
 	public void sendEmail(String to, String subject, String text) {
 
 		MimeMessagePreparator mailMessage = mimeMessage -> {
-            MimeMessageHelper message = new MimeMessageHelper(
-                    mimeMessage, true, "UTF-8");
+			MimeMessageHelper message = new MimeMessageHelper(
+					mimeMessage, true, "UTF-8");
 
-            message.setFrom(senderEmail, senderName);
+			message.setFrom(senderEmail, senderName);
 			message.setTo(to);
 			message.setSubject(subject);
 			message.setText(text);
-        };
+		};
 		javaMailSender.send(mailMessage);
 		log.info("Sent email to: " + to);
 	}

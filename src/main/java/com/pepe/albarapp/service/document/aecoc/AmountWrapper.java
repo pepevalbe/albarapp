@@ -1,10 +1,10 @@
 package com.pepe.albarapp.service.document.aecoc;
 
+import lombok.Data;
+
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.util.Locale;
-
-import lombok.Data;
 
 @Data
 public class AmountWrapper {

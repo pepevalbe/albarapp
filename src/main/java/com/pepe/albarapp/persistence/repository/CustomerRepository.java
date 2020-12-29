@@ -2,7 +2,6 @@ package com.pepe.albarapp.persistence.repository;
 
 import com.pepe.albarapp.persistence.domain.Customer;
 import com.pepe.albarapp.service.dto.statistics.RankingDto;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;

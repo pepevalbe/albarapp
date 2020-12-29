@@ -3,35 +3,34 @@ package com.pepe.albarapp.persistence.domain;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
+import javax.persistence.*;
 import java.util.Objects;
 import java.util.Set;
-
-import javax.persistence.*;
 
 @Entity
 @Data
 public class HensBatch {
-    
-    @Id
+
+	@Id
 	@GeneratedValue(generator = "uuid")
 	@GenericGenerator(name = "uuid", strategy = "uuid2")
-    private String id;
+	private String id;
 
-    @Column(nullable = false)
-    private String name;
-    
 	@Column(nullable = false)
-    private long birthTimestamp;
-    
-    @Column(nullable = false)
-    private String breed;
-    
+	private String name;
+
+	@Column(nullable = false)
+	private long birthTimestamp;
+
+	@Column(nullable = false)
+	private String breed;
+
 	@Column(nullable = false)
 	private long animalQuantity;
-	
+
 	@Column
 	private Long endTimestamp;
-	
+
 	@OneToMany(mappedBy = "hensBatch")
 	private Set<HensBatchReport> hensBatchReports;
 

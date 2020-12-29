@@ -14,7 +14,7 @@ import java.util.Set;
 
 @Log
 @RestController
-@CrossOrigin(origins = "http://localhost:8080", methods= {RequestMethod.GET,RequestMethod.POST,RequestMethod.PUT,RequestMethod.PATCH,RequestMethod.DELETE,RequestMethod.OPTIONS})
+@CrossOrigin(origins = "http://localhost:8080", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.PATCH, RequestMethod.DELETE, RequestMethod.OPTIONS})
 public class HensBatchController {
 
 	private static final String HENS_BATCH_REPORT_ENDPOINT = "/api/hens-batch-report";

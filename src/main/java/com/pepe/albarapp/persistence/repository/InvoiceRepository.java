@@ -61,7 +61,6 @@ public interface InvoiceRepository extends PagingAndSortingRepository<Invoice, L
 	List<Invoice> findByIdIn(List<Long> ids, Sort sort);
 
 	Page<Invoice> findByIdBetween(Long idFrom, Long idTo, Pageable pageable);
-	
-	List<Invoice> findByIdBetween(Long idFrom, Long idTo);
 
+	List<Invoice> findByIdBetween(Long idFrom, Long idTo);
 }

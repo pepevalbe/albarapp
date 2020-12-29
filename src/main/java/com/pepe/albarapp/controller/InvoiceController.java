@@ -60,8 +60,8 @@ public class InvoiceController {
 
 	@GetMapping(INVOICES_INTERVAL_ENDPOINT)
 	public ResponseEntity<Page<InvoiceDto>> getInvoicesInterval(@RequestParam @Nullable Long idFrom,
-														@RequestParam @Nullable Long idTo,
-														@PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
+																@RequestParam @Nullable Long idTo,
+																@PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
 
 		return ResponseEntity.ok(invoiceService.getInvoicesInterval(idFrom, idTo, pageable));
 	}

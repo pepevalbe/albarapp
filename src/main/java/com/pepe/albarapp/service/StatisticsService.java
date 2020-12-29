@@ -7,7 +7,6 @@ import com.pepe.albarapp.persistence.repository.InvoiceRepository;
 import com.pepe.albarapp.service.dto.StatisticsDto;
 import com.pepe.albarapp.service.dto.statistics.MonthlyEvolutionDto;
 import com.pepe.albarapp.service.dto.statistics.RankingDto;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -21,11 +20,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class StatisticsService {

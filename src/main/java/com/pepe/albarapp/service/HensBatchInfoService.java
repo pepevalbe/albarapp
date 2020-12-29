@@ -93,9 +93,13 @@ public class HensBatchInfoService {
 
 		// Find current report if it has poultry mash addition
 		HensBatchReport currentReport = hensBatchReports.stream()
-		.filter(hensBatchReport -> hensBatchReport.getReportTimestamp() == timestamp && hensBatchReport.getPoultryMashAdditionQuantity() != null)
-		.max(Comparator.comparing(HensBatchReport::getReportTimestamp))
-		.orElse(null);
+				.filter(hensBatchReport -> hensBatchReport.getReportTimestamp() == timestamp && hensBatchReport.getPoultryMashAdditionQuantity() != null)
+				.max(Comparator.comparing(HensBatchReport::getReportTimestamp))
+				.orElse(null);
+
+		hensBatchReports.stream()
+				.filter(hensBatchReport -> hensBatchReport.getReportTimestamp() == timestamp && hensBatchReport.getPoultryMashAdditionQuantity() != null)
+				.findFirst().orElse(null);
 
 		// Find next report with poultry mash addition
 		HensBatchReport nextReport = hensBatchReports.stream()
@@ -112,8 +116,8 @@ public class HensBatchInfoService {
 			long firstIntervalConsumption = calculatePoultryMashConsumptionInterval(lastReport, currentReport);
 			long secondIntervalConsumption = calculatePoultryMashConsumptionInterval(currentReport, nextReport);
 
-			double weightFirstInterval = (double) (currentReport.getPoultryMashAdditionFeedTurn()-1)/currentReport.getPoultryMashMaxFeedTurns();
-			double weightSecondInterval = 1 - ((double) (currentReport.getPoultryMashAdditionFeedTurn()-1)/currentReport.getPoultryMashMaxFeedTurns());
+			double weightFirstInterval = (double) (currentReport.getPoultryMashAdditionFeedTurn() - 1) / currentReport.getPoultryMashMaxFeedTurns();
+			double weightSecondInterval = 1 - ((double) (currentReport.getPoultryMashAdditionFeedTurn() - 1) / currentReport.getPoultryMashMaxFeedTurns());
 
 			long averageConsumption = Math.round(firstIntervalConsumption * weightFirstInterval + secondIntervalConsumption * weightSecondInterval);
 			return averageConsumption;
@@ -124,12 +128,11 @@ public class HensBatchInfoService {
 	}
 
 	private long calculatePoultryMashConsumptionInterval(HensBatchReport startReport, HensBatchReport endReport) {
-		long interval = endReport.getReportTimestamp() - startReport.getReportTimestamp();
 
-		long timeToSubstractFromStart = Math.round(ONE_DAY_MILLIS * (double) (startReport.getPoultryMashAdditionFeedTurn()-1)/startReport.getPoultryMashMaxFeedTurns());
-		long timeToAddFromEnd = Math.round(ONE_DAY_MILLIS * (double) (endReport.getPoultryMashAdditionFeedTurn()-1)/endReport.getPoultryMashMaxFeedTurns());
+		long timeToSubstractFromStart = Math.round(ONE_DAY_MILLIS * (double) (startReport.getPoultryMashAdditionFeedTurn() - 1) / startReport.getPoultryMashMaxFeedTurns());
+		long timeToAddFromEnd = Math.round(ONE_DAY_MILLIS * (double) (endReport.getPoultryMashAdditionFeedTurn() - 1) / endReport.getPoultryMashMaxFeedTurns());
 
-		interval = interval - timeToSubstractFromStart + timeToAddFromEnd;
+		long interval = endReport.getReportTimestamp() - startReport.getReportTimestamp() - timeToSubstractFromStart + timeToAddFromEnd;
 
 		return Math.round(startReport.getPoultryMashAdditionQuantity() / (interval / (double) ONE_DAY_MILLIS));
 	}

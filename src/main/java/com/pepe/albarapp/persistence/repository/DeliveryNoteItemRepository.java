@@ -2,7 +2,6 @@ package com.pepe.albarapp.persistence.repository;
 
 import com.pepe.albarapp.persistence.domain.DeliveryNote;
 import com.pepe.albarapp.persistence.domain.DeliveryNoteItem;
-
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.security.access.prepost.PreAuthorize;
