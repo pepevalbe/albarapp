@@ -3126,12 +3126,12 @@ VALUES
 INSERT INTO hens_batch_report
 	(id, hens_batch_id, report_timestamp, max_temperature, min_temperature, num_xl, num_l, num_m, num_s, num_xs, dirties, brokens, deaths, departures, water_reading, poultry_mash_addition_quantity, poultry_mash_addition_feed_turn, poultry_mash_max_feed_turns, comments)
 VALUES
-	('2763487', 'a', 1602288000000, 23.5, 20.1, 150, 3000, 2500, 150, 0, 30, 15, 1, 0, 0, 2200, 2, 5, NULL),
+	('2763487', 'a', 1602288000000, 23.5, 20.1, 150, 3000, 2500, 150, 0, 30, 15, 1, 0, 20, 2200, 2, 5, NULL),
 	('2763488', 'a', 1602374400000, 23.5, 20.1, 150, 3000, 2500, 150, 0, 30, 15, 2, 0, 800, NULL, NULL, NULL, NULL),
 	('2763489', 'a', 1602460800000, 23.5, 20.1, 150, 3000, 2500, 150, 0, 30, 15, 1, 0, 1650, NULL, NULL, NULL, NULL),
 	('2763490', 'a', 1602547200000, 23.5, 20.1, 150, 3000, 2500, 150, 0, 30, 15, 3, 0, 2500, NULL, NULL, NULL, NULL),
-	('2763491', 'a', 1602633600000, 23.2, 20.3, 160, 1950, 2300, 180, 0, 30, 15, 1, 0, 3310, 2100, 3, 5, 'Las gallinas estuvieron 6 horas sin comida porque a cierto granjero se le olvido cambiar de silo'),
+	('2763491', 'a', 1602633600000, 23.2, 20.3, 160, 1950, 2300, 180, 0, 30, 15, 1, 0, NULL, 2100, 3, 5, 'Las gallinas estuvieron 6 horas sin comida porque a cierto granjero se le olvido cambiar de silo'),
 	('2763492', 'a', 1602720000000, 23.2, 20.3, 160, 1950, 2300, 180, 0, 30, 15, 2, 0, 4130, NULL, NULL, NULL, NULL),
-	('2763493', 'a', 1602806400000, 23.2, 20.3, 160, 1950, 2300, 180, 0, 30, 15, 1, 0, 4960, NULL, NULL, NULL, NULL),
+	('2763493', 'a', 1602806400000, 23.2, 20.3, 160, 1950, 2300, 180, 0, 30, 15, 1, 30, 4960, NULL, NULL, NULL, NULL),
 	('2763494', 'a', 1602892800000, 23.2, 20.3, 160, 1950, 2300, 180, 0, 30, 15, 2, 0, 5800, NULL, NULL, NULL, NULL),
 	('2763495', 'a', 1602979200000, 23.5, 20.1, 150, 3000, 2500, 150, 0, 30, 15, 1, 0, 6590, 1000, 2, 5, NULL);
