@@ -3119,8 +3119,8 @@ VALUES
 INSERT INTO hens_batch
 	(id, name, birth_timestamp, breed, animal_quantity, end_timestamp)
 VALUES
-	('a', 'Lote 2020 A', 0, 'Raza A', 5000, NULL),
-	('b', 'Lote 2020 B', 0, 'Raza A', 7500, NULL);
+	('a', 'Lote 2020 A', 1590969600000, 'Raza A', 5000, NULL),
+	('b', 'Lote 2020 B', 1590969600000, 'Raza A', 7500, NULL);
 
 
 INSERT INTO hens_batch_report

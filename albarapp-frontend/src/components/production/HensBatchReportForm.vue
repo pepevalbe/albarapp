@@ -96,6 +96,20 @@
           label="Rotos *"
           required
         ></v-text-field>
+        <v-text-field
+          disabled
+          label="Total"
+          :value="
+            parseInt(form.hensBatchReport.numXL) +
+            parseInt(form.hensBatchReport.numL) +
+            parseInt(form.hensBatchReport.numM) +
+            parseInt(form.hensBatchReport.numS) +
+            parseInt(form.hensBatchReport.numXS) +
+            parseInt(form.hensBatchReport.dirties) +
+            parseInt(form.hensBatchReport.brokens)
+          "
+        >
+        </v-text-field>
       </v-row>
       <v-subheader>Gallinas</v-subheader>
       <v-divider></v-divider>
@@ -141,12 +155,21 @@
       <v-divider></v-divider>
       <v-row class="mr-6 ml-6">
         <v-col cols="12" md="3">
-          <v-text-field
-            v-model="form.hensBatchReport.waterReading"
-            type="number"
-            autocomplete="off"
-            label="Lectura contador agua"
-          ></v-text-field>
+          <v-row>
+            <v-text-field
+              v-model="form.hensBatchReport.waterReading"
+              type="number"
+              autocomplete="off"
+              label="Lectura contador agua"
+              @blur="compareWaterReadingWithLastReport()"
+            ></v-text-field>
+            <v-text-field
+              class="ml-2"
+              v-model="estimatedWaterConsumption"
+              disabled
+              label="Consumo estimado"
+            ></v-text-field>
+          </v-row>
         </v-col>
         <v-col cols="12" md="9">
           <v-row>
@@ -193,6 +216,8 @@
 </template>
         
 <script>
+import HensBatchReportService from "@/services/production/HensBatchReportService.js";
+
 export default {
   name: "HensBatchReportForm",
   props: {
@@ -206,6 +231,7 @@ export default {
       },
     },
     hensBatch: {
+      id: String,
       name: String,
       breed: String,
       animalQuantity: Number,
@@ -272,6 +298,7 @@ export default {
     dateText: "",
     menuDatePicker: false,
     switchPoultryMashConsumption: false,
+    estimatedWaterConsumption: "N/A",
   }),
   methods: {
     reset: function () {
@@ -292,6 +319,7 @@ export default {
       this.form.hensBatchReport.poultryMashMaxFeedTurns = null;
       this.switchPoultryMashConsumption = false;
       this.form.hensBatchReport.comments = null;
+      this.estimatedWaterConsumption = "N/A";
 
       this.$nextTick(this.$refs.dateText.focus);
     },
@@ -305,8 +333,10 @@ export default {
         this.date = moment.format("YYYY-MM-DD");
         this.dateText = moment.format("DD/MM/YYYY");
         this.form.hensBatchReport.reportTimestamp = moment.format("x");
+        this.menuDatePicker = false;
       } else {
         this.$nextTick(this.$refs.dateText.focus);
+        this.menuDatePicker = false;
       }
     },
     datePickedOnCalendar() {
@@ -314,6 +344,24 @@ export default {
       this.dateText = moment.format("DD/MM/YYYY");
       this.form.hensBatchReport.reportTimestamp = moment.format("x");
       this.menuDatePicker = false;
+    },
+    async compareWaterReadingWithLastReport() {
+      if (
+        this.form.hensBatchReport.waterReading &&
+        this.form.hensBatchReport.reportTimestamp
+      ) {
+        var lastReportWithWaterReading = await HensBatchReportService.getLastWithWaterReading(
+          this.hensBatch.id,
+          this.form.hensBatchReport.reportTimestamp
+        );
+        if (lastReportWithWaterReading?.waterReading) {
+          this.estimatedWaterConsumption =
+            parseInt(this.form.hensBatchReport.waterReading) -
+            lastReportWithWaterReading.waterReading;
+        } else {
+          this.estimatedWaterConsumption = "N/A";
+        }
+      }
     },
   },
 };

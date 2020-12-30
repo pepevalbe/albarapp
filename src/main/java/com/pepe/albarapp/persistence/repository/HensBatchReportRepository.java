@@ -6,6 +6,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @CrossOrigin(origins = "http://localhost:8080")
@@ -17,4 +18,6 @@ public interface HensBatchReportRepository extends CrudRepository<HensBatchRepor
 	Set<HensBatchReport> findByHensBatchIdAndReportTimestampBetween(String hensBatchId, long fromReportTimestamp, long toReportTimestamp);
 
 	List<HensBatchReport> findByHensBatchIdOrderByReportTimestampAsc(String hensBatchId);
+
+	Optional<HensBatchReport> findFirstByHensBatchIdAndReportTimestampBeforeOrderByReportTimestampDesc(String hensBatchId, long reportTimestamp);
 }

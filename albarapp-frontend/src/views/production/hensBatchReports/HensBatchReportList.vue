@@ -42,6 +42,7 @@
               style="text-align: center"
             >
               <tr v-for="item in items" :key="item.code">
+                <td>{{ calculateWeek(item.reportTimestamp) }}</td>
                 <td>
                   {{ dateFormatted(item.reportTimestamp) }}
                 </td>
@@ -52,8 +53,32 @@
                 <td>{{ item.numXS }}</td>
                 <td>{{ item.dirties }}</td>
                 <td>{{ item.brokens }}</td>
-                <td>{{ item.numXL + item.numL + item.numM + item.numS + item.numXS + item.dirties + item.brokens }}</td>
-                <td>{{ ((item.numXL + item.numL + item.numM + item.numS + item.numXS + item.dirties + item.brokens) / item.numHens * 100).toFixed(2) }}</td>
+                <td>
+                  {{
+                    item.numXL +
+                    item.numL +
+                    item.numM +
+                    item.numS +
+                    item.numXS +
+                    item.dirties +
+                    item.brokens
+                  }}
+                </td>
+                <td>
+                  {{
+                    (
+                      ((item.numXL +
+                        item.numL +
+                        item.numM +
+                        item.numS +
+                        item.numXS +
+                        item.dirties +
+                        item.brokens) /
+                        item.numHens) *
+                      100
+                    ).toFixed(2)
+                  }}
+                </td>
                 <td>{{ item.deaths }}</td>
                 <td>{{ Math.round(item.hensWaterConsumption * 1000) }}</td>
                 <td>
@@ -105,7 +130,9 @@
                         mdi-thermometer
                       </v-icon>
                     </template>
-                    <span>{{ item.maxTemperature }}º - {{ item.minTemperature }}º</span
+                    <span
+                      >{{ item.maxTemperature }}º -
+                      {{ item.minTemperature }}º</span
                     >
                   </v-tooltip>
                 </td>
@@ -248,6 +275,7 @@ export default {
       hensBatches: [],
       hensBatch: null,
       headers: [
+        { text: "Semana", sortable: true, align: "center", value: "" },
         {
           text: "Fecha",
           sortable: true,
@@ -379,6 +407,11 @@ export default {
       } finally {
         this.closeSpinner();
       }
+    },
+    calculateWeek(timestamp) {
+      var current = this.$moment.utc(timestamp, "x", true);
+      var born = this.$moment.utc(this.hensBatch.birthTimestamp, "x", true);
+      return current.diff(born, 'weeks') + 1;
     },
   },
 };

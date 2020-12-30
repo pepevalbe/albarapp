@@ -19,6 +19,13 @@ export default {
       });
   },
 
+  getLastWithWaterReading(hensBatchId, reportTimestamp) {
+    return HttpClient.get(`${RESOURCE_NAME}/lastBatchReportWithWaterReading?hensBatchId=${hensBatchId}&reportTimestamp=${reportTimestamp}`)
+      .then(response => {
+        return response.data;
+      });
+  },
+
   create(data) {
     return HttpClient.post(RESOURCE_NAME, data)
       .then(response => {

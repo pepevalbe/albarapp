@@ -37,6 +37,12 @@ public class HensBatchController {
 		return ResponseEntity.ok(hensBatchReportService.getHensBatchReport(hensBatchReportId));
 	}
 
+	@GetMapping(HENS_BATCH_REPORT_ENDPOINT + "/lastBatchReportWithWaterReading")
+	public ResponseEntity<HensBatchReportDto> getLastHensBatchReportWithWaterReading(@RequestParam String hensBatchId, @RequestParam long reportTimestamp) {
+
+		return ResponseEntity.ok(hensBatchReportService.getLastHensBatchReportWithWaterReading(hensBatchId, reportTimestamp));
+	}
+
 	@PostMapping(HENS_BATCH_REPORT_ENDPOINT)
 	public ResponseEntity<HensBatchReportDto> postHensBatchReport(@RequestBody HensBatchReportDto hensBatchReportDto) {
 
