@@ -287,6 +287,12 @@ export default {
       this.form.hensBatchReport.maxTemperature = 0;
       this.form.hensBatchReport.minTemperature = 0;
       this.form.hensBatchReport.waterReading = "";
+      this.form.hensBatchReport.poultryMashAdditionQuantity = null;
+      this.form.hensBatchReport.poultryMashAdditionFeedTurn = null;
+      this.form.hensBatchReport.poultryMashMaxFeedTurns = null;
+      this.switchPoultryMashConsumption = false;
+      this.form.hensBatchReport.comments = null;
+
       this.$nextTick(this.$refs.dateText.focus);
     },
     parseDateText() {

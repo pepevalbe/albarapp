@@ -6,7 +6,6 @@
       :hensBatch="hensBatch"
       ref="form"
     ></HensBatchReportForm>
-    <div class="mb-3"></div>
     <v-layout text-center wrap class="pt-10">
       <v-flex xs12>
         <v-btn

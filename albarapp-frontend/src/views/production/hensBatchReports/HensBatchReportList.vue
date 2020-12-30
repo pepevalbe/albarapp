@@ -52,6 +52,8 @@
                 <td>{{ item.numXS }}</td>
                 <td>{{ item.dirties }}</td>
                 <td>{{ item.brokens }}</td>
+                <td>{{ item.numXL + item.numL + item.numM + item.numS + item.numXS + item.dirties + item.brokens }}</td>
+                <td>{{ ((item.numXL + item.numL + item.numM + item.numS + item.numXS + item.dirties + item.brokens) / item.numHens * 100).toFixed(2) }}</td>
                 <td>{{ item.deaths }}</td>
                 <td>{{ Math.round(item.hensWaterConsumption * 1000) }}</td>
                 <td>
@@ -89,6 +91,21 @@
                       {{ item.poultryMashAdditionQuantity }} kg cambiado en la
                       comida {{ item.poultryMashAdditionFeedTurn }} de
                       {{ item.poultryMashMaxFeedTurns }}</span
+                    >
+                  </v-tooltip>
+                  <v-tooltip bottom>
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-icon
+                        class="mr-1 ml-1"
+                        color="black"
+                        dark
+                        v-bind="attrs"
+                        v-on="on"
+                      >
+                        mdi-thermometer
+                      </v-icon>
+                    </template>
+                    <span>{{ item.maxTemperature }}º - {{ item.minTemperature }}º</span
                     >
                   </v-tooltip>
                 </td>
@@ -237,23 +254,25 @@ export default {
           align: "center",
           value: "reportTimestamp",
         },
-        { text: "XL", sortable: true, align: "center", value: "numXL" },
-        { text: "L", sortable: true, align: "center", value: "numL" },
-        { text: "M", sortable: true, align: "center", value: "numM" },
-        { text: "S", sortable: true, align: "center", value: "numS" },
-        { text: "XS", sortable: true, align: "center", value: "numXS" },
-        { text: "Sucios", sortable: true, align: "center", value: "dirties" },
-        { text: "Rotos", sortable: true, align: "center", value: "brokens" },
-        { text: "Muertas", sortable: true, align: "center", value: "deaths" },
+        { text: "XL", sortable: false, align: "center", value: "numXL" },
+        { text: "L", sortable: false, align: "center", value: "numL" },
+        { text: "M", sortable: false, align: "center", value: "numM" },
+        { text: "S", sortable: false, align: "center", value: "numS" },
+        { text: "XS", sortable: false, align: "center", value: "numXS" },
+        { text: "Sucios", sortable: false, align: "center", value: "dirties" },
+        { text: "Rotos", sortable: false, align: "center", value: "brokens" },
+        { text: "Total", sortable: false, align: "center", value: "" },
+        { text: "%", sortable: false, align: "center", value: "" },
+        { text: "Muertas", sortable: false, align: "center", value: "deaths" },
         {
           text: "Agua (ml)",
-          sortable: true,
+          sortable: false,
           align: "center",
           value: "waterConsumption",
         },
         {
           text: "Pienso (g)",
-          sortable: true,
+          sortable: false,
           align: "center",
           value: "poultryMashConsumption",
         },
