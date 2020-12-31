@@ -10,33 +10,57 @@
           :options="chartOptions"
           :updateArgs="updateArgs"
         ></highcharts>
-        <v-row class="mt-3">
-          <v-autocomplete
-            v-model="hensBatch"
-            label="Seleccione un lote"
-            :items="hensBatches"
-            item-text="name"
-            return-object
-            clearable
-            autocomplete="off"
-            no-data-text="Sin coincidencias"
-            class="mr-5 ml-10"
-          />
-          <v-combobox
-            v-model="chartType"
-            label="Seleccione un atributo"
-            :items="chartTypes"
-            item-text="name"
-            return-object
-            no-data-text="Sin coincidencias"
-            class="mr-5 ml-5"
-          ></v-combobox>
-          <v-btn
-            class="mr-10 mt-3"
-            :disabled="!hensBatch || !chartType"
-            @click="drawNewChart()"
-            >Añadir</v-btn
-          >
+        <v-row class="mr-10 ml-10">
+          <v-col class="mt-3">
+            <v-autocomplete
+              v-model="hensBatch[0]"
+              label="Seleccione un lote"
+              :items="hensBatches"
+              item-text="name"
+              return-object
+              clearable
+              autocomplete="off"
+              no-data-text="Sin coincidencias"
+            />
+            <v-combobox
+              v-model="chartType[0]"
+              label="Seleccione un atributo"
+              :items="chartTypes"
+              item-text="name"
+              return-object
+              no-data-text="Sin coincidencias"
+            ></v-combobox>
+            <v-btn
+              :disabled="!hensBatch[0] || !chartType[0]"
+              @click="drawNewChart(0)"
+              >Añadir</v-btn
+            >
+          </v-col>
+          <v-col class="mt-3">
+            <v-autocomplete
+              v-model="hensBatch[1]"
+              label="Seleccione un lote"
+              :items="hensBatches"
+              item-text="name"
+              return-object
+              clearable
+              autocomplete="off"
+              no-data-text="Sin coincidencias"
+            />
+            <v-combobox
+              v-model="chartType[1]"
+              label="Seleccione un atributo"
+              :items="chartTypes"
+              item-text="name"
+              return-object
+              no-data-text="Sin coincidencias"
+            ></v-combobox>
+            <v-btn
+              :disabled="!hensBatch[1] || !chartType[1]"
+              @click="drawNewChart(1)"
+              >Añadir</v-btn
+            >
+          </v-col>
         </v-row>
       </v-card>
     </div>
@@ -75,41 +99,49 @@ export default {
           },
         },
         series: [],
+        xAxis: [],
         yAxis: [],
       },
       updateArgs: [true, true, { duration: 1000 }],
       hensBatches: [],
-      hensBatch: null,
+      hensBatch: [],
       chartTypes: [
         {
           key: 1,
           name: "Porcentaje de puesta",
           yAxis: {
+            key: 1,
+            format: "{value.toFixed(2)} mm",
             title: {
               text: "Porcentaje ( % )",
             },
+            visible: false,
           },
         },
         {
           key: 2,
           name: "Consumo de pienso",
           yAxis: {
+            key: 2,
             title: {
               text: "Consumo de pienso / ave ( g )",
             },
+            visible: false,
           },
         },
         {
           key: 3,
           name: "Consumo de agua",
           yAxis: {
+            key: 3,
             title: {
               text: "Consumo de agua / ave ( ml )",
             },
+            visible: false,
           },
         },
       ],
-      chartType: null,
+      chartType: [],
       errorLoading: false,
       spinner: {
         loading: false,
@@ -135,15 +167,134 @@ export default {
     refreshPage() {
       this.$router.go(0);
     },
-    async drawNewChart() {
+    async drawNewChart(index) {
       var hensBatchReports = await HensBatchReportService.getByHensBatchId(
-        this.hensBatch.id
+        this.hensBatch[index].id
       );
+
       hensBatchReports.forEach((element) => {
         var current = this.$moment.utc(element.reportTimestamp, "x", true);
-        var born = this.$moment.utc(this.hensBatch.birthTimestamp, "x", true);
+        var born = this.$moment.utc(
+          this.hensBatch[index].birthTimestamp,
+          "x",
+          true
+        );
         element.week = current.diff(born, "weeks") + 1;
       });
+
+      var reportsByWeek = hensBatchReports
+        .reduce((accumulator, element) => {
+          if (accumulator[element.week]) {
+            accumulator[element.week].numXL += element.numXL;
+            accumulator[element.week].numL += element.numL;
+            accumulator[element.week].numM += element.numM;
+            accumulator[element.week].numS += element.numS;
+            accumulator[element.week].numXS += element.numXS;
+            accumulator[element.week].dirties += element.dirties;
+            accumulator[element.week].brokens += element.brokens;
+            accumulator[element.week].deaths += element.deaths;
+            accumulator[element.week].maxTemperature += element.maxTemperature;
+            accumulator[element.week].minTemperature += element.minTemperature;
+            accumulator[element.week].hensPoultryMashConsumption +=
+              element.hensPoultryMashConsumption;
+            accumulator[element.week].hensWaterConsumption +=
+              element.hensWaterConsumption;
+            accumulator[element.week].numHens += element.numHens;
+            accumulator[element.week].numDays += 1;
+          } else {
+            accumulator[element.week] = JSON.parse(JSON.stringify(element));
+            accumulator[element.week].numDays = 1;
+          }
+          return accumulator;
+        }, [])
+        .filter((element) => {
+          return element;
+        });
+
+      reportsByWeek.forEach((element) => {
+        element.hensWaterConsumption =
+          element.hensWaterConsumption / element.numDays;
+        element.hensPoultryMashConsumption =
+          element.hensPoultryMashConsumption / element.numDays;
+        element.numHens = element.numHens / element.numDays;
+        element.numXL /= element.numDays;
+        element.numL /= element.numDays;
+        element.numM /= element.numDays;
+        element.numS /= element.numDays;
+        element.numXS /= element.numDays;
+        element.dirties /= element.numDays;
+        element.brokens /= element.numDays;
+        element.totalEggs =
+          element.numXL +
+          element.numL +
+          element.numM +
+          element.numS +
+          element.numXS +
+          element.dirties +
+          element.brokens;
+        element.percentage = (element.totalEggs / element.numHens) * 100;
+      });
+
+      if (!this.chartOptions.xAxis.length) {
+        this.chartOptions.xAxis.push({
+          categories: reportsByWeek.map((element) => element.week),
+        });
+      }
+
+      if (!this.chartOptions.yAxis.length) {
+        this.chartOptions.yAxis = this.chartTypes.map(
+          (element) => element.yAxis
+        );
+      }
+
+      switch (this.chartType[index].key) {
+        case 1:
+          this.chartOptions.series.push({
+            name:
+              this.chartType[index].name + " - " + this.hensBatch[index].name,
+            data: reportsByWeek.map((element) => [
+              element.week,
+              element.percentage,
+            ]),
+            tooltip: {
+              valueDecimals: 2,
+            },
+            yAxis: this.chartType[index].key,
+          });
+          break;
+
+        case 2:
+          this.chartOptions.series.push({
+            name:
+              this.chartType[index].name + " - " + this.hensBatch[index].name,
+            data: reportsByWeek.map((element) => [
+              element.week,
+              Math.round(element.hensPoultryMashConsumption * 1000),
+            ]),
+            yAxis: this.chartType[index].key,
+          });
+          break;
+
+        case 3:
+          this.chartOptions.series.push({
+            name:
+              this.chartType[index].name + " - " + this.hensBatch[index].name,
+            data: reportsByWeek.map((element) => [
+              element.week,
+              Math.round(element.hensWaterConsumption * 1000),
+            ]),
+            yAxis: this.chartType[index].key,
+          });
+          break;
+      }
+
+      this.chartOptions.yAxis[this.chartType[index].key].visible = true;
+      if (index === 0) {
+        this.chartOptions.yAxis[this.chartType[index].key].opposite = false;
+      } else {
+        this.chartOptions.yAxis[this.chartType[index].key].opposite = true;
+      }
+      console.log(this.chartOptions);
     },
   },
 };
