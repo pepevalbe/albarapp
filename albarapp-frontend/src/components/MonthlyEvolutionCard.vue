@@ -6,6 +6,7 @@
           <v-icon large class="mr-2">mdi-chart-bar</v-icon>Evolución mensual
         </v-card-title>
         <highcharts
+          v-if="chartOptions.series[0].data.length"
           class="chart"
           :options="chartOptions"
           :updateArgs="updateArgs"

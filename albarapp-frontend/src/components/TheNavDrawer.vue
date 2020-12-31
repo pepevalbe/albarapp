@@ -88,6 +88,12 @@
           </v-list-item-icon>
           <v-list-item-title>Reporte diario</v-list-item-title>
         </v-list-item>
+        <v-list-item class="pl-8" link :to="{ name: 'HensBatchReportChart' }">
+          <v-list-item-icon>
+            <v-icon>mdi-chart-bell-curve-cumulative</v-icon>
+          </v-list-item-icon>
+          <v-list-item-title>Gráficas</v-list-item-title>
+        </v-list-item>
         <v-list-item hidden class="pl-8" link :to="{ name: 'HensBatchReportList' }">
           <v-list-item-icon>
             <v-icon>mdi-silo</v-icon>

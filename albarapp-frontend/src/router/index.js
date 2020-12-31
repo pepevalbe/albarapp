@@ -192,8 +192,15 @@ const router = new Router({
           props: true,
           name: "HensBatchReportUpdate",
           meta: { headerName: "Modificar reporte diario" }
-        }
+        },
       ]
+    },
+    {
+      path: "/production/hens-batch-reports-charts/",
+      component: () => import("@/views/production/hensBatchReports/HensBatchReportChart"),
+      props: true,
+      name: "HensBatchReportChart",
+      meta: { headerName: "Gráficas" }
     }
   ]
 });
