@@ -107,10 +107,10 @@ export default {
       hensBatch: [],
       chartTypes: [
         {
-          key: 1,
+          key: 0,
           name: "Porcentaje de puesta",
           yAxis: {
-            key: 1,
+            key: 0,
             format: "{value.toFixed(2)} mm",
             title: {
               text: "Porcentaje ( % )",
@@ -119,10 +119,10 @@ export default {
           },
         },
         {
-          key: 2,
+          key: 1,
           name: "Consumo de pienso",
           yAxis: {
-            key: 2,
+            key: 1,
             title: {
               text: "Consumo de pienso / ave ( g )",
             },
@@ -130,10 +130,10 @@ export default {
           },
         },
         {
-          key: 3,
+          key: 2,
           name: "Consumo de agua",
           yAxis: {
-            key: 3,
+            key: 2,
             title: {
               text: "Consumo de agua / ave ( ml )",
             },
@@ -248,7 +248,7 @@ export default {
       }
 
       switch (this.chartType[index].key) {
-        case 1:
+        case 0:
           this.chartOptions.series.push({
             name:
               this.chartType[index].name + " - " + this.hensBatch[index].name,
@@ -263,7 +263,7 @@ export default {
           });
           break;
 
-        case 2:
+        case 1:
           this.chartOptions.series.push({
             name:
               this.chartType[index].name + " - " + this.hensBatch[index].name,
@@ -275,7 +275,7 @@ export default {
           });
           break;
 
-        case 3:
+        case 2:
           this.chartOptions.series.push({
             name:
               this.chartType[index].name + " - " + this.hensBatch[index].name,
