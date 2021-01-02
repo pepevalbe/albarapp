@@ -121,7 +121,7 @@ export default {
       ],
       search: "",
       sortBy: "birthTimestamp",
-      descending: false,
+      descending: true,
       errorLoading: false,
       spinner: {
         loading: false,

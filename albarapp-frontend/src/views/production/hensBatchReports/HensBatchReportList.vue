@@ -32,7 +32,7 @@
           :search="search"
           :sort-by.sync="sortBy"
           :sort-desc.sync="descending"
-          :items-per-page="15"
+          :items-per-page="-1"
         >
           <template v-slot:body="{ items }">
             <tbody
@@ -339,6 +339,7 @@ export default {
         this.showSpinner();
         this.errorLoading = false;
         this.hensBatches = await HensBatchService.getAll();
+        this.hensBatches.sort((a, b) => b.birthTimestamp - a.birthTimestamp);
       } catch (e) {
         this.errorLoading = true;
       } finally {
