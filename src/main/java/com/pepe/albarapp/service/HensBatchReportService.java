@@ -38,7 +38,7 @@ public class HensBatchReportService {
 
 	@Transactional(readOnly = true)
 	public HensBatchReportDto getLastHensBatchReportWithWaterReading(String hensBatchId, long reportTimestamp) {
-		return hensBatchReportRepository.findFirstByHensBatchIdAndReportTimestampBeforeOrderByReportTimestampDesc(hensBatchId, reportTimestamp)
+		return hensBatchReportRepository.findFirstByHensBatchIdAndReportTimestampLessThanAndWaterReadingNotNullOrderByReportTimestampDesc(hensBatchId, reportTimestamp)
 				.map(hensBatchReport -> hensBatchMapper.map(hensBatchReport))
 				.orElse(null);
 	}

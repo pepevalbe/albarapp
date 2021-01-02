@@ -19,5 +19,5 @@ public interface HensBatchReportRepository extends CrudRepository<HensBatchRepor
 
 	List<HensBatchReport> findByHensBatchIdOrderByReportTimestampAsc(String hensBatchId);
 
-	Optional<HensBatchReport> findFirstByHensBatchIdAndReportTimestampBeforeOrderByReportTimestampDesc(String hensBatchId, long reportTimestamp);
+	Optional<HensBatchReport> findFirstByHensBatchIdAndReportTimestampLessThanAndWaterReadingNotNullOrderByReportTimestampDesc(String hensBatchId, long reportTimestamp);
 }
