@@ -99,7 +99,6 @@ export default {
           },
         },
         series: [],
-        xAxis: [],
         yAxis: [],
       },
       updateArgs: [true, true, { duration: 1000 }],
@@ -234,12 +233,6 @@ export default {
           element.brokens;
         element.percentage = (element.totalEggs / element.numHens) * 100;
       });
-
-      if (!this.chartOptions.xAxis.length) {
-        this.chartOptions.xAxis.push({
-          categories: reportsByWeek.map((element) => element.week),
-        });
-      }
 
       if (!this.chartOptions.yAxis.length) {
         this.chartOptions.yAxis = this.chartTypes.map(
