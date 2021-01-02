@@ -11,7 +11,6 @@
           <v-btn class="mr-4" @click="$router.back()">Volver</v-btn>
           <v-btn
             :disabled="!form.valid"
-            color="success"
             class="mr-4"
             @click="updateHensBatchReport()"
             >Actualizar</v-btn

@@ -11,55 +11,68 @@
           :updateArgs="updateArgs"
         ></highcharts>
         <v-row class="mr-10 ml-10">
-          <v-col class="mt-3">
-            <v-autocomplete
-              v-model="hensBatch[0]"
-              label="Seleccione un lote"
-              :items="hensBatches"
-              item-text="name"
-              return-object
-              clearable
-              autocomplete="off"
-              no-data-text="Sin coincidencias"
-            />
-            <v-combobox
-              v-model="chartType[0]"
-              label="Seleccione un atributo"
-              :items="chartTypes"
-              item-text="name"
-              return-object
-              no-data-text="Sin coincidencias"
-            ></v-combobox>
-            <v-btn
-              :disabled="!hensBatch[0] || !chartType[0]"
-              @click="drawNewChart(0)"
-              >Añadir</v-btn
-            >
+          <v-col>
+            <v-card>
+              <v-card-title>Añadir principal</v-card-title>
+              <v-card-text>
+                <v-select
+                  v-model="hensBatch[0]"
+                  label="Seleccione un lote"
+                  :items="hensBatches"
+                  item-text="name"
+                  return-object
+                  no-data-text="Sin coincidencias"
+                ></v-select>
+                <v-select
+                  v-model="chartType[0]"
+                  label="Seleccione un atributo"
+                  :items="chartTypes"
+                  item-text="name"
+                  return-object
+                  no-data-text="Sin coincidencias"
+                ></v-select>
+              </v-card-text>
+              <v-card-actions>
+                <v-btn
+                  :disabled="!hensBatch[0] || !chartType[0]"
+                  @click="drawNewChart(0)"
+                  >Añadir</v-btn
+                >
+              </v-card-actions>
+            </v-card>
           </v-col>
-          <v-col class="mt-3">
-            <v-autocomplete
-              v-model="hensBatch[1]"
-              label="Seleccione un lote"
-              :items="hensBatches"
-              item-text="name"
-              return-object
-              clearable
-              autocomplete="off"
-              no-data-text="Sin coincidencias"
-            />
-            <v-combobox
-              v-model="chartType[1]"
-              label="Seleccione un atributo"
-              :items="chartTypes"
-              item-text="name"
-              return-object
-              no-data-text="Sin coincidencias"
-            ></v-combobox>
-            <v-btn
-              :disabled="!hensBatch[1] || !chartType[1]"
-              @click="drawNewChart(1)"
-              >Añadir</v-btn
-            >
+          <v-spacer />
+          <v-col>
+            <v-card>
+              <v-card-title>Añadir secundario</v-card-title>
+              <v-card-text>
+                <v-select
+                  v-model="hensBatch[1]"
+                  label="Seleccione un lote"
+                  :items="hensBatches"
+                  item-text="name"
+                  return-object
+                  autocomplete="off"
+                  no-data-text="Sin coincidencias"
+                ></v-select>
+                <v-select
+                  v-model="chartType[1]"
+                  label="Seleccione un atributo"
+                  :items="chartTypes"
+                  item-text="name"
+                  return-object
+                  disable-lookup="true"
+                  no-data-text="Sin coincidencias"
+                ></v-select>
+              </v-card-text>
+              <v-card-actions>
+                <v-btn
+                  :disabled="!hensBatch[1] || !chartType[1]"
+                  @click="drawNewChart(1)"
+                  >Añadir</v-btn
+                >
+              </v-card-actions>
+            </v-card>
           </v-col>
         </v-row>
       </v-card>
@@ -100,6 +113,9 @@ export default {
         },
         series: [],
         yAxis: [],
+        xAxis: {
+          allowDecimals: false,
+        },
       },
       updateArgs: [true, true, { duration: 1000 }],
       hensBatches: [],
@@ -157,6 +173,7 @@ export default {
         this.showSpinner();
         this.errorLoading = false;
         this.hensBatches = await HensBatchService.getAll();
+        this.hensBatches.sort((a, b) => b.birthTimestamp - a.birthTimestamp);
       } catch (e) {
         this.errorLoading = true;
       } finally {

@@ -10,7 +10,6 @@
       <v-flex xs12>
         <v-btn
           :disabled="!form.valid"
-          color="success"
           class="mr-4"
           @click="createHensBatchReport()"
           >Crear</v-btn

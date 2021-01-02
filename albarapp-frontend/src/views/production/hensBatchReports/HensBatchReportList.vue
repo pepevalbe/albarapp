@@ -13,18 +13,16 @@
         <v-card-title>
           Reportes diarios
           <div class="flex-grow-1"></div>
-          <v-autocomplete
+          <v-select
             v-model="hensBatch"
             label="Seleccione un lote"
             :items="hensBatches"
             item-text="name"
             return-object
-            clearable
-            autocomplete="off"
             no-data-text="Sin coincidencias"
             class="mr-5 ml-5"
             @change="selectHensBatchByName()"
-          />
+          ></v-select>
         </v-card-title>
         <v-data-table
           :loading="!hensBatchReports"
