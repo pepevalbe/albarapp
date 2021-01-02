@@ -3,7 +3,7 @@
     <div v-if="!errorLoading">
       <v-card>
         <v-card-title class="mb-4">
-          <v-icon large class="mr-2">mdi-chart-bar</v-icon>Evolución mensual
+          <v-icon large class="mr-2">mdi-chart-bar</v-icon>Evolución semanal
         </v-card-title>
         <highcharts
           class="chart"
