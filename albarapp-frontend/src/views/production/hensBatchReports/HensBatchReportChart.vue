@@ -274,6 +274,9 @@ export default {
           break;
 
         case 1:
+          // Remove first and last week because not true consumptions
+          reportsByWeek.pop();
+          reportsByWeek.shift();
           this.chartOptions.series.push({
             name:
               this.chartType[index].name + " - " + this.hensBatch[index].name,
@@ -286,6 +289,8 @@ export default {
           break;
 
         case 2:
+          // Remove last week because not true consumptions
+          reportsByWeek.pop();
           this.chartOptions.series.push({
             name:
               this.chartType[index].name + " - " + this.hensBatch[index].name,
