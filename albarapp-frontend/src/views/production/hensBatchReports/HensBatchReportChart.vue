@@ -112,7 +112,40 @@ export default {
           },
         },
         series: [],
-        yAxis: [],
+        yAxis: [
+          {
+            key: 0,
+            title: {
+              text: "Porcentaje ( % )",
+            },
+            max: 110,
+            min: 0,
+            startOnTick: false,
+            endOnTick: false,
+            visible: false,
+          },
+          {
+            key: 1,
+            title: {
+              text: "Consumo de pienso / ave ( g )",
+            },
+            visible: false,
+          },
+          {
+            key: 2,
+            title: {
+              text: "Consumo de agua / ave ( ml )",
+            },
+            visible: false,
+          },
+          {
+            key: 3,
+            title: {
+              text: "Temperatura ( ºC )",
+            },
+            visible: false,
+          },
+        ],
         xAxis: {
           allowDecimals: false,
         },
@@ -126,11 +159,6 @@ export default {
           name: "Porcentaje de puesta",
           yAxis: {
             key: 0,
-            format: "{value.toFixed(2)} mm",
-            title: {
-              text: "Porcentaje ( % )",
-            },
-            visible: false,
           },
         },
         {
@@ -138,10 +166,6 @@ export default {
           name: "Consumo de pienso",
           yAxis: {
             key: 1,
-            title: {
-              text: "Consumo de pienso / ave ( g )",
-            },
-            visible: false,
           },
         },
         {
@@ -149,10 +173,20 @@ export default {
           name: "Consumo de agua",
           yAxis: {
             key: 2,
-            title: {
-              text: "Consumo de agua / ave ( ml )",
-            },
-            visible: false,
+          },
+        },
+        {
+          key: 3,
+          name: "Temperatura",
+          yAxis: {
+            key: 3,
+          },
+        },
+        {
+          key: 4,
+          name: "Mortalidad acumulada",
+          yAxis: {
+            key: 0,
           },
         },
       ],
@@ -226,12 +260,10 @@ export default {
         .filter((element) => {
           return element;
         });
-
-      reportsByWeek.forEach((element) => {
-        element.hensWaterConsumption =
-          element.hensWaterConsumption / element.numDays;
-        element.hensPoultryMashConsumption =
-          element.hensPoultryMashConsumption / element.numDays;
+      var totalAnimals = this.hensBatch[index].animalQuantity;
+      reportsByWeek.forEach((element, index, array) => {
+        element.hensWaterConsumption /= element.numDays;
+        element.hensPoultryMashConsumption /= element.numDays;
         element.numHens = element.numHens / element.numDays;
         element.numXL /= element.numDays;
         element.numL /= element.numDays;
@@ -240,6 +272,8 @@ export default {
         element.numXS /= element.numDays;
         element.dirties /= element.numDays;
         element.brokens /= element.numDays;
+        element.maxTemperature /= element.numDays;
+        element.minTemperature /= element.numDays;
         element.totalEggs =
           element.numXL +
           element.numL +
@@ -249,13 +283,18 @@ export default {
           element.dirties +
           element.brokens;
         element.percentage = (element.totalEggs / element.numHens) * 100;
+        element.mortality = (element.deaths * 100) / totalAnimals;
+        if (index > 0)
+          element.accumulatedMoratlity =
+            array[index - 1].accumulatedMoratlity + element.mortality;
+        else element.accumulatedMoratlity = element.mortality;
       });
 
-      if (!this.chartOptions.yAxis.length) {
+      /*if (!this.chartOptions.yAxis.length) {
         this.chartOptions.yAxis = this.chartTypes.map(
           (element) => element.yAxis
         );
-      }
+      }*/
 
       switch (this.chartType[index].key) {
         case 0:
@@ -269,7 +308,7 @@ export default {
             tooltip: {
               valueDecimals: 2,
             },
-            yAxis: this.chartType[index].key,
+            yAxis: this.chartType[index].yAxis.key,
           });
           break;
 
@@ -284,7 +323,7 @@ export default {
               element.week,
               Math.round(element.hensPoultryMashConsumption * 1000),
             ]),
-            yAxis: this.chartType[index].key,
+            yAxis: this.chartType[index].yAxis.key,
           });
           break;
 
@@ -298,16 +337,66 @@ export default {
               element.week,
               Math.round(element.hensWaterConsumption * 1000),
             ]),
-            yAxis: this.chartType[index].key,
+            yAxis: this.chartType[index].yAxis.key,
+          });
+          break;
+
+        case 3:
+          this.chartOptions.series.push({
+            name:
+              this.chartType[index].name +
+              " Max - " +
+              this.hensBatch[index].name,
+            data: reportsByWeek.map((element) => [
+              element.week,
+              element.maxTemperature,
+            ]),
+            tooltip: {
+              valueDecimals: 1,
+            },
+            yAxis: this.chartType[index].yAxis.key,
+          });
+          this.chartOptions.series.push({
+            name:
+              this.chartType[index].name +
+              " Min - " +
+              this.hensBatch[index].name,
+            data: reportsByWeek.map((element) => [
+              element.week,
+              element.minTemperature,
+            ]),
+            tooltip: {
+              valueDecimals: 1,
+            },
+            yAxis: this.chartType[index].yAxis.key,
+          });
+          break;
+
+        case 4:
+          this.chartOptions.series.push({
+            name:
+              this.chartType[index].name + " - " + this.hensBatch[index].name,
+            data: reportsByWeek.map((element) => [
+              element.week,
+              element.accumulatedMoratlity,
+            ]),
+            tooltip: {
+              valueDecimals: 1,
+            },
+            yAxis: this.chartType[index].yAxis.key,
           });
           break;
       }
 
-      this.chartOptions.yAxis[this.chartType[index].key].visible = true;
+      this.chartOptions.yAxis[this.chartType[index].yAxis.key].visible = true;
       if (index === 0) {
-        this.chartOptions.yAxis[this.chartType[index].key].opposite = false;
+        this.chartOptions.yAxis[
+          this.chartType[index].yAxis.key
+        ].opposite = false;
       } else {
-        this.chartOptions.yAxis[this.chartType[index].key].opposite = true;
+        this.chartOptions.yAxis[
+          this.chartType[index].yAxis.key
+        ].opposite = true;
       }
       console.log(this.chartOptions);
     },
