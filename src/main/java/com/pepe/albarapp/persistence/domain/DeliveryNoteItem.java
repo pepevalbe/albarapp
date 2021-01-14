@@ -49,7 +49,7 @@ public class DeliveryNoteItem {
 	}
 
 	public BigDecimal getGrossTotal() {
-		return new BigDecimal(quantity).multiply(new BigDecimal(price));
+		return new BigDecimal(quantity).multiply(new BigDecimal(Double.toString(price)));
 	}
 
 	public BigDecimal getTaxTotal() {
