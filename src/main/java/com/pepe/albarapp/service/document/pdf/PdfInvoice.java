@@ -69,8 +69,8 @@ public class PdfInvoice {
 		PDFMergerUtility pdfMergerUtility = new PDFMergerUtility();
 		PDAcroForm pdfForm = addNewPage(pdfDocumentList);
 
-		BigDecimal grossTotal = new BigDecimal(0);
-		BigDecimal vatTotal = new BigDecimal(0);
+		BigDecimal invoiceGrossTotal = BigDecimal.ZERO;
+		BigDecimal invoiceTaxTotal = BigDecimal.ZERO;
 		int rowCounter = 0;
 		for (DeliveryNote deliveryNote : deliveryNotes) {
 			// Get delivery notes sorted by productCode
@@ -84,14 +84,8 @@ public class PdfInvoice {
 					pdfForm = addNewPage(pdfDocumentList);
 				}
 
-				BigDecimal quantity = new BigDecimal(deliveryNoteItem.getQuantity());
-				BigDecimal price = new BigDecimal(Double.toString(deliveryNoteItem.getPrice()));
-				BigDecimal partialGross = quantity.multiply(price);
-				grossTotal = grossTotal.add(partialGross);
-				BigDecimal taxProduct = new BigDecimal(Double.toString(deliveryNoteItem.getProduct().getTax()));
-				BigDecimal vatRow = taxProduct.multiply(new BigDecimal("0.01"));
-				BigDecimal partialVat = partialGross.multiply(vatRow);
-				vatTotal = vatTotal.add(partialVat);
+				invoiceGrossTotal = invoiceGrossTotal.add(deliveryNoteItem.getGrossTotal());
+				invoiceTaxTotal = invoiceTaxTotal.add(deliveryNoteItem.getTaxTotal());
 				setDocumentRow(pdfForm, rowCounter, deliveryNoteItem);
 				rowCounter++;
 			}
@@ -101,7 +95,7 @@ public class PdfInvoice {
 		for (int i = 0; i < pdfDocumentList.size(); i++) {
 			PDAcroForm pdfFormIterator = pdfDocumentList.get(i).getDocumentCatalog().getAcroForm();
 			setDocumentHeader(pdfFormIterator, customer, invoice);
-			setDocumentFooter(pdfFormIterator, grossTotal, vatTotal);
+			setDocumentFooter(pdfFormIterator, invoiceGrossTotal, invoiceTaxTotal);
 			setPagintationFooter(pdfFormIterator, i + 1, pdfDocumentList.size());
 			// Make form fields not editable
 			pdfFormIterator.getFieldIterator().forEachRemaining(pdField -> pdField.setReadOnly(true));
