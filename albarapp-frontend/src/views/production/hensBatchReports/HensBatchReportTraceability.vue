@@ -87,6 +87,9 @@
       :items="traceabilities"
       :items-per-page="15"
     />
+    <v-overlay v-if="spinner.loading" :value="true">
+      <v-progress-circular indeterminate color="primary"></v-progress-circular>
+    </v-overlay>
   </v-container>
 </template>
 
@@ -261,14 +264,25 @@ export default {
           plainReports.pop();
         }
       });
-      return traceabilities;
+      return traceabilities.reverse();
     },
     async calculateTraceability() {
-      var deliveryNotes = await this.getDeliveryNotesForTraceability();
-      var reports = await this.getReportsForTraceability();
-      var hensBatches = await HensBatchService.getAll();
-      var plainReports = this.plainReports(reports, hensBatches);
-      this.traceabilities = this.associateReportsToDeliveryNotes(deliveryNotes, plainReports);
+      try {
+        this.showSpinner();
+        this.errorLoading = false;
+        var deliveryNotes = await this.getDeliveryNotesForTraceability();
+        var reports = await this.getReportsForTraceability();
+        var hensBatches = await HensBatchService.getAll();
+        var plainReports = this.plainReports(reports, hensBatches);
+        this.traceabilities = this.associateReportsToDeliveryNotes(
+          deliveryNotes,
+          plainReports
+        );
+      } catch (e) {
+        this.errorLoading = true;
+      } finally {
+        this.closeSpinner();
+      }
     },
   },
 };
