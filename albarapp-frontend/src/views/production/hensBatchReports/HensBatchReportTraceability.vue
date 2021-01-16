@@ -164,7 +164,7 @@ export default {
       }
     },
     async getDeliveryNotesForTraceability() {
-      var productCodes = [1, 2, 3, 4, 5, 6, 7];
+      var productCodes = [1, 2, 3, 4, 5, 6, 7, 80, 81];
       var filter = {
         form: {
           dateFrom: this.form.dateFrom,
@@ -175,6 +175,7 @@ export default {
         },
       };
       var options = {
+        itemsPerPage: 100,
         sortBy: ["issuedTimestamp", "id"],
         sortDesc: [true],
       };
