@@ -98,7 +98,6 @@ export default {
         };
         this.reset();
       } catch (e) {
-        console.log(e);
         this.snackbar = {
           show: true,
           message:

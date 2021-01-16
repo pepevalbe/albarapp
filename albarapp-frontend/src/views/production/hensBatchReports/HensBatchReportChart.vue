@@ -398,7 +398,6 @@ export default {
           this.chartType[index].yAxis.key
         ].opposite = true;
       }
-      console.log(this.chartOptions);
     },
   },
 };

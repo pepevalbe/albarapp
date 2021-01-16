@@ -47,6 +47,13 @@ public class InvoiceService {
 				.map(invoiceMapper::map);
 	}
 
+	@Transactional(readOnly = true)
+	public Page<DeliveryNoteDto> getDeliveryNotesByProducts(Integer customerCode, Long timestampFrom, Long timestampTo, List<Integer> productCodes, Pageable pageable) {
+		return deliveryNoteRepository
+				.findByCustomerAndTimestampRangeAndProducts(customerCode, timestampFrom, timestampTo, productCodes, pageable)
+				.map(invoiceMapper::map);
+	}
+
 	@Transactional
 	public DeliveryNoteDto persistDeliveryNote(DeliveryNoteDto deliveryNoteDto) {
 

@@ -201,7 +201,14 @@ const router = new Router({
       props: true,
       name: "HensBatchReportChart",
       meta: { headerName: "Gráficas" }
-    }
+    },
+    {
+      path: "/production/hens-batch-reports-trazability/",
+      component: () => import("@/views/production/hensBatchReports/HensBatchReportTraceability"),
+      props: true,
+      name: "HensBatchReportTraceability",
+      meta: { headerName: "Trazabilidad" }
+    },
   ]
 });
 

@@ -12,6 +12,13 @@ export default {
       });
   },
 
+  getByInterval(timestampFrom, timestampTo) {
+    return HttpClient.get(`${RESOURCE_NAME}?timestampFrom=${timestampFrom}&timestampTo=${timestampTo}`)
+      .then(response => {
+        return response.data;
+      });
+  },
+
   get(id) {
     return HttpClient.get(`${RESOURCE_NAME}/${id}`)
       .then(response => {

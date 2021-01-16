@@ -7,6 +7,7 @@ import com.pepe.albarapp.service.dto.report.HensBatchInfoDto;
 import com.pepe.albarapp.service.dto.report.HensBatchReportDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,9 +27,9 @@ public class HensBatchController {
 	private HensBatchInfoService hensBatchInfoService;
 
 	@GetMapping(HENS_BATCH_REPORT_ENDPOINT)
-	public ResponseEntity<Set<HensBatchReportDto>> getHensBatchReports(@RequestParam String hensBatchId) {
+	public ResponseEntity<Set<HensBatchReportDto>> getHensBatchReports(@RequestParam @Nullable String hensBatchId, @RequestParam @Nullable Long timestampFrom, @RequestParam @Nullable Long timestampTo) {
 
-		return ResponseEntity.ok(hensBatchReportService.getAllHensBatchReports(hensBatchId));
+		return ResponseEntity.ok(hensBatchReportService.getAllHensBatchReports(hensBatchId, timestampFrom, timestampTo));
 	}
 
 	@GetMapping(HENS_BATCH_REPORT_ENDPOINT + "/{hensBatchReportId}")

@@ -44,10 +44,10 @@ public class HensBatchReportService {
 	}
 
 	@Transactional(readOnly = true)
-	public Set<HensBatchReportDto> getAllHensBatchReports(String hensBatchId) {
+	public Set<HensBatchReportDto> getAllHensBatchReports(String hensBatchId, Long timestampFrom, Long timestampTo) {
 
 		// Get hens batch reports for the given hens batch id
-		Set<HensBatchReport> hensBatchReports = hensBatchReportRepository.findByHensBatchId(hensBatchId);
+		Set<HensBatchReport> hensBatchReports = hensBatchReportRepository.findByHensBatchIdAndReportTimestampBetween(hensBatchId, timestampFrom, timestampTo);
 
 		if (hensBatchReports.isEmpty()) {
 			return Collections.emptySet();

@@ -94,11 +94,11 @@
           </v-list-item-icon>
           <v-list-item-title>Gráficas</v-list-item-title>
         </v-list-item>
-        <v-list-item hidden class="pl-8" link :to="{ name: 'HensBatchReportList' }">
+        <v-list-item class="pl-8" link :to="{ name: 'HensBatchReportTraceability' }">
           <v-list-item-icon>
-            <v-icon>mdi-silo</v-icon>
+            <v-icon>mdi-ray-start-vertex-end</v-icon>
           </v-list-item-icon>
-          <v-list-item-title>Pienso</v-list-item-title>
+          <v-list-item-title>Trazabilidad</v-list-item-title>
         </v-list-item>
       </v-list-group>
       <v-list-group prepend-icon="mdi-form-dropdown" group="^.*admin.*$">

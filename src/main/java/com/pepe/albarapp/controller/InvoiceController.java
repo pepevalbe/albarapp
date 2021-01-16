@@ -31,9 +31,13 @@ public class InvoiceController {
 	public ResponseEntity<Page<DeliveryNoteDto>> getDeliveryNotes(@RequestParam @Nullable Integer customerCode,
 																  @RequestParam @Nullable Long timestampFrom,
 																  @RequestParam @Nullable Long timestampTo,
+																  @RequestParam @Nullable List<Integer> productCodes,
 																  @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
-
-		return ResponseEntity.ok(invoiceService.getDeliveryNotes(customerCode, timestampFrom, timestampTo, pageable));
+		if (productCodes == null || productCodes.isEmpty()) {
+			return ResponseEntity.ok(invoiceService.getDeliveryNotes(customerCode, timestampFrom, timestampTo, pageable));
+		} else {
+			return ResponseEntity.ok(invoiceService.getDeliveryNotesByProducts(customerCode, timestampFrom, timestampTo, productCodes, pageable));
+		}
 	}
 
 	@PostMapping(DELIVERY_NOTES_ENDPOINT)
