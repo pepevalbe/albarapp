@@ -178,7 +178,7 @@ export default {
         },
       };
       var options = {
-        itemsPerPage: 100,
+        itemsPerPage: 800,
         sortBy: ["issuedTimestamp", "id"],
         sortDesc: [true],
       };
