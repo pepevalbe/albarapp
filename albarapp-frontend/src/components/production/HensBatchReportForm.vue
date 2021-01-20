@@ -24,7 +24,7 @@
             @focus="$event.target.select()"
             prepend-icon="mdi-calendar"
             @blur="parseDateText()"
-            @keypress.enter="$refs.numXL.focus()"
+            @keypress.enter="$refs.numXL.focus(); menuDatePicker=false"
             v-on="on"
           ></v-text-field>
         </template>
@@ -372,10 +372,8 @@ export default {
         this.date = moment.format("YYYY-MM-DD");
         this.dateText = moment.format("DD/MM/YYYY");
         this.form.hensBatchReport.reportTimestamp = moment.format("x");
-        this.menuDatePicker = false;
       } else {
         this.$nextTick(this.$refs.dateText.focus);
-        this.menuDatePicker = false;
       }
     },
     datePickedOnCalendar() {
