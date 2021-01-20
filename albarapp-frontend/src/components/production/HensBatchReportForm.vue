@@ -24,6 +24,7 @@
             @focus="$event.target.select()"
             prepend-icon="mdi-calendar"
             @blur="parseDateText()"
+            @keypress.enter="$refs.numXL.focus()"
             v-on="on"
           ></v-text-field>
         </template>
@@ -40,6 +41,7 @@
       <v-row class="mr-6 ml-6">
         <v-text-field
           v-model="form.hensBatchReport.numXL"
+          ref="numXL"
           type="number"
           :rules="numXLRules"
           autocomplete="off"
@@ -47,53 +49,72 @@
           required
           autofocus
           @focus="$event.target.select()"
+          @keypress.enter="$refs.numL.focus()"
         ></v-text-field>
         <v-text-field
           v-model="form.hensBatchReport.numL"
+          ref="numL"
           type="number"
           :rules="numLRules"
           autocomplete="off"
           label="L *"
           required
+          @focus="$event.target.select()"
+          @keypress.enter="$refs.numM.focus()"
         ></v-text-field>
         <v-text-field
           v-model="form.hensBatchReport.numM"
+          ref="numM"
           type="number"
           :rules="numMRules"
           autocomplete="off"
           label="M *"
           required
+          @focus="$event.target.select()"
+          @keypress.enter="$refs.numS.focus()"
         ></v-text-field>
         <v-text-field
           v-model="form.hensBatchReport.numS"
+          ref="numS"
           type="number"
           :rules="numSRules"
           autocomplete="off"
           label="S *"
           required
+          @focus="$event.target.select()"
+          @keypress.enter="$refs.numXS.focus()"
         ></v-text-field>
         <v-text-field
           v-model="form.hensBatchReport.numXS"
+          ref="numXS"
           type="number"
           :rules="numXSRules"
           autocomplete="off"
           label="XS *"
+          @focus="$event.target.select()"
+          @keypress.enter="$refs.dirties.focus()"
           required
         ></v-text-field>
         <v-text-field
           v-model="form.hensBatchReport.dirties"
+          ref="dirties"
           type="number"
           :rules="dirtiesRules"
           autocomplete="off"
           label="Sucios *"
+          @focus="$event.target.select()"
+          @keypress.enter="$refs.brokens.focus()"
           required
         ></v-text-field>
         <v-text-field
           v-model="form.hensBatchReport.brokens"
+          ref="brokens"
           type="number"
           :rules="brokensRules"
           autocomplete="off"
           label="Rotos *"
+          @focus="$event.target.select()"
+          @keypress.enter="$refs.deaths.focus()"
           required
         ></v-text-field>
         <v-text-field
@@ -116,18 +137,24 @@
       <v-row class="mr-6 ml-6">
         <v-text-field
           v-model="form.hensBatchReport.deaths"
+          ref="deaths"
           type="number"
           :rules="deathsRules"
           autocomplete="off"
           label="Muertas *"
+          @focus="$event.target.select()"
+          @keypress.enter="$refs.departures.focus()"
           required
         ></v-text-field>
         <v-text-field
           v-model="form.hensBatchReport.departures"
+          ref="departures"
           type="number"
           :rules="departuresRules"
           autocomplete="off"
           label="Salidas *"
+          @focus="$event.target.select()"
+          @keypress.enter="$refs.maxTemperature.focus()"
           required
         ></v-text-field>
       </v-row>
@@ -136,18 +163,24 @@
       <v-row class="mr-6 ml-6">
         <v-text-field
           v-model="form.hensBatchReport.maxTemperature"
+          ref="maxTemperature"
           type="number"
           :rules="maxTempRules"
           autocomplete="off"
           label="Máxima *"
+          @focus="$event.target.select()"
+          @keypress.enter="$refs.minTemperature.focus()"
           required
         ></v-text-field>
         <v-text-field
           v-model="form.hensBatchReport.minTemperature"
+          ref="minTemperature"
           type="number"
           :rules="minTempRules"
           autocomplete="off"
           label="Mínima *"
+          @focus="$event.target.select()"
+          @keypress.enter="$refs.waterReading.focus()"
           required
         ></v-text-field>
       </v-row>
@@ -158,10 +191,13 @@
           <v-row>
             <v-text-field
               v-model="form.hensBatchReport.waterReading"
+              ref="waterReading"
               type="number"
               autocomplete="off"
               label="Lectura contador agua"
               @blur="compareWaterReadingWithLastReport()"
+              @focus="$event.target.select()"
+              @keypress.enter="$refs.comments.focus()"
             ></v-text-field>
             <v-text-field
               class="ml-2"
@@ -207,8 +243,10 @@
       <v-row class="mr-6 ml-6">
         <v-text-field
           v-model="form.hensBatchReport.comments"
+          ref="comments"
           autocomplete="off"
           label="Observaciones"
+          @focus="$event.target.select()"
         ></v-text-field>
       </v-row>
     </v-form>
