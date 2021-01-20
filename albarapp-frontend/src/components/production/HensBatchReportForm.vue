@@ -247,6 +247,7 @@
           autocomplete="off"
           label="Observaciones"
           @focus="$event.target.select()"
+          @keypress.enter="$emit('nextfocus')"
         ></v-text-field>
       </v-row>
     </v-form>

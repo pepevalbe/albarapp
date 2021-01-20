@@ -5,11 +5,13 @@
       :form="form"
       :hensBatch="hensBatch"
       ref="form"
+      @nextfocus="$refs.saveButton.$el.focus()"
     ></HensBatchReportForm>
     <v-layout text-center wrap class="pt-10">
       <v-flex xs12>
         <v-btn
           :disabled="!form.valid"
+          ref="saveButton"
           class="mr-4"
           @click="createHensBatchReport()"
           >Crear</v-btn
