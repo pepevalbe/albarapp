@@ -30,6 +30,8 @@
           :headers="headers"
           :items="hensBatchReports"
           :search="search"
+          :sort-by.sync="sortBy"
+          :sort-desc.sync="descending"
           :items-per-page="15"
         >
           <template v-slot:body="{ items }">
