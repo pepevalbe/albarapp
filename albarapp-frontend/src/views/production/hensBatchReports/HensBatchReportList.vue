@@ -30,9 +30,7 @@
           :headers="headers"
           :items="hensBatchReports"
           :search="search"
-          :sort-by.sync="sortBy"
-          :sort-desc.sync="descending"
-          :items-per-page="-1"
+          :items-per-page="15"
         >
           <template v-slot:body="{ items }">
             <tbody
@@ -273,7 +271,7 @@ export default {
       hensBatches: [],
       hensBatch: null,
       headers: [
-        { text: "Semana", sortable: true, align: "center", value: "" },
+        { text: "Semana", sortable: false, align: "center", value: "" },
         {
           text: "Fecha",
           sortable: true,
