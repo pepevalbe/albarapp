@@ -162,6 +162,8 @@
                   <v-card-text>
                     <span class="black--text">Fecha:</span>
                     {{ dateFormatted(item.reportTimestamp) }}
+                    <span class="black--text">Semana:</span>
+                    {{ calculateWeek(item.reportTimestamp) }}
                     <br />
                     <span class="black--text">XL:</span>
                     {{ item.numXL }}
