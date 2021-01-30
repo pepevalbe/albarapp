@@ -165,41 +165,64 @@
                     <br />
                     <span class="black--text">XL:</span>
                     {{ item.numXL }}
-                    <br />
                     <span class="black--text">L:</span>
                     {{ item.numL }}
-                    <br />
                     <span class="black--text">M:</span>
                     {{ item.numM }}
-                    <br />
                     <span class="black--text">S:</span>
                     {{ item.numS }}
-                    <br />
                     <span class="black--text">XS:</span>
                     {{ item.numXS }}
                     <br />
                     <span class="black--text">Sucios:</span>
                     {{ item.dirties }}
-                    <br />
                     <span class="black--text">Rotos:</span>
                     {{ item.brokens }}
+                    <span class="black--text">Total:</span>
+                    {{
+                      item.numXL +
+                      item.numL +
+                      item.numM +
+                      item.numS +
+                      item.numXS +
+                      item.dirties +
+                      item.brokens
+                    }}
+                    <br />
+                    <span class="black--text">Puesta:</span>
+                    {{
+                      (
+                        ((item.numXL +
+                          item.numL +
+                          item.numM +
+                          item.numS +
+                          item.numXS +
+                          item.dirties +
+                          item.brokens) /
+                          item.numHens) *
+                        100
+                      ).toFixed(2)
+                    }} %
                     <br />
                     <span class="black--text">Muertas:</span>
                     {{ item.deaths }}
                     <br />
                     <span class="black--text">Agua (ml):</span>
                     {{ Math.round(item.hensWaterConsumption * 1000) }}
-                    <br />
                     <span class="black--text">Pienso (g):</span>
                     {{ Math.round(item.hensPoultryMashConsumption * 1000) }}
                     <br />
+                    <span class="black--text">Temperatura Max:</span>
+                    {{ item.maxTemperature }} ºC
+                    <span class="black--text">Min:</span>
+                    {{ item.minTemperature }} ºC
                     <span class="black--text">Comentarios:</span>
                     {{ item.comments }}
                     <span v-if="item.poultryMashAdditionQuantity">
                       Cambio de silo. Nueva entrada de pienso de
                       {{ item.poultryMashAdditionQuantity }} kg cambiado en la
                       comida {{ item.poultryMashAdditionFeedTurn }} de
-                      {{ item.poultryMashMaxFeedTurns }}
+                      {{ item.poultryMashMaxFeedTurns }}.
                     </span>
                     <br />
                   </v-card-text>
@@ -410,7 +433,7 @@ export default {
     calculateWeek(timestamp) {
       var current = this.$moment.utc(timestamp, "x", true);
       var born = this.$moment.utc(this.hensBatch.birthTimestamp, "x", true);
-      return current.diff(born, 'weeks') + 1;
+      return current.diff(born, "weeks") + 1;
     },
   },
 };
