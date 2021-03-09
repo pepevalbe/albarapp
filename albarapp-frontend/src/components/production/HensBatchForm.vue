@@ -102,6 +102,7 @@ export default {
         breed: String,
         animalQuantity: Number,
         birthTimestamp: Number,
+        endTimestamp: Number,
       },
     },
   },
