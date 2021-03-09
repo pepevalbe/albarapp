@@ -166,6 +166,13 @@ const router = new Router({
           props: true,
           name: "HensBatchUpdate",
           meta: { headerName: "Modificar lote" }
+        },
+        {
+          path: "statistics/:hensBatchId",
+          component: () => import("@/views/production/hensBatches/HensBatchStatistics"),
+          props: true,
+          name: "HensBatchStatistics",
+          meta: { headerName: "Estadísticas lote" }
         }
       ]
     },

@@ -40,6 +40,9 @@
                 <td>{{ item.animalQuantity }}</td>
                 <td>{{ dateFormatted(item.birthTimestamp) }}</td>
                 <td>
+                  <v-btn class="mr-4" @click="viewHensBatchStatistics(item)">
+                    <v-icon dark>mdi-chart-pie</v-icon>
+                  </v-btn>
                   <v-btn @click="updateHensBatch(item)">
                     <v-icon dark>mdi-pencil</v-icon>
                   </v-btn>
@@ -73,6 +76,9 @@
                       <v-flex xs12>
                         <v-btn @click="updateHensBatch(item)">
                           <v-icon dark>mdi-pencil</v-icon>
+                        </v-btn>
+                        <v-btn @click="viewHensBatchStatistics(item)">
+                          <v-icon dark>mdi-chart-pie</v-icon>
                         </v-btn>
                       </v-flex>
                     </v-layout>
@@ -147,6 +153,12 @@ export default {
     updateHensBatch(item) {
       this.$router.push({
         name: "HensBatchUpdate",
+        params: { hensBatchId: item.id },
+      });
+    },
+    viewHensBatchStatistics(item) {
+      this.$router.push({
+        name: "HensBatchStatistics",
         params: { hensBatchId: item.id },
       });
     },
