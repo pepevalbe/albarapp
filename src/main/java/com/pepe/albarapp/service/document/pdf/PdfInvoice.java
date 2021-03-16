@@ -99,6 +99,12 @@ public class PdfInvoice {
 			setPagintationFooter(pdfFormIterator, i + 1, pdfDocumentList.size());
 			// Make form fields not editable
 			pdfFormIterator.getFieldIterator().forEachRemaining(pdField -> pdField.setReadOnly(true));
+			try {
+				pdfFormIterator.flatten();
+			} catch (IOException e) {
+				log.error(e.getMessage(), e);
+				throw new ApiException(ApiError.ApiError009);
+			}
 		}
 
 		try {
