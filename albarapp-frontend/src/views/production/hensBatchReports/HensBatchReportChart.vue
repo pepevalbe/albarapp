@@ -290,12 +290,6 @@ export default {
         else element.accumulatedMoratlity = element.mortality;
       });
 
-      /*if (!this.chartOptions.yAxis.length) {
-        this.chartOptions.yAxis = this.chartTypes.map(
-          (element) => element.yAxis
-        );
-      }*/
-
       switch (this.chartType[index].key) {
         case 0:
           this.chartOptions.series.push({
