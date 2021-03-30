@@ -20,6 +20,7 @@
           :items="deliveryNotes"
           :server-items-length="totalItems"
           :options.sync="options"
+          multi-sort
         >
           <template v-slot:body="{ items }">
             <tbody v-if="!$vuetify.breakpoint.xsOnly">
@@ -162,7 +163,7 @@ export default {
         groupBy: [],
         groupDesc: [],
         mustSort: false,
-        multiSort: false,
+        multiSort: true,
       },
       loading: true,
       errorLoading: false,
@@ -202,9 +203,9 @@ export default {
       if (this.$route.query.itemsPerPage)
         this.options.itemsPerPage = Number(this.$route.query.itemsPerPage);
       if (this.$route.query.sortBy)
-        this.options.sortBy[0] = this.$route.query.sortBy;
+        this.options.sortBy = this.$route.query.sortBy.split(',');
       if (this.$route.query.sortDesc)
-        this.options.sortDesc[0] = this.$route.query.sortDesc;
+        this.options.sortDesc = this.$route.query.sortDesc.split(',').map(e => e === 'true');
     }
     await this.listDeliveryNotes();
     this.$watch("options", this.listDeliveryNotes, { deep: true });
@@ -304,8 +305,8 @@ export default {
       if (this.options.page) query.page = this.options.page;
       if (this.options.itemsPerPage)
         query.itemsPerPage = this.options.itemsPerPage;
-      if (this.options.sortBy) query.sortBy = this.options.sortBy[0];
-      if (this.options.sortDesc) query.sortDesc = this.options.sortDesc[0];
+      if (this?.options?.sortBy?.length) query.sortBy = this.options.sortBy.join(',');
+      if (this?.options?.sortDesc?.length) query.sortDesc = this.options.sortDesc.join(',');
       this.$router
         .push({
           path: this.$route.path,

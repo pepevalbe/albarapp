@@ -258,9 +258,9 @@ export default {
       if (this.$route.query.itemsPerPage)
         this.options.itemsPerPage = Number(this.$route.query.itemsPerPage);
       if (this.$route.query.sortBy)
-        this.options.sortBy[0] = this.$route.query.sortBy;
+        this.options.sortBy = this.$route.query.sortBy.split(',');
       if (this.$route.query.sortDesc)
-        this.options.sortDesc[0] = this.$route.query.sortDesc;
+        this.options.sortDesc = this.$route.query.sortDesc.split(',').map(e => e === 'true');
     }
     await this.listInvoices();
     this.$watch("options", this.listInvoices, { deep: true });
