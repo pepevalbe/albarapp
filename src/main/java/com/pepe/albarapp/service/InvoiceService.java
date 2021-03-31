@@ -41,16 +41,16 @@ public class InvoiceService {
 	private InvoiceMapper invoiceMapper;
 
 	@Transactional(readOnly = true)
-	public Page<DeliveryNoteDto> getDeliveryNotes(Integer customerCode, Long timestampFrom, Long timestampTo, Pageable pageable) {
+	public Page<DeliveryNoteDto> getDeliveryNotes(Integer customerCode, Long timestampFrom, Long timestampTo, String auxDeliveryNoteNr, Pageable pageable) {
 		return deliveryNoteRepository
-				.filterByCustomerCodeAndTimestampRange(customerCode, timestampFrom, timestampTo, pageable)
+				.filterByCustomerCodeAndTimestampRange(customerCode, timestampFrom, timestampTo, auxDeliveryNoteNr, pageable)
 				.map(invoiceMapper::map);
 	}
 
 	@Transactional(readOnly = true)
-	public Page<DeliveryNoteDto> getDeliveryNotesByProducts(Integer customerCode, Long timestampFrom, Long timestampTo, List<Integer> productCodes, Pageable pageable) {
+	public Page<DeliveryNoteDto> getDeliveryNotesByProducts(Integer customerCode, Long timestampFrom, Long timestampTo, String auxDeliveryNoteNr, List<Integer> productCodes, Pageable pageable) {
 		return deliveryNoteRepository
-				.findByCustomerAndTimestampRangeAndProducts(customerCode, timestampFrom, timestampTo, productCodes, pageable)
+				.findByCustomerAndTimestampRangeAndProducts(customerCode, timestampFrom, timestampTo, auxDeliveryNoteNr, productCodes, pageable)
 				.map(invoiceMapper::map);
 	}
 

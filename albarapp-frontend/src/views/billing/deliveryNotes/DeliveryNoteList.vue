@@ -11,7 +11,14 @@
       </v-layout>
       <v-card>
         <v-card-title>Listado de albaranes</v-card-title>
-        <CustomerAndDatesFilterForm :form="filter.form" />
+        <v-row>
+          <v-col cols="12" md="9">
+            <CustomerAndDatesFilterForm :form="filter.form" />
+          </v-col>
+          <v-col cols="12" md="3">
+            <AuxDeliveryNoteNrFilter v-if="filter" :filter="filter" />
+          </v-col>
+        </v-row>
         <v-data-table
           :loading="loading"
           loading-text="Cargando... Por favor, espere"
@@ -141,11 +148,13 @@
 <script>
 import DeliveryNoteService from "@/services/DeliveryNoteService.js";
 import CustomerAndDatesFilterForm from "@/components/CustomerAndDatesFilterForm";
+import AuxDeliveryNoteNrFilter from "@/components/AuxDeliveryNoteNrFilter";
 
 export default {
   name: "DeliveryNoteList",
   components: {
     CustomerAndDatesFilterForm,
+    AuxDeliveryNoteNrFilter,
   },
   data: () => {
     return {
@@ -180,6 +189,7 @@ export default {
           dateFrom: "",
           dateTo: "",
         },
+        auxDeliveryNoteNr: "",
       },
       spinner: {
         loading: false,
@@ -198,14 +208,17 @@ export default {
       if (this.$route.query.from)
         this.filter.form.dateFrom = this.$route.query.from;
       if (this.$route.query.to) this.filter.form.dateTo = this.$route.query.to;
+      if (this.$route.query.auxNr) this.filter.auxDeliveryNoteNr = this.$route.query.auxNr;
       if (this.$route.query.page)
         this.options.page = Number(this.$route.query.page);
       if (this.$route.query.itemsPerPage)
         this.options.itemsPerPage = Number(this.$route.query.itemsPerPage);
       if (this.$route.query.sortBy)
-        this.options.sortBy = this.$route.query.sortBy.split(',');
+        this.options.sortBy = this.$route.query.sortBy.split(",");
       if (this.$route.query.sortDesc)
-        this.options.sortDesc = this.$route.query.sortDesc.split(',').map(e => e === 'true');
+        this.options.sortDesc = this.$route.query.sortDesc
+          .split(",")
+          .map((e) => e === "true");
     }
     await this.listDeliveryNotes();
     this.$watch("options", this.listDeliveryNotes, { deep: true });
@@ -302,11 +315,14 @@ export default {
         query.customerCode = this.filter.form.customerCode;
       if (this.filter.form.dateFrom) query.from = this.filter.form.dateFrom;
       if (this.filter.form.dateTo) query.to = this.filter.form.dateTo;
+      if (this.filter.auxDeliveryNoteNr) query.auxNr = this.filter.auxDeliveryNoteNr;
       if (this.options.page) query.page = this.options.page;
       if (this.options.itemsPerPage)
         query.itemsPerPage = this.options.itemsPerPage;
-      if (this?.options?.sortBy?.length) query.sortBy = this.options.sortBy.join(',');
-      if (this?.options?.sortDesc?.length) query.sortDesc = this.options.sortDesc.join(',');
+      if (this?.options?.sortBy?.length)
+        query.sortBy = this.options.sortBy.join(",");
+      if (this?.options?.sortDesc?.length)
+        query.sortDesc = this.options.sortDesc.join(",");
       this.$router
         .push({
           path: this.$route.path,

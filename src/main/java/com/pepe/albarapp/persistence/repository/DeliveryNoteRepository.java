@@ -16,26 +16,43 @@ import java.util.Set;
 @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_USER')")
 public interface DeliveryNoteRepository extends PagingAndSortingRepository<DeliveryNote, Long> {
 
-	String CUSTOMER_TIMESTAMP_PRODUCTS_CONDITION = "" +
-			"(?1 is null or dn.customer.code >= ?1) and " +
-			"(?2 is null or dn.issuedTimestamp >= ?2) and " +
-			"(?3 is null or dn.issuedTimestamp <= ?3) and " +
-			"dni.product.code in ?4";
+	String CUSTOMER_TIMESTAMP_CONDITION = "" 
+			+ "(:customerCode is null or dn.customer.code = :customerCode) and "
+			+ "(:timestampFrom is null or dn.issuedTimestamp >= :timestampFrom) and " 
+			+ "(:timestampTo is null or dn.issuedTimestamp <= :timestampTo)";
 
-	@Query("select dn from DeliveryNote dn where " +
-			"(:customerCode is null or dn.customer.code = :customerCode) and " +
-			"(:timestampFrom is null or dn.issuedTimestamp >= :timestampFrom) and " +
-			"(:timestampTo is null or dn.issuedTimestamp <= :timestampTo)")
-	Page<DeliveryNote> filterByCustomerCodeAndTimestampRange(@Param("customerCode") Integer customerCode, @Param("timestampFrom") Long timestampFrom, @Param("timestampTo") Long timestampTo, Pageable pageable);
+	String AUXDELIVERYNOTENR_CONDITION = ""
+			+ "(:auxDeliveryNoteNr is null or dn.auxDeliveryNoteNr LIKE %:auxDeliveryNoteNr%)";
+
+	String PRODUCTS_CONDITION = "" 
+			+ "dni.product.code in :productCodes";
+
+	@Query("select dn from DeliveryNote dn where " 
+			+ CUSTOMER_TIMESTAMP_CONDITION + " and "
+			+ AUXDELIVERYNOTENR_CONDITION)
+	Page<DeliveryNote> filterByCustomerCodeAndTimestampRange(
+			@Param("customerCode") Integer customerCode,
+			@Param("timestampFrom") Long timestampFrom,
+			@Param("timestampTo") Long timestampTo,
+			@Param("auxDeliveryNoteNr") String auxDeliveryNoteNr,
+			Pageable pageable);
+
+	@Query(value = "select distinct dn from DeliveryNote dn join dn.deliveryNoteItems dni where "
+			+ CUSTOMER_TIMESTAMP_CONDITION + " and " + AUXDELIVERYNOTENR_CONDITION + " and " + PRODUCTS_CONDITION, 
+		countQuery = "select count(distinct dn.id) from DeliveryNote dn join dn.deliveryNoteItems dni where "
+			+ CUSTOMER_TIMESTAMP_CONDITION + " and " + AUXDELIVERYNOTENR_CONDITION + " and " + PRODUCTS_CONDITION)
+	Page<DeliveryNote> findByCustomerAndTimestampRangeAndProducts(
+			@Param("customerCode") Integer customerCode,
+			@Param("timestampFrom") Long timestampFrom,
+			@Param("timestampTo") Long timestampTo,
+			@Param("auxDeliveryNoteNr") String auxDeliveryNoteNr,
+			@Param("productCodes") List<Integer> productCodes, 
+			Pageable pageable);
 
 	long count();
 
 	Page<DeliveryNote> findByCustomerCodeAndInvoiceIsNull(Integer customerCode, Pageable pageable);
 
 	Set<DeliveryNote> findByCustomerCodeBetweenAndIssuedTimestampBetweenAndInvoiceIsNull(Integer customerCodeFrom, Integer customerCodeTo, Long timestampFrom, Long timestampTo);
-
-	@Query(value = "select distinct dn from DeliveryNote dn join dn.deliveryNoteItems dni where " + CUSTOMER_TIMESTAMP_PRODUCTS_CONDITION,
-	countQuery = "select count(distinct dn.id) from DeliveryNote dn join dn.deliveryNoteItems dni where " + CUSTOMER_TIMESTAMP_PRODUCTS_CONDITION)
-	Page<DeliveryNote> findByCustomerAndTimestampRangeAndProducts(Integer customerCode, Long timestampFrom, Long timestampTo, List<Integer> productCodes, Pageable pageable);
-
+	
 }
