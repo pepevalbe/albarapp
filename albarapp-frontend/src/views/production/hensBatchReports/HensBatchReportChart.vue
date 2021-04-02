@@ -111,6 +111,9 @@ export default {
           dataLabels: {
             enabled: true,
           },
+          area: {
+            stacking: "percent",
+          },
         },
         series: [],
         yAxis: [
@@ -154,7 +157,7 @@ export default {
           shared: true,
         },
       },
-      updateArgs: [true, true, { duration: 1000 }],
+      updateArgs: [true, true, true],
       hensBatches: [],
       hensBatch: [],
       chartTypes: [
@@ -189,6 +192,13 @@ export default {
         {
           key: 4,
           name: "Mortalidad acumulada",
+          yAxis: {
+            key: 0,
+          },
+        },
+        {
+          key: 5,
+          name: "Tamaño del huevo",
           yAxis: {
             key: 0,
           },
@@ -297,6 +307,11 @@ export default {
 
       switch (this.chartType[index].key) {
         case 0:
+          if (this.chartOptions.chart.type !== "spline") {
+            this.chartOptions.chart.type = "spline";
+            this.chartOptions.series.splice(0, this.chartOptions.series.length);
+          }
+
           this.chartOptions.series.push({
             name:
               this.chartType[index].name + " - " + this.hensBatch[index].name,
@@ -321,6 +336,10 @@ export default {
           break;
 
         case 1:
+          if (this.chartOptions.chart.type !== "spline") {
+            this.chartOptions.chart.type = "spline";
+            this.chartOptions.series.splice(0, this.chartOptions.series.length);
+          }
           // Remove first and last week because not true consumptions
           reportsByWeek.pop();
           reportsByWeek.shift();
@@ -347,6 +366,10 @@ export default {
           break;
 
         case 2:
+          if (this.chartOptions.chart.type !== "spline") {
+            this.chartOptions.chart.type = "spline";
+            this.chartOptions.series.splice(0, this.chartOptions.series.length);
+          }
           // Remove last week because not true consumptions
           reportsByWeek.pop();
           this.chartOptions.series.push({
@@ -372,6 +395,10 @@ export default {
           break;
 
         case 3:
+          if (this.chartOptions.chart.type !== "spline") {
+            this.chartOptions.chart.type = "spline";
+            this.chartOptions.series.splice(0, this.chartOptions.series.length);
+          }
           this.chartOptions.series.push({
             name:
               this.chartType[index].name +
@@ -421,6 +448,10 @@ export default {
           break;
 
         case 4:
+          if (this.chartOptions.chart.type !== "spline") {
+            this.chartOptions.chart.type = "spline";
+            this.chartOptions.series.splice(0, this.chartOptions.series.length);
+          }
           this.chartOptions.series.push({
             name:
               this.chartType[index].name + " - " + this.hensBatch[index].name,
@@ -443,6 +474,105 @@ export default {
             },
           });
           break;
+
+        case 5:
+          this.chartOptions.chart.type = "area";
+          this.chartOptions.plotOptions = {
+            area: {
+              stacking: "percent",
+            },
+          };
+          this.chartOptions.series.splice(0, this.chartOptions.series.length);
+
+          this.chartOptions.series.push({
+            name: "XL - " + this.hensBatch[index].name,
+            data: reportsByWeek.map((element) => [element.week, element.numXL]),
+            tooltip: {
+              valueDecimals: 1,
+              headerFormat: "<b>Semana:</b> {point.key}<br/>",
+              pointFormat:
+                '<b style="color: {series.color}">● % XL:</b> {point.percentage:.1f} %<br/>',
+            },
+            yAxis: this.chartType[index].yAxis.key,
+            events: {
+              legendItemClick: function (e) {
+                e.preventDefault();
+                vm.chartOptions.series.splice(this.index, 1);
+              },
+            },
+          });
+
+          this.chartOptions.series.push({
+            name: "L - " + this.hensBatch[index].name,
+            data: reportsByWeek.map((element) => [element.week, element.numL]),
+            tooltip: {
+              valueDecimals: 1,
+              headerFormat: "<b>Semana:</b> {point.key}<br/>",
+              pointFormat:
+                '<b style="color: {series.color}">● % L:</b> {point.percentage:.1f} %<br/>',
+            },
+            yAxis: this.chartType[index].yAxis.key,
+            events: {
+              legendItemClick: function (e) {
+                e.preventDefault();
+                vm.chartOptions.series.splice(this.index, 1);
+              },
+            },
+          });
+
+          this.chartOptions.series.push({
+            name: "M - " + this.hensBatch[index].name,
+            data: reportsByWeek.map((element) => [element.week, element.numM]),
+            tooltip: {
+              valueDecimals: 1,
+              headerFormat: "<b>Semana:</b> {point.key}<br/>",
+              pointFormat:
+                '<b style="color: {series.color}">● % M:</b> {point.percentage:.1f} %<br/>',
+            },
+            yAxis: this.chartType[index].yAxis.key,
+            events: {
+              legendItemClick: function (e) {
+                e.preventDefault();
+                vm.chartOptions.series.splice(this.index, 1);
+              },
+            },
+          });
+
+          this.chartOptions.series.push({
+            name: "S - " + this.hensBatch[index].name,
+            data: reportsByWeek.map((element) => [element.week, element.numS]),
+            tooltip: {
+              valueDecimals: 1,
+              headerFormat: "<b>Semana:</b> {point.key}<br/>",
+              pointFormat:
+                '<b style="color: {series.color}">● % S:</b> {point.percentage:.1f} %<br/>',
+            },
+            yAxis: this.chartType[index].yAxis.key,
+            events: {
+              legendItemClick: function (e) {
+                e.preventDefault();
+                vm.chartOptions.series.splice(this.index, 1);
+              },
+            },
+          });
+
+          this.chartOptions.series.push({
+            name: "XS - " + this.hensBatch[index].name,
+            data: reportsByWeek.map((element) => [element.week, element.numXS]),
+            tooltip: {
+              valueDecimals: 1,
+              headerFormat: "<b>Semana:</b> {point.key}<br/>",
+              pointFormat:
+                '<b style="color: {series.color}">● % XS:</b> {point.percentage:.1f} %<br/>',
+            },
+            yAxis: this.chartType[index].yAxis.key,
+            events: {
+              legendItemClick: function (e) {
+                e.preventDefault();
+                vm.chartOptions.series.splice(this.index, 1);
+              },
+            },
+          });
       }
 
       this.chartOptions.yAxis[this.chartType[index].yAxis.key].visible = true;
