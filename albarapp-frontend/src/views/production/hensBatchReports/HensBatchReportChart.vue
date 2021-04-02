@@ -9,6 +9,7 @@
           class="chart"
           :options="chartOptions"
           :updateArgs="updateArgs"
+          ref="chart"
         ></highcharts>
         <v-row class="mr-10 ml-10">
           <v-col>
@@ -149,6 +150,9 @@ export default {
         xAxis: {
           allowDecimals: false,
         },
+        tooltip: {
+          shared: true,
+        },
       },
       updateArgs: [true, true, { duration: 1000 }],
       hensBatches: [],
@@ -218,6 +222,7 @@ export default {
       this.$router.go(0);
     },
     async drawNewChart(index) {
+      let vm = this;
       var hensBatchReports = await HensBatchReportService.getByHensBatchId(
         this.hensBatch[index].id
       );
@@ -301,8 +306,17 @@ export default {
             ]),
             tooltip: {
               valueDecimals: 2,
+              headerFormat: "<b>Semana:</b> {point.key}<br/>",
+              pointFormat:
+                '<b style="color: {series.color}">● % puesta:</b> {point.y} %<br/>',
             },
             yAxis: this.chartType[index].yAxis.key,
+            events: {
+              legendItemClick: function (e) {
+                e.preventDefault();
+                vm.chartOptions.series.splice(this.index, 1);
+              },
+            },
           });
           break;
 
@@ -317,7 +331,18 @@ export default {
               element.week,
               Math.round(element.hensPoultryMashConsumption * 1000),
             ]),
+            tooltip: {
+              headerFormat: "<b>Semana:</b> {point.key}<br/>",
+              pointFormat:
+                '<b style="color: {series.color}">● Pienso:</b> {point.y} g<br/>',
+            },
             yAxis: this.chartType[index].yAxis.key,
+            events: {
+              legendItemClick: function (e) {
+                e.preventDefault();
+                vm.chartOptions.series.splice(this.index, 1);
+              },
+            },
           });
           break;
 
@@ -331,7 +356,18 @@ export default {
               element.week,
               Math.round(element.hensWaterConsumption * 1000),
             ]),
+            tooltip: {
+              headerFormat: "<b>Semana:</b> {point.key}<br/>",
+              pointFormat:
+                '<b style="color: {series.color}">● Agua:</b> {point.y} ml<br/>',
+            },
             yAxis: this.chartType[index].yAxis.key,
+            events: {
+              legendItemClick: function (e) {
+                e.preventDefault();
+                vm.chartOptions.series.splice(this.index, 1);
+              },
+            },
           });
           break;
 
@@ -347,8 +383,17 @@ export default {
             ]),
             tooltip: {
               valueDecimals: 1,
+              headerFormat: "<b>Semana:</b> {point.key}<br/>",
+              pointFormat:
+                '<b style="color: {series.color}">● Temperatura(▲):</b> {point.y} ºC<br/>',
             },
             yAxis: this.chartType[index].yAxis.key,
+            events: {
+              legendItemClick: function (e) {
+                e.preventDefault();
+                vm.chartOptions.series.splice(this.index, 1);
+              },
+            },
           });
           this.chartOptions.series.push({
             name:
@@ -361,8 +406,17 @@ export default {
             ]),
             tooltip: {
               valueDecimals: 1,
+              headerFormat: "<b>Semana:</b> {point.key}<br/>",
+              pointFormat:
+                '<b style="color: {series.color}">● Temperatura(▼):</b> {point.y} ºC<br/>',
             },
             yAxis: this.chartType[index].yAxis.key,
+            events: {
+              legendItemClick: function (e) {
+                e.preventDefault();
+                vm.chartOptions.series.splice(this.index, 1);
+              },
+            },
           });
           break;
 
@@ -376,8 +430,17 @@ export default {
             ]),
             tooltip: {
               valueDecimals: 1,
+              headerFormat: "<b>Semana:</b> {point.key}<br/>",
+              pointFormat:
+                '<b style="color: {series.color}">● % mortalidad:</b> {point.y} %<br/>',
             },
             yAxis: this.chartType[index].yAxis.key,
+            events: {
+              legendItemClick: function (e) {
+                e.preventDefault();
+                vm.chartOptions.series.splice(this.index, 1);
+              },
+            },
           });
           break;
       }
