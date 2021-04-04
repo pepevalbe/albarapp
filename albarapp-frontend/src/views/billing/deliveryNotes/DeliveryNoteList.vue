@@ -3,7 +3,7 @@
     <div v-if="!errorLoading">
       <v-layout text-right wrap class="pt-2 pb-5 mr-5">
         <v-flex xs12>
-          <v-btn :to="{name: 'DeliveryNoteCreation'}">
+          <v-btn :to="{ name: 'DeliveryNoteCreation' }">
             Nuevo
             <v-icon class="ml-2">mdi-plus-circle</v-icon>
           </v-btn>
@@ -32,27 +32,36 @@
           <template v-slot:body="{ items }">
             <tbody v-if="!$vuetify.breakpoint.xsOnly">
               <tr v-for="item in items" :key="item.deliveryNoteItemsHref">
-                <td>A{{item.id}}</td>
+                <td>A{{ item.id }}</td>
                 <td>
-                  <span v-if="item.invoiceId">F{{item.invoiceId}}</span>
+                  <span v-if="item.invoiceId">F{{ item.invoiceId }}</span>
                 </td>
-                <td>{{item.auxDeliveryNoteNr}}</td>
-                <td>{{item.customerAlias}}</td>
-                <td>{{dateFormatted(item.issuedTimestamp)}}</td>
+                <td>{{ item.auxDeliveryNoteNr }}</td>
+                <td>{{ item.customerAlias }}</td>
+                <td>{{ dateFormatted(item.issuedTimestamp) }}</td>
                 <td>
-                  <span v-for="(noteItem,index) in item.deliveryNoteItems" :key="index">
-                    {{noteItem.quantity}} - {{noteItem.productName}} - {{noteItem.price}} €
+                  <span
+                    v-for="(noteItem, index) in item.deliveryNoteItems"
+                    :key="index"
+                  >
+                    {{ noteItem.quantity }} - {{ noteItem.productName }} -
+                    {{ noteItem.price }} €
                     <br />
                   </span>
                 </td>
-                <td>{{currencyFormatted(item.total)}}</td>
+                <td>{{ currencyFormatted(item.total) }}</td>
                 <td>
                   <v-btn @click="updateDeliveryNote(item)">
                     <v-icon dark>mdi-pencil</v-icon>
                   </v-btn>
                 </td>
                 <td>
-                  <v-btn v-if="!item.invoiceId" color="red" dark @click="openDeleteDialog(item)">
+                  <v-btn
+                    v-if="!item.invoiceId"
+                    color="red"
+                    dark
+                    @click="openDeleteDialog(item)"
+                  >
                     <v-icon dark>mdi-delete</v-icon>
                   </v-btn>
                 </td>
@@ -60,29 +69,38 @@
             </tbody>
             <tbody v-else>
               <tr>
-                <v-card class="flex-content" outlined v-for="item in items" :key="item.id">
+                <v-card
+                  class="flex-content"
+                  outlined
+                  v-for="item in items"
+                  :key="item.id"
+                >
                   <v-card-text>
                     <span class="black--text">Nº Albarán:</span>
-                    A{{item.id}}
+                    A{{ item.id }}
                     <br />
                     <span class="black--text">Nº Factura:</span>
-                    <span v-if="item.invoiceId">F{{item.invoiceId}}</span>
+                    <span v-if="item.invoiceId">F{{ item.invoiceId }}</span>
                     <br />
                     <span class="black--text">Nº Albarán auxiliar:</span>
-                    {{item.auxDeliveryNoteNr}}
+                    {{ item.auxDeliveryNoteNr }}
                     <br />
                     <span class="black--text">Cliente:</span>
-                    {{item.customerAlias}}
+                    {{ item.customerAlias }}
                     <br />
                     <span class="black--text">Fecha:</span>
-                    {{dateFormatted(item.issuedTimestamp)}}
+                    {{ dateFormatted(item.issuedTimestamp) }}
                     <br />
-                    <span v-for="(noteItem,index) in item.deliveryNoteItems" :key="index">
-                      {{noteItem.quantity}} - {{noteItem.productName}} - {{noteItem.price}} €
+                    <span
+                      v-for="(noteItem, index) in item.deliveryNoteItems"
+                      :key="index"
+                    >
+                      {{ noteItem.quantity }} - {{ noteItem.productName }} -
+                      {{ noteItem.price }} €
                       <br />
                     </span>
                     <span class="black--text">Total:</span>
-                    {{currencyFormatted(item.total)}}
+                    {{ currencyFormatted(item.total) }}
                     <br />
                   </v-card-text>
                   <v-card-actions>
@@ -110,10 +128,9 @@
       </v-card>
     </div>
     <div v-if="errorLoading">
-      <v-row
-        class="mb-2"
-        justify="center"
-      >Error al obtener los albaranes, por favor vuelva a cargar.</v-row>
+      <v-row class="mb-2" justify="center"
+        >Error al obtener los albaranes, por favor vuelva a cargar.</v-row
+      >
       <v-row justify="center">
         <v-btn @click="listDeliveryNotes()">
           <v-icon dark>mdi-refresh</v-icon>
@@ -124,21 +141,28 @@
       <v-progress-circular indeterminate color="primary"></v-progress-circular>
     </v-overlay>
     <v-snackbar v-model="snackbar.show" :color="snackbar.color">
-      {{snackbar.message}}
-      <v-btn text @click="snackbar.show=false">Cerrar</v-btn>
+      {{ snackbar.message }}
+      <v-btn text @click="snackbar.show = false">Cerrar</v-btn>
     </v-snackbar>
     <v-dialog v-model="dialogDelete.show" max-width="600">
       <v-card>
         <v-card-title class="headline">¿Eliminar albarán?</v-card-title>
-        <v-card-text>Si sigue adelante eliminará el albarán A{{dialogDelete.deliveryNote.id}}. Este proceso es irreversible.</v-card-text>
+        <v-card-text
+          >Si sigue adelante eliminará el albarán A{{
+            dialogDelete.deliveryNote.id
+          }}. Este proceso es irreversible.</v-card-text
+        >
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="darken-1" text @click="dialogDelete.show = false">Cancelar</v-btn>
+          <v-btn color="darken-1" text @click="dialogDelete.show = false"
+            >Cancelar</v-btn
+          >
           <v-btn
             color="red darken-1"
             text
             @click="deleteDeliveryNote(dialogDelete.deliveryNote)"
-          >Confirmar</v-btn>
+            >Confirmar</v-btn
+          >
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -202,24 +226,7 @@ export default {
     };
   },
   async created() {
-    if (this.$route.query) {
-      if (this.$route.query.customerCode)
-        this.filter.form.customerCode = this.$route.query.customerCode;
-      if (this.$route.query.from)
-        this.filter.form.dateFrom = this.$route.query.from;
-      if (this.$route.query.to) this.filter.form.dateTo = this.$route.query.to;
-      if (this.$route.query.auxNr) this.filter.auxDeliveryNoteNr = this.$route.query.auxNr;
-      if (this.$route.query.page)
-        this.options.page = Number(this.$route.query.page);
-      if (this.$route.query.itemsPerPage)
-        this.options.itemsPerPage = Number(this.$route.query.itemsPerPage);
-      if (this.$route.query.sortBy)
-        this.options.sortBy = this.$route.query.sortBy.split(",");
-      if (this.$route.query.sortDesc)
-        this.options.sortDesc = this.$route.query.sortDesc
-          .split(",")
-          .map((e) => e === "true");
-    }
+    this.loadURLParams();
     await this.listDeliveryNotes();
     this.$watch("options", this.listDeliveryNotes, { deep: true });
     this.$watch(
@@ -309,13 +316,36 @@ export default {
       ];
       return headers;
     },
+    loadURLParams() {
+      if (this.$route.query) {
+        if (this.$route.query.customerCode)
+          this.filter.form.customerCode = this.$route.query.customerCode;
+        if (this.$route.query.from)
+          this.filter.form.dateFrom = this.$route.query.from;
+        if (this.$route.query.to)
+          this.filter.form.dateTo = this.$route.query.to;
+        if (this.$route.query.auxNr)
+          this.filter.auxDeliveryNoteNr = this.$route.query.auxNr;
+        if (this.$route.query.page)
+          this.options.page = Number(this.$route.query.page);
+        if (this.$route.query.itemsPerPage)
+          this.options.itemsPerPage = Number(this.$route.query.itemsPerPage);
+        if (this.$route.query.sortBy)
+          this.options.sortBy = this.$route.query.sortBy.split(",");
+        if (this.$route.query.sortDesc)
+          this.options.sortDesc = this.$route.query.sortDesc
+            .split(",")
+            .map((e) => e === "true");
+      }
+    },
     updateURL() {
       var query = {};
       if (this.filter.form.customerCode)
         query.customerCode = this.filter.form.customerCode;
       if (this.filter.form.dateFrom) query.from = this.filter.form.dateFrom;
       if (this.filter.form.dateTo) query.to = this.filter.form.dateTo;
-      if (this.filter.auxDeliveryNoteNr) query.auxNr = this.filter.auxDeliveryNoteNr;
+      if (this.filter.auxDeliveryNoteNr)
+        query.auxNr = this.filter.auxDeliveryNoteNr;
       if (this.options.page) query.page = this.options.page;
       if (this.options.itemsPerPage)
         query.itemsPerPage = this.options.itemsPerPage;

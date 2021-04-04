@@ -6,6 +6,8 @@
       </div>
       <div v-if="calcsDone">
         <h3>Lote: {{ hensBatch.name }}</h3>
+        <WeekFilter :filter="filter" />
+
         <h5>Consumo</h5>
         <div>Consumo medio de pienso día-ave: {{ avgMashConsumption }} g</div>
         <div>Consumo medio de agua día-ave: {{ avgWaterConsumption }} ml</div>
@@ -45,11 +47,15 @@
 </template>
 
 <script>
+import WeekFilter from "@/components/production/WeekFilter";
 import HensBatchService from "@/services/production/HensBatchService.js";
 import HensBatchReportService from "@/services/production/HensBatchReportService.js";
 
 export default {
   name: "HensBatchStatistics",
+  components: {
+    WeekFilter,
+  },
   props: {
     hensBatchId: String,
   },
@@ -66,6 +72,10 @@ export default {
       totalUsefulEggsByAnimalBorn: 0,
       averageEggMass: 0,
       hensBatchReports: null,
+      filter: {
+        weekFrom: "",
+        weekTo: "",
+      },
       chartOptions: {
         chart: {
           type: "pie",
@@ -82,6 +92,7 @@ export default {
         series: [],
       },
       updateArgs: [true, true, { duration: 1000 }],
+      errorLoading: false,
       spinner: {
         loading: false,
         counter: 0,
@@ -89,13 +100,16 @@ export default {
     };
   },
   async created() {
+    await this.loadURLParams();
     this.loadPageDate();
+    this.$watch("filter", this.loadPageDate, { deep: true });
   },
   methods: {
     async loadPageDate() {
       await this.loadHensBatch();
       await this.loadHensBatchReports();
       this.calcStatistics();
+      this.updateURL();
     },
     async loadHensBatch() {
       try {
@@ -120,6 +134,25 @@ export default {
       } finally {
         this.closeSpinner();
       }
+    },
+    loadURLParams() {
+      if (this.$route.query) {
+        if (this.$route.query.weekFrom)
+          this.filter.weekFrom = this.$route.query.weekFrom;
+        if (this.$route.query.weekTo)
+          this.filter.weekTo = this.$route.query.weekTo;
+      }
+    },
+    updateURL() {
+      var query = {};
+      if (this.filter.weekFrom) query.weekFrom = this.filter.weekFrom;
+      if (this.filter.weekTo) query.weekTo = this.filter.weekTo;
+      this.$router
+        .push({
+          path: this.$route.path,
+          query: query,
+        })
+        .catch(() => {});
     },
     calcStatistics() {
       this.avgMashConsumption = Math.round(
@@ -170,6 +203,15 @@ export default {
           return accumulator;
         }, [])
         .filter((element) => element);
+
+      if (this.filter.weekFrom)
+        reportsByWeek = reportsByWeek.filter(
+          (element) => element.week >= this.filter.weekFrom
+        );
+      if (this.filter.weekTo)
+        reportsByWeek = reportsByWeek.filter(
+          (element) => element.week <= this.filter.weekTo
+        );
 
       let totalAnimals = this.hensBatch.animalQuantity;
       reportsByWeek.forEach((element, index, array) => {
@@ -273,6 +315,7 @@ export default {
       let shareS = (totalS / totalEggs) * 100;
       let shareXS = (totalXS / totalEggs) * 100;
 
+      this.chartOptions.series.splice(0, this.chartOptions.series.length);
       this.chartOptions.series.push({
         name: "Tamaño del huevo",
         data: [

@@ -164,6 +164,7 @@ export default {
         {
           key: 0,
           name: "Porcentaje de puesta",
+          type: "spline",
           yAxis: {
             key: 0,
           },
@@ -171,6 +172,7 @@ export default {
         {
           key: 1,
           name: "Consumo de pienso",
+          type: "spline",
           yAxis: {
             key: 1,
           },
@@ -178,6 +180,7 @@ export default {
         {
           key: 2,
           name: "Consumo de agua",
+          type: "spline",
           yAxis: {
             key: 2,
           },
@@ -185,6 +188,7 @@ export default {
         {
           key: 3,
           name: "Temperatura",
+          type: "spline",
           yAxis: {
             key: 3,
           },
@@ -192,6 +196,7 @@ export default {
         {
           key: 4,
           name: "Mortalidad acumulada",
+          type: "spline",
           yAxis: {
             key: 0,
           },
@@ -199,6 +204,7 @@ export default {
         {
           key: 5,
           name: "Tamaño del huevo",
+          type: "area",
           yAxis: {
             key: 0,
           },
@@ -307,10 +313,7 @@ export default {
 
       switch (this.chartType[index].key) {
         case 0:
-          if (this.chartOptions.chart.type !== "spline") {
-            this.chartOptions.chart.type = "spline";
-            this.chartOptions.series.splice(0, this.chartOptions.series.length);
-          }
+          this.changeChartType(this.chartType[index].type);
 
           this.chartOptions.series.push({
             name:
@@ -331,15 +334,23 @@ export default {
                 e.preventDefault();
                 vm.chartOptions.series.splice(this.index, 1);
               },
+              click: function (e) {
+                vm.$router.push({
+                  name: "HensBatchStatistics",
+                  params: { hensBatchId: vm.hensBatch[index].id },
+                  query: {
+                    weekFrom: e.point.category,
+                    weekTo: e.point.category,
+                  },
+                });
+              },
             },
           });
           break;
 
         case 1:
-          if (this.chartOptions.chart.type !== "spline") {
-            this.chartOptions.chart.type = "spline";
-            this.chartOptions.series.splice(0, this.chartOptions.series.length);
-          }
+          this.changeChartType(this.chartType[index].type);
+
           // Remove first and last week because not true consumptions
           reportsByWeek.pop();
           reportsByWeek.shift();
@@ -366,10 +377,8 @@ export default {
           break;
 
         case 2:
-          if (this.chartOptions.chart.type !== "spline") {
-            this.chartOptions.chart.type = "spline";
-            this.chartOptions.series.splice(0, this.chartOptions.series.length);
-          }
+          this.changeChartType(this.chartType[index].type);
+
           // Remove last week because not true consumptions
           reportsByWeek.pop();
           this.chartOptions.series.push({
@@ -395,10 +404,8 @@ export default {
           break;
 
         case 3:
-          if (this.chartOptions.chart.type !== "spline") {
-            this.chartOptions.chart.type = "spline";
-            this.chartOptions.series.splice(0, this.chartOptions.series.length);
-          }
+          this.changeChartType(this.chartType[index].type);
+
           this.chartOptions.series.push({
             name:
               this.chartType[index].name +
@@ -448,10 +455,8 @@ export default {
           break;
 
         case 4:
-          if (this.chartOptions.chart.type !== "spline") {
-            this.chartOptions.chart.type = "spline";
-            this.chartOptions.series.splice(0, this.chartOptions.series.length);
-          }
+          this.changeChartType(this.chartType[index].type);
+
           this.chartOptions.series.push({
             name:
               this.chartType[index].name + " - " + this.hensBatch[index].name,
@@ -476,103 +481,14 @@ export default {
           break;
 
         case 5:
-          this.chartOptions.chart.type = "area";
-          this.chartOptions.plotOptions = {
-            area: {
-              stacking: "percent",
-            },
-          };
-          this.chartOptions.series.splice(0, this.chartOptions.series.length);
+          this.removeAllCharts();
+          this.changeChartType(this.chartType[index].type);
 
-          this.chartOptions.series.push({
-            name: "XL - " + this.hensBatch[index].name,
-            data: reportsByWeek.map((element) => [element.week, element.numXL]),
-            tooltip: {
-              valueDecimals: 1,
-              headerFormat: "<b>Semana:</b> {point.key}<br/>",
-              pointFormat:
-                '<b style="color: {series.color}">● % XL:</b> {point.percentage:.1f} %<br/>',
-            },
-            yAxis: this.chartType[index].yAxis.key,
-            events: {
-              legendItemClick: function (e) {
-                e.preventDefault();
-                vm.chartOptions.series.splice(this.index, 1);
-              },
-            },
-          });
-
-          this.chartOptions.series.push({
-            name: "L - " + this.hensBatch[index].name,
-            data: reportsByWeek.map((element) => [element.week, element.numL]),
-            tooltip: {
-              valueDecimals: 1,
-              headerFormat: "<b>Semana:</b> {point.key}<br/>",
-              pointFormat:
-                '<b style="color: {series.color}">● % L:</b> {point.percentage:.1f} %<br/>',
-            },
-            yAxis: this.chartType[index].yAxis.key,
-            events: {
-              legendItemClick: function (e) {
-                e.preventDefault();
-                vm.chartOptions.series.splice(this.index, 1);
-              },
-            },
-          });
-
-          this.chartOptions.series.push({
-            name: "M - " + this.hensBatch[index].name,
-            data: reportsByWeek.map((element) => [element.week, element.numM]),
-            tooltip: {
-              valueDecimals: 1,
-              headerFormat: "<b>Semana:</b> {point.key}<br/>",
-              pointFormat:
-                '<b style="color: {series.color}">● % M:</b> {point.percentage:.1f} %<br/>',
-            },
-            yAxis: this.chartType[index].yAxis.key,
-            events: {
-              legendItemClick: function (e) {
-                e.preventDefault();
-                vm.chartOptions.series.splice(this.index, 1);
-              },
-            },
-          });
-
-          this.chartOptions.series.push({
-            name: "S - " + this.hensBatch[index].name,
-            data: reportsByWeek.map((element) => [element.week, element.numS]),
-            tooltip: {
-              valueDecimals: 1,
-              headerFormat: "<b>Semana:</b> {point.key}<br/>",
-              pointFormat:
-                '<b style="color: {series.color}">● % S:</b> {point.percentage:.1f} %<br/>',
-            },
-            yAxis: this.chartType[index].yAxis.key,
-            events: {
-              legendItemClick: function (e) {
-                e.preventDefault();
-                vm.chartOptions.series.splice(this.index, 1);
-              },
-            },
-          });
-
-          this.chartOptions.series.push({
-            name: "XS - " + this.hensBatch[index].name,
-            data: reportsByWeek.map((element) => [element.week, element.numXS]),
-            tooltip: {
-              valueDecimals: 1,
-              headerFormat: "<b>Semana:</b> {point.key}<br/>",
-              pointFormat:
-                '<b style="color: {series.color}">● % XS:</b> {point.percentage:.1f} %<br/>',
-            },
-            yAxis: this.chartType[index].yAxis.key,
-            events: {
-              legendItemClick: function (e) {
-                e.preventDefault();
-                vm.chartOptions.series.splice(this.index, 1);
-              },
-            },
-          });
+          this.addEggSize("XL", index, reportsByWeek);
+          this.addEggSize("L", index, reportsByWeek);
+          this.addEggSize("M", index, reportsByWeek);
+          this.addEggSize("S", index, reportsByWeek);
+          this.addEggSize("XS", index, reportsByWeek);
       }
 
       this.chartOptions.yAxis[this.chartType[index].yAxis.key].visible = true;
@@ -585,6 +501,36 @@ export default {
           this.chartType[index].yAxis.key
         ].opposite = true;
       }
+    },
+    changeChartType(newChartType) {
+      if (this.chartOptions.chart.type !== newChartType) {
+        this.removeAllCharts();
+      }
+      this.chartOptions.chart.type = newChartType;
+    },
+    removeAllCharts() {
+      this.chartOptions.series.splice(0, this.chartOptions.series.length);
+    },
+    addEggSize(size, index, reportsByWeek) {
+      let vm = this;
+      let attrName = "num" + size;
+      this.chartOptions.series.push({
+        name: size + " - " + this.hensBatch[index].name,
+        data: reportsByWeek.map((element) => [element.week, element[attrName]]),
+        tooltip: {
+          valueDecimals: 1,
+          headerFormat: "<b>Semana:</b> {point.key}<br/>",
+          pointFormat:
+            '<b style="color: {series.color}">● % L:</b> {point.percentage:.1f} %<br/>',
+        },
+        yAxis: this.chartType[index].yAxis.key,
+        events: {
+          legendItemClick: function (e) {
+            e.preventDefault();
+            vm.chartOptions.series.splice(this.index, 1);
+          },
+        },
+      });
     },
   },
 };
