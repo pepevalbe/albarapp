@@ -521,7 +521,9 @@ export default {
           valueDecimals: 1,
           headerFormat: "<b>Semana:</b> {point.key}<br/>",
           pointFormat:
-            '<b style="color: {series.color}">● % L:</b> {point.percentage:.1f} %<br/>',
+            '<b style="color: {series.color}">● % ' +
+            size +
+            ":</b> {point.percentage:.1f} %<br/>",
         },
         yAxis: this.chartType[index].yAxis.key,
         events: {
