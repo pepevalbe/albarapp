@@ -88,6 +88,9 @@
         </v-btn>
       </v-row>
     </div>
+    <v-overlay v-if="spinner.loading" :value="true">
+      <v-progress-circular indeterminate color="primary"></v-progress-circular>
+    </v-overlay>
   </v-container>
 </template>
 
@@ -335,7 +338,7 @@ export default {
                 vm.chartOptions.series.splice(this.index, 1);
               },
               click: function (e) {
-                vm.$router.push({
+                const { href } = vm.$router.resolve({
                   name: "HensBatchStatistics",
                   params: { hensBatchId: vm.hensBatch[index].id },
                   query: {
@@ -343,6 +346,7 @@ export default {
                     weekTo: e.point.category,
                   },
                 });
+                window.open(href, "_blank");
               },
             },
           });
