@@ -32,16 +32,16 @@
     </div>
     <v-divider></v-divider>
     <v-list dense nav>
+      <v-list-item exact link :to="{ name: 'Home' }" color="blue darken-2">
+        <v-list-item-icon>
+          <v-icon>mdi-home</v-icon>
+        </v-list-item-icon>
+        <v-list-item-title>HOME</v-list-item-title>
+      </v-list-item>
       <v-list-group prepend-icon="mdi-receipt" group="^.*billing.*$">
         <template v-slot:activator>
           <v-list-item-title>FACTURACIÓN</v-list-item-title>
         </template>
-        <v-list-item class="pl-8" link :to="{ name: 'HomePage' }">
-          <v-list-item-icon>
-            <v-icon>mdi-home</v-icon>
-          </v-list-item-icon>
-          <v-list-item-title>Home</v-list-item-title>
-        </v-list-item>
         <v-list-item class="pl-8" link :to="{ name: 'ProductList' }">
           <v-list-item-icon>
             <v-icon>mdi-baguette</v-icon>
@@ -65,6 +65,12 @@
             <v-icon>mdi-cash</v-icon>
           </v-list-item-icon>
           <v-list-item-title>Facturas</v-list-item-title>
+        </v-list-item>
+        <v-list-item class="pl-8" link :to="{ name: 'BillingStatistics' }">
+          <v-list-item-icon>
+            <v-icon>mdi-chart-bell-curve-cumulative</v-icon>
+          </v-list-item-icon>
+          <v-list-item-title>Estadísticas</v-list-item-title>
         </v-list-item>
       </v-list-group>
       <v-list-group
@@ -94,7 +100,11 @@
           </v-list-item-icon>
           <v-list-item-title>Gráficas</v-list-item-title>
         </v-list-item>
-        <v-list-item class="pl-8" link :to="{ name: 'HensBatchReportTraceability' }">
+        <v-list-item
+          class="pl-8"
+          link
+          :to="{ name: 'HensBatchReportTraceability' }"
+        >
           <v-list-item-icon>
             <v-icon>mdi-ray-start-vertex-end</v-icon>
           </v-list-item-icon>

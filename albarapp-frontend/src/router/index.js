@@ -6,12 +6,18 @@ Vue.use(Router);
 
 const router = new Router({
   routes: [
-    { path: '*', redirect: '/billing/home' },
+    { path: '*', redirect: '/billing/statistics' },
     {
-      path: "/billing/home",
-      component: () => import("@/views/billing/HomePage"),
-      name: "HomePage",
+      path: "/",
+      component: () => import("@/views/Home"),
+      name: "Home",
       meta: { headerName: "Home" }
+    },
+    {
+      path: "/billing/statistics",
+      component: () => import("@/views/billing/statistics/BillingStatistics"),
+      name: "BillingStatistics",
+      meta: { headerName: "Estadísticas de facturación" }
     },
     {
       path: "/login",

@@ -40,7 +40,7 @@ import TriviaCard from "@/components/TriviaCard";
 import StatisticsFilter from "@/components/StatisticsFilter";
 
 export default {
-  name: "Home",
+  name: "BillingStatistics",
   components: {
     StatisticsCard,
     RankingCard,
