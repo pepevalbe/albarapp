@@ -319,6 +319,7 @@ export default {
           else element.accumulatedMoratlity = element.mortality;
         });
 
+        let hensBatchId = vm.hensBatch[index].id;
         switch (this.chartType[index].key) {
           case 0:
             this.changeChartType(this.chartType[index].type);
@@ -345,7 +346,7 @@ export default {
                 click: function (e) {
                   const { href } = vm.$router.resolve({
                     name: "HensBatchStatistics",
-                    params: { hensBatchId: vm.hensBatch[index].id },
+                    params: { hensBatchId: hensBatchId },
                     query: {
                       weekFrom: e.point.category,
                       weekTo: e.point.category,
