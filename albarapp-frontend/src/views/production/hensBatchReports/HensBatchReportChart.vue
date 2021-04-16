@@ -127,6 +127,7 @@ export default {
             },
             max: 110,
             min: 0,
+            tickInterval: 10,
             startOnTick: false,
             endOnTick: false,
             visible: false,
