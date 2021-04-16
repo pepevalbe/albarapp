@@ -38,7 +38,7 @@
       </v-menu>
       <v-subheader>Huevos</v-subheader>
       <v-divider></v-divider>
-      <v-row class="mr-6 ml-6">
+      <v-row class="mr-6 ml-6 mt-6">
         <v-text-field
           v-model="form.hensBatchReport.numXL"
           ref="numXL"
@@ -134,7 +134,7 @@
       </v-row>
       <v-subheader>Gallinas</v-subheader>
       <v-divider></v-divider>
-      <v-row class="mr-6 ml-6">
+      <v-row class="mr-6 ml-6 mt-6">
         <v-text-field
           v-model="form.hensBatchReport.deaths"
           ref="deaths"
@@ -160,7 +160,7 @@
       </v-row>
       <v-subheader>Temperatura</v-subheader>
       <v-divider></v-divider>
-      <v-row class="mr-6 ml-6">
+      <v-row class="mr-6 ml-6 mt-6">
         <v-text-field
           v-model="form.hensBatchReport.maxTemperature"
           ref="maxTemperature"
@@ -186,7 +186,7 @@
       </v-row>
       <v-subheader>Consumos</v-subheader>
       <v-divider></v-divider>
-      <v-row class="mr-6 ml-6">
+      <v-row class="mr-6 ml-6 mt-6">
         <v-col cols="12" md="3">
           <v-row>
             <v-text-field
@@ -240,7 +240,7 @@
       </v-row>
       <v-subheader>Observaciones</v-subheader>
       <v-divider></v-divider>
-      <v-row class="mr-6 ml-6">
+      <v-row class="mr-6 ml-6 mt-6">
         <v-text-field
           v-model="form.hensBatchReport.comments"
           ref="comments"
