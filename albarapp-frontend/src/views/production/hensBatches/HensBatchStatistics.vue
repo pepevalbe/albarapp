@@ -86,6 +86,11 @@
         </v-btn>
       </v-row>
     </div>
+    <v-row justify="center">
+      <v-col align-self="center" cols="1">
+        <v-btn @click="$router.back()">Volver</v-btn>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 
