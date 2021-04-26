@@ -2,11 +2,11 @@
   <div>
     <v-app>
       <WebHeader :currentStateHeaderName="currentRouteHeaderName" :currentState="currentRouteName" />
-      <v-content>
+      <v-main>
         <v-container>
           <router-view :key="$route.path"></router-view>
         </v-container>
-      </v-content>
+      </v-main>
       <WebFooter />
     </v-app>
   </div>

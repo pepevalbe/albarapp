@@ -62,7 +62,6 @@
                   :items="chartTypes"
                   item-text="name"
                   return-object
-                  disable-lookup="true"
                   no-data-text="Sin coincidencias"
                 ></v-select>
               </v-card-text>

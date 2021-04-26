@@ -5,44 +5,75 @@
         <v-progress-linear indeterminate></v-progress-linear>
       </div>
       <div v-if="calcsDone">
-        <h3>Lote: {{ hensBatch.name }}</h3>
-        <WeekFilter :filter="filter" />
-
-        <h5>Consumo</h5>
-        <div>Consumo medio de pienso día-ave: {{ avgMashConsumption }} g</div>
-        <div>Consumo medio de agua día-ave: {{ avgWaterConsumption }} ml</div>
-
-        <h5>Puesta</h5>
-        <div>Pico de puesta: {{ peakPercentage }} %</div>
-        <div>
-          Huevos totales:
-          {{ totalEggs.toLocaleString("es-ES", { maximumFractionDigits: 0 }) }}
-        </div>
-        <div>
-          Huevos útiles totales:
-          {{
-            totalUsefulEggs.toLocaleString("es-ES", {
-              maximumFractionDigits: 0,
-            })
-          }}
-        </div>
-        <div>Huevos por ave alojada: {{ totalEggsByAnimalBorn }}</div>
-        <div>
-          Huevos útiles por ave alojada: {{ totalUsefulEggsByAnimalBorn }}
-        </div>
-
-        <h5>Distribución de masa</h5>
-        <div>Masa promedio del huevo: {{ averageEggMass }} g</div>
-
         <v-row>
-          <v-col cols="12" md="2">
-            <highcharts
-              class="chart"
-              :options="chartOptions"
-              :updateArgs="updateArgs"
-            ></highcharts>
+          <v-col>
+            <h3>Lote: {{ hensBatch.name }}</h3>
           </v-col>
         </v-row>
+        <v-row>
+          <v-col>
+            <WeekFilter :filter="filter" />
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col>
+            <v-card min-width="400px">
+              <v-card-title>Consumo</v-card-title>
+              <v-card-text>
+                <div>
+                  Consumo medio de pienso día-ave: {{ avgMashConsumption }} g
+                </div>
+                <div>
+                  Consumo medio de agua día-ave: {{ avgWaterConsumption }} ml
+                </div>
+              </v-card-text>
+            </v-card>
+          </v-col>
+          <v-col>
+            <v-card min-width="400px">
+              <v-card-title>Puesta</v-card-title>
+              <v-card-text>
+                <div>Pico de puesta: {{ peakPercentage }} %</div>
+                <div>
+                  Huevos totales:
+                  {{
+                    totalEggs.toLocaleString("es-ES", {
+                      maximumFractionDigits: 0,
+                    })
+                  }}
+                </div>
+                <div>
+                  Huevos útiles totales:
+                  {{
+                    totalUsefulEggs.toLocaleString("es-ES", {
+                      maximumFractionDigits: 0,
+                    })
+                  }}
+                </div>
+                <div>Huevos por ave alojada: {{ totalEggsByAnimalBorn }}</div>
+                <div>
+                  Huevos útiles por ave alojada:
+                  {{ totalUsefulEggsByAnimalBorn }}
+                </div>
+              </v-card-text>
+            </v-card>
+          </v-col>
+          <v-col>
+            <v-card min-width="400px">
+              <v-card-title>Distribución de masa</v-card-title>
+              <v-card-text>
+                <div>Masa promedio del huevo: {{ averageEggMass }} g</div>
+
+                <highcharts
+                  class="chart"
+                  :options="chartOptions"
+                  :updateArgs="updateArgs"
+                ></highcharts>
+              </v-card-text>
+            </v-card>
+          </v-col>
+        </v-row>
+        <h5></h5>
       </div>
     </div>
     <div v-if="errorLoading">
@@ -81,7 +112,7 @@ export default {
       avgWaterConsumption: 0,
       peakPercentage: 0,
       totalEggs: 0,
-      totalUserfulEggs: 0,
+      totalUsefulEggs: 0,
       totalEggsByAnimalBorn: 0,
       totalUsefulEggsByAnimalBorn: 0,
       averageEggMass: 0,
@@ -169,27 +200,20 @@ export default {
         .catch(() => {});
     },
     calcStatistics() {
-      this.avgMashConsumption = Math.round(
-        (this.hensBatchReports.reduce(
-          (acc, element) => (acc += element.hensPoultryMashConsumption),
-          0
-        ) /
-          this.hensBatchReports.length) *
-          1000
-      );
-      this.avgWaterConsumption = Math.round(
-        (this.hensBatchReports.reduce(
-          (acc, element) => (acc += element.hensWaterConsumption),
-          0
-        ) /
-          this.hensBatchReports.length) *
-          1000
-      );
       let born = this.$moment.utc(this.hensBatch.birthTimestamp, "x", true);
       this.hensBatchReports.forEach((element) => {
         let current = this.$moment.utc(element.reportTimestamp, "x", true);
         element.week = current.diff(born, "weeks") + 1;
       });
+
+      if (this.filter.weekFrom)
+        this.hensBatchReports = this.hensBatchReports.filter(
+          (element) => element.week >= this.filter.weekFrom
+        );
+      if (this.filter.weekTo)
+        this.hensBatchReports = this.hensBatchReports.filter(
+          (element) => element.week <= this.filter.weekTo
+        );
 
       let reportsByWeek = this.hensBatchReports
         .reduce((accumulator, element) => {
@@ -218,14 +242,22 @@ export default {
         }, [])
         .filter((element) => element);
 
-      if (this.filter.weekFrom)
-        reportsByWeek = reportsByWeek.filter(
-          (element) => element.week >= this.filter.weekFrom
-        );
-      if (this.filter.weekTo)
-        reportsByWeek = reportsByWeek.filter(
-          (element) => element.week <= this.filter.weekTo
-        );
+      this.avgMashConsumption = Math.round(
+        (this.hensBatchReports.reduce(
+          (acc, element) => (acc += element.hensPoultryMashConsumption),
+          0
+        ) /
+          this.hensBatchReports.length) *
+          1000
+      );
+      this.avgWaterConsumption = Math.round(
+        (this.hensBatchReports.reduce(
+          (acc, element) => (acc += element.hensWaterConsumption),
+          0
+        ) /
+          this.hensBatchReports.length) *
+          1000
+      );
 
       let totalAnimals = this.hensBatch.animalQuantity;
       reportsByWeek.forEach((element, index, array) => {
@@ -261,84 +293,44 @@ export default {
         .reduce((acc, el) => Math.max(acc, el.percentage), 0)
         .toFixed(2);
 
-      this.totalEggs = reportsByWeek.reduce(
-        (accumulator, element) =>
-          (accumulator +=
-            7 *
-            (element.numXL +
-              element.numL +
-              element.numM +
-              element.numS +
-              element.numXS +
-              element.dirties +
-              element.brokens)),
+      let totalXL = this.hensBatchReports.reduce(
+        (accumulator, element) => (accumulator += element.numXL),
+        0
+      );
+      let totalL = this.hensBatchReports.reduce(
+        (accumulator, element) => (accumulator += element.numL),
+        0
+      );
+      let totalM = this.hensBatchReports.reduce(
+        (accumulator, element) => (accumulator += element.numM),
+        0
+      );
+      let totalS = this.hensBatchReports.reduce(
+        (accumulator, element) => (accumulator += element.numS),
+        0
+      );
+      let totalXS = this.hensBatchReports.reduce(
+        (accumulator, element) => (accumulator += element.numXS),
         0
       );
 
-      this.totalUsefulEggs = reportsByWeek.reduce(
-        (accumulator, element) =>
-          (accumulator +=
-            7 *
-            (element.numXL +
-              element.numL +
-              element.numM +
-              element.numS +
-              element.numXS)),
+      let totalDirties = this.hensBatchReports.reduce(
+        (accumulator, element) => (accumulator += element.dirties),
         0
       );
 
-      this.totalEggsByAnimalBorn = (
-        reportsByWeek.reduce(
-          (accumulator, element) =>
-            (accumulator +=
-              7 *
-              (element.numXL +
-                element.numL +
-                element.numM +
-                element.numS +
-                element.numXS +
-                element.dirties +
-                element.brokens)),
-          0
-        ) / totalAnimals
-      ).toFixed(0);
+      let totalBrokens = this.hensBatchReports.reduce(
+        (accumulator, element) => (accumulator += element.brokens),
+        0
+      );
 
+      this.totalUsefulEggs = totalXL + totalL + totalM + totalS + totalXS;
+      this.totalEggs = this.totalUsefulEggs + totalDirties + totalBrokens;
+
+      this.totalEggsByAnimalBorn = (this.totalEggs / totalAnimals).toFixed(0);
       this.totalUsefulEggsByAnimalBorn = (
-        reportsByWeek.reduce(
-          (accumulator, element) =>
-            (accumulator +=
-              7 *
-              (element.numXL +
-                element.numL +
-                element.numM +
-                element.numS +
-                element.numXS)),
-          0
-        ) / totalAnimals
+        this.totalUsefulEggs / totalAnimals
       ).toFixed(0);
-
-      let totalXL = reportsByWeek.reduce(
-        (accumulator, element) => (accumulator += 7 * element.numXL),
-        0
-      );
-      let totalL = reportsByWeek.reduce(
-        (accumulator, element) => (accumulator += 7 * element.numL),
-        0
-      );
-      let totalM = reportsByWeek.reduce(
-        (accumulator, element) => (accumulator += 7 * element.numM),
-        0
-      );
-      let totalS = reportsByWeek.reduce(
-        (accumulator, element) => (accumulator += 7 * element.numS),
-        0
-      );
-      let totalXS = reportsByWeek.reduce(
-        (accumulator, element) => (accumulator += 7 * element.numXS),
-        0
-      );
-
-      let totalEggs = totalXL + totalL + totalM + totalS + totalXS;
 
       this.averageEggMass = (
         (totalXL * 78 +
@@ -346,14 +338,14 @@ export default {
           totalM * 58 +
           totalS * 48 +
           totalXS * 38) /
-        totalEggs
+        this.totalEggs
       ).toFixed(0);
 
-      let shareXL = (totalXL / totalEggs) * 100;
-      let shareL = (totalL / totalEggs) * 100;
-      let shareM = (totalM / totalEggs) * 100;
-      let shareS = (totalS / totalEggs) * 100;
-      let shareXS = (totalXS / totalEggs) * 100;
+      let shareXL = (totalXL / this.totalEggs) * 100;
+      let shareL = (totalL / this.totalEggs) * 100;
+      let shareM = (totalM / this.totalEggs) * 100;
+      let shareS = (totalS / this.totalEggs) * 100;
+      let shareXS = (totalXS / this.totalEggs) * 100;
 
       this.chartOptions.series.splice(0, this.chartOptions.series.length);
       this.chartOptions.series.push({
