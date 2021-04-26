@@ -14,9 +14,17 @@
 
         <h5>Puesta</h5>
         <div>Pico de puesta: {{ peakPercentage }} %</div>
-        <div>Huevos totales: {{ totalEggs.toLocaleString("es-ES") }}</div>
         <div>
-          Huevos sanos totales: {{ totalUsefulEggs.toLocaleString("es-ES") }}
+          Huevos totales:
+          {{ totalEggs.toLocaleString("es-ES", { maximumFractionDigits: 0 }) }}
+        </div>
+        <div>
+          Huevos útiles totales:
+          {{
+            totalUsefulEggs.toLocaleString("es-ES", {
+              maximumFractionDigits: 0,
+            })
+          }}
         </div>
         <div>Huevos por ave alojada: {{ totalEggsByAnimalBorn }}</div>
         <div>
