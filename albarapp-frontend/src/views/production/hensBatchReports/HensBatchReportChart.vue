@@ -11,9 +11,9 @@
           :updateArgs="updateArgs"
           ref="chart"
         ></highcharts>
-        <v-row class="mr-10 ml-10">
+        <v-row class="mr-2 ml-2">
           <v-col>
-            <v-card>
+            <v-card min-width="320px">
               <v-card-title>Añadir principal</v-card-title>
               <v-card-text>
                 <v-select
@@ -44,7 +44,7 @@
           </v-col>
           <v-spacer />
           <v-col>
-            <v-card>
+            <v-card min-width="320px">
               <v-card-title>Añadir secundario</v-card-title>
               <v-card-text>
                 <v-select
