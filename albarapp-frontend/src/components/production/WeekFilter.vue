@@ -73,10 +73,12 @@ export default {
       let dateFrom = "N/A";
       let dateTo = "N/A";
       if (this.filter.weekFrom) {
-        dateFrom = born.add(this.filter.weekFrom, "weeks").format("DD/MM/yyyy");
+        dateFrom = born
+          .add(this.filter.weekFrom - 1, "weeks")
+          .format("DD/MM/yyyy");
       }
       if (this.filter.weekTo) {
-        dateTo = born.add(this.filter.weekTo, "weeks").format("DD/MM/yyyy");
+        dateTo = born.add(this.filter.weekTo - 1, "weeks").format("DD/MM/yyyy");
       }
       return `De ${dateFrom} a ${dateTo}`;
     },
