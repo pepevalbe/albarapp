@@ -78,7 +78,7 @@ export default {
       if (this.filter.weekTo) {
         dateTo = born.add(this.filter.weekTo, "weeks").format("DD/MM/yyyy");
       }
-      return `De ${dateFrom} a ${dateTo}]`;
+      return `De ${dateFrom} a ${dateTo}`;
     },
   },
 };
