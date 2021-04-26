@@ -14,6 +14,10 @@
 
         <h5>Puesta</h5>
         <div>Pico de puesta: {{ peakPercentage }} %</div>
+        <div>Huevos totales: {{ totalEggs.toLocaleString("es-ES") }}</div>
+        <div>
+          Huevos sanos totales: {{ totalUsefulEggs.toLocaleString("es-ES") }}
+        </div>
         <div>Huevos por ave alojada: {{ totalEggsByAnimalBorn }}</div>
         <div>
           Huevos útiles por ave alojada: {{ totalUsefulEggsByAnimalBorn }}
@@ -68,6 +72,8 @@ export default {
       avgMashConsumption: 0,
       avgWaterConsumption: 0,
       peakPercentage: 0,
+      totalEggs: 0,
+      totalUserfulEggs: 0,
       totalEggsByAnimalBorn: 0,
       totalUsefulEggsByAnimalBorn: 0,
       averageEggMass: 0,
@@ -246,6 +252,32 @@ export default {
       this.peakPercentage = reportsByWeek
         .reduce((acc, el) => Math.max(acc, el.percentage), 0)
         .toFixed(2);
+
+      this.totalEggs = reportsByWeek.reduce(
+        (accumulator, element) =>
+          (accumulator +=
+            7 *
+            (element.numXL +
+              element.numL +
+              element.numM +
+              element.numS +
+              element.numXS +
+              element.dirties +
+              element.brokens)),
+        0
+      );
+
+      this.totalUsefulEggs = reportsByWeek.reduce(
+        (accumulator, element) =>
+          (accumulator +=
+            7 *
+            (element.numXL +
+              element.numL +
+              element.numM +
+              element.numS +
+              element.numXS)),
+        0
+      );
 
       this.totalEggsByAnimalBorn = (
         reportsByWeek.reduce(
