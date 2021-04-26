@@ -2,9 +2,19 @@
   <v-expansion-panels :dark="!!filter.weekFrom || !!filter.weekTo">
     <v-expansion-panel>
       <v-expansion-panel-header>
-        <span class="subtitle-1 font-italic font-weight-light"
-          >Filtrar por semana [{{ filter.weekFrom }}, {{ filter.weekTo }}]</span
-        >
+        <v-row>
+          <v-col>
+            <span class="subtitle-1 font-italic font-weight-light">
+              Filtrar por semana [{{ filter.weekFrom }}, {{ filter.weekTo }}]
+            </span>
+          </v-col>
+          <v-spacer />
+          <v-col class="text-right mr-3">
+            <span class="subtitle-1 font-italic font-weight-light">
+              {{ calcDateFromWeek() }}
+            </span>
+          </v-col>
+        </v-row>
       </v-expansion-panel-header>
       <v-expansion-panel-content>
         <v-row>
@@ -40,6 +50,13 @@ export default {
       weekFrom: String,
       weekTo: String,
     },
+    birthTimestamp: Number,
+  },
+  data: () => {
+    return {
+      dateFrom: "",
+      dateTo: "",
+    };
   },
   created() {
     let vm = this;
@@ -49,6 +66,20 @@ export default {
     this.debounceChangeModelWeekTo = _debounce(function (v) {
       vm.filter.weekTo = v.trim();
     }, 1000);
+  },
+  methods: {
+    calcDateFromWeek() {
+      let born = this.$moment.utc(this.birthTimestamp, "x", true);
+      let dateFrom = "N/A";
+      let dateTo = "N/A";
+      if (this.filter.weekFrom) {
+        dateFrom = born.add(this.filter.weekFrom, "weeks").format("DD/MM/yyyy");
+      }
+      if (this.filter.weekTo) {
+        dateTo = born.add(this.filter.weekTo, "weeks").format("DD/MM/yyyy");
+      }
+      return `De ${dateFrom} a ${dateTo}]`;
+    },
   },
 };
 </script>

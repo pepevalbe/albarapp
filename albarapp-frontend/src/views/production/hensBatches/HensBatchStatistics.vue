@@ -12,7 +12,11 @@
         </v-row>
         <v-row>
           <v-col>
-            <WeekFilter :filter="filter" />
+            <WeekFilter
+              v-if="hensBatch"
+              :filter="filter"
+              :birthTimestamp="hensBatch.birthTimestamp"
+            />
           </v-col>
         </v-row>
         <v-row>
