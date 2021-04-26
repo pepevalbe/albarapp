@@ -69,16 +69,20 @@ export default {
   },
   methods: {
     calcDateFromWeek() {
-      let born = this.$moment.utc(this.birthTimestamp, "x", true);
       let dateFrom = "N/A";
       let dateTo = "N/A";
       if (this.filter.weekFrom) {
+        let born = this.$moment.utc(this.birthTimestamp, "x", true);
         dateFrom = born
           .add(this.filter.weekFrom - 1, "weeks")
           .format("DD/MM/yyyy");
       }
       if (this.filter.weekTo) {
-        dateTo = born.add(this.filter.weekTo - 1, "weeks").format("DD/MM/yyyy");
+        let born = this.$moment.utc(this.birthTimestamp, "x", true);
+        dateTo = born
+          .add(this.filter.weekTo - 1, "weeks")
+          .add(6, "days")
+          .format("DD/MM/yyyy");
       }
       return `De ${dateFrom} a ${dateTo}`;
     },
