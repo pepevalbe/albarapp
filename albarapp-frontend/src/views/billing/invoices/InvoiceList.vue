@@ -63,6 +63,7 @@
           item-key="id"
           :server-items-length="totalItems"
           :options.sync="options"
+          multi-sort
         >
           <template v-slot:body="{ items }">
             <tbody v-if="!$vuetify.breakpoint.xsOnly">
@@ -198,7 +199,7 @@ export default {
         groupBy: [],
         groupDesc: [],
         mustSort: false,
-        multiSort: false,
+        multiSort: true,
       },
       loading: true,
       errorLoading: false,
