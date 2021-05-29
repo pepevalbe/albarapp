@@ -65,13 +65,14 @@ export default {
                 var direction = options.sortDesc[index] ? 'desc' : 'asc';
                 params.sort.push(sort + ',' + direction);
             }
+            params.sort.push('id,asc');
         }
 
         var queryString = Object.keys(params).map(function (key) {
             if (Array.isArray(params[key])) {
                 let finalParam = [];
                 for (let param of params[key]) {
-                    finalParam .push(key + '=' + param);
+                    finalParam.push(key + '=' + param);
                 }
                 return finalParam.join('&');
             } else {

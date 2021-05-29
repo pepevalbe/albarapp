@@ -56,12 +56,24 @@ export default {
         if (options?.page) params.page = options.page - 1;
         if (options?.itemsPerPage) params.size = options.itemsPerPage;
         if (options?.sortBy?.length) {
-            var direction = options.sortDesc[0] ? 'desc' : 'asc';
-            params.sort = options.sortBy + ',' + direction;
+            params.sort = [];
+            for (let [index, sort] of options.sortBy.entries()) {
+                var direction = options.sortDesc[index] ? 'desc' : 'asc';
+                params.sort.push(sort + ',' + direction);
+            }
+            params.sort.push('id,asc');
         }
 
         var queryString = Object.keys(params).map(function (key) {
-            return key + '=' + params[key]
+            if (Array.isArray(params[key])) {
+                let finalParam = [];
+                for (let param of params[key]) {
+                    finalParam.push(key + '=' + param);
+                }
+                return finalParam.join('&');
+            } else {
+                return key + '=' + params[key]
+            }
         }).join('&');
 
         if (queryString != "") queryString = '?' + queryString;
