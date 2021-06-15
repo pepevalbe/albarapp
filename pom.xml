@@ -21,7 +21,7 @@
         <lombok.version>1.18.10</lombok.version>
         <jjwt.version>0.9.1</jjwt.version>
         <apache.commons-text.version>1.8</apache.commons-text.version>
-        <pdfbox.version>2.0.18</pdfbox.version>
+        <pdfbox.version>2.0.24</pdfbox.version>
         <jackson-xml.version>2.10.2</jackson-xml.version>
     </properties>
 
