@@ -3092,6 +3092,15 @@ VALUES
 	('d', 'Peor Lote Base', 1546300800000, 'Raza Base', 10000, NULL),
 	('e', 'Lote Base 2', 0, 'Raza Base 2', 10000, NULL);
 
+INSERT INTO hens_batch_expense
+	(id, hens_batch_id, expense_timestamp, description, value, recurrent, distribution)
+VALUES
+	('1', 'a', 1602288000000, 'Pollitas', 25000, false, false),
+	('2', 'a', 1602288000000, 'Pienso', 500, true, false),
+	('3', 'a', 1602288000000, 'Agua', 100, true, false),
+	('4', 'a', 1602288000000, 'Luz', 100, true, false),
+	('5', 'a', 1602288000000, 'Personal', 500, true, false),
+	('6', 'a', 1602288000000, 'Reparto', 500, true, true);
 
 INSERT INTO hens_batch_report
 	(id, hens_batch_id, report_timestamp, max_temperature, min_temperature, num_xl, num_l, num_m, num_s, num_xs, dirties, brokens, deaths, departures, water_reading, poultry_mash_addition_quantity, poultry_mash_addition_feed_turn, poultry_mash_max_feed_turns, comments)

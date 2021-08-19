@@ -34,6 +34,9 @@ public class HensBatch {
 	@OneToMany(mappedBy = "hensBatch")
 	private Set<HensBatchReport> hensBatchReports;
 
+	@OneToMany(mappedBy = "hensBatch")
+	private Set<HensBatchExpense> hensBatchExpenses;
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
