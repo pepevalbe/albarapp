@@ -34,10 +34,17 @@ export default {
                 return response.data.content;
             });
     },
-    getQuantities() {
-        return HttpClient.get(`${QUANTITIES_ENDPOINT}`)
+    getQuantities(productCodes) {
+        var params = {};
+        if (productCodes && productCodes.length) params.productCodes = productCodes;
+        var queryString = Object.keys(params).map(function (key) {
+            return key + '=' + params[key]
+        }).join('&');
+
+        if (queryString != "") queryString = '?' + queryString;
+        return HttpClient.get(`${QUANTITIES_ENDPOINT}` + queryString)
             .then(response => {
                 return response.data;
             });
     }
-}   
+}

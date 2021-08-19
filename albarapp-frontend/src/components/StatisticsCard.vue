@@ -5,17 +5,15 @@
         <v-card-title class="mb-4">
           <v-icon large class="mr-2">mdi-chart-bar</v-icon>Estadísticas Albarapp
         </v-card-title>
-        <v-card-text
-          v-for="(statistic, index) in statistics"
-          :key="index"
-        >{{ statistic.name }}: {{ statistic.value }}</v-card-text>
+        <v-card-text v-for="(statistic, index) in statistics" :key="index"
+          >{{ statistic.name }}: {{ statistic.value }}</v-card-text
+        >
       </v-card>
     </div>
     <div v-if="errorLoading">
-      <v-row
-        class="mb-2"
-        justify="center"
-      >Error al obtener las estadísticas, por favor vuelva a cargar.</v-row>
+      <v-row class="mb-2" justify="center"
+        >Error al obtener las estadísticas, por favor vuelva a cargar.</v-row
+      >
       <v-row justify="center">
         <v-btn @click="getStatistics()">
           <v-icon dark>mdi-refresh</v-icon>
@@ -39,11 +37,20 @@ export default {
   },
   created() {
     this.getStatistics();
+    this.$watch(
+      "$store.getters.statisticsProductFilter",
+      function () {
+        this.getStatistics();
+      },
+      { deep: true }
+    );
   },
   methods: {
     getStatistics: function () {
       this.errorLoading = false;
-      StatisticService.getQuantities()
+      StatisticService.getQuantities(
+        this.$store.getters.statisticsProductFilter
+      )
         .then((response) => {
           this.statistics = response;
           this.statisticsReady = true;

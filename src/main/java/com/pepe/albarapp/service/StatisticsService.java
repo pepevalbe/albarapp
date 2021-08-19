@@ -28,6 +28,7 @@ public class StatisticsService {
 	private static final String TOTAL_CUSTOMERS = "Total clientes";
 	private static final String TOTAL_INVOICES = "Total facturas";
 	private static final String TOTAL_DELIVERY_NOTES = "Total albaranes";
+	private static final String AVERAGE_PRICE = "Precio medio de venta";
 	private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM yyyy")
 			.withLocale(new Locale("es", "ES"));
 
@@ -46,13 +47,21 @@ public class StatisticsService {
 	@Autowired
 	private InvoiceRepository invoiceRepository;
 
-	public List<StatisticsDto> getStatistics() {
+	public List<StatisticsDto> getStatistics(List<Integer> productCodes) {
 
 		List<StatisticsDto> statistics = new ArrayList<>();
 
-		statistics.add(new StatisticsDto(TOTAL_CUSTOMERS, customerRepository.count()));
-		statistics.add(new StatisticsDto(TOTAL_INVOICES, invoiceRepository.count()));
-		statistics.add(new StatisticsDto(TOTAL_DELIVERY_NOTES, deliveryNoteRepository.count()));
+		statistics.add(new StatisticsDto(TOTAL_CUSTOMERS, new BigDecimal(customerRepository.count())));
+		statistics.add(new StatisticsDto(TOTAL_INVOICES, new BigDecimal(invoiceRepository.count())));
+		statistics.add(new StatisticsDto(TOTAL_DELIVERY_NOTES, new BigDecimal(deliveryNoteRepository.count())));
+		BigDecimal avgPrice;
+		if (productCodes == null || productCodes.isEmpty()) {
+			avgPrice = new BigDecimal(deliveryNoteItemRepository.calcAveragePrice());
+		} else {
+			avgPrice = new BigDecimal(deliveryNoteItemRepository.calcAveragePriceByProductCodes(productCodes));
+		}
+		avgPrice = avgPrice.setScale(3, RoundingMode.HALF_UP);
+		statistics.add(new StatisticsDto(AVERAGE_PRICE, avgPrice));
 
 		return statistics;
 	}

@@ -1,5 +1,7 @@
 package com.pepe.albarapp.service.dto;
 
+import java.math.BigDecimal;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,5 +12,5 @@ import lombok.NoArgsConstructor;
 public class StatisticsDto {
 
 	private String name;
-	private Long value;
+	private BigDecimal value;
 }

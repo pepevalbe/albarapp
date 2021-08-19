@@ -29,9 +29,9 @@ public class StatisticsController {
 
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@GetMapping(STATISTICS_ENDPOINT)
-	public ResponseEntity<List<StatisticsDto>> getStatistics() {
+	public ResponseEntity<List<StatisticsDto>> getStatistics(@RequestParam @Nullable List<Integer> productCodes) {
 
-		return ResponseEntity.ok(statisticsService.getStatistics());
+		return ResponseEntity.ok(statisticsService.getStatistics(productCodes));
 	}
 
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
