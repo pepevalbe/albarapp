@@ -94,6 +94,12 @@
           </v-list-item-icon>
           <v-list-item-title>Reporte diario</v-list-item-title>
         </v-list-item>
+        <v-list-item class="pl-8" link :to="{ name: 'HensBatchExpenseList' }">
+          <v-list-item-icon>
+            <v-icon>mdi-currency-eur</v-icon>
+          </v-list-item-icon>
+          <v-list-item-title>Gastos</v-list-item-title>
+        </v-list-item>
         <v-list-item class="pl-8" link :to="{ name: 'HensBatchReportChart' }">
           <v-list-item-icon>
             <v-icon>mdi-chart-bell-curve-cumulative</v-icon>

@@ -30,6 +30,9 @@ Vue.mixin({
     },
     dateFormatted(timestamp) {
       return this.$moment.utc(timestamp, "x").format("DD/MM/YYYY");
+    },
+    booleanFormatted(value) {
+      return (value ? 'Sí' : 'No')
     }
   }
 })

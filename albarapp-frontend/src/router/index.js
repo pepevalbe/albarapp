@@ -209,6 +209,32 @@ const router = new Router({
       ]
     },
     {
+      path: "/production/hens-batch-expenses/",
+      component: () => import("@/views/production/hensBatchExpenses/HensBatchExpenseHome"),
+      children: [
+        {
+          path: "",
+          component: () => import("@/views/production/hensBatchExpenses/HensBatchExpenseList"),
+          name: "HensBatchExpenseList",
+          meta: { headerName: "Gastos" }
+        },
+        {
+          path: "creation/:hensBatchId",
+          component: () => import("@/views/production/hensBatchExpenses/HensBatchExpenseCreation"),
+          props: true,
+          name: "HensBatchExpenseCreation",
+          meta: { headerName: "Nuevo gasto diario" }
+        },
+        {
+          path: "update/:hensBatchExpenseId",
+          component: () => import("@/views/production/hensBatchExpenses/HensBatchExpenseUpdate"),
+          props: true,
+          name: "HensBatchExpenseUpdate",
+          meta: { headerName: "Modificar gasto" }
+        },
+      ]
+    },
+    {
       path: "/production/hens-batch-reports-charts/",
       component: () => import("@/views/production/hensBatchReports/HensBatchReportChart"),
       props: true,

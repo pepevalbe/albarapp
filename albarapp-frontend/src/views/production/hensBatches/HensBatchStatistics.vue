@@ -64,6 +64,26 @@
           </v-col>
           <v-col>
             <v-card min-width="400px">
+              <v-card-title>Gastos</v-card-title>
+              <v-card-text>
+                <div>Gasto total actual: {{ totalCost }} €</div>
+                <div>Costo del huevo en destino: {{ costByEgg }} €</div>
+                <div>
+                  Costo del huevo en nave: {{ costByEggNoDistribution }} €
+                </div>
+                <div>
+                  Costo prorrateado del huevo en destino:
+                  {{ totalEstimatedCostByEgg }} €
+                </div>
+                <div>
+                  Costo prorrateado del huevo en nave:
+                  {{ totalEstimatedCostByEggNoDistribution }} €
+                </div>
+              </v-card-text>
+            </v-card>
+          </v-col>
+          <v-col>
+            <v-card min-width="400px">
               <v-card-title>Distribución de masa</v-card-title>
               <v-card-text>
                 <div>Masa promedio del huevo: {{ averageEggMass }} g</div>
@@ -102,6 +122,7 @@
 import WeekFilter from "@/components/production/WeekFilter";
 import HensBatchService from "@/services/production/HensBatchService.js";
 import HensBatchReportService from "@/services/production/HensBatchReportService.js";
+import HensBatchExpenseService from "@/services/production/HensBatchExpenseService.js";
 
 export default {
   name: "HensBatchStatistics",
@@ -125,7 +146,13 @@ export default {
       totalEggsByAnimalBorn: 0,
       totalUsefulEggsByAnimalBorn: 0,
       averageEggMass: 0,
+      totalCost: 0,
+      costByEgg: 0,
+      costByEggNoDistribution: 0,
+      totalEstimatedCostByEgg: 0,
+      totalEstimatedCostByEggNoDistribution: 0,
       hensBatchReports: null,
+      hensBatchExpenses: null,
       filter: {
         weekFrom: "",
         weekTo: "",
@@ -162,6 +189,7 @@ export default {
     async loadPageDate() {
       await this.loadHensBatch();
       await this.loadHensBatchReports();
+      await this.loadHensBatchExpenses();
       this.calcStatistics();
       this.updateURL();
     },
@@ -181,6 +209,19 @@ export default {
         this.showSpinner();
         this.errorLoading = false;
         this.hensBatchReports = await HensBatchReportService.getByHensBatchId(
+          this.hensBatchId
+        );
+      } catch (e) {
+        this.errorLoading = true;
+      } finally {
+        this.closeSpinner();
+      }
+    },
+    async loadHensBatchExpenses() {
+      try {
+        this.showSpinner();
+        this.errorLoading = false;
+        this.hensBatchExpenses = await HensBatchExpenseService.getByHensBatchId(
           this.hensBatchId
         );
       } catch (e) {
@@ -214,15 +255,28 @@ export default {
         let current = this.$moment.utc(element.reportTimestamp, "x", true);
         element.week = current.diff(born, "weeks") + 1;
       });
+      this.hensBatchExpenses.forEach((element) => {
+        let current = this.$moment.utc(element.expenseTimestamp, "x", true);
+        element.week = current.diff(born, "weeks") + 1;
+      });
 
-      if (this.filter.weekFrom)
+      if (this.filter.weekFrom) {
         this.hensBatchReports = this.hensBatchReports.filter(
           (element) => element.week >= this.filter.weekFrom
         );
-      if (this.filter.weekTo)
+        this.hensBatchExpenses = this.hensBatchExpenses.filter(
+          (element) =>
+            element.week >= this.filter.weekFrom || !element.recurrent
+        );
+      }
+      if (this.filter.weekTo) {
         this.hensBatchReports = this.hensBatchReports.filter(
           (element) => element.week <= this.filter.weekTo
         );
+        this.hensBatchExpenses = this.hensBatchExpenses.filter(
+          (element) => element.week <= this.filter.weekTo || !element.recurrent
+        );
+      }
 
       let reportsByWeek = this.hensBatchReports
         .reduce((accumulator, element) => {
@@ -371,6 +425,52 @@ export default {
           valueSuffix: " %",
         },
       });
+
+      this.totalCost = this.hensBatchExpenses.reduce(
+        (accumulator, element) => (accumulator += element.value),
+        0
+      );
+      this.costByEgg = (this.totalCost / this.totalEggs).toFixed(3);
+
+      let totalCostNoDistribution = this.hensBatchExpenses
+        .filter((el) => !el.distribution)
+        .reduce((acc, ele) => (acc += ele.value), 0);
+
+      this.costByEggNoDistribution = (
+        totalCostNoDistribution / this.totalEggs
+      ).toFixed(3);
+
+      let uniqueCost = this.hensBatchExpenses
+        .filter((el) => !el.recurrent)
+        .reduce((acc, ele) => (acc += ele.value), 0);
+      let estimatedUniqueCostPerWeek = uniqueCost / 83; // Estimated productivity hens life
+      let totalWeeks =
+        this.hensBatchReports[this.hensBatchReports.length - 1].week -
+        this.hensBatchReports[0].week +
+        1;
+      let estimatedUniqueCost = estimatedUniqueCostPerWeek * totalWeeks;
+      let variableCost = this.hensBatchExpenses
+        .filter((el) => el.recurrent)
+        .reduce((acc, ele) => (acc += ele.value), 0);
+      this.totalEstimatedCostByEgg = (
+        (variableCost + estimatedUniqueCost) /
+        this.totalEggs
+      ).toFixed(3);
+
+      let uniqueCostNoDistribution = this.hensBatchExpenses
+        .filter((el) => !el.recurrent && !el.distribution)
+        .reduce((acc, ele) => (acc += ele.value), 0);
+      let estimatedUniqueCostPerWeekNoDistribution =
+        uniqueCostNoDistribution / 83; // Estimated productivity hens life
+      let estimatedUniqueCostNoDistribution =
+        estimatedUniqueCostPerWeekNoDistribution * totalWeeks;
+      let variableCostNoDistribution = this.hensBatchExpenses
+        .filter((el) => el.recurrent && !el.distribution)
+        .reduce((acc, ele) => (acc += ele.value), 0);
+      this.totalEstimatedCostByEggNoDistribution = (
+        (variableCostNoDistribution + estimatedUniqueCostNoDistribution) /
+        this.totalEggs
+      ).toFixed(3);
 
       this.calcsDone = true;
     },
