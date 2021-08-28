@@ -4,7 +4,8 @@ import java.util.stream.Stream;
 
 public enum UserRole {
 
-	USER("USER"),
+	BILLING_USER("BILLING_USER"),
+	HENS_BATCH_USER("HENS_BATCH_USER"),
 	ADMIN("ADMIN");
 
 	UserRole(String role) {

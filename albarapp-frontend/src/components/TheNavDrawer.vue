@@ -38,7 +38,11 @@
         </v-list-item-icon>
         <v-list-item-title>HOME</v-list-item-title>
       </v-list-item>
-      <v-list-group prepend-icon="mdi-receipt" group="^.*billing.*$">
+      <v-list-group
+        prepend-icon="mdi-receipt"
+        group="^.*billing.*$"
+        v-if="$store.getters.isBillingUser"
+      >
         <template v-slot:activator>
           <v-list-item-title>FACTURACIÓN</v-list-item-title>
         </template>
@@ -76,6 +80,7 @@
       <v-list-group
         prepend-icon="mdi-chart-bar-stacked"
         group="^.*production.*$"
+        v-if="$store.getters.isHensBatchUser"
       >
         <template v-slot:activator>
           <v-list-item-content>
@@ -110,6 +115,7 @@
           class="pl-8"
           link
           :to="{ name: 'HensBatchReportTraceability' }"
+          v-if="$store.getters.isAdmin"
         >
           <v-list-item-icon>
             <v-icon>mdi-ray-start-vertex-end</v-icon>
@@ -117,16 +123,15 @@
           <v-list-item-title>Trazabilidad</v-list-item-title>
         </v-list-item>
       </v-list-group>
-      <v-list-group prepend-icon="mdi-form-dropdown" group="^.*admin.*$">
+      <v-list-group
+        v-if="$store.getters.isAdmin"
+        prepend-icon="mdi-form-dropdown"
+        group="^.*admin.*$"
+      >
         <template v-slot:activator>
           <v-list-item-title>ADMINISTRAR</v-list-item-title>
         </template>
-        <v-list-item
-          class="pl-8"
-          link
-          :to="{ name: 'AdminPage' }"
-          v-if="$store.getters.isAdmin"
-        >
+        <v-list-item class="pl-8" link :to="{ name: 'AdminPage' }">
           <v-list-item-icon>
             <v-icon>mdi-account-group</v-icon>
           </v-list-item-icon>

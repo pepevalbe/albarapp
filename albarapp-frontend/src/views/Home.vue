@@ -1,7 +1,9 @@
 <template>
   <v-container>
     <v-row justify="center">
-      <div class="text-h3 text-md-h2 text-center mb-10 mt-5">Software de gestión de explotaciones ganaderas</div>
+      <div class="text-h3 text-md-h2 text-center mb-10 mt-5">
+        Software de gestión de explotaciones ganaderas
+      </div>
     </v-row>
     <v-row justify="center">
       <v-btn
@@ -12,6 +14,7 @@
         tile
         x-large
         :to="{ name: 'DeliveryNoteList' }"
+        v-if="$store.getters.isBillingUser"
       >
         <v-col cols="12">
           <v-row
@@ -34,6 +37,7 @@
         tile
         x-large
         :to="{ name: 'InvoiceList' }"
+        v-if="$store.getters.isBillingUser"
       >
         <v-col cols="12">
           <v-row
@@ -56,6 +60,7 @@
         tile
         x-large
         :to="{ name: 'HensBatchReportList' }"
+        v-if="$store.getters.isHensBatchUser"
       >
         <v-col cols="12">
           <v-row
@@ -78,6 +83,7 @@
         tile
         x-large
         :to="{ name: 'HensBatchReportChart' }"
+        v-if="$store.getters.isHensBatchUser"
       >
         <v-col cols="12">
           <v-row

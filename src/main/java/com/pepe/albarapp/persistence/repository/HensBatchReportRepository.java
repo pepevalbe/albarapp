@@ -12,7 +12,7 @@ import java.util.Optional;
 import java.util.Set;
 
 @CrossOrigin(origins = "http://localhost:8080")
-@PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_USER')")
+@PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_HENS_BATCH_USER')")
 public interface HensBatchReportRepository extends CrudRepository<HensBatchReport, String> {
 
 	Set<HensBatchReport> findByHensBatchId(String hensBatchId);

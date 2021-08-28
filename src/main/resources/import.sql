@@ -5,7 +5,15 @@ VALUES
 INSERT INTO user
 	(id, email, password, name, surname, role)
 VALUES
-	('1', 'user@albarapp.com', '$2a$10$1A6X0IvozT15pfnbeDGBVujKF70vthvAyIJvuAKdotFY/MOcfo0NO', 'user-name', 'user-surname', 'USER');
+	('1', 'user@albarapp.com', '$2a$10$1A6X0IvozT15pfnbeDGBVujKF70vthvAyIJvuAKdotFY/MOcfo0NO', 'user-name', 'user-surname', 'BILLING_USER');
+INSERT INTO user
+	(id, email, password, name, surname, role)
+VALUES
+	('2', 'user2@albarapp.com', '$2a$10$1A6X0IvozT15pfnbeDGBVujKF70vthvAyIJvuAKdotFY/MOcfo0NO', 'user2-name', 'user2-surname', 'HENS_BATCH_USER');
+INSERT INTO user
+	(id, email, password, name, surname, role)
+VALUES
+	('3', 'user3@albarapp.com', '$2a$10$1A6X0IvozT15pfnbeDGBVujKF70vthvAyIJvuAKdotFY/MOcfo0NO', 'user3-name', 'user3-surname', 'BILLING_USER;HENS_BATCH_USER');
 
 INSERT INTO product
 	(id, code, factory_price, name, tax, aecoc_gtin)

@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Set;
 
 @CrossOrigin(origins = "http://localhost:8080")
-@PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_USER')")
+@PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_BILLING_USER')")
 public interface DeliveryNoteItemRepository extends CrudRepository<DeliveryNoteItem, String> {
 
 	Set<DeliveryNoteItem> findByDeliveryNote(DeliveryNote deliveryNote);

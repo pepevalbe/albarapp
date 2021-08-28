@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import java.util.Set;
 
 @CrossOrigin(origins = "http://localhost:8080")
-@PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_USER')")
+@PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_BILLING_USER')")
 public interface ProductRepository extends CrudRepository<Product, String> {
 
 	Set<Product> findAll();

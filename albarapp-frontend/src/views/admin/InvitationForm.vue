@@ -26,7 +26,7 @@ export default {
     valid: false,
     email: "",
     role: null,
-    roles: ["USER", "ADMIN"],
+    roles: ["BILLING_USER", "HENS_BATCH_USER", "ADMIN"],
     emailRules: [
       (v) => !!v || "El email es necesario",
       (v) => /.+@.+\..+/.test(v) || "Email inválido",

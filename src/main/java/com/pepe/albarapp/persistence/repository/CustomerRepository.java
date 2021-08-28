@@ -14,7 +14,7 @@ import java.util.Optional;
 import java.util.Set;
 
 @CrossOrigin(origins = "http://localhost:8080")
-@PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_USER')")
+@PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_BILLING_USER')")
 public interface CustomerRepository extends CrudRepository<Customer, String> {
 
 	Optional<Customer> findByCode(int code);

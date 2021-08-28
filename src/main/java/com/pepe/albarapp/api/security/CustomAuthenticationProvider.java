@@ -14,7 +14,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class CustomAuthenticationProvider implements AuthenticationProvider {
@@ -40,7 +42,9 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 		}
 
 		logger.info("Successful authentication: " + email);
-		return new UsernamePasswordAuthenticationToken(email, password, Collections.singletonList(new SimpleGrantedAuthority(user.getRole())));
+		List<String> stringRoles =  Arrays.asList(user.getRole().split(";"));
+		List<SimpleGrantedAuthority> authRoles = stringRoles.stream().map(role -> new SimpleGrantedAuthority(role)).collect(Collectors.toList());
+		return new UsernamePasswordAuthenticationToken(email, password, authRoles);
 	}
 
 	@Override

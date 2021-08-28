@@ -5,6 +5,9 @@ import com.pepe.albarapp.persistence.domain.User;
 import com.pepe.albarapp.service.UserService;
 import com.pepe.albarapp.service.dto.InvitationDto;
 import com.pepe.albarapp.service.dto.RegistrationDto;
+import com.pepe.albarapp.service.dto.UserDto;
+import com.pepe.albarapp.service.mapping.UserMapper;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -34,6 +37,9 @@ public class UserController {
 	@Autowired
 	private UserService userService;
 
+	@Autowired
+	private UserMapper userMapper;
+
 	@PostMapping(USER_ENDPOINT)
 	public ResponseEntity<User> createUser(@RequestBody RegistrationDto registrationDto) {
 
@@ -46,9 +52,9 @@ public class UserController {
 	}
 
 	@GetMapping(PROFILE_ENDPOINT)
-	public ResponseEntity<User> getProfile(Principal principal) {
+	public ResponseEntity<UserDto> getProfile(Principal principal) {
 
-		return ResponseEntity.ok(userService.getProfile(principal.getName()));
+		return ResponseEntity.ok(userMapper.map(userService.getProfile(principal.getName())));
 	}
 
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
