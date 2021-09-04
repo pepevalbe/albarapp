@@ -8,6 +8,8 @@ import com.pepe.albarapp.persistence.domain.User;
 import com.pepe.albarapp.persistence.repository.InvitationRepository;
 import com.pepe.albarapp.persistence.repository.UserRepository;
 import com.pepe.albarapp.service.dto.RegistrationDto;
+import com.pepe.albarapp.service.dto.UserDto;
+import com.pepe.albarapp.service.mapping.UserMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,6 +17,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -37,9 +41,17 @@ public class UserService {
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 
-	public User getProfile(String email) {
+	@Autowired
+	private UserMapper userMapper;
 
-		return userRepository.findByEmail(email).orElseThrow(() -> new ApiException(ApiError.ApiError001));
+	public UserDto getProfile(String email) {
+
+		return userMapper.map(userRepository.findByEmail(email).orElseThrow(() -> new ApiException(ApiError.ApiError001)));
+	}
+
+	public List<UserDto> getUsers() {
+
+		return userRepository.findAll().stream().map(userMapper::map).collect(Collectors.toList());
 	}
 
 	@Transactional
@@ -90,4 +102,18 @@ public class UserService {
 		log.info("User created: " + createdUser.getEmail());
 		return createdUser;
 	}
+
+	@Transactional
+	public void deleteUser(String sessionEmail, String id) {
+
+		User currentUser = userRepository.findByEmail(sessionEmail).orElseThrow(() -> new ApiException(ApiError.ApiError001));
+		if (currentUser.equals(id)) {
+			throw new ApiException(ApiError.ApiError001);
+		} else {
+			User userToDelete = userRepository.findById(id).orElseThrow(() -> new ApiException(ApiError.ApiError001));
+			userRepository.delete(userToDelete);
+		}
+
+	}
+
 }
