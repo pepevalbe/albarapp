@@ -18,7 +18,7 @@ public interface UserRepository extends CrudRepository<User, String> {
 	@PreAuthorize("hasRole('ROLE_ADMIN') or #email == authentication.name")
 	Optional<User> findByEmail(String email);
 
-	@PreAuthorize("hasRole('ROLE_REGISTRY')")
+	@PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_REGISTRY')")
 	@Override
 	<S extends User> S save(S s);
 }

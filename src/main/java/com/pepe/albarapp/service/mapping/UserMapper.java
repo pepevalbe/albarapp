@@ -12,4 +12,7 @@ public interface UserMapper {
     @Mapping(target="roles", expression="java(user.getRole().split(\";\"))")
     UserDto map(User user);
 
+    @Mapping(target="role", expression="java(String.join(\";\", user.getRoles()))")
+    User map(UserDto user);
+
 }

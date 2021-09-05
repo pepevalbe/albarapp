@@ -41,6 +41,13 @@
                 <td>{{ item.rolesPlain }}</td>
                 <td>
                   <v-btn
+                    class="mr-2"
+                    v-if="item.email !== $store.getters.parsedToken.sub"
+                    @click="updateUser(item)"
+                  >
+                    <v-icon dark>mdi-pencil</v-icon>
+                  </v-btn>
+                  <v-btn
                     v-if="item.email !== $store.getters.parsedToken.sub"
                     color="red"
                     dark
@@ -74,6 +81,12 @@
                   </v-card-text>
                   <v-card-actions>
                     <v-spacer></v-spacer>
+                    <v-btn
+                      v-if="item.email !== $store.getters.parsedToken.sub"
+                      @click="updateUser(item)"
+                    >
+                      <v-icon dark>mdi-pencil</v-icon>
+                    </v-btn>
                     <v-btn
                       v-if="item.email !== $store.getters.parsedToken.sub"
                       color="red"
@@ -185,6 +198,9 @@ export default {
       await UserService.delete(user.id);
       this.listUsers();
       this.dialogDelete.show = false;
+    },
+    updateUser(user) {
+      this.$router.push({ name: "UserUpdate", params: { id: user.id } });
     },
   },
 };

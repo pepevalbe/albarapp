@@ -30,7 +30,7 @@ public class UserController {
 
 	private static final String USER_CREATION_ENDPOINT = "/user-creation";
 	private static final String USER_DELETE_ENDPOINT = "/api/user-delete/";
-	private static final String USER_ENDPOINT = "/api/users";
+	private static final String USER_ENDPOINT = "/api/users/";
 	private static final String PROFILE_ENDPOINT = "/api/profile";
 	private static final String INVITATION_ENDPOINT = "/api/send-invitation";
 	private static final String TRIVIA_ENDPOINT = "/api/trivia";
@@ -69,6 +69,19 @@ public class UserController {
 	public ResponseEntity<List<UserDto>> getUsers() {
 
 		return ResponseEntity.ok(userService.getUsers());
+	}
+
+	@GetMapping(USER_ENDPOINT + "{id}")
+	public ResponseEntity<UserDto> getUser(@PathVariable String id) {
+
+		return ResponseEntity.ok(userService.getUser(id));
+	}
+
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PatchMapping(USER_ENDPOINT)
+	public ResponseEntity<UserDto> updateUser(@RequestBody UserDto userDto) {
+
+		return ResponseEntity.ok(userService.updateUser(userDto));
 	}
 
 	@PreAuthorize("hasRole('ROLE_ADMIN')")

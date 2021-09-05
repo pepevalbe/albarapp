@@ -54,6 +54,18 @@ public class UserService {
 		return userRepository.findAll().stream().map(userMapper::map).collect(Collectors.toList());
 	}
 
+	public UserDto getUser(String id) {
+
+		return userMapper.map(userRepository.findById(id).orElseThrow(() -> new ApiException(ApiError.ApiError001)));
+	}
+
+	public UserDto updateUser(UserDto user) {
+		User persistedUser = userRepository.findById(user.getId()).orElseThrow(() -> new ApiException(ApiError.ApiError001));
+		User userToPersist = userMapper.map(user);
+		persistedUser.setRole(userToPersist.getRole());
+		return userMapper.map(userRepository.save(persistedUser));
+	}
+
 	@Transactional
 	public void sendInvitation(String email, String role) {
 

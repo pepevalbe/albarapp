@@ -6,7 +6,7 @@ Vue.use(Router);
 
 const router = new Router({
   routes: [
-    { path: '*', redirect: '/billing/statistics' },
+    { path: '*', redirect: '/' },
     {
       path: "/",
       component: () => import("@/views/Home"),
@@ -42,6 +42,13 @@ const router = new Router({
       component: () => import("@/views/admin/UserCreation"),
       name: "UserCreation",
       meta: { headerName: "Creación de usuario" }
+    },
+    {
+      path: "/admin/user-update/:id",
+      component: () => import("@/views/admin/UserUpdate"),
+      props: true,
+      name: "UserUpdate",
+      meta: { headerName: "Actualizar roles de usuario" }
     },
     {
       path: "/billing/products/",
@@ -262,7 +269,7 @@ router.beforeEach((to, from, next) => {
     })
   } else if (to.name === "Login" && store.getters.authenticated) {
     if (to.query?.destinationURL) next({ path: to.query?.destinationURL });
-    else next({ name: "HomePage" });
+    else next({ name: "Home" });
   } else {
     next();
   }

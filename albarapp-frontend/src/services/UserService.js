@@ -1,6 +1,6 @@
 import HttpClient from '@/services/HttpClient.js';
 
-const USER_RESOURCE_NAME = '/api/users';
+const USER_RESOURCE_NAME = '/api/users/';
 const USER_PROFILE_URL = '/api/profile';
 const SEND_INVITATION_URL = '/api/send-invitation';
 const CREATE_USER_URL = '/user-creation';
@@ -21,6 +21,20 @@ export default {
           user.rolesPlain = user.roles.join(', ')
           return user
         })
+      });
+  },
+
+  getUser(id) {
+    return HttpClient.get(`${USER_RESOURCE_NAME}${id}`)
+      .then(response => {
+        return response.data
+      });
+  },
+
+  updateUser(user) {
+    return HttpClient.patch(`${USER_RESOURCE_NAME}`, user)
+      .then(response => {
+        return response.data
       });
   },
 
