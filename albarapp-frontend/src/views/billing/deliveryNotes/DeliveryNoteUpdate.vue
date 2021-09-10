@@ -9,7 +9,9 @@
       ></DeliveryNoteForm>
     </div>
     <div v-if="errorLoading">
-      <v-row class="mb-2" justify="center">Error al obtener el albarán, por favor vuelva a cargar.</v-row>
+      <v-row class="mb-2" justify="center"
+        >Error al obtener el albarán, por favor vuelva a cargar.</v-row
+      >
       <v-row justify="center">
         <v-btn @click="loadDeliveryNote()">
           <v-icon dark>mdi-refresh</v-icon>
@@ -17,8 +19,8 @@
       </v-row>
     </div>
     <v-snackbar v-model="snackbar.show" :color="snackbar.color">
-      {{snackbar.message}}
-      <v-btn text @click="snackbar.show=false">Cerrar</v-btn>
+      {{ snackbar.message }}
+      <v-btn text @click="snackbar.show = false">Cerrar</v-btn>
     </v-snackbar>
     <v-overlay v-if="spinner.loading" :value="true">
       <v-progress-circular indeterminate color="primary"></v-progress-circular>
@@ -82,12 +84,13 @@ export default {
     async updateDeliveryNote() {
       try {
         this.showSpinner();
-        await DeliveryNoteService.update(
+        await DeliveryNoteService.update(this.form.deliveryNote);
+        /*await DeliveryNoteService.update(
           this.deliveryNoteId,
           this.form.deliveryNote,
           this.form.deliveryNote.deliveryNoteItems,
           this.deliveryNoteItemsOriginal
-        );
+        );*/
         this.snackbar = {
           show: true,
           message: "Albarán actualizado correctamente",

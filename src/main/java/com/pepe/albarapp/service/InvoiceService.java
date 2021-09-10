@@ -41,6 +41,11 @@ public class InvoiceService {
 	private InvoiceMapper invoiceMapper;
 
 	@Transactional(readOnly = true)
+	public DeliveryNoteDto getDeliveryNote(Long id) {
+		return invoiceMapper.map(deliveryNoteRepository.findById(id).orElseThrow(() -> new ApiException(ApiError.ApiError006)));
+	}
+
+	@Transactional(readOnly = true)
 	public Page<DeliveryNoteDto> getDeliveryNotes(Integer customerCode, Long timestampFrom, Long timestampTo, String auxDeliveryNoteNr, Pageable pageable) {
 		return deliveryNoteRepository
 				.filterByCustomerCodeAndTimestampRange(customerCode, timestampFrom, timestampTo, auxDeliveryNoteNr, pageable)
@@ -70,6 +75,9 @@ public class InvoiceService {
 		// Create delivery note
 		DeliveryNote createdDeliveryNote = deliveryNoteRepository.save(invoiceMapper.map(deliveryNoteDto));
 
+		// Delete previous delivery note items if it's an update
+		deliveryNoteItemRepository.deleteByDeliveryNoteId(createdDeliveryNote.getId());
+
 		// Create delivery note items
 		List<DeliveryNoteItem> deliveryNoteItems = deliveryNoteDto.getDeliveryNoteItems().stream()
 				.map(deliveryNoteItemDto -> {
@@ -78,7 +86,8 @@ public class InvoiceService {
 					return deliveryNoteItem;
 				}).collect(Collectors.toList());
 
-		deliveryNoteItemRepository.saveAll(deliveryNoteItems);
+		List<DeliveryNoteItem> createdDeliveryNoteItems = (List<DeliveryNoteItem>) deliveryNoteItemRepository.saveAll(deliveryNoteItems);
+		createdDeliveryNote.setDeliveryNoteItems(new HashSet<> (createdDeliveryNoteItems));
 		log.info("DeliveryNote created/updated: " + createdDeliveryNote.getId());
 		return invoiceMapper.map(createdDeliveryNote);
 	}

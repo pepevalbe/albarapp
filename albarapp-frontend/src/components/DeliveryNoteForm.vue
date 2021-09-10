@@ -140,6 +140,7 @@
         <v-row class="ml-5" justify="center">
           <v-col cols="12" md="8">
             <DeliveryNoteItemTable
+              v-if="form.deliveryNote.deliveryNoteTotal"
               :deliveryNoteItems="form.deliveryNote.deliveryNoteItems"
               :deliveryNoteTotal="form.deliveryNote.deliveryNoteTotal"
             ></DeliveryNoteItemTable>
@@ -150,21 +151,30 @@
           <v-flex xs12>
             <v-row class="ml-5" justify="center">
               <v-btn class="mr-4" @click="$router.back()">Volver</v-btn>
-              <v-btn color="error" v-if="form.create" class="mr-4" @click="reset()">Borrar</v-btn>
+              <v-btn
+                color="error"
+                v-if="form.create"
+                class="mr-4"
+                @click="reset()"
+                >Borrar</v-btn
+              >
               <v-btn
                 ref="createbutton"
                 class="mr-4"
                 :disabled="!deliveryNoteValid()"
                 @click="createDeliveryNote()"
                 @keyup.left="moveToQuantity()"
-              >Guardar</v-btn>
+                >Guardar</v-btn
+              >
             </v-row>
           </v-flex>
         </v-layout>
       </v-form>
     </div>
     <div v-if="errorLoading">
-      <v-row class="mb-2" justify="center">Error al cargar la página, por favor vuelva a cargar.</v-row>
+      <v-row class="mb-2" justify="center"
+        >Error al cargar la página, por favor vuelva a cargar.</v-row
+      >
       <v-row justify="center">
         <v-btn @click="loadView()">
           <v-icon dark>mdi-refresh</v-icon>
@@ -172,7 +182,7 @@
       </v-row>
     </div>
     <v-snackbar v-model="snackbar">
-      {{snackbarMessage}}
+      {{ snackbarMessage }}
       <v-btn color="error" text @click="snackbar = false">Cerrar</v-btn>
     </v-snackbar>
     <v-overlay v-if="spinner.loading" :value="true">
@@ -227,14 +237,28 @@ export default {
         this.errorLoading = false;
         this.showSpinner();
         this.customers = await CustomerService.getAllWithPrices();
+        this.products = await ProductService.getAll();
         for (var customer of this.customers) {
           customer.alias = customer.alias + " - " + customer.name;
         }
-        if (this.form.deliveryNote.customer) {
+        if (this.form.deliveryNote.customerId) {
+          this.form.deliveryNote.customer = this.customers.find(
+            (customer) => customer.id === this.form.deliveryNote.customerId
+          )
           this.customerCode = this.form.deliveryNote.customer.code;
           this.selectCustomerByCode();
         }
-        this.products = await ProductService.getAll();
+        this.form.deliveryNote.deliveryNoteTotal = {
+          value: this.form.deliveryNote.total,
+        };
+        for (let dni of this.form.deliveryNote.deliveryNoteItems) {
+          dni.product = this.products.find(
+            (product) => product.id == dni.productId
+          )
+          dni.taxRate = dni.product.tax
+          dni.gross = dni.quantity * dni.price;
+          dni.net = dni.gross * (1 + dni.taxRate / 100);
+        }
         this.parseDatePick();
       } catch {
         this.errorLoading = true;
@@ -274,7 +298,8 @@ export default {
       this.form.deliveryNote.customer = {};
     },
     async selectCustomerPrices() {
-      this.customerPrices = this.form.deliveryNote.customer.customerProductPrices;
+      this.customerPrices =
+        this.form.deliveryNote.customer.customerProductPrices;
     },
     selectProductByCode() {
       var vm = this;
@@ -356,8 +381,8 @@ export default {
       // the deliveryNote already has
       if (this.customerPrices && this.customerPrices.length > 0) {
         var vm = this;
-        var indexCustomerProductPrice = this.form.deliveryNote.deliveryNoteItems
-          .length;
+        var indexCustomerProductPrice =
+          this.form.deliveryNote.deliveryNoteItems.length;
         if (indexCustomerProductPrice >= this.customerPrices.length)
           indexCustomerProductPrice = 0;
         var index = this.products.findIndex(function (element) {
@@ -418,11 +443,7 @@ export default {
       this.moveToAuxDeliveryNoteNr();
     },
     parseDatePick() {
-      var moment = this.$moment.utc(
-        this.form.deliveryNote.date,
-        "YYYY-MM-DD",
-        true
-      );
+      var moment = this.$moment.utc(this.form.deliveryNote.issuedTimestamp);
       this.dateFormattedText = moment.format("DD/MM/YYYY");
       this.form.deliveryNote.issuedTimestamp = moment.format("x");
       this.menuDatePicker = false;

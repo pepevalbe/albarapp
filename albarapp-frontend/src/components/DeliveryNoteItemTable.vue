@@ -15,7 +15,7 @@
       <tbody>
         <tr v-for="item in deliveryNoteItems" :key="item.itemNumber">
           <td>{{ item.quantity }}</td>
-          <td>{{ item.product.name }}</td>
+          <td>{{ item.productName }}</td>
           <td>{{ item.price }}</td>
           <td>{{ item.gross.toFixed(2) }} €</td>
           <td>{{ item.taxRate }} %</td>

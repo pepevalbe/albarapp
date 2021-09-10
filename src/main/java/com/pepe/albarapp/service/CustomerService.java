@@ -42,6 +42,12 @@ public class CustomerService {
 	}
 
 	@Transactional(readOnly = true)
+	public CustomerDto getCustomer(String id) {
+
+		return customerMapper.map(customerRepository.findById(id).orElseThrow(() -> new ApiException(ApiError.ApiError006)));
+	}
+
+	@Transactional(readOnly = true)
 	public List<CustomerDto> findCustomersByAlias(String alias) {
 
 		return customerRepository.findByAliasContaining(alias).stream().map(customerMapper::map).collect(Collectors.toList());

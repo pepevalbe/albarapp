@@ -1,7 +1,11 @@
 <template>
   <v-flex align-self-start>
     <div v-if="!errorLoading">
-      <CustomerForm :form="form" v-if="form.customer" :readonly="true"></CustomerForm>
+      <CustomerForm
+        :form="form"
+        v-if="form.customer"
+        :readonly="true"
+      ></CustomerForm>
       <div class="mb-3"></div>
       <CustomerPriceTable
         v-if="form.customer && form.customer.customerProductPrices"
@@ -16,7 +20,9 @@
       </v-layout>
     </div>
     <div v-if="errorLoading">
-      <v-row class="mb-2" justify="center">Error al obtener el cliente, por favor vuelva a cargar.</v-row>
+      <v-row class="mb-2" justify="center"
+        >Error al obtener el cliente, por favor vuelva a cargar.</v-row
+      >
       <v-row justify="center">
         <v-btn @click="loadCustomer()">
           <v-icon dark>mdi-refresh</v-icon>
@@ -33,6 +39,7 @@
 import CustomerForm from "@/components/CustomerForm";
 import CustomerPriceTable from "@/components/CustomerPriceTable";
 import CustomerService from "@/services/CustomerService.js";
+import ProductService from "@/services/ProductService.js";
 
 export default {
   name: "CustomerDetail",
@@ -46,6 +53,7 @@ export default {
       switchAecoc: false,
       customer: null,
     },
+    products: [],
     errorLoading: false,
     spinner: {
       loading: false,
@@ -56,20 +64,29 @@ export default {
     customerId: String,
   },
   async created() {
+    await this.loadProducts();
     this.loadCustomer();
   },
   methods: {
+    async loadProducts() {
+      this.products = await ProductService.getAll();
+    },
     async loadCustomer() {
       try {
         this.showSpinner();
         this.errorLoading = false;
         this.form.customer = await CustomerService.get(this.customerId);
         if (this.form.customer.customerAecocInfo) this.form.switchAecoc = true;
-        this.$set(
+        for (let cpp of this.form.customer.customerProductPrices) {
+          cpp.product = this.products.find(
+            (product) => product.id === cpp.productId
+          );
+        }
+        /*this.$set(
           this.form.customer,
           "customerProductPrices",
           await CustomerService.getCustomerProductPrices(this.customerId)
-        );
+        );*/
       } catch (e) {
         this.errorLoading = true;
       } finally {

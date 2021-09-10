@@ -1,12 +1,12 @@
 import HttpClient from '@/services/HttpClient.js';
 
-const RESOURCE_NAME = '/hateoas/products';
+const RESOURCE_NAME = '/api/products';
 
 export default {
   getAll() {
     return HttpClient.get(RESOURCE_NAME)
       .then(response => {
-        return response.data._embedded.products;
+        return response.data;
       });
   },
 
@@ -29,9 +29,5 @@ export default {
       .then(response => {
         return response.data;
       });
-  },
-
-  delete(id) {
-    return HttpClient.delete(`${RESOURCE_NAME}/${id}`);
   }
 };

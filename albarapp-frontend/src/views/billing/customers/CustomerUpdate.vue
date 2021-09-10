@@ -16,12 +16,15 @@
             color="success"
             class="mr-4"
             @click="updateCustomer()"
-          >Actualizar</v-btn>
+            >Actualizar</v-btn
+          >
         </v-flex>
       </v-layout>
     </div>
     <div v-if="errorLoading">
-      <v-row class="mb-2" justify="center">Error al obtener el cliente, por favor vuelva a cargar.</v-row>
+      <v-row class="mb-2" justify="center"
+        >Error al obtener el cliente, por favor vuelva a cargar.</v-row
+      >
       <v-row justify="center">
         <v-btn @click="loadCustomer()">
           <v-icon dark>mdi-refresh</v-icon>
@@ -29,8 +32,8 @@
       </v-row>
     </div>
     <v-snackbar v-model="snackbar.show" :color="snackbar.color">
-      {{snackbar.message}}
-      <v-btn text @click="snackbar.show=false">Cerrar</v-btn>
+      {{ snackbar.message }}
+      <v-btn text @click="snackbar.show = false">Cerrar</v-btn>
     </v-snackbar>
     <v-overlay v-if="spinner.loading" :value="true">
       <v-progress-circular indeterminate color="primary"></v-progress-circular>
@@ -42,6 +45,7 @@
 import CustomerForm from "@/components/CustomerForm";
 import CustomerPriceTable from "@/components/CustomerPriceTable";
 import CustomerService from "@/services/CustomerService.js";
+import ProductService from "@/services/ProductService.js";
 
 export default {
   name: "CustomerUpdate",
@@ -55,6 +59,7 @@ export default {
       switchAecoc: false,
       customer: null,
     },
+    products: [],
     errorLoading: false,
     snackbar: {
       show: false,
@@ -70,20 +75,29 @@ export default {
     customerId: String,
   },
   async created() {
+    await this.loadProducts();
     this.loadCustomer();
   },
   methods: {
+    async loadProducts() {
+      this.products = await ProductService.getAll();
+    },
     async loadCustomer() {
       try {
         this.showSpinner();
         this.errorLoading = false;
         this.form.customer = await CustomerService.get(this.customerId);
         if (this.form.customer.customerAecocInfo) this.form.switchAecoc = true;
-        this.$set(
+        for (let cpp of this.form.customer.customerProductPrices) {
+          cpp.product = this.products.find(
+            (product) => product.id === cpp.productId
+          );
+        }
+        /*this.$set(
           this.form.customer,
           "customerProductPrices",
           await CustomerService.getCustomerProductPrices(this.customerId)
-        );
+        );*/
       } catch (e) {
         this.errorLoading = true;
       } finally {
@@ -94,11 +108,7 @@ export default {
       try {
         this.showSpinner();
         await CustomerService.update(this.customerId, this.form.customer);
-        this.$set(
-          this.form.customer,
-          "customerProductPrices",
-          await CustomerService.getCustomerProductPrices(this.customerId)
-        );
+        this.loadCustomer();
         this.snackbar = {
           show: true,
           message: "Cliente actualizado correctamente",

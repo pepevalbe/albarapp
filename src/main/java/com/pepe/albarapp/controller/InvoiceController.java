@@ -1,6 +1,7 @@
 package com.pepe.albarapp.controller;
 
 import com.pepe.albarapp.api.log.Log;
+import com.pepe.albarapp.persistence.repository.DeliveryNoteItemRepository;
 import com.pepe.albarapp.service.InvoiceService;
 import com.pepe.albarapp.service.dto.DeliveryNoteDto;
 import com.pepe.albarapp.service.dto.InvoiceDto;
@@ -26,6 +27,11 @@ public class InvoiceController {
 
 	@Autowired
 	private InvoiceService invoiceService;
+
+	@GetMapping(DELIVERY_NOTES_ENDPOINT + "/{id}")
+	public ResponseEntity<DeliveryNoteDto> getDeliveryNote(@PathVariable Long id) {
+		return ResponseEntity.ok(invoiceService.getDeliveryNote(id));
+	}
 
 	@GetMapping(DELIVERY_NOTES_ENDPOINT)
 	public ResponseEntity<Page<DeliveryNoteDto>> getDeliveryNotes(@RequestParam @Nullable Integer customerCode,

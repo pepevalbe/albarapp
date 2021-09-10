@@ -1,10 +1,10 @@
 import HttpClient from '@/services/HttpClient.js';
 import moment from "moment";
 
-const CUSTOMER_RESOURCE = 'hateoas/customers';
+//const CUSTOMER_RESOURCE = 'hateoas/customers';
 const DELIVERY_NOTE_RESOURCE = '/hateoas/deliveryNotes';
 const DELIVERY_NOTES_COMPLETE_ENDPOINT = '/api/deliveryNotes';
-const DELIVERY_NOTE_ITEM_RESOURCE = '/hateoas/deliveryNoteItems';
+//const DELIVERY_NOTE_ITEM_RESOURCE = '/hateoas/deliveryNoteItems';
 
 export default {
     get(id) {
@@ -90,7 +90,11 @@ export default {
                 };
             });
     },
-    async getWithCustomerAndTotal(id) {
+
+    getWithCustomerAndTotal(id) {
+        return HttpClient.get(`${DELIVERY_NOTES_COMPLETE_ENDPOINT}/${id}`).then(response => response.data);
+    },
+    /*async getWithCustomerAndTotal(id) {
         var promises = [];
         var deliveryNote = {};
         await HttpClient.get(`${DELIVERY_NOTE_RESOURCE}/${id}`)
@@ -116,7 +120,7 @@ export default {
             deliveryNote.deliveryNoteTotal.value += deliveryNoteItem.net;
         }
         return deliveryNote;
-    },
+    },*/
 
     async create(deliveryNote, deliveryNoteItems) {
 
@@ -139,7 +143,29 @@ export default {
         return HttpClient.post(DELIVERY_NOTES_COMPLETE_ENDPOINT, deliveryNoteDto);
     },
 
-    async update(id, deliveryNote, deliveryNoteItems, deliveryNoteItemsOriginal) {
+    async update(deliveryNote) {
+
+        var deliveryNoteDto = {
+            id: deliveryNote.id,
+            auxDeliveryNoteNr: deliveryNote.auxDeliveryNoteNr,
+            issuedTimestamp: deliveryNote.issuedTimestamp,
+            customerId: deliveryNote.customer.id,
+            deliveryNoteItems: []
+        };
+
+        for (const deliveryNoteItem of deliveryNote.deliveryNoteItems) {
+            var deliveryNoteItemDto = {
+                quantity: deliveryNoteItem.quantity,
+                price: deliveryNoteItem.price,
+                productId: deliveryNoteItem.product.id
+            };
+            deliveryNoteDto.deliveryNoteItems.push(deliveryNoteItemDto);
+        }
+
+        return HttpClient.post(DELIVERY_NOTES_COMPLETE_ENDPOINT, deliveryNoteDto);
+    },
+
+    /*async update(id, deliveryNote, deliveryNoteItems, deliveryNoteItemsOriginal) {
         var promises = [];
         var customerHref = `${CUSTOMER_RESOURCE}/${deliveryNote.customer.id}`;
 
@@ -172,7 +198,7 @@ export default {
             });
         await promisePut;
         return Promise.all(promises);
-    },
+    },*/
 
     findDeliveryNotesToBill(customerCode) {
         var params = {};

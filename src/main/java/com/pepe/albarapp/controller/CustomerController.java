@@ -20,6 +20,11 @@ public class CustomerController {
 	@Autowired
 	private CustomerService customerService;
 
+	@GetMapping(CUSTOMERS_ENDPOINT + "/{id}")
+	public ResponseEntity<CustomerDto> getCustomer(@PathVariable String id) {
+		return ResponseEntity.ok(customerService.getCustomer(id));
+	}
+
 	@GetMapping(CUSTOMERS_ENDPOINT)
 	public ResponseEntity<List<CustomerDto>> getCustomers(@RequestParam @Nullable String alias) {
 

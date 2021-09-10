@@ -27,7 +27,7 @@ export default {
       deliveryNote: {
         customer: null,
         auxDeliveryNoteNr: "",
-        issuedTimestamp: 0,
+        issuedTimestamp: new Date().getTime(),
         date: "",
         deliveryNoteItems: [],
         deliveryNoteTotal: { value: 0 },
@@ -41,14 +41,7 @@ export default {
       counter: 0,
     },
   }),
-  mounted() {
-    this.setDateToday();
-  },
   methods: {
-    setDateToday() {
-      this.form.deliveryNote.date = this.$moment.utc().format("YYYY-MM-DD");
-      this.$refs.form.parseDatePick();
-    },
     reset() {
       this.$refs.form.reset();
     },

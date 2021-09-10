@@ -16,6 +16,8 @@ public interface DeliveryNoteItemRepository extends CrudRepository<DeliveryNoteI
 
 	Set<DeliveryNoteItem> findByDeliveryNote(DeliveryNote deliveryNote);
 
+	void deleteByDeliveryNoteId(Long deliveryNoteId);
+
 	@Query(value = "select SUM(dni.quantity*dni.price*(1+dni.product.tax/100)) from DeliveryNoteItem dni where dni.deliveryNote.issuedTimestamp >= ?1 and dni.deliveryNote.issuedTimestamp <= ?2")
 	Double calcTotalByIssuedTimestampRange(Long minTimestamp, Long maxTimestamp);
 
