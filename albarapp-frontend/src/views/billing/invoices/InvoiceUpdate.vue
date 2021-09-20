@@ -287,13 +287,16 @@
         >
           <template v-slot:body="{ items }">
             <tbody v-if="!$vuetify.breakpoint.xsOnly">
-              <tr
-                v-for="deliveryNote in items"
-                :key="deliveryNote.id"
-              >
+              <tr v-for="deliveryNote in items" :key="deliveryNote.id">
                 <td>A{{ deliveryNote.id }}</td>
                 <td>{{ deliveryNote.auxDeliveryNoteNr }}</td>
-                <td>{{ $moment.utc(deliveryNote.issuedTimestamp).format("DD-MM-YYYY") }}</td>
+                <td>
+                  {{
+                    $moment
+                      .utc(deliveryNote.issuedTimestamp)
+                      .format("DD-MM-YYYY")
+                  }}
+                </td>
                 <td>
                   <span
                     v-for="noteItem in deliveryNote.deliveryNoteItems"

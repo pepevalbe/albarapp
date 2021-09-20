@@ -67,8 +67,7 @@ export default {
         this.errorLoading = false;
         var deliveryNote = await DeliveryNoteService.get(this.deliveryNoteId);
         this.form.deliveryNote = deliveryNote;
-      } catch (e) {
-        console.log(e);
+      } catch {
         this.errorLoading = true;
       } finally {
         this.closeSpinner();
