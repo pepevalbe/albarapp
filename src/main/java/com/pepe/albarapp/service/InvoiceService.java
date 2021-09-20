@@ -59,6 +59,16 @@ public class InvoiceService {
 				.map(invoiceMapper::map);
 	}
 
+	@Transactional(readOnly = true)
+	public List<DeliveryNoteDto> getDeliveryNotesToBill(String customerId) {
+		return deliveryNoteRepository.findByCustomerIdAndInvoiceIsNull(customerId).stream().map(invoiceMapper::map).collect(Collectors.toList());
+	}
+
+	@Transactional(readOnly = true)
+	public List<DeliveryNoteDto> getDeliveryNotedFromInvoice(Long invoiceId) {
+		return deliveryNoteRepository.findByInvoiceId(invoiceId).stream().map(invoiceMapper::map).collect(Collectors.toList());
+	}
+
 	@Transactional
 	public DeliveryNoteDto persistDeliveryNote(DeliveryNoteDto deliveryNoteDto) {
 
@@ -72,24 +82,28 @@ public class InvoiceService {
 			}
 		});
 
-		// Create delivery note
-		DeliveryNote createdDeliveryNote = deliveryNoteRepository.save(invoiceMapper.map(deliveryNoteDto));
+		// Persist delivery note
+		DeliveryNote deliveryNote = invoiceMapper.map(deliveryNoteDto);
+		if (deliveryNote.getInvoice().getId() == null) {
+			deliveryNote.setInvoice(null);
+		}
+		DeliveryNote persistedDeliveryNote = deliveryNoteRepository.save(deliveryNote);
 
 		// Delete previous delivery note items if it's an update
-		deliveryNoteItemRepository.deleteByDeliveryNoteId(createdDeliveryNote.getId());
+		deliveryNoteItemRepository.deleteByDeliveryNoteId(persistedDeliveryNote.getId());
 
 		// Create delivery note items
 		List<DeliveryNoteItem> deliveryNoteItems = deliveryNoteDto.getDeliveryNoteItems().stream()
 				.map(deliveryNoteItemDto -> {
 					DeliveryNoteItem deliveryNoteItem = invoiceMapper.map(deliveryNoteItemDto);
-					deliveryNoteItem.setDeliveryNote(createdDeliveryNote);
+					deliveryNoteItem.setDeliveryNote(persistedDeliveryNote);
 					return deliveryNoteItem;
 				}).collect(Collectors.toList());
 
 		List<DeliveryNoteItem> createdDeliveryNoteItems = (List<DeliveryNoteItem>) deliveryNoteItemRepository.saveAll(deliveryNoteItems);
-		createdDeliveryNote.setDeliveryNoteItems(new HashSet<> (createdDeliveryNoteItems));
-		log.info("DeliveryNote created/updated: " + createdDeliveryNote.getId());
-		return invoiceMapper.map(createdDeliveryNote);
+		persistedDeliveryNote.setDeliveryNoteItems(new HashSet<> (createdDeliveryNoteItems));
+		log.info("DeliveryNote created/updated: " + persistedDeliveryNote.getId());
+		return invoiceMapper.map(persistedDeliveryNote);
 	}
 
 	@Transactional
@@ -103,6 +117,11 @@ public class InvoiceService {
 			return true;
 		}
 		return false;
+	}
+
+	@Transactional(readOnly = true)
+	public InvoiceDto getInvoice(Long id) {
+		return invoiceMapper.map(invoiceRepository.findById(id).orElseThrow(() -> new ApiException(ApiError.ApiError006)));
 	}
 
 	@Transactional(readOnly = true)

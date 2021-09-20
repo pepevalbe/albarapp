@@ -1,6 +1,5 @@
 import HttpClient from '@/services/HttpClient.js';
 import moment from "moment";
-import DeliveryNoteService from "@/services/DeliveryNoteService.js";
 
 const RESOURCE_NAME = '/hateoas/invoices';
 const INVOICE_COMPLETE_ENDPOINT = '/api/invoices';
@@ -13,38 +12,10 @@ const INVOICE_DOWNLOAD_PDF_MULTIPLE_ENDPOINT = '/api/invoices/download/pdf/multi
 
 export default {
     get(id) {
-        return HttpClient.get(`${RESOURCE_NAME}/${id}`)
+        return HttpClient.get(`${INVOICE_COMPLETE_ENDPOINT}/${id}`)
             .then(response => {
                 return response.data;
             });
-    },
-    async getWithCustomerAndTotal(id) {
-        var invoice = await this.get(id);
-        await this.getDeliveryNotes(invoice);
-        var promises = [];
-        for (const deliveryNote of invoice.deliveryNotes) {
-            promises.push(this.getDeliveryNoteItemsAndCustomer(deliveryNote));
-        }
-        await Promise.all(promises);
-        invoice.total = 0;
-        invoice.dateFormatted = moment.utc(invoice.issuedTimestamp, "x").format("DD/MM/YYYY");
-        invoice.date = moment.utc(invoice.issuedTimestamp, "x").format("YYYY-MM-DD");
-        for (const deliveryNote of invoice.deliveryNotes) {
-            invoice.total += deliveryNote.deliveryNoteTotal.value;
-            deliveryNote.date = moment.utc(deliveryNote.issuedTimestamp, "x").format("YYYY-MM-DD");
-            deliveryNote.dateFormatted = moment.utc(deliveryNote.issuedTimestamp, "x").format("DD/MM/YYYY");
-        }
-        return invoice;
-    },
-    getDeliveryNotes(invoice) {
-        return HttpClient.get(invoice._links.deliveryNotes.href)
-            .then(response => {
-                invoice.deliveryNotes = response.data._embedded.deliveryNotes.sort((a, b) => a.issuedTimestamp - b.issuedTimestamp);
-            });
-    },
-
-    async getDeliveryNoteItemsAndCustomer(deliveryNote) {
-        Object.assign(deliveryNote, await DeliveryNoteService.getWithCustomerAndTotal(deliveryNote.id));
     },
 
     getAllWithCustomerAndTotal(filter, options, timeout) {
@@ -117,7 +88,7 @@ export default {
             });
     },
 
-    async createList(customerCodeFrom, customerCodeTo, timestampFrom, timestampTo, issuedTimestamp) {
+    createList(customerCodeFrom, customerCodeTo, timestampFrom, timestampTo, issuedTimestamp) {
 
         var params = {
             customerCodeFrom: customerCodeFrom,

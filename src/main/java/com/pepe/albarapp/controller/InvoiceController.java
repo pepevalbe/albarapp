@@ -21,6 +21,8 @@ import java.util.List;
 public class InvoiceController {
 
 	private static final String DELIVERY_NOTES_ENDPOINT = "/api/deliveryNotes";
+	private static final String DELIVERY_NOTES_TO_BILL_ENDPOINT = "/api/deliveryNotes/to-bill";
+	private static final String DELIVERY_NOTES_FROM_INVOICE = "/api/invoices/{invoiceId}/delivery-notes";
 	private static final String INVOICES_ENDPOINT = "/api/invoices";
 	private static final String INVOICES_INTERVAL_ENDPOINT = "/api/invoices/interval";
 	private static final String INVOICES_BILL_ENDPOINT = "/api/invoices/bill";
@@ -47,6 +49,16 @@ public class InvoiceController {
 		}
 	}
 
+	@GetMapping(DELIVERY_NOTES_TO_BILL_ENDPOINT)
+	public ResponseEntity<List<DeliveryNoteDto>> getDeliveryNotesToBill(@RequestParam String customerId) {
+		return ResponseEntity.ok(invoiceService.getDeliveryNotesToBill(customerId));
+	}
+
+	@GetMapping(DELIVERY_NOTES_FROM_INVOICE)
+	public ResponseEntity<List<DeliveryNoteDto>> getDeliveryNotesFromInvoice(@PathVariable Long invoiceId) {
+		return ResponseEntity.ok(invoiceService.getDeliveryNotedFromInvoice(invoiceId));
+	}
+
 	@PostMapping(DELIVERY_NOTES_ENDPOINT)
 	public ResponseEntity<DeliveryNoteDto> postDeliveryNote(@RequestBody DeliveryNoteDto deliveryNoteDto) {
 
@@ -57,6 +69,11 @@ public class InvoiceController {
 	public ResponseEntity<Void> deleteDeliveryNote(@RequestBody DeliveryNoteDto deliveryNoteDto) {
 
 		return invoiceService.deleteDeliveryNote(deliveryNoteDto) ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
+	}
+
+	@GetMapping(INVOICES_ENDPOINT + "/{id}")
+	public ResponseEntity<InvoiceDto> getInvoice(@PathVariable Long id) {
+		return ResponseEntity.ok(invoiceService.getInvoice(id));
 	}
 
 	@GetMapping(INVOICES_ENDPOINT)

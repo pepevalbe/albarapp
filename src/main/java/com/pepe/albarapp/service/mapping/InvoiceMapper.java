@@ -25,7 +25,7 @@ public interface InvoiceMapper {
 	DeliveryNoteDto map(DeliveryNote deliveryNote);
 
 	@Mapping(source = "customerId", target = "customer.id")
-	@Mapping(ignore = true, target = "invoice")
+	@Mapping(source = "invoiceId", target = "invoice.id")
 	DeliveryNote map(DeliveryNoteDto deliveryNoteDto);
 
 	@Mapping(source = "product.id", target = "productId")

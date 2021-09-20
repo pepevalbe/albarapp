@@ -65,14 +65,10 @@ export default {
       try {
         this.showSpinner();
         this.errorLoading = false;
-        var deliveryNote = await DeliveryNoteService.getWithCustomerAndTotal(
-          this.deliveryNoteId
-        );
+        var deliveryNote = await DeliveryNoteService.get(this.deliveryNoteId);
         this.form.deliveryNote = deliveryNote;
-        this.deliveryNoteItemsOriginal = Array.from(
-          this.form.deliveryNote.deliveryNoteItems
-        );
-      } catch {
+      } catch (e) {
+        console.log(e);
         this.errorLoading = true;
       } finally {
         this.closeSpinner();
@@ -85,12 +81,6 @@ export default {
       try {
         this.showSpinner();
         await DeliveryNoteService.update(this.form.deliveryNote);
-        /*await DeliveryNoteService.update(
-          this.deliveryNoteId,
-          this.form.deliveryNote,
-          this.form.deliveryNote.deliveryNoteItems,
-          this.deliveryNoteItemsOriginal
-        );*/
         this.snackbar = {
           show: true,
           message: "Albarán actualizado correctamente",

@@ -31,7 +31,7 @@
         >
           <template v-slot:body="{ items }">
             <tbody v-if="!$vuetify.breakpoint.xsOnly">
-              <tr v-for="item in items" :key="item.deliveryNoteItemsHref">
+              <tr v-for="item in items" :key="item.id">
                 <td>A{{ item.id }}</td>
                 <td>
                   <span v-if="item.invoiceId">F{{ item.invoiceId }}</span>

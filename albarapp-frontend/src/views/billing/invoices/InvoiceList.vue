@@ -88,7 +88,7 @@
                 </td>
                 <td>
                   <v-btn @click="downloadPdf(item)">
-                    <v-icon dark>mdi-file-pdf</v-icon>
+                    <v-icon dark>mdi-file-pdf-box</v-icon>
                   </v-btn>
                 </td>
                 <td>
@@ -136,7 +136,7 @@
                           <v-icon dark>mdi-pencil</v-icon>
                         </v-btn>
                         <v-btn class="mr-3" @click="downloadPdf(item)">
-                          <v-icon dark>mdi-file-pdf</v-icon>
+                          <v-icon dark>mdi-file-pdf-box</v-icon>
                         </v-btn>
                         <v-btn v-if="item.isCustomerAecoc" class="mr-3" @click="downloadEdi(item)">
                           <v-icon dark>mdi-xml</v-icon>

@@ -51,7 +51,9 @@ public interface DeliveryNoteRepository extends PagingAndSortingRepository<Deliv
 
 	long count();
 
-	Page<DeliveryNote> findByCustomerCodeAndInvoiceIsNull(Integer customerCode, Pageable pageable);
+	Set<DeliveryNote> findByCustomerIdAndInvoiceIsNull(String customerId);
+
+	Set<DeliveryNote> findByInvoiceId(Long invoiceId);
 
 	Set<DeliveryNote> findByCustomerCodeBetweenAndIssuedTimestampBetweenAndInvoiceIsNull(Integer customerCodeFrom, Integer customerCodeTo, Long timestampFrom, Long timestampTo);
 	
