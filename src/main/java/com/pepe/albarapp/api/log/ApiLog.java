@@ -9,28 +9,31 @@ public class ApiLog {
 
 	public static int apiLogLevel = 2;
 
-	public static void startLoggingContext(String endpoint) {
-		MDC.put("timestamp", Long.toString(System.currentTimeMillis()));
-		MDC.put("elapsedTime", "0ms");
-		MDC.put("endpoint", "-");
-		MDC.put("uid", "-");
+	private static final String TIMESTAMP = "timestamp";
+	private static final String ELAPSED_TIME = "elapsedTime";
+	private static final String ENDPOINT = "endpoint";
+	private static final String UID = "uid";
 
-		if (endpoint != null) {
-			MDC.put("endpoint", endpoint);
-		}
+	public static void startLoggingContext(String endpoint) {
+		MDC.put(TIMESTAMP, Long.toString(System.currentTimeMillis()));
+		MDC.put(ELAPSED_TIME, "0ms");
+		MDC.put(ENDPOINT, endpoint != null ? endpoint : "-");
+		MDC.put(UID, "-");
 	}
 
 	public static void addUserToLoggingContext(String username) {
-		MDC.put("uid", username);
+		MDC.put(UID, username);
 	}
 
 	public static void updateElapsedTime() {
-		long elapsedTime = 0;
-		String timestamp = MDC.get("timestamp");
+		String timestamp = MDC.get(TIMESTAMP);
 		if (timestamp != null) {
-			elapsedTime = System.currentTimeMillis() - Long.parseLong(MDC.get("timestamp"));
+			MDC.put(ELAPSED_TIME, System.currentTimeMillis() - Long.parseLong(MDC.get(TIMESTAMP)) + "ms");
 		}
-		MDC.put("elapsedTime", elapsedTime + "ms");
+	}
+
+	public static void clearLoggingContext() {
+		MDC.clear();
 	}
 
 	static void log(Class c, LogLevel logLevel, String message) {

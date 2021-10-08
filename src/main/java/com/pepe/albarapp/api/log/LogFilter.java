@@ -36,5 +36,6 @@ public class LogFilter implements Filter {
 		HttpServletResponse httpResponse = (HttpServletResponse) response;
 		ApiLog.updateElapsedTime();
 		log.debug("Response sent: " + httpResponse.getStatus());
+		ApiLog.clearLoggingContext();
 	}
 }
