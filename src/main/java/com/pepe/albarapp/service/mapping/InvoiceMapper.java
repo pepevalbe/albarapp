@@ -19,6 +19,9 @@ public interface InvoiceMapper {
 	@Mapping(source = "customer.fiscalId", target = "customerFiscalId")
 	InvoiceDto map(Invoice invoice);
 
+	@Mapping(source = "customerId", target = "customer.id")
+	Invoice map(InvoiceDto invoiceDto);
+
 	@Mapping(source = "customer.id", target = "customerId")
 	@Mapping(source = "customer.alias", target = "customerAlias")
 	@Mapping(source = "invoice.id", target = "invoiceId")

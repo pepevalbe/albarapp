@@ -65,7 +65,7 @@ public class InvoiceService {
 	}
 
 	@Transactional(readOnly = true)
-	public List<DeliveryNoteDto> getDeliveryNotedFromInvoice(Long invoiceId) {
+	public List<DeliveryNoteDto> getDeliveryNotesFromInvoice(Long invoiceId) {
 		return deliveryNoteRepository.findByInvoiceId(invoiceId).stream().map(invoiceMapper::map).collect(Collectors.toList());
 	}
 
@@ -134,6 +134,13 @@ public class InvoiceService {
 	public Page<InvoiceDto> getInvoicesInterval(Long idFrom, Long idTo, Pageable pageable) {
 
 		return invoiceRepository.findByIdBetween(idFrom, idTo, pageable).map(invoiceMapper::map);
+	}
+
+	@Transactional
+	public InvoiceDto persistInvoice(InvoiceDto invoiceDto) {
+		Invoice invoicePersisted = invoiceRepository.save(invoiceMapper.map(invoiceDto));
+		invoicePersisted.setDeliveryNotes(deliveryNoteRepository.findByInvoiceId(invoiceDto.getId()));
+		return invoiceMapper.map(invoicePersisted);
 	}
 
 	@Transactional

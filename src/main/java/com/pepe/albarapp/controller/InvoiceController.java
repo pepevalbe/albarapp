@@ -1,7 +1,6 @@
 package com.pepe.albarapp.controller;
 
 import com.pepe.albarapp.api.log.Log;
-import com.pepe.albarapp.persistence.repository.DeliveryNoteItemRepository;
 import com.pepe.albarapp.service.InvoiceService;
 import com.pepe.albarapp.service.dto.DeliveryNoteDto;
 import com.pepe.albarapp.service.dto.InvoiceDto;
@@ -56,7 +55,7 @@ public class InvoiceController {
 
 	@GetMapping(DELIVERY_NOTES_FROM_INVOICE)
 	public ResponseEntity<List<DeliveryNoteDto>> getDeliveryNotesFromInvoice(@PathVariable Long invoiceId) {
-		return ResponseEntity.ok(invoiceService.getDeliveryNotedFromInvoice(invoiceId));
+		return ResponseEntity.ok(invoiceService.getDeliveryNotesFromInvoice(invoiceId));
 	}
 
 	@PostMapping(DELIVERY_NOTES_ENDPOINT)
@@ -92,6 +91,13 @@ public class InvoiceController {
 																@PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
 
 		return ResponseEntity.ok(invoiceService.getInvoicesInterval(idFrom, idTo, pageable));
+	}
+
+	@PostMapping(INVOICES_ENDPOINT)
+	public ResponseEntity<InvoiceDto> postInvoice(@RequestBody InvoiceDto invoiceDto) {
+
+		return ResponseEntity.ok(invoiceService.persistInvoice(invoiceDto));
+		
 	}
 
 	@PostMapping(INVOICES_BILL_ENDPOINT)

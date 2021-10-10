@@ -1,7 +1,6 @@
 import HttpClient from '@/services/HttpClient.js';
 import moment from "moment";
 
-const RESOURCE_NAME = '/hateoas/invoices';
 const INVOICE_COMPLETE_ENDPOINT = '/api/invoices';
 const INVOICE_INTERVAL_COMPLETE_ENDPOINT = '/api/invoices/interval';
 const INVOICE_BILL_ENDPOINT = '/api/invoices/bill';
@@ -112,9 +111,11 @@ export default {
 
     update(id, invoice) {
         var invoiceToUpdate = {
+            id: invoice.id,
+            customerId: invoice.customerId,
             issuedTimestamp: invoice.issuedTimestamp
         };
-        return HttpClient.patch(`${RESOURCE_NAME}/${id}`, invoiceToUpdate)
+        return HttpClient.post(`${INVOICE_COMPLETE_ENDPOINT}`, invoiceToUpdate)
             .then(response => {
                 return response.data;
             });
