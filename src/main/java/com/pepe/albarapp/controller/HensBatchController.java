@@ -4,6 +4,8 @@ import com.pepe.albarapp.api.log.Log;
 import com.pepe.albarapp.service.HensBatchExpenseService;
 import com.pepe.albarapp.service.HensBatchInfoService;
 import com.pepe.albarapp.service.HensBatchReportService;
+import com.pepe.albarapp.service.HensBatchService;
+import com.pepe.albarapp.service.dto.HensBatchDto;
 import com.pepe.albarapp.service.dto.HensBatchExpenseDto;
 import com.pepe.albarapp.service.dto.report.HensBatchInfoDto;
 import com.pepe.albarapp.service.dto.report.HensBatchReportDto;
@@ -19,6 +21,8 @@ import java.util.Set;
 @RestController
 public class HensBatchController {
 
+	private static final String HENS_BATCH_ENDPOINT = "/api/hens-batch";
+	private static final String ACTIVE_HENS_BATCH_ENDPOINT = "/api/active-hens-batch";
 	private static final String HENS_BATCH_REPORT_ENDPOINT = "/api/hens-batch-report";
 	private static final String HENS_BATCH_INFO_ENDPOINT = "/api/hens-batch-info";
 	private static final String HENS_BATCH_EXPENSE_ENDPOINT = "/api/hens-batch-expense";
@@ -32,6 +36,29 @@ public class HensBatchController {
 
 	@Autowired
 	private HensBatchExpenseService hensBatchExpenseService;
+
+	@Autowired
+	private HensBatchService hensBatchService;
+
+	@GetMapping(HENS_BATCH_ENDPOINT)
+	public ResponseEntity<List<HensBatchDto>> getHensBatches() {
+		return ResponseEntity.ok(hensBatchService.getHensBatches());
+	}
+
+	@GetMapping(ACTIVE_HENS_BATCH_ENDPOINT)
+	public ResponseEntity<List<HensBatchDto>> getActiveHensBatches() {
+		return ResponseEntity.ok(hensBatchService.getActiveHensBatches());
+	}
+
+	@GetMapping(HENS_BATCH_ENDPOINT + "/{id}")
+	public ResponseEntity<HensBatchDto> getHensBatch(@PathVariable String id) {
+		return ResponseEntity.ok(hensBatchService.getHensBatch(id));
+	}
+
+	@PostMapping(HENS_BATCH_ENDPOINT)
+	public ResponseEntity<HensBatchDto> postHensBatch(@RequestBody HensBatchDto hensBatchDto) {
+		return ResponseEntity.ok(hensBatchService.persistHensBatch(hensBatchDto));
+	}
 
 	@GetMapping(HENS_BATCH_REPORT_ENDPOINT)
 	public ResponseEntity<Set<HensBatchReportDto>> getHensBatchReports(@RequestParam @Nullable String hensBatchId, @RequestParam @Nullable Long timestampFrom, @RequestParam @Nullable Long timestampTo) {

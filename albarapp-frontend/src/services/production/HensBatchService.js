@@ -1,20 +1,20 @@
 import HttpClient from '@/services/HttpClient.js';
 
-const RESOURCE_NAME = '/hateoas/hensBatches';
-const RESOURCE_NAME_ACTIVES = '/hateoas/hensBatches/search/findByEndTimestampIsNull';
+const RESOURCE_NAME = '/api/hens-batch';
+const RESOURCE_NAME_ACTIVES = '/api/active-hens-batch';
 
 export default {
   getAll() {
     return HttpClient.get(RESOURCE_NAME)
       .then(response => {
-        return response.data._embedded.hensBatches;
+        return response.data;
       });
   },
 
   getActives() {
     return HttpClient.get(RESOURCE_NAME_ACTIVES)
       .then(response => {
-        return response.data._embedded.hensBatches;
+        return response.data;
       });
   },
 
@@ -33,13 +33,9 @@ export default {
   },
 
   update(id, data) {
-    return HttpClient.put(`${RESOURCE_NAME}/${id}`, data)
+    return HttpClient.post(`${RESOURCE_NAME}`, data)
       .then(response => {
         return response.data;
       });
-  },
-
-  delete(id) {
-    return HttpClient.delete(`${RESOURCE_NAME}/${id}`);
   }
 };

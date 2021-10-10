@@ -1,7 +1,9 @@
 package com.pepe.albarapp.service.mapping;
 
+import com.pepe.albarapp.persistence.domain.HensBatch;
 import com.pepe.albarapp.persistence.domain.HensBatchReport;
 import com.pepe.albarapp.persistence.domain.HensBatchExpense;
+import com.pepe.albarapp.service.dto.HensBatchDto;
 import com.pepe.albarapp.service.dto.report.HensBatchInfoDto;
 import com.pepe.albarapp.service.dto.report.HensBatchReportDto;
 import com.pepe.albarapp.service.dto.HensBatchExpenseDto;
@@ -10,6 +12,9 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface HensBatchMapper {
+
+	HensBatch map(HensBatchDto hensBatchDto);
+	HensBatchDto map(HensBatch hensBatch);
 
 	@Mapping(source = "hensBatch.id", target = "hensBatchId")
 	HensBatchReportDto map(HensBatchReport hensBatchReport);
