@@ -1,7 +1,7 @@
-Scripts to be launched are spcified in appspec.yml
+Scripts to be launched are specified in appspec.yml
 There are tree scenarios:
 
-Build java jar in ec2. Run albarapp as java proccess in background
+Build java jar in ec2. Run albarapp as java process in background
 	build_app.bash
 	start_app.bash
 
