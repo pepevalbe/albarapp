@@ -48,7 +48,7 @@ public class CsvFile {
 				.concat(customer.getFiscalId()).concat(DELIMITER)
 				.concat(customer.getAlias()).concat(DELIMITER)
 				.concat(String.valueOf(invoice.getProductQuantity())).concat(DELIMITER)
-				.concat(NUMBER_FORMAT.format(invoice.getTotal().setScale(2, RoundingMode.HALF_UP))).concat(DELIMITER)
-				.concat(NUMBER_FORMAT.format(invoice.getTaxTotal().setScale(2, RoundingMode.HALF_UP))).concat(DELIMITER);
+				.concat(PREFIX).concat(NUMBER_FORMAT.format(invoice.getTotal().setScale(2, RoundingMode.HALF_UP))).concat(SUFFIX).concat(DELIMITER)
+				.concat(PREFIX).concat(NUMBER_FORMAT.format(invoice.getTaxTotal().setScale(2, RoundingMode.HALF_UP))).concat(SUFFIX).concat(DELIMITER);
 	}
 }
