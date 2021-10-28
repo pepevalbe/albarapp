@@ -32,8 +32,6 @@ export default {
         deliveryNoteItems: [],
         deliveryNoteTotal: { value: 0 },
       },
-      deliveryNoteItems: [],
-      deliveryNoteTotal: { value: 0 },
     },
     snackbar: false,
     spinner: {

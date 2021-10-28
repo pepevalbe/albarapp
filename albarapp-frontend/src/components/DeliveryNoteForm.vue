@@ -244,18 +244,20 @@ export default {
         if (this.form.deliveryNote.customerId) {
           this.form.deliveryNote.customer = this.customers.find(
             (customer) => customer.id === this.form.deliveryNote.customerId
-          )
+          );
           this.customerCode = this.form.deliveryNote.customer.code;
           this.selectCustomerByCode();
         }
-        this.form.deliveryNote.deliveryNoteTotal = {
-          value: this.form.deliveryNote.total,
-        };
+        if (this.form.deliveryNote.total) {
+          this.form.deliveryNote.deliveryNoteTotal = {
+            value: this.form.deliveryNote.total,
+          };
+        }
         for (let dni of this.form.deliveryNote.deliveryNoteItems) {
           dni.product = this.products.find(
             (product) => product.id == dni.productId
-          )
-          dni.taxRate = dni.product.tax
+          );
+          dni.taxRate = dni.product.tax;
           dni.gross = dni.quantity * dni.price;
           dni.net = dni.gross * (1 + dni.taxRate / 100);
         }
@@ -270,7 +272,7 @@ export default {
     selectCustomerByCode() {
       var vm = this;
       if (this.customerCode) {
-        var index = this.customers.findIndex(function (element) {
+        var index = this.customers.findIndex(function(element) {
           return element.code == vm.customerCode;
         });
         if (index === -1) {
@@ -298,13 +300,12 @@ export default {
       this.form.deliveryNote.customer = {};
     },
     async selectCustomerPrices() {
-      this.customerPrices =
-        this.form.deliveryNote.customer.customerProductPrices;
+      this.customerPrices = this.form.deliveryNote.customer.customerProductPrices;
     },
     selectProductByCode() {
       var vm = this;
       if (this.productCode) {
-        var index = this.products.findIndex(function (element) {
+        var index = this.products.findIndex(function(element) {
           return element.code == vm.productCode;
         });
         if (index === -1) {
@@ -336,7 +337,7 @@ export default {
       var vm = this;
       var index = -1;
       if (this.customerPrices) {
-        index = this.customerPrices.findIndex(function (element) {
+        index = this.customerPrices.findIndex(function(element) {
           return element.productId == vm.product.id;
         });
       }
@@ -381,11 +382,11 @@ export default {
       // the deliveryNote already has
       if (this.customerPrices && this.customerPrices.length > 0) {
         var vm = this;
-        var indexCustomerProductPrice =
-          this.form.deliveryNote.deliveryNoteItems.length;
+        var indexCustomerProductPrice = this.form.deliveryNote.deliveryNoteItems
+          .length;
         if (indexCustomerProductPrice >= this.customerPrices.length)
           indexCustomerProductPrice = 0;
-        var index = this.products.findIndex(function (element) {
+        var index = this.products.findIndex(function(element) {
           return (
             element.id == vm.customerPrices[indexCustomerProductPrice].productId
           );
