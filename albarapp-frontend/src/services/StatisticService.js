@@ -7,9 +7,10 @@ const QUANTITIES_ENDPOINT = '/api/statistics';
 
 
 export default {
-    getMonthlyEvolution(productCodes) {
+    getMonthlyEvolution(productCodes, numberOfMonths) {
         var params = {};
         if (productCodes && productCodes.length) params.productCodes = productCodes;
+        if (numberOfMonths) params.numberOfMonths = numberOfMonths;
         var queryString = Object.keys(params).map(function (key) {
             return key + '=' + params[key]
         }).join('&');

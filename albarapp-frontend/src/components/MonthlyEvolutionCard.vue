@@ -72,7 +72,14 @@ export default {
     this.getMonthlyEvolution();
     this.$watch(
       "$store.getters.statisticsProductFilter",
-      function () {
+      function() {
+        this.getMonthlyEvolution();
+      },
+      { deep: true }
+    );
+    this.$watch(
+      "$store.getters.statisticsNumberOfMonths",
+      function() {
         this.getMonthlyEvolution();
       },
       { deep: true }
@@ -82,7 +89,8 @@ export default {
     getMonthlyEvolution() {
       this.errorLoading = false;
       StatisticService.getMonthlyEvolution(
-        this.$store.getters.statisticsProductFilter
+        this.$store.getters.statisticsProductFilter,
+        this.$store.getters.statisticsNumberOfMonths
       )
         .then((response) => {
           this.chartOptions.series[0].data = response.map(

@@ -75,13 +75,13 @@ public class StatisticsService {
 		}
 	}
 
-	public List<MonthlyEvolutionDto> getMonthlyEvolution(List<Integer> productCodes) {
+	public List<MonthlyEvolutionDto> getMonthlyEvolution(List<Integer> productCodes, Integer numberOfMonths) {
 
 		List<MonthlyEvolutionDto> result = new ArrayList<MonthlyEvolutionDto>();
 
 		LocalDate currentMonth = LocalDate.now();
 
-		for (int i = 0; i < 12; i++) {
+		for (int i = 0; i < numberOfMonths; i++) {
 			ZonedDateTime minDateTime = currentMonth.minusMonths(i).withDayOfMonth(1).atStartOfDay(ZoneId.of("UTC"));
 			ZonedDateTime maxDateTime = minDateTime.toLocalDate()
 					.withDayOfMonth(minDateTime.toLocalDate().lengthOfMonth()).plusDays(1)

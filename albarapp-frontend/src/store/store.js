@@ -14,6 +14,7 @@ if (initialToken) {
 }
 const initialParsedToken = jsonPayload ? JSON.parse(jsonPayload) : null;
 const initialStatisticsProductFilter = localStorage.getItem('initialStatisticsProductFilter');
+const initialStatisticsNumberOfMonths = localStorage.getItem('initialStatisticsNumberOfMonths');
 const initialHensBatch = localStorage.getItem('initialHensBatch');
 
 export const store = new Vuex.Store({
@@ -21,6 +22,7 @@ export const store = new Vuex.Store({
         token: initialToken,
         parsedToken: initialParsedToken,
         statisticsProductFilter: initialStatisticsProductFilter ? JSON.parse(initialStatisticsProductFilter) : [],
+        statisticsNumberOfMonths: initialStatisticsNumberOfMonths ? JSON.parse(initialStatisticsNumberOfMonths) : 12,
         hensBatch: initialHensBatch
     },
     mutations: {
@@ -38,9 +40,11 @@ export const store = new Vuex.Store({
             state.token = null;
             localStorage.clear();
         },
-        filterStatistics(state, products) {
-            state.statisticsProductFilter = products;
-            localStorage.setItem("initialStatisticsProductFilter", JSON.stringify(products));
+        filterStatistics(state, filter) {
+            state.statisticsProductFilter = filter.products.productCodes;
+            state.statisticsNumberOfMonths = filter.months.numberOfMonths;
+            localStorage.setItem("initialStatisticsProductFilter", JSON.stringify(filter.products.productCodes));
+            localStorage.setItem("initialStatisticsNumberOfMonths", JSON.stringify(filter.months.numberOfMonths));
         },
         filterReportsByHensBatch(state, hensBatchId) {
             state.hensBatch = hensBatchId;
@@ -55,6 +59,7 @@ export const store = new Vuex.Store({
         isHensBatchUser: state => state.token && (state.parsedToken.roles.includes('HENS_BATCH_USER') || state.parsedToken.roles.includes('ADMIN')),
         parsedToken: state => state.parsedToken,
         statisticsProductFilter: state => state.statisticsProductFilter,
+        statisticsNumberOfMonths: state => state.statisticsNumberOfMonths,
         hensBatch: state => state.hensBatch
     }
 })

@@ -43,8 +43,8 @@ public class StatisticsController {
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@GetMapping(MONTHLY_EVOLUTION_ENDPOINT)
 	public ResponseEntity<List<MonthlyEvolutionDto>> getMonthlyEvolution(
-			@RequestParam @Nullable List<Integer> productCodes) {
-		return ResponseEntity.ok(statisticsService.getMonthlyEvolution(productCodes));
+			@RequestParam @Nullable List<Integer> productCodes, @RequestParam(defaultValue = "12") Integer numberOfMonths) {
+		return ResponseEntity.ok(statisticsService.getMonthlyEvolution(productCodes, numberOfMonths));
 	}
 
 }
