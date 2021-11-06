@@ -261,7 +261,9 @@ export default {
           dni.gross = dni.quantity * dni.price;
           dni.net = dni.gross * (1 + dni.taxRate / 100);
         }
-        this.parseDatePick();
+        let moment = this.$moment.utc(this.form.deliveryNote.issuedTimestamp);
+        this.form.deliveryNote.date = moment.format("YYYY-MM-DD");
+        this.dateFormattedText = moment.format("DD/MM/YYYY");
       } catch {
         this.errorLoading = true;
       } finally {
@@ -444,7 +446,12 @@ export default {
       this.moveToAuxDeliveryNoteNr();
     },
     parseDatePick() {
-      var moment = this.$moment.utc(this.form.deliveryNote.issuedTimestamp);
+      let moment = this.$moment.utc(
+        this.form.deliveryNote.date,
+        "YYYY-MM-DD",
+        true
+      );
+      //var moment = this.$moment.utc(this.form.deliveryNote.issuedTimestamp);
       this.dateFormattedText = moment.format("DD/MM/YYYY");
       this.form.deliveryNote.issuedTimestamp = moment.format("x");
       this.menuDatePicker = false;
