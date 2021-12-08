@@ -24,7 +24,10 @@
             @focus="$event.target.select()"
             prepend-icon="mdi-calendar"
             @blur="parseDateText()"
-            @keypress.enter="$refs.numXL.focus(); menuDatePicker=false"
+            @keypress.enter="
+              $refs.numXL.focus();
+              menuDatePicker = false;
+            "
             v-on="on"
           ></v-text-field>
         </template>
@@ -212,6 +215,7 @@
             <v-switch
               class="mr-2"
               v-model="switchPoultryMashConsumption"
+              @change="togglePoultryMashSwitch"
               label="Cambio de silo"
             ></v-switch>
             <v-text-field
@@ -387,10 +391,11 @@ export default {
         this.form.hensBatchReport.waterReading &&
         this.form.hensBatchReport.reportTimestamp
       ) {
-        var lastReportWithWaterReading = await HensBatchReportService.getLastWithWaterReading(
-          this.hensBatch.id,
-          this.form.hensBatchReport.reportTimestamp
-        );
+        var lastReportWithWaterReading =
+          await HensBatchReportService.getLastWithWaterReading(
+            this.hensBatch.id,
+            this.form.hensBatchReport.reportTimestamp
+          );
         if (lastReportWithWaterReading?.waterReading) {
           this.estimatedWaterConsumption =
             parseInt(this.form.hensBatchReport.waterReading) -
@@ -398,6 +403,13 @@ export default {
         } else {
           this.estimatedWaterConsumption = "N/A";
         }
+      }
+    },
+    togglePoultryMashSwitch(newValue) {
+      if (!newValue) {
+        this.form.hensBatchReport.poultryMashAdditionQuantity = null;
+        this.form.hensBatchReport.poultryMashAdditionFeedTurn = null;
+        this.form.hensBatchReport.poultryMashMaxFeedTurns = null;
       }
     },
   },
