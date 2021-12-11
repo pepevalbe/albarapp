@@ -23,6 +23,7 @@
         <apache.commons-text.version>1.8</apache.commons-text.version>
         <pdfbox.version>2.0.24</pdfbox.version>
         <jackson-xml.version>2.10.2</jackson-xml.version>
+		<log4j2.version>2.15.0</log4j2.version>
     </properties>
 
     <dependencies>
