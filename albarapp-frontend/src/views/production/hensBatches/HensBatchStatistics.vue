@@ -84,6 +84,18 @@
           </v-col>
           <v-col>
             <v-card min-width="350px">
+              <v-card-title>Mortalidad</v-card-title>
+              <v-card-text>
+                <div>Animales entrantes: {{ animalsBorn }}</div>
+                <div>Animales muertos: {{ animalsDeaths }}</div>
+                <div>Animales vendidos: {{ animalsLeft }}</div>
+                <div>Animales restantes: {{ animalsRemaining }}</div>
+                <div>Mortalidad acumulada: {{ accumulatedMoratlity }} %</div>
+              </v-card-text>
+            </v-card>
+          </v-col>
+          <v-col>
+            <v-card min-width="350px">
               <v-card-title>Distribución de masa</v-card-title>
               <v-card-text>
                 <div>Masa promedio del huevo: {{ averageEggMass }} g</div>
@@ -124,7 +136,7 @@ import HensBatchService from "@/services/production/HensBatchService.js";
 import HensBatchReportService from "@/services/production/HensBatchReportService.js";
 import HensBatchExpenseService from "@/services/production/HensBatchExpenseService.js";
 
-let ESTIMATED_HENS_BATCH_TIME_IN_WEEKS = 70
+let ESTIMATED_HENS_BATCH_TIME_IN_WEEKS = 70;
 
 export default {
   name: "HensBatchStatistics",
@@ -155,6 +167,11 @@ export default {
       totalEstimatedCostByEggNoDistribution: 0,
       hensBatchReports: null,
       hensBatchExpenses: null,
+      animalsBorn: 0,
+      animalsDeaths: 0,
+      animalsLeft: 0,
+      animalsRemaining: 0,
+      accumulatedMoratlity: 0,
       filter: {
         weekFrom: "",
         weekTo: "",
@@ -291,6 +308,7 @@ export default {
             accumulator[element.week].dirties += element.dirties;
             accumulator[element.week].brokens += element.brokens;
             accumulator[element.week].deaths += element.deaths;
+            accumulator[element.week].departures += element.departures;
             accumulator[element.week].maxTemperature += element.maxTemperature;
             accumulator[element.week].minTemperature += element.minTemperature;
             accumulator[element.week].hensPoultryMashConsumption +=
@@ -357,6 +375,21 @@ export default {
       this.peakPercentage = reportsByWeek
         .reduce((acc, el) => Math.max(acc, el.percentage), 0)
         .toFixed(2);
+
+      this.accumulatedMoratlity = reportsByWeek
+        .at(-1)
+        .accumulatedMoratlity.toFixed(2);
+      this.animalsBorn = this.hensBatch.animalQuantity;
+      this.animalsDeaths = reportsByWeek.reduce(
+        (acc, el) => acc + el.deaths,
+        0
+      );
+      this.animalsLeft = reportsByWeek.reduce(
+        (acc, el) => acc + el.departures,
+        0
+      );
+
+      this.animalsRemaining = this.hensBatchReports.at(-1).numHens.toFixed(0);
 
       let totalXL = this.hensBatchReports.reduce(
         (accumulator, element) => (accumulator += element.numXL),
@@ -432,7 +465,7 @@ export default {
         (accumulator, element) => (accumulator += element.value),
         0
       );
-      this.totalCost = totalCost.toFixed(2)
+      this.totalCost = totalCost.toFixed(2);
       this.costByEgg = (this.totalCost / this.totalEggs).toFixed(3);
 
       let totalCostNoDistribution = this.hensBatchExpenses
@@ -446,7 +479,8 @@ export default {
       let uniqueCost = this.hensBatchExpenses
         .filter((el) => !el.recurrent)
         .reduce((acc, ele) => (acc += ele.value), 0);
-      let estimatedUniqueCostPerWeek = uniqueCost / ESTIMATED_HENS_BATCH_TIME_IN_WEEKS;
+      let estimatedUniqueCostPerWeek =
+        uniqueCost / ESTIMATED_HENS_BATCH_TIME_IN_WEEKS;
       let totalWeeks =
         this.hensBatchReports[this.hensBatchReports.length - 1].week -
         this.hensBatchReports[0].week +
