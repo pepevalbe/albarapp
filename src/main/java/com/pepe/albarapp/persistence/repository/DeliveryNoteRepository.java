@@ -49,7 +49,8 @@ public interface DeliveryNoteRepository extends PagingAndSortingRepository<Deliv
 			@Param("productCodes") List<Integer> productCodes, 
 			Pageable pageable);
 
-	long count();
+	@Query(value = "select COUNT(dn) from DeliveryNote dn where (?1 is null or dn.issuedTimestamp >= ?1) and (?2 is null or dn.issuedTimestamp <= ?2)")
+	long count(Long timestampFrom, Long timestampTo);
 
 	Set<DeliveryNote> findByCustomerIdAndInvoiceIsNull(String customerId);
 

@@ -47,18 +47,32 @@ public class StatisticsService {
 	@Autowired
 	private InvoiceRepository invoiceRepository;
 
-	public List<StatisticsDto> getStatistics(List<Integer> productCodes) {
+	public List<StatisticsDto> getStatistics(List<Integer> productCodes, Integer numberOfMonths) {
+
+		Long minTimestamp = null;
+		Long maxTimestamp = null;
+
+		if (numberOfMonths != null) {
+			LocalDate currentMonth = LocalDate.now();
+
+			ZonedDateTime minDateTime = currentMonth.minusMonths(numberOfMonths-1).withDayOfMonth(1).atStartOfDay(ZoneId.of("UTC"));
+			ZonedDateTime maxDateTime = currentMonth.withDayOfMonth(currentMonth.lengthOfMonth()).plusDays(1)
+					.atStartOfDay(ZoneId.of("UTC")).minusNanos(1);
+
+			minTimestamp = minDateTime.toInstant().toEpochMilli();
+			maxTimestamp = maxDateTime.toInstant().toEpochMilli();
+		}
 
 		List<StatisticsDto> statistics = new ArrayList<>();
 
 		statistics.add(new StatisticsDto(TOTAL_CUSTOMERS, new BigDecimal(customerRepository.count())));
-		statistics.add(new StatisticsDto(TOTAL_INVOICES, new BigDecimal(invoiceRepository.count())));
-		statistics.add(new StatisticsDto(TOTAL_DELIVERY_NOTES, new BigDecimal(deliveryNoteRepository.count())));
+		statistics.add(new StatisticsDto(TOTAL_INVOICES, new BigDecimal(invoiceRepository.count(minTimestamp, maxTimestamp))));
+		statistics.add(new StatisticsDto(TOTAL_DELIVERY_NOTES, new BigDecimal(deliveryNoteRepository.count(minTimestamp, maxTimestamp))));
 		BigDecimal avgPrice;
 		if (productCodes == null || productCodes.isEmpty()) {
-			avgPrice = new BigDecimal(deliveryNoteItemRepository.calcAveragePrice());
+			avgPrice = new BigDecimal(deliveryNoteItemRepository.calcAveragePrice(minTimestamp, maxTimestamp).orElse(0d));
 		} else {
-			avgPrice = new BigDecimal(deliveryNoteItemRepository.calcAveragePriceByProductCodes(productCodes));
+			avgPrice = new BigDecimal(deliveryNoteItemRepository.calcAveragePriceByProductCodes(productCodes, minTimestamp, maxTimestamp).orElse(0d));
 		}
 		avgPrice = avgPrice.setScale(3, RoundingMode.HALF_UP);
 		statistics.add(new StatisticsDto(AVERAGE_PRICE, avgPrice));
@@ -66,12 +80,27 @@ public class StatisticsService {
 		return statistics;
 	}
 
-	public Page<RankingDto> getRanking(List<Integer> productCodes) {
+	public Page<RankingDto> getRanking(List<Integer> productCodes, Integer numberOfMonths) {
+		
+		Long minTimestamp = null;
+		Long maxTimestamp = null;
+
+		if (numberOfMonths != null) {
+			LocalDate currentMonth = LocalDate.now();
+
+			ZonedDateTime minDateTime = currentMonth.minusMonths(numberOfMonths-1).withDayOfMonth(1).atStartOfDay(ZoneId.of("UTC"));
+			ZonedDateTime maxDateTime = currentMonth.withDayOfMonth(currentMonth.lengthOfMonth()).plusDays(1)
+					.atStartOfDay(ZoneId.of("UTC")).minusNanos(1);
+
+			minTimestamp = minDateTime.toInstant().toEpochMilli();
+			maxTimestamp = maxDateTime.toInstant().toEpochMilli();
+		}
+		
 		Pageable pageable = PageRequest.of(0, 10);
 		if (productCodes == null || productCodes.isEmpty()) {
-			return customerRepository.findTopByDeliveryNoteTotal(pageable);
+			return customerRepository.findTopByDeliveryNoteTotal(minTimestamp, maxTimestamp, pageable);
 		} else {
-			return customerRepository.findTopByDeliveryNoteTotalFilteredByProducts(productCodes, pageable);
+			return customerRepository.findTopByDeliveryNoteTotalFilteredByProducts(productCodes, minTimestamp, maxTimestamp, pageable);
 		}
 	}
 

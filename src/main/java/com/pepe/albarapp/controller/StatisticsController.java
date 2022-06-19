@@ -29,15 +29,15 @@ public class StatisticsController {
 
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@GetMapping(STATISTICS_ENDPOINT)
-	public ResponseEntity<List<StatisticsDto>> getStatistics(@RequestParam @Nullable List<Integer> productCodes) {
+	public ResponseEntity<List<StatisticsDto>> getStatistics(@RequestParam @Nullable List<Integer> productCodes, @RequestParam @Nullable Integer numberOfMonths) {
 
-		return ResponseEntity.ok(statisticsService.getStatistics(productCodes));
+		return ResponseEntity.ok(statisticsService.getStatistics(productCodes, numberOfMonths));
 	}
 
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	@GetMapping(RANKING_ENDPOINT)
-	public ResponseEntity<Page<RankingDto>> getRanking(@RequestParam @Nullable List<Integer> productCodes) {
-		return ResponseEntity.ok(statisticsService.getRanking(productCodes));
+	public ResponseEntity<Page<RankingDto>> getRanking(@RequestParam @Nullable List<Integer> productCodes, @RequestParam @Nullable Integer numberOfMonths) {
+		return ResponseEntity.ok(statisticsService.getRanking(productCodes, numberOfMonths));
 	}
 
 	@PreAuthorize("hasRole('ROLE_ADMIN')")

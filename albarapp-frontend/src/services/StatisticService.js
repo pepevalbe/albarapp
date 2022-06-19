@@ -22,9 +22,10 @@ export default {
                 return response.data;
             });
     },
-    getRanking(productCodes) {
+    getRanking(productCodes, numberOfMonths) {
         var params = {};
         if (productCodes && productCodes.length) params.productCodes = productCodes;
+        if (numberOfMonths) params.numberOfMonths = numberOfMonths;
         var queryString = Object.keys(params).map(function (key) {
             return key + '=' + params[key]
         }).join('&');
@@ -35,9 +36,10 @@ export default {
                 return response.data.content;
             });
     },
-    getQuantities(productCodes) {
+    getQuantities(productCodes, numberOfMonths) {
         var params = {};
         if (productCodes && productCodes.length) params.productCodes = productCodes;
+        if (numberOfMonths) params.numberOfMonths = numberOfMonths;
         var queryString = Object.keys(params).map(function (key) {
             return key + '=' + params[key]
         }).join('&');

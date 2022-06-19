@@ -28,17 +28,22 @@ import StatisticService from "@/services/StatisticService.js";
 
 export default {
   name: "StatisticsCard",
-  data: () => {
-    return {
-      statistics: [],
-      errorLoading: false,
-      statisticsReady: false,
-    };
-  },
+  data: () => ({
+    statistics: [],
+    errorLoading: false,
+    statisticsReady: false,
+  }),
   created() {
     this.getStatistics();
     this.$watch(
       "$store.getters.statisticsProductFilter",
+      function () {
+        this.getStatistics();
+      },
+      { deep: true }
+    );
+    this.$watch(
+      "$store.getters.statisticsNumberOfMonths",
       function () {
         this.getStatistics();
       },
@@ -49,7 +54,8 @@ export default {
     getStatistics: function () {
       this.errorLoading = false;
       StatisticService.getQuantities(
-        this.$store.getters.statisticsProductFilter
+        this.$store.getters.statisticsProductFilter,
+        this.$store.getters.statisticsNumberOfMonths
       )
         .then((response) => {
           this.statistics = response;

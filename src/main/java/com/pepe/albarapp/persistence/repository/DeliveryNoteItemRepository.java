@@ -8,6 +8,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @CrossOrigin(origins = "http://localhost:8080")
@@ -24,9 +25,9 @@ public interface DeliveryNoteItemRepository extends CrudRepository<DeliveryNoteI
 	@Query(value = "select SUM(dni.quantity*dni.price*(1+dni.product.tax/100)) from DeliveryNoteItem dni where dni.deliveryNote.issuedTimestamp >= ?1 and dni.deliveryNote.issuedTimestamp <= ?2 and dni.product.code in (?3)")
 	Double calcTotalByIssuedTimestampRangeAndProductCodes(Long minTimestamp, Long maxTimestamp, List<Integer> productCodes);
 
-	@Query(value = "select SUM(dni.quantity*dni.price*(1+dni.product.tax/100)) / SUM(dni.quantity) from DeliveryNoteItem dni")
-	Double calcAveragePrice();
+	@Query(value = "select SUM(dni.quantity*dni.price*(1+dni.product.tax/100)) / SUM(dni.quantity) from DeliveryNoteItem dni where (?1 is null or dni.deliveryNote.issuedTimestamp >= ?1) and (?2 is null or dni.deliveryNote.issuedTimestamp <= ?2)")
+	Optional<Double> calcAveragePrice(Long timestampFrom, Long timestampTo);
 
-	@Query(value = "select SUM(dni.quantity*dni.price*(1+dni.product.tax/100)) / SUM(dni.quantity) from DeliveryNoteItem dni where dni.product.code in (?1)")
-	Double calcAveragePriceByProductCodes(List<Integer> productCodes);
+	@Query(value = "select SUM(dni.quantity*dni.price*(1+dni.product.tax/100)) / SUM(dni.quantity) from DeliveryNoteItem dni where dni.product.code in (?1) and (?2 is null or dni.deliveryNote.issuedTimestamp >= ?2) and (?3 is null or dni.deliveryNote.issuedTimestamp <= ?3)")
+	Optional<Double> calcAveragePriceByProductCodes(List<Integer> productCodes, Long timestampFrom, Long timestampTo);
 }

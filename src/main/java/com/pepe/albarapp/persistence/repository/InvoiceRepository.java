@@ -15,8 +15,9 @@ import java.util.List;
 @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_BILLING_USER')")
 public interface InvoiceRepository extends PagingAndSortingRepository<Invoice, Long> {
 
-	long count();
-
+	@Query(value = "select COUNT(i) from Invoice i where (?1 is null or i.issuedTimestamp >= ?1) and (?2 is null or i.issuedTimestamp <= ?2)")
+	long count(Long timestampFrom, Long timestampTo);
+	
 	String CUSTOMER_TIMESTAMP_CONDITION = "" +
 			"(?1 is null or i.customer.code = ?1) and " +
 			"(?2 is null or i.issuedTimestamp >= ?2) and " +

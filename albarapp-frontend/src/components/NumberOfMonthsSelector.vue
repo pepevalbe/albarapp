@@ -21,6 +21,7 @@ export default {
   },
   data: () => ({
     options: [
+      { label: "3 meses", value: 3 },
       { label: "6 meses", value: 6 },
       { label: "1 año", value: 12 },
       { label: "2 años", value: 24 },
